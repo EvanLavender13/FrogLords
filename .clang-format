@@ -1,0 +1,58 @@
+# FrogLords C++ formatting rules
+# Based on CLAUDE.md code standards
+
+BasedOnStyle: LLVM
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+NamespaceIndentation: None
+
+# Braces
+BreakBeforeBraces: Attach
+
+# Line length
+ColumnLimit: 100
+
+# Naming (clang-format doesn't enforce, but document expected conventions)
+# All user-defined names: snake_case
+# Constants: UPPER_SNAKE_CASE
+
+# Spacing
+SpaceAfterCStyleCast: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInAngles: Never
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: true
+AlignTrailingComments: true
+
+# Line breaks
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeComma
+
+# Includes
+IncludeBlocks: Preserve
+SortIncludes: false
+
+# Pointers and references
+PointerAlignment: Left
+DerivePointerAlignment: false
+
+# Other
+ReflowComments: true
+Standard: c++20
