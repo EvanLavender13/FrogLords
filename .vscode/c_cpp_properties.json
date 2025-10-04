@@ -5,7 +5,9 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/external/sokol",
-                "${workspaceFolder}/external/glm"
+                "${workspaceFolder}/external/glm",
+                "${workspaceFolder}/external/imgui",
+                "${workspaceFolder}/src"
             ],
             "defines": [
                 "_DEBUG",

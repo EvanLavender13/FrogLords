@@ -20,3 +20,18 @@ void orientation_system::update(glm::vec3 velocity, float dt) {
         while (current_yaw < -glm::pi<float>()) current_yaw += 2.0f * glm::pi<float>();
     }
 }
+
+void orientation_system::update_forced(float forced_yaw, float dt) {
+    target_yaw = forced_yaw;
+
+    // Handle angle wrapping (shortest path)
+    float delta = target_yaw - current_yaw;
+    while (delta > glm::pi<float>()) delta -= 2.0f * glm::pi<float>();
+    while (delta < -glm::pi<float>()) delta += 2.0f * glm::pi<float>();
+
+    current_yaw += delta * yaw_smoothing * dt;
+
+    // Normalize to [-π, π]
+    while (current_yaw > glm::pi<float>()) current_yaw -= 2.0f * glm::pi<float>();
+    while (current_yaw < -glm::pi<float>()) current_yaw += 2.0f * glm::pi<float>();
+}

@@ -171,3 +171,72 @@ wireframe_mesh generate_grid_floor(float size, int divisions) {
 
     return mesh;
 }
+
+wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, float head_size) {
+    wireframe_mesh mesh;
+
+    glm::vec3 direction = end - start;
+    float length = glm::length(direction);
+
+    if (length < 0.001f) {
+        return mesh;  // Degenerate arrow
+    }
+
+    direction = glm::normalize(direction);
+
+    // Arrow shaft (just a line from start to end)
+    mesh.vertices.push_back(start);
+    mesh.vertices.push_back(end);
+    mesh.edges.push_back(edge(0, 1));
+
+    // Cone head at end
+    glm::vec3 perpendicular;
+    if (std::abs(direction.y) < 0.9f) {
+        perpendicular = glm::normalize(glm::cross(direction, glm::vec3(0, 1, 0)));
+    } else {
+        perpendicular = glm::normalize(glm::cross(direction, glm::vec3(1, 0, 0)));
+    }
+    glm::vec3 other_perp = glm::cross(direction, perpendicular);
+
+    glm::vec3 cone_base = end - direction * head_size;
+    float cone_radius = head_size * 0.3f;
+
+    // 4 vertices around cone base
+    int base_start = static_cast<int>(mesh.vertices.size());
+    for (int i = 0; i < 4; i++) {
+        float angle = static_cast<float>(i) / 4.0f * 2.0f * glm::pi<float>();
+        glm::vec3 offset = cone_radius * (std::cos(angle) * perpendicular + std::sin(angle) * other_perp);
+        mesh.vertices.push_back(cone_base + offset);
+    }
+
+    // Connect cone vertices to tip
+    for (int i = 0; i < 4; i++) {
+        mesh.edges.push_back(edge(1, base_start + i));
+    }
+
+    // Connect cone base vertices
+    for (int i = 0; i < 4; i++) {
+        mesh.edges.push_back(edge(base_start + i, base_start + (i + 1) % 4));
+    }
+
+    return mesh;
+}
+
+wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segments) {
+    wireframe_mesh mesh;
+
+    // Generate vertices around circle (horizontal, in XZ plane)
+    for (int i = 0; i < segments; i++) {
+        float angle = static_cast<float>(i) / segments * 2.0f * glm::pi<float>();
+        float x = center.x + radius * std::cos(angle);
+        float z = center.z + radius * std::sin(angle);
+        mesh.vertices.push_back(glm::vec3(x, center.y, z));
+    }
+
+    // Connect adjacent vertices
+    for (int i = 0; i < segments; i++) {
+        mesh.edges.push_back(edge(i, (i + 1) % segments));
+    }
+
+    return mesh;
+}

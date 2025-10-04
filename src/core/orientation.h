@@ -7,5 +7,6 @@ struct orientation_system {
     float yaw_smoothing = 5.0f;
 
     void update(glm::vec3 velocity, float dt);
+    void update_forced(float forced_yaw, float dt);
     float get_yaw() const { return current_yaw; }
 };

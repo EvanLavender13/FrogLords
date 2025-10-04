@@ -55,6 +55,9 @@ public:
     /// Get camera right direction
     glm::vec3 get_right() const;
 
+    /// Get camera yaw angle (horizontal rotation)
+    float get_yaw() const;
+
     /// Switch camera mode
     void set_mode(camera_mode new_mode) { mode = new_mode; }
 

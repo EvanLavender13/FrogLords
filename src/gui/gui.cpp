@@ -5,7 +5,7 @@
 #include "sokol_imgui.h"
 #include <cstdarg>
 
-namespace GUI {
+namespace gui {
 
 void init() {
     simgui_desc_t desc = {};
@@ -44,7 +44,7 @@ bool wants_keyboard() {
     return io.WantCaptureKeyboard;
 }
 
-namespace Panel {
+namespace panel {
 
 bool begin(const char* title, bool* open) {
     if (open) {
@@ -57,9 +57,9 @@ void end() {
     ImGui::End();
 }
 
-} // namespace Panel
+} // namespace panel
 
-namespace Widget {
+namespace widget {
 
 void text(const char* fmt, ...) {
     va_list args;
@@ -85,6 +85,6 @@ void color_edit(const char* label, float* color) {
     ImGui::ColorEdit3(label, color);
 }
 
-} // namespace Widget
+} // namespace widget
 
-} // namespace GUI
+} // namespace gui

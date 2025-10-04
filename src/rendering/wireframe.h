@@ -11,8 +11,7 @@ struct edge {
 };
 
 /// Wireframe mesh: vertices, edges, and transform
-class wireframe_mesh {
-public:
+struct wireframe_mesh {
     std::vector<glm::vec3> vertices;
     std::vector<edge> edges;
 
@@ -42,3 +41,15 @@ wireframe_mesh generate_box(float width = 1.0f, float height = 1.0f, float depth
 /// @param size Total size of the floor
 /// @param divisions Number of grid divisions per axis
 wireframe_mesh generate_grid_floor(float size = 10.0f, int divisions = 10);
+
+/// Generate arrow wireframe (line with cone head)
+/// @param start Arrow start position
+/// @param end Arrow end position
+/// @param head_size Size of arrowhead cone
+wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, float head_size = 0.1f);
+
+/// Generate horizontal circle wireframe
+/// @param center Circle center position
+/// @param radius Circle radius
+/// @param segments Number of line segments
+wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segments = 32);

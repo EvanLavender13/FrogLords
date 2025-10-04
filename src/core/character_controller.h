@@ -28,7 +28,7 @@ struct character_controller {
     glm::vec3 ground_normal;
 
     // Tunable parameters
-    float ground_accel = 40.0f;    // m/s²
+    float ground_accel = 20.0f;    // m/s²
     float air_accel = 10.0f;       // m/s²
     float max_speed = 8.0f;        // m/s
     float gravity = -9.8f;         // m/s²

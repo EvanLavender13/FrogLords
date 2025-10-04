@@ -28,10 +28,10 @@ void character_controller::apply_input(const camera& cam, float dt) {
     // Read WASD input
     glm::vec2 move_direction(0.0f, 0.0f);
 
-    if (Input::is_key_down(SAPP_KEYCODE_W)) move_direction.y += 1.0f;
-    if (Input::is_key_down(SAPP_KEYCODE_S)) move_direction.y -= 1.0f;
-    if (Input::is_key_down(SAPP_KEYCODE_A)) move_direction.x -= 1.0f;
-    if (Input::is_key_down(SAPP_KEYCODE_D)) move_direction.x += 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_W)) move_direction.y += 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_S)) move_direction.y -= 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_A)) move_direction.x -= 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_D)) move_direction.x += 1.0f;
 
     if (glm::length(move_direction) > 0.0f) {
         move_direction = glm::normalize(move_direction);
@@ -48,7 +48,7 @@ void character_controller::apply_input(const camera& cam, float dt) {
     acceleration = input_direction * accel_magnitude;
 
     // Jump input (space bar)
-    if (Input::is_key_pressed(SAPP_KEYCODE_SPACE) && is_grounded) {
+    if (input::is_key_pressed(SAPP_KEYCODE_SPACE) && is_grounded) {
         velocity.y = jump_velocity;
     }
 }

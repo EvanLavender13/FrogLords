@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cstdio>
 
-namespace Input {
+namespace input {
     // Internal state tracking
     namespace {
         // Current and previous frame states

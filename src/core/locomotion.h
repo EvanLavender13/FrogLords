@@ -13,9 +13,18 @@ struct locomotion_state {
 };
 
 struct locomotion_system {
+    locomotion_state walk_state;
     locomotion_state run_state;
+
     float distance_traveled = 0.0f;
     float phase = 0.0f;
+
+    // Speed-based blending
+    float current_speed = 0.0f;
+    float smoothed_speed = 0.0f;
+    float speed_smoothing = 10.0f;      // Smoothing rate
+    float walk_speed_threshold = 2.0f;  // m/s
+    float run_speed_threshold = 6.0f;   // m/s
 
     locomotion_system();
 
@@ -24,4 +33,5 @@ struct locomotion_system {
 
 private:
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;
+    simple_pose cubic_interp(const simple_pose& a, const simple_pose& b, float t) const;
 };

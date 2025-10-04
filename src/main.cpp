@@ -16,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdio>
-#include "imgui.h"
+#include "ImGui.h"
 
 static sg_pass_action pass_action;
 static bool show_demo_window = true;
@@ -31,6 +31,13 @@ static float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 static glm::vec3 wheel_direction = glm::vec3(0, 0, 1);  // Debug: wheel orientation
 static float wheel_distance = 0.0f;  // Debug: signed distance for wheel rotation
 
+// Static unit meshes (generated once, reused with transforms)
+static wireframe_mesh unit_circle;
+static wireframe_mesh unit_sphere_8;
+static wireframe_mesh unit_sphere_6;
+static wireframe_mesh unit_sphere_4;
+static bool static_meshes_initialized = false;
+
 static void init(void) {
     sg_desc desc = {};
     desc.environment = sglue_environment();
@@ -42,10 +49,10 @@ static void init(void) {
     pass_action.colors[0].clear_value = { 0.1f, 0.1f, 0.1f, 1.0f };
 
     // Initialize input system
-    Input::init();
+    input::init();
 
     // Initialize GUI system
-    GUI::init();
+    gui::init();
 
     // Initialize renderer
     renderer = new wireframe_renderer();
@@ -73,24 +80,33 @@ static void init(void) {
 static void frame(void) {
     float dt = (float)sapp_frame_duration();
 
+    // Initialize static meshes once
+    if (!static_meshes_initialized) {
+        unit_circle = generate_circle(glm::vec3(0), 1.0f);
+        unit_sphere_8 = generate_sphere(8, 8, 1.0f);
+        unit_sphere_6 = generate_sphere(6, 6, 1.0f);
+        unit_sphere_4 = generate_sphere(4, 4, 1.0f);
+        static_meshes_initialized = true;
+    }
+
     // Handle camera controls (when not over GUI)
-    if (!GUI::wants_mouse()) {
-        static float lastMouseX = 0.0f;
-        static float lastMouseY = 0.0f;
+    if (!gui::wants_mouse()) {
+        static float last_mouse_x = 0.0f;
+        static float last_mouse_y = 0.0f;
 
-        if (Input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
-            float deltaX = (Input::mouse_x() - lastMouseX) * 0.5f;
-            float deltaY = (Input::mouse_y() - lastMouseY) * 0.5f;
-            cam->orbit(-deltaX, deltaY);
+        if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
+            float delta_x = (input::mouse_x() - last_mouse_x) * 0.5f;
+            float delta_y = (input::mouse_y() - last_mouse_y) * 0.5f;
+            cam->orbit(-delta_x, delta_y);
         }
 
-        float scrollDelta = Input::mouse_scroll_y();
-        if (scrollDelta != 0.0f) {
-            cam->zoom(-scrollDelta * 0.5f);
+        float scroll_delta = input::mouse_scroll_y();
+        if (scroll_delta != 0.0f) {
+            cam->zoom(-scroll_delta * 0.5f);
         }
 
-        lastMouseX = Input::mouse_x();
-        lastMouseY = Input::mouse_y();
+        last_mouse_x = input::mouse_x();
+        last_mouse_y = input::mouse_y();
     }
 
     // Character physics update
@@ -100,7 +116,14 @@ static void frame(void) {
     // Animation systems update
     glm::vec3 horizontal_velocity = character->velocity;
     horizontal_velocity.y = 0.0f;
-    orientation->update(horizontal_velocity, dt);
+
+    // Right-click forces character to face camera direction (allows backward movement)
+    if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
+        orientation->update_forced(cam->get_yaw(), dt);
+    } else {
+        orientation->update(horizontal_velocity, dt);
+    }
+
     locomotion->update(horizontal_velocity, dt, character->is_grounded);
 
     // Camera follow character
@@ -109,48 +132,41 @@ static void frame(void) {
     }
 
     // Update input state (resets scroll delta)
-    Input::update();
+    input::update();
 
     // Begin GUI frame
-    GUI::begin_frame();
+    gui::begin_frame();
 
     // Character debug window
     ImGui::SetNextWindowSize(ImVec2(350, 500), ImGuiCond_FirstUseEver);
-    if (GUI::Panel::begin("Character Debug", &show_demo_window)) {
-        GUI::Widget::text("Position: (%.2f, %.2f, %.2f)",
-            character->position.x, character->position.y, character->position.z);
-        GUI::Widget::text("Velocity: (%.2f, %.2f, %.2f)",
-            character->velocity.x, character->velocity.y, character->velocity.z);
-        GUI::Widget::text("Speed: %.2f m/s", glm::length(character->velocity));
-        GUI::Widget::text("Grounded: %s", character->is_grounded ? "YES" : "NO");
+    if (gui::panel::begin("Character Debug", &show_demo_window)) {
+        gui::widget::text("Grounded: %s", character->is_grounded ? "YES" : "NO");
+        gui::widget::text("Phase: %.2f", locomotion->phase);
+        gui::widget::text("Distance: %.2f m", locomotion->distance_traveled);
 
-        if (character->is_grounded) {
-            GUI::Widget::text("Ground Normal: (%.2f, %.2f, %.2f)",
-                character->ground_normal.x, character->ground_normal.y, character->ground_normal.z);
-        }
+        gui::widget::text("");
+        gui::widget::slider_float("Jump Velocity", &character->jump_velocity, 0.0f, 10.0f);
+        gui::widget::slider_float("Ground Accel", &character->ground_accel, 0.0f, 100.0f);
+        gui::widget::slider_float("Air Accel", &character->air_accel, 0.0f, 50.0f);
+        gui::widget::slider_float("Max Speed", &character->max_speed, 0.0f, 20.0f);
+        gui::widget::slider_float("Friction", &character->friction, 0.0f, 2.0f);
+        gui::widget::slider_float("Gravity", &character->gravity, -20.0f, 0.0f);
 
-        GUI::Widget::text("");
-        GUI::Widget::text("--- Animation ---");
-        GUI::Widget::text("Phase: %.2f", locomotion->phase);
-        GUI::Widget::text("Distance: %.2f m", locomotion->distance_traveled);
-        GUI::Widget::text("Yaw: %.1f deg", orientation->current_yaw * 180.0f / 3.14159f);
+        gui::widget::text("");
+        gui::widget::text("--- Locomotion Tuning ---");
+        gui::widget::slider_float("Walk Stride", &locomotion->walk_state.stride_length, 0.5f, 2.5f);
+        gui::widget::slider_float("Run Stride", &locomotion->run_state.stride_length, 1.0f, 5.0f);
+        gui::widget::slider_float("Walk Threshold", &locomotion->walk_speed_threshold, 0.5f, 5.0f);
+        gui::widget::slider_float("Run Threshold", &locomotion->run_speed_threshold, 3.0f, 10.0f);
+        gui::widget::slider_float("Speed Smoothing", &locomotion->speed_smoothing, 0.1f, 20.0f);
 
-        GUI::Widget::text("");
-        GUI::Widget::slider_float("Jump Velocity", &character->jump_velocity, 0.0f, 10.0f);
-        GUI::Widget::slider_float("Ground Accel", &character->ground_accel, 0.0f, 100.0f);
-        GUI::Widget::slider_float("Air Accel", &character->air_accel, 0.0f, 50.0f);
-        GUI::Widget::slider_float("Max Speed", &character->max_speed, 0.0f, 20.0f);
-        GUI::Widget::slider_float("Friction", &character->friction, 0.0f, 2.0f);
-        GUI::Widget::slider_float("Gravity", &character->gravity, -20.0f, 0.0f);
+        gui::widget::text("");
+        gui::widget::slider_float("Yaw Smoothing", &orientation->yaw_smoothing, 0.1f, 20.0f);
 
-        GUI::Widget::text("");
-        GUI::Widget::slider_float("Yaw Smoothing", &orientation->yaw_smoothing, 0.1f, 20.0f);
-        GUI::Widget::slider_float("Stride Length", &locomotion->run_state.stride_length, 0.5f, 5.0f);
-
-        GUI::Widget::text("");
-        GUI::Widget::text("FPS: %.1f", 1.0f / sapp_frame_duration());
+        gui::widget::text("");
+        gui::widget::text("FPS: %.1f", 1.0f / sapp_frame_duration());
     }
-    GUI::Panel::end();
+    gui::panel::end();
 
     // Render pass
     sg_pass pass = {};
@@ -169,20 +185,56 @@ static void frame(void) {
     simple_pose current_pose = locomotion->get_current_pose();
     glm::vec3 pose_offset = current_pose.root_offset;
 
-    wireframe_mesh bumper_vis = generate_sphere(8, 8, character->bumper.radius);
+    wireframe_mesh bumper_vis = unit_sphere_8;
     bumper_vis.position = character->position + pose_offset;
+    bumper_vis.scale = glm::vec3(character->bumper.radius);
     renderer->draw(bumper_vis, *cam, aspect, glm::vec4(0, 1, 1, 1));  // Cyan
 
-    wireframe_mesh weightlifter_vis = generate_sphere(6, 6, character->weightlifter.radius);
+    wireframe_mesh weightlifter_vis = unit_sphere_6;
     weightlifter_vis.position = character->position + pose_offset + glm::vec3(0, -0.4f, 0);
+    weightlifter_vis.scale = glm::vec3(character->weightlifter.radius);
     renderer->draw(weightlifter_vis, *cam, aspect, glm::vec4(1, 1, 0, 1));  // Yellow
+
+    // Draw velocity arrow
+    glm::vec3 vel = character->velocity;
+    if (glm::length(vel) > 0.1f) {
+        wireframe_mesh velocity_arrow = generate_arrow(
+            character->position + pose_offset,
+            character->position + pose_offset + vel,
+            0.15f
+        );
+        renderer->draw(velocity_arrow, *cam, aspect, glm::vec4(1, 0, 0, 1));  // Red
+    }
+
+    // Draw speed threshold circles on ground
+    wireframe_mesh walk_circle = unit_circle;
+    walk_circle.position = character->position;
+    walk_circle.scale = glm::vec3(locomotion->walk_speed_threshold, 1.0f, locomotion->walk_speed_threshold);
+    renderer->draw(walk_circle, *cam, aspect, glm::vec4(0, 1, 0, 0.5f));  // Green
+
+    wireframe_mesh run_circle = unit_circle;
+    run_circle.position = character->position;
+    run_circle.scale = glm::vec3(locomotion->run_speed_threshold, 1.0f, locomotion->run_speed_threshold);
+    renderer->draw(run_circle, *cam, aspect, glm::vec4(1, 1, 0, 0.5f));  // Yellow
+
+    // Draw current speed as expanding circle
+    glm::vec3 horiz_vel = character->velocity;
+    horiz_vel.y = 0.0f;
+    float current_speed = glm::length(horiz_vel);
+    if (current_speed > 0.05f) {
+        wireframe_mesh speed_circle = unit_circle;
+        speed_circle.position = character->position;
+        speed_circle.scale = glm::vec3(current_speed, 1.0f, current_speed);
+        renderer->draw(speed_circle, *cam, aspect, glm::vec4(1, 0, 0, 0.8f));  // Red
+    }
 
     // Draw orientation indicator (small sphere in forward direction)
     float yaw = orientation->get_yaw();
     glm::vec3 forward_dir(sinf(yaw), 0, cosf(yaw));
     glm::vec3 right_dir(-cosf(yaw), 0, sinf(yaw));
-    wireframe_mesh yaw_indicator = generate_sphere(4, 4, 0.1f);
+    wireframe_mesh yaw_indicator = unit_sphere_4;
     yaw_indicator.position = character->position + pose_offset + forward_dir * 0.8f;
+    yaw_indicator.scale = glm::vec3(0.1f);
     renderer->draw(yaw_indicator, *cam, aspect, glm::vec4(0, 1, 0, 1));  // Green
 
     // Draw phase trail (breadcrumb spheres showing distance-phased motion)
@@ -191,9 +243,10 @@ static void frame(void) {
         float trail_phase = fmodf(locomotion->phase + phase_offset, 1.0f);
         float brightness = 1.0f - (float)i * 0.08f;
 
-        wireframe_mesh trail_sphere = generate_sphere(4, 4, 0.12f);
+        wireframe_mesh trail_sphere = unit_sphere_4;
         trail_sphere.position = character->position + pose_offset - forward_dir * (float)i * 0.25f;
         trail_sphere.position.y += sinf(trail_phase * 2.0f * 3.14159f) * 0.25f;
+        trail_sphere.scale = glm::vec3(0.12f);
         renderer->draw(trail_sphere, *cam, aspect, glm::vec4(brightness, brightness, brightness, 1));
     }
 
@@ -203,8 +256,9 @@ static void frame(void) {
         float left_foot_offset = sinf(locomotion->phase * 2.0f * 3.14159f) * 0.4f;
         glm::vec3 left_foot_pos = character->position + forward_dir * left_foot_offset + right_dir * 0.2f;
         left_foot_pos.y = 0.0f;  // Ground level
-        wireframe_mesh left_foot = generate_sphere(4, 4, 0.08f);
+        wireframe_mesh left_foot = unit_sphere_4;
         left_foot.position = left_foot_pos;
+        left_foot.scale = glm::vec3(0.08f);
         renderer->draw(left_foot, *cam, aspect, glm::vec4(1, 0, 1, 1));  // Magenta
 
         // Right foot (opposite phase - offset by 0.5)
@@ -212,13 +266,14 @@ static void frame(void) {
         float right_foot_offset = sinf(right_phase * 2.0f * 3.14159f) * 0.4f;
         glm::vec3 right_foot_pos = character->position + forward_dir * right_foot_offset + right_dir * -0.2f;
         right_foot_pos.y = 0.0f;  // Ground level
-        wireframe_mesh right_foot = generate_sphere(4, 4, 0.08f);
+        wireframe_mesh right_foot = unit_sphere_4;
         right_foot.position = right_foot_pos;
+        right_foot.scale = glm::vec3(0.08f);
         renderer->draw(right_foot, *cam, aspect, glm::vec4(1, 0.5f, 0, 1));  // Orange
     }
 
     // Render GUI
-    GUI::render();
+    gui::render();
 
     sg_end_pass();
     sg_commit();
@@ -231,16 +286,16 @@ static void cleanup(void) {
     delete scn;
     delete cam;
     delete renderer;
-    GUI::shutdown();
+    gui::shutdown();
     sg_shutdown();
 }
 
 static void event(const sapp_event* e) {
     // Forward events to GUI system first (for mouse/keyboard capture)
-    GUI::handle_event(e);
+    gui::handle_event(e);
 
     // Forward events to input system
-    Input::process_event(e);
+    input::process_event(e);
 }
 
 sapp_desc sokol_main(int argc, char* argv[]) {

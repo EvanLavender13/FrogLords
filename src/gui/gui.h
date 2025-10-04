@@ -6,7 +6,7 @@
 // Simple wrapper around Dear ImGui to provide a clean interface
 // for creating and managing GUI panels/windows.
 
-namespace GUI {
+namespace gui {
 
     // Initialize the GUI system
     // Must be called after sokol_gfx is initialized
@@ -32,7 +32,7 @@ namespace GUI {
     bool wants_keyboard();
 
     // GUI Panel/Window helpers
-    namespace Panel {
+    namespace panel {
         // Begin a new window/panel
         // Returns false if window is collapsed
         bool begin(const char* title, bool* open = nullptr);
@@ -42,7 +42,7 @@ namespace GUI {
     }
 
     // Common GUI widgets
-    namespace Widget {
+    namespace widget {
         void text(const char* fmt, ...);
         bool button(const char* label);
         bool checkbox(const char* label, bool* value);

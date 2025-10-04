@@ -53,6 +53,11 @@ glm::vec3 camera::get_right() const {
     return glm::normalize(glm::cross(get_forward_horizontal(), glm::vec3(0, 1, 0)));
 }
 
+float camera::get_yaw() const {
+    glm::vec3 forward = get_forward_horizontal();
+    return atan2f(forward.x, forward.z);
+}
+
 void camera::follow_update(const glm::vec3& target_position, float dt) {
     if (mode != camera_mode::follow) return;
 

@@ -6,7 +6,7 @@ struct sapp_event;
 // Simple Input Handling System
 // Provides easy-to-use functions to query keyboard and mouse state
 
-namespace Input {
+namespace input {
     // Maximum number of keys and mouse buttons we track
     constexpr int MAX_KEYS = 512;
     constexpr int MAX_MOUSE_BUTTONS = 8;

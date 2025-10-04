@@ -53,6 +53,7 @@ add_executable(FrogLords
     src/core/character_controller.cpp
     src/core/orientation.cpp
     src/core/locomotion.cpp
+    src/core/easing.cpp
     src/core/scene.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
