@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+enum class camera_mode {
+    orbit,   // Rotate around fixed center
+    follow   // Follow character with free rotation
+};
+
 class camera {
 public:
     camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -44,6 +49,25 @@ public:
     /// Get current field of view in degrees
     float get_fov() const { return fov_degrees; }
 
+    /// Get camera forward direction projected to horizontal plane
+    glm::vec3 get_forward_horizontal() const;
+
+    /// Get camera right direction
+    glm::vec3 get_right() const;
+
+    /// Switch camera mode
+    void set_mode(camera_mode new_mode) { mode = new_mode; }
+
+    /// Get current camera mode
+    camera_mode get_mode() const { return mode; }
+
+    /// Update follow camera (call each frame when in follow mode)
+    void follow_update(const glm::vec3& target_position, float dt);
+
+    /// Set follow camera parameters
+    void set_follow_distance(float dist) { follow_distance = dist; }
+    void set_follow_height(float height) { follow_height_offset = height; }
+
 private:
     void update_eye_position();
 
@@ -63,4 +87,10 @@ private:
     float fov_degrees = 60.0f;
     float z_near = 0.1f;
     float z_far = 100.0f;
+
+    camera_mode mode = camera_mode::orbit;
+
+    // Follow mode state
+    float follow_distance = 5.0f;
+    float follow_height_offset = 1.5f;
 };

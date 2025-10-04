@@ -50,6 +50,9 @@ add_executable(FrogLords
     src/sokol_impl.cpp
     src/main.cpp
     src/core/camera.cpp
+    src/core/character_controller.cpp
+    src/core/orientation.cpp
+    src/core/locomotion.cpp
     src/core/scene.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp

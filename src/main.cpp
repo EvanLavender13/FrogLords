@@ -5,6 +5,9 @@
 #include "input/input.h"
 #include "gui/gui.h"
 #include "core/camera.h"
+#include "core/character_controller.h"
+#include "core/orientation.h"
+#include "core/locomotion.h"
 #include "rendering/wireframe.h"
 #include "rendering/renderer.h"
 #include "core/scene.h"
@@ -13,6 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdio>
+#include "imgui.h"
 
 static sg_pass_action pass_action;
 static bool show_demo_window = true;
@@ -20,7 +24,12 @@ static float demo_value = 0.5f;
 static camera* cam = nullptr;
 static scene* scn = nullptr;
 static wireframe_renderer* renderer = nullptr;
+static character_controller* character = nullptr;
+static orientation_system* orientation = nullptr;
+static locomotion_system* locomotion = nullptr;
 static float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+static glm::vec3 wheel_direction = glm::vec3(0, 0, 1);  // Debug: wheel orientation
+static float wheel_distance = 0.0f;  // Debug: signed distance for wheel rotation
 
 static void init(void) {
     sg_desc desc = {};
@@ -42,8 +51,16 @@ static void init(void) {
     renderer = new wireframe_renderer();
     renderer->init();
 
-    // Initialize camera (center, distance, latitude, longitude)
-    cam = new camera(glm::vec3(0.0f, 0.0f, 0.0f), 8.0f, 15.0f, 0.0f);
+    // Initialize character
+    character = new character_controller();
+
+    // Initialize animation systems
+    orientation = new orientation_system();
+    locomotion = new locomotion_system();
+
+    // Initialize camera in follow mode
+    cam = new camera(character->position, 5.0f, 15.0f, 0.0f);
+    cam->set_mode(camera_mode::follow);
 
     // Initialize scene
     scn = new scene();
@@ -54,15 +71,17 @@ static void init(void) {
 }
 
 static void frame(void) {
+    float dt = (float)sapp_frame_duration();
+
     // Handle camera controls (when not over GUI)
     if (!GUI::wants_mouse()) {
         static float lastMouseX = 0.0f;
         static float lastMouseY = 0.0f;
 
-        if (Input::is_mouse_button_down(SAPP_MOUSEBUTTON_LEFT)) {
+        if (Input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
             float deltaX = (Input::mouse_x() - lastMouseX) * 0.5f;
             float deltaY = (Input::mouse_y() - lastMouseY) * 0.5f;
-            cam->orbit(deltaX, -deltaY);
+            cam->orbit(-deltaX, deltaY);
         }
 
         float scrollDelta = Input::mouse_scroll_y();
@@ -74,44 +93,61 @@ static void frame(void) {
         lastMouseY = Input::mouse_y();
     }
 
+    // Character physics update
+    character->apply_input(*cam, dt);
+    character->update(dt);
+
+    // Animation systems update
+    glm::vec3 horizontal_velocity = character->velocity;
+    horizontal_velocity.y = 0.0f;
+    orientation->update(horizontal_velocity, dt);
+    locomotion->update(horizontal_velocity, dt, character->is_grounded);
+
+    // Camera follow character
+    if (cam->get_mode() == camera_mode::follow) {
+        cam->follow_update(character->position, dt);
+    }
+
     // Update input state (resets scroll delta)
     Input::update();
 
     // Begin GUI frame
     GUI::begin_frame();
 
-    // Wireframe spawner window
-    if (GUI::Panel::begin("Wireframe Spawner", &show_demo_window)) {
-        GUI::Widget::text("3D Wireframe Scene");
-        GUI::Widget::text("Objects: %zu", scn->object_count());
+    // Character debug window
+    ImGui::SetNextWindowSize(ImVec2(350, 500), ImGuiCond_FirstUseEver);
+    if (GUI::Panel::begin("Character Debug", &show_demo_window)) {
+        GUI::Widget::text("Position: (%.2f, %.2f, %.2f)",
+            character->position.x, character->position.y, character->position.z);
+        GUI::Widget::text("Velocity: (%.2f, %.2f, %.2f)",
+            character->velocity.x, character->velocity.y, character->velocity.z);
+        GUI::Widget::text("Speed: %.2f m/s", glm::length(character->velocity));
+        GUI::Widget::text("Grounded: %s", character->is_grounded ? "YES" : "NO");
 
-        if (GUI::Widget::button("Spawn Sphere")) {
-            // Generate sphere at random position
-            float x = ((float)(rand() % 1000) / 100.0f) - 5.0f;  // -5 to 5
-            float y = ((float)(rand() % 1000) / 100.0f) - 5.0f;
-            float z = ((float)(rand() % 1000) / 100.0f) - 5.0f;
-
-            wireframe_mesh sphere = generate_sphere(8, 8, 1.0f);
-            sphere.position = glm::vec3(x, y, z);
-            scn->add_object(sphere);
+        if (character->is_grounded) {
+            GUI::Widget::text("Ground Normal: (%.2f, %.2f, %.2f)",
+                character->ground_normal.x, character->ground_normal.y, character->ground_normal.z);
         }
 
-        if (GUI::Widget::button("Spawn Box")) {
-            float x = ((float)(rand() % 1000) / 100.0f) - 5.0f;  // -5 to 5
-            float y = ((float)(rand() % 1000) / 100.0f) - 5.0f;
-            float z = ((float)(rand() % 1000) / 100.0f) - 5.0f;
+        GUI::Widget::text("");
+        GUI::Widget::text("--- Animation ---");
+        GUI::Widget::text("Phase: %.2f", locomotion->phase);
+        GUI::Widget::text("Distance: %.2f m", locomotion->distance_traveled);
+        GUI::Widget::text("Yaw: %.1f deg", orientation->current_yaw * 180.0f / 3.14159f);
 
-            wireframe_mesh box = generate_box(1.0f, 1.0f, 1.0f);
-            box.position = glm::vec3(x, y, z);
-            scn->add_object(box);
-        }
+        GUI::Widget::text("");
+        GUI::Widget::slider_float("Jump Velocity", &character->jump_velocity, 0.0f, 10.0f);
+        GUI::Widget::slider_float("Ground Accel", &character->ground_accel, 0.0f, 100.0f);
+        GUI::Widget::slider_float("Air Accel", &character->air_accel, 0.0f, 50.0f);
+        GUI::Widget::slider_float("Max Speed", &character->max_speed, 0.0f, 20.0f);
+        GUI::Widget::slider_float("Friction", &character->friction, 0.0f, 2.0f);
+        GUI::Widget::slider_float("Gravity", &character->gravity, -20.0f, 0.0f);
 
-        if (GUI::Widget::button("Clear All")) {
-            scn->clear();
-        }
+        GUI::Widget::text("");
+        GUI::Widget::slider_float("Yaw Smoothing", &orientation->yaw_smoothing, 0.1f, 20.0f);
+        GUI::Widget::slider_float("Stride Length", &locomotion->run_state.stride_length, 0.5f, 5.0f);
 
-        GUI::Widget::color_edit("Wireframe Color", wireframe_color);
-        GUI::Widget::color_edit("Clear Color", &pass_action.colors[0].clear_value.r);
+        GUI::Widget::text("");
         GUI::Widget::text("FPS: %.1f", 1.0f / sapp_frame_duration());
     }
     GUI::Panel::end();
@@ -129,6 +165,58 @@ static void frame(void) {
         renderer->draw(mesh, *cam, aspect, color);
     }
 
+    // Draw character debug spheres with pose offset
+    simple_pose current_pose = locomotion->get_current_pose();
+    glm::vec3 pose_offset = current_pose.root_offset;
+
+    wireframe_mesh bumper_vis = generate_sphere(8, 8, character->bumper.radius);
+    bumper_vis.position = character->position + pose_offset;
+    renderer->draw(bumper_vis, *cam, aspect, glm::vec4(0, 1, 1, 1));  // Cyan
+
+    wireframe_mesh weightlifter_vis = generate_sphere(6, 6, character->weightlifter.radius);
+    weightlifter_vis.position = character->position + pose_offset + glm::vec3(0, -0.4f, 0);
+    renderer->draw(weightlifter_vis, *cam, aspect, glm::vec4(1, 1, 0, 1));  // Yellow
+
+    // Draw orientation indicator (small sphere in forward direction)
+    float yaw = orientation->get_yaw();
+    glm::vec3 forward_dir(sinf(yaw), 0, cosf(yaw));
+    glm::vec3 right_dir(-cosf(yaw), 0, sinf(yaw));
+    wireframe_mesh yaw_indicator = generate_sphere(4, 4, 0.1f);
+    yaw_indicator.position = character->position + pose_offset + forward_dir * 0.8f;
+    renderer->draw(yaw_indicator, *cam, aspect, glm::vec4(0, 1, 0, 1));  // Green
+
+    // Draw phase trail (breadcrumb spheres showing distance-phased motion)
+    for (int i = 0; i < 10; i++) {
+        float phase_offset = (float)i * 0.1f;
+        float trail_phase = fmodf(locomotion->phase + phase_offset, 1.0f);
+        float brightness = 1.0f - (float)i * 0.08f;
+
+        wireframe_mesh trail_sphere = generate_sphere(4, 4, 0.12f);
+        trail_sphere.position = character->position + pose_offset - forward_dir * (float)i * 0.25f;
+        trail_sphere.position.y += sinf(trail_phase * 2.0f * 3.14159f) * 0.25f;
+        renderer->draw(trail_sphere, *cam, aspect, glm::vec4(brightness, brightness, brightness, 1));
+    }
+
+    // Draw foot positions (only when grounded)
+    if (character->is_grounded) {
+        // Left foot oscillates based on animation phase
+        float left_foot_offset = sinf(locomotion->phase * 2.0f * 3.14159f) * 0.4f;
+        glm::vec3 left_foot_pos = character->position + forward_dir * left_foot_offset + right_dir * 0.2f;
+        left_foot_pos.y = 0.0f;  // Ground level
+        wireframe_mesh left_foot = generate_sphere(4, 4, 0.08f);
+        left_foot.position = left_foot_pos;
+        renderer->draw(left_foot, *cam, aspect, glm::vec4(1, 0, 1, 1));  // Magenta
+
+        // Right foot (opposite phase - offset by 0.5)
+        float right_phase = fmodf(locomotion->phase + 0.5f, 1.0f);
+        float right_foot_offset = sinf(right_phase * 2.0f * 3.14159f) * 0.4f;
+        glm::vec3 right_foot_pos = character->position + forward_dir * right_foot_offset + right_dir * -0.2f;
+        right_foot_pos.y = 0.0f;  // Ground level
+        wireframe_mesh right_foot = generate_sphere(4, 4, 0.08f);
+        right_foot.position = right_foot_pos;
+        renderer->draw(right_foot, *cam, aspect, glm::vec4(1, 0.5f, 0, 1));  // Orange
+    }
+
     // Render GUI
     GUI::render();
 
@@ -137,6 +225,9 @@ static void frame(void) {
 }
 
 static void cleanup(void) {
+    delete locomotion;
+    delete orientation;
+    delete character;
     delete scn;
     delete cam;
     delete renderer;
@@ -160,8 +251,8 @@ sapp_desc sokol_main(int argc, char* argv[]) {
     desc.frame_cb = frame;
     desc.cleanup_cb = cleanup;
     desc.event_cb = event;
-    desc.width = 800;
-    desc.height = 600;
+    desc.width = 1920;
+    desc.height = 1080;
     desc.window_title = "FrogLords - GUI Demo";
     desc.icon.sokol_default = true;
     desc.enable_clipboard = true;  // Enable clipboard for ImGui

@@ -39,3 +39,31 @@ void camera::zoom(float delta) {
     distance = std::clamp(distance + delta, min_distance, max_distance);
     update_eye_position();
 }
+
+glm::vec3 camera::get_forward_horizontal() const {
+    glm::vec3 forward = glm::normalize(center - eye_pos);
+    forward.y = 0;
+    if (glm::length(forward) > 0.0f) {
+        forward = glm::normalize(forward);
+    }
+    return forward;
+}
+
+glm::vec3 camera::get_right() const {
+    return glm::normalize(glm::cross(get_forward_horizontal(), glm::vec3(0, 1, 0)));
+}
+
+void camera::follow_update(const glm::vec3& target_position, float dt) {
+    if (mode != camera_mode::follow) return;
+
+    // Update center to follow target
+    center = target_position + glm::vec3(0, follow_height_offset, 0);
+
+    // Calculate position using spherical coordinates (reuse orbit logic)
+    float lat_rad = glm::radians(latitude);
+    float lon_rad = glm::radians(longitude);
+
+    eye_pos.x = center.x + follow_distance * cosf(lat_rad) * sinf(lon_rad);
+    eye_pos.y = center.y + follow_distance * sinf(lat_rad);
+    eye_pos.z = center.z + follow_distance * cosf(lat_rad) * cosf(lon_rad);
+}
