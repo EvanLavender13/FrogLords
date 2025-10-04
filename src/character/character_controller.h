@@ -27,6 +27,7 @@ struct character_controller {
     bool is_grounded;
     bool was_grounded_last_frame = false;
     glm::vec3 ground_normal;
+    float landing_impact_velocity = 0.0f;
 
     // Tunable parameters
     float ground_accel = 20.0f;    // m/s²

@@ -1,4 +1,4 @@
-#include "spring_damper.h"
+#include "foundation/spring_damper.h"
 #include <cmath>
 
 void spring_damper::update(float target, float dt) {

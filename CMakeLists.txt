@@ -49,13 +49,13 @@ set(IMGUI_SOURCES
 add_executable(FrogLords
     src/sokol_impl.cpp
     src/main.cpp
-    src/core/camera.cpp
-    src/core/character_controller.cpp
-    src/core/orientation.cpp
-    src/core/locomotion.cpp
-    src/core/easing.cpp
-    src/core/spring_damper.cpp
-    src/core/scene.cpp
+    src/camera/camera.cpp
+    src/character/character_controller.cpp
+    src/character/orientation.cpp
+    src/character/locomotion.cpp
+    src/foundation/easing.cpp
+    src/foundation/spring_damper.cpp
+    src/rendering/scene.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
     src/input/input.cpp

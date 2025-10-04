@@ -1,7 +1,7 @@
 # FrogLords Development Principles
 
 ## Context
-Solo experimental game project. Prioritize agility over process. No automated tests—mechanics change too frequently.
+Solo experimental game project. Prioritize agility over process. No automated tests--mechanics change too frequently.
 
 ## Core Tenets
 1. **Clarity over cleverness**
@@ -54,7 +54,7 @@ Solo experimental game project. Prioritize agility over process. No automated te
 ### Iteration Protocol
 - Short planning horizons
 - Graybox until mechanics proven
-- Self-test → 6-12 observed playtests
+- Self-test -> 6-12 observed playtests
 - No premature production
 - More iterations > perfect first attempts
 
@@ -64,7 +64,7 @@ Solo experimental game project. Prioritize agility over process. No automated te
 - Combat overconfidence bias (designs fail)
 - Avoid therapeutic planning (false certainty)
 - Honor serendipity (best ideas are discovered)
-- Mental movie ≠ system design
+- Mental movie != system design
 
 ### Interface Design
 - Leverage metaphor (real objects, culture, conventions)
@@ -95,7 +95,7 @@ Concise and direct. No preamble/postamble. Match detail to complexity.
 ## Code Standards
 
 ### Philosophy
-**Consistency enables thoughtless correctness.** Standards eliminate decision fatigue and visual noise. Code becomes infrastructure—invisible until it needs changing.
+**Consistency enables thoughtless correctness.** Standards eliminate decision fatigue and visual noise. Code becomes infrastructure--invisible until it needs changing.
 
 ### Naming Conventions
 **Uniform snake_case for all user-defined names:**
@@ -146,17 +146,18 @@ private:
 - **Nested namespaces** only when preventing real conflicts
 
 ### File Organization
-```
-src/
-├── core/          # Scene, entity, transform
-├── rendering/     # Renderers, shaders, pipelines
-├── input/         # Keyboard, mouse, gamepad
-├── gui/          # Interface systems
-└── main.cpp
+    src/
+        camera/        # Camera control and view matrices
+        character/     # Character movement, orientation, locomotion
+        foundation/    # Reusable procedural primitives (easing, springs)
+        rendering/     # Renderers, scene composition, pipelines
+        input/         # Keyboard, mouse, gamepad
+        gui/           # Interface systems
+        main.cpp       # Application entry point
 
-shaders/          # .glsl source
-generated/        # Shader headers (build artifacts)
-```
+    shaders/          # .glsl source
+    generated/        # Shader headers (build artifacts)
+Foundation -> Character -> Rendering defines the dependency flow; higher layers do not include sideways.
 
 ### Documentation
 ```cpp
@@ -185,6 +186,6 @@ float radius = width * 0.5f;  // Half-extent
 
 ---
 
-> "Every game exists already, hidden in the logic of the universe. We don't create them. We find them—not by adding, but by removing excess material that obscures the form within."
+> "Every game exists already, hidden in the logic of the universe. We don't create them. We find them--not by adding, but by removing excess material that obscures the form within."
 
 **Goal**: Elegant emergence from simple, interactive systems. Build, play, learn, adapt.

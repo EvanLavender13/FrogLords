@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "spring_damper.h"
+#include "foundation/spring_damper.h"
 
 struct simple_pose {
     glm::vec3 root_offset;

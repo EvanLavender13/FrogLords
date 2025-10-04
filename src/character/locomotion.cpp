@@ -1,5 +1,5 @@
-#include "locomotion.h"
-#include "easing.h"
+#include "character/locomotion.h"
+#include "foundation/easing.h"
 #include <algorithm>
 #include <cmath>
 
@@ -135,8 +135,9 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             }
 
             if (steps_crossed > 0) {
-                // Apply downward velocity impulse when either foot plants
-                float impulse = smoothed_speed * bounce_impulse_scale * static_cast<float>(steps_crossed);
+                // Apply subtle downward impulse when foot plants (much smaller than landing impacts)
+                // Footsteps should be gentle bounce, landings should be pronounced
+                float impulse = -smoothed_speed * bounce_impulse_scale * 0.15f * static_cast<float>(steps_crossed);
                 vertical_spring.add_impulse(impulse);
                 time_since_last_step = 0.0f;
             }
@@ -145,8 +146,9 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
         is_relaxing = false;
     }
 
-    // Spring seeks elevated target (body wants to rise, steps compress it down)
-    float target_height = 0.3f;  // Standing COM height above rest
+    // Spring always seeks standing height (body elevated above ground)
+    // Steps compress spring downward, rebounds to this target
+    float target_height = 0.3f;
     vertical_spring.update(target_height, dt);
 }
 

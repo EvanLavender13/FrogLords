@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "rendering/scene.h"
 
 scene::scene() {
 }

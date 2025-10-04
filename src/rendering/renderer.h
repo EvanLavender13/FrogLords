@@ -2,7 +2,7 @@
 
 #include "sokol_gfx.h"
 #include "rendering/wireframe.h"
-#include "core/camera.h"
+#include "camera/camera.h"
 #include <glm/glm.hpp>
 
 class wireframe_renderer {

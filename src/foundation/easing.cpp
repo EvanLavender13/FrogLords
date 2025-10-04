@@ -1,4 +1,4 @@
-#include "easing.h"
+#include "foundation/easing.h"
 #include <algorithm>
 
 namespace easing {

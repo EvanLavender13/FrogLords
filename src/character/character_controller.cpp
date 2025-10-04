@@ -1,5 +1,5 @@
-#include "character_controller.h"
-#include "camera.h"
+#include "character/character_controller.h"
+#include "camera/camera.h"
 #include "input/input.h"
 #include "sokol_app.h"
 #include <glm/gtc/constants.hpp>
@@ -88,11 +88,22 @@ void character_controller::update(float dt) {
     // Integrate position
     position += velocity * dt;
 
+    // Capture velocity before collision resolution zeroes it
+    float pre_collision_velocity_y = velocity.y;
+
     // Resolve collisions
     resolve_ground_collision();
 
-    // Detect landing events
-    detect_landing();
+    // Detect landing (airborne → grounded transition with downward velocity)
+    bool just_landed = is_grounded && !was_grounded_last_frame;
+    if (just_landed && pre_collision_velocity_y < 0.0f) {
+        landing_impact_velocity = -pre_collision_velocity_y;
+    } else {
+        landing_impact_velocity = 0.0f;
+    }
+
+    // Update state for next frame
+    was_grounded_last_frame = is_grounded;
 
     // Update collision volumes
     bumper.center = position;
@@ -125,15 +136,9 @@ void character_controller::resolve_ground_collision() {
 }
 
 void character_controller::detect_landing() {
-    // Update landing state for next frame
-    was_grounded_last_frame = is_grounded;
+    // Deprecated - landing detection now inline in update()
 }
 
 float character_controller::get_landing_impact() const {
-    // Returns impact velocity if just landed, 0 otherwise
-    bool just_landed = is_grounded && !was_grounded_last_frame;
-    if (just_landed && velocity.y < 0.0f) {
-        return -velocity.y;  // Downward velocity as positive impact
-    }
-    return 0.0f;
+    return landing_impact_velocity;
 }
