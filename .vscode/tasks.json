@@ -9,8 +9,11 @@
                 "-S",
                 ".",
                 "-B",
-                "build",
-                "-DCMAKE_BUILD_TYPE=Debug"
+                "build/ninja",
+                "-G",
+                "Ninja",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
             ],
             "group": "build",
             "problemMatcher": []
@@ -21,21 +24,47 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "build",
-                "--config",
-                "Debug"
+                "build/ninja"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "Run (Debug)",
             "type": "shell",
-            "command": "${workspaceFolder}/build/Debug/FrogLords.exe",
+            "command": "${workspaceFolder}/build/ninja/FrogLords.exe",
             "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Format: clang-format src",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/run_clang_format.ps1"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Lint: clang-tidy src",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/run_clang_tidy.ps1"
+            ],
             "problemMatcher": []
         }
     ]

@@ -23,9 +23,9 @@ struct locomotion_system {
     // Speed-based blending
     float current_speed = 0.0f;
     float smoothed_speed = 0.0f;
-    float speed_smoothing = 10.0f;      // Smoothing rate
-    float walk_speed_threshold = 2.0f;  // m/s
-    float run_speed_threshold = 6.0f;   // m/s
+    float speed_smoothing = 10.0f;     // Smoothing rate
+    float walk_speed_threshold = 2.0f; // m/s
+    float run_speed_threshold = 6.0f;  // m/s
 
     // Vertical motion (spring-damper)
     spring_damper vertical_spring;
@@ -33,8 +33,8 @@ struct locomotion_system {
     float time_since_last_step = 0.0f;
     float step_period = 0.5f;
     float bounce_impulse_scale = 0.5f;
-    float idle_speed_threshold = 0.15f;  // m/s before easing toward idle pose
-    float idle_relax_rate = 8.0f;        // exponential relax speed for phase settling
+    float idle_speed_threshold = 0.15f; // m/s before easing toward idle pose
+    float idle_relax_rate = 8.0f;       // exponential relax speed for phase settling
     bool is_relaxing = false;
     float relax_stride = 1.0f;
 
@@ -44,8 +44,7 @@ struct locomotion_system {
     simple_pose get_current_pose() const;
     float get_vertical_target_offset() const { return vertical_target_offset; }
 
-private:
+  private:
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;
     simple_pose cubic_interp(const simple_pose& a, const simple_pose& b, float t) const;
 };
-

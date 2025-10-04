@@ -3,7 +3,10 @@
 #include <algorithm>
 
 camera::camera(glm::vec3 center, float distance, float latitude, float longitude)
-    : center(center), distance(distance), latitude(latitude), longitude(longitude) {
+    : center(center)
+    , distance(distance)
+    , latitude(latitude)
+    , longitude(longitude) {
     update_eye_position();
 }
 
@@ -29,8 +32,10 @@ void camera::orbit(float delta_x, float delta_y) {
     latitude = std::clamp(latitude + delta_y, min_latitude, max_latitude);
 
     // Wrap longitude
-    if (longitude < -180.0f) longitude += 360.0f;
-    if (longitude > 180.0f) longitude -= 360.0f;
+    if (longitude < -180.0f)
+        longitude += 360.0f;
+    if (longitude > 180.0f)
+        longitude -= 360.0f;
 
     update_eye_position();
 }
@@ -59,7 +64,8 @@ float camera::get_yaw() const {
 }
 
 void camera::follow_update(const glm::vec3& target_position, float dt) {
-    if (mode != camera_mode::follow) return;
+    if (mode != camera_mode::follow)
+        return;
 
     // Update center to follow target
     center = target_position + glm::vec3(0, follow_height_offset, 0);

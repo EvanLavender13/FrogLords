@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 class wireframe_renderer {
-public:
+  public:
     wireframe_renderer();
     ~wireframe_renderer();
 
@@ -21,9 +21,10 @@ public:
     /// @param cam Camera for view/projection matrices
     /// @param aspect_ratio Viewport width/height ratio
     /// @param color Line color (RGBA, defaults to white)
-    void draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio, const glm::vec4& color = glm::vec4(1.0f));
+    void draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio,
+              const glm::vec4& color = glm::vec4(1.0f));
 
-private:
+  private:
     sg_pipeline pipeline;
     sg_shader shader;
 

@@ -28,7 +28,8 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
         glm::vec3 abs_offset = glm::abs(offset_from_center);
         glm::vec3 distance_to_surface = box.half_extents - abs_offset;
 
-        if (distance_to_surface.x < distance_to_surface.y && distance_to_surface.x < distance_to_surface.z) {
+        if (distance_to_surface.x < distance_to_surface.y &&
+            distance_to_surface.x < distance_to_surface.z) {
             result.normal = glm::vec3(offset_from_center.x > 0 ? 1.0f : -1.0f, 0.0f, 0.0f);
             float push = distance_to_surface.x + s.radius;
             s.center += result.normal * push;

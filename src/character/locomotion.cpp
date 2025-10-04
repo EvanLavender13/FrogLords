@@ -26,29 +26,17 @@ bool crossed_phase_threshold(float previous, float delta, float threshold) {
 
     return previous < threshold && threshold <= end;
 }
-}
+} // namespace
 
 locomotion_system::locomotion_system() {
     // Walk keyframes (no vertical offset - spring-damper will handle vertical motion in Phase 3)
-    walk_state.pass_pose = {
-        .root_offset = glm::vec3(0.0f, 0.0f, 0.0f),
-        .leg_phase_offset = 0.0f
-    };
-    walk_state.reach_pose = {
-        .root_offset = glm::vec3(0.0f, 0.0f, 0.0f),
-        .leg_phase_offset = 0.5f
-    };
+    walk_state.pass_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.0f};
+    walk_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.5f};
     walk_state.stride_length = 1.2f;
 
     // Run keyframes (no vertical offset - spring-damper will handle vertical motion in Phase 3)
-    run_state.pass_pose = {
-        .root_offset = glm::vec3(0.0f, 0.0f, 0.0f),
-        .leg_phase_offset = 0.0f
-    };
-    run_state.reach_pose = {
-        .root_offset = glm::vec3(0.0f, 0.0f, 0.0f),
-        .leg_phase_offset = 0.5f
-    };
+    run_state.pass_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.0f};
+    run_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.5f};
     run_state.stride_length = 2.0f;
 
     // Slightly overdamped vertical spring (~2.2 Hz) to match cadence
@@ -63,7 +51,8 @@ locomotion_system::locomotion_system() {
     vertical_spring.reset(vertical_target_offset);
 }
 
-void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded, float ground_height) {
+void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded,
+                               float ground_height) {
     if (is_grounded) {
         current_speed = glm::length(ground_velocity);
 
@@ -73,15 +62,17 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
         // Calculate blend factor using smoothed speed
         float blend = 0.0f;
         if (smoothed_speed <= walk_speed_threshold) {
-            blend = 0.0f;  // Pure walk
+            blend = 0.0f; // Pure walk
         } else if (smoothed_speed >= run_speed_threshold) {
-            blend = 1.0f;  // Pure run
+            blend = 1.0f; // Pure run
         } else {
-            blend = (smoothed_speed - walk_speed_threshold) / (run_speed_threshold - walk_speed_threshold);
+            blend = (smoothed_speed - walk_speed_threshold) /
+                    (run_speed_threshold - walk_speed_threshold);
         }
 
         // Blend stride length with eased blend weight
-        float blended_stride = easing::smooth_mix(walk_state.stride_length, run_state.stride_length, blend);
+        float blended_stride =
+            easing::smooth_mix(walk_state.stride_length, run_state.stride_length, blend);
         if (blended_stride <= 0.0f) {
             phase = 0.0f;
             distance_traveled = 0.0f;
@@ -135,9 +126,10 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             }
 
             if (steps_crossed > 0) {
-                // Apply subtle downward impulse when foot plants (much smaller than landing impacts)
-                // Footsteps should be gentle bounce, landings should be pronounced
-                float impulse = -smoothed_speed * bounce_impulse_scale * 0.15f * static_cast<float>(steps_crossed);
+                // Apply subtle downward impulse when foot plants (much smaller than landing
+                // impacts) Footsteps should be gentle bounce, landings should be pronounced
+                float impulse = -smoothed_speed * bounce_impulse_scale * 0.15f *
+                                static_cast<float>(steps_crossed);
                 vertical_spring.add_impulse(impulse);
                 time_since_last_step = 0.0f;
             }
@@ -159,9 +151,9 @@ simple_pose locomotion_system::get_current_pose() const {
     } else if (smoothed_speed >= run_speed_threshold) {
         blend = 1.0f;
     } else {
-        blend = (smoothed_speed - walk_speed_threshold) / (run_speed_threshold - walk_speed_threshold);
+        blend =
+            (smoothed_speed - walk_speed_threshold) / (run_speed_threshold - walk_speed_threshold);
     }
-
 
     // Get walk and run poses at current phase
     simple_pose walk_pose, run_pose;
@@ -186,14 +178,12 @@ simple_pose locomotion_system::get_current_pose() const {
 }
 
 simple_pose locomotion_system::lerp(const simple_pose& a, const simple_pose& b, float t) const {
-    return {
-        .root_offset = easing::smooth_mix(a.root_offset, b.root_offset, t),
-        .leg_phase_offset = easing::smooth_mix(a.leg_phase_offset, b.leg_phase_offset, t)
-    };
+    return {.root_offset = easing::smooth_mix(a.root_offset, b.root_offset, t),
+            .leg_phase_offset = easing::smooth_mix(a.leg_phase_offset, b.leg_phase_offset, t)};
 }
 
-simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_pose& b, float t) const {
+simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_pose& b,
+                                            float t) const {
     // cubic smooth easing maintains velocity continuity
     return lerp(a, b, t);
 }
-

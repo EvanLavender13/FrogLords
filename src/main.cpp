@@ -21,8 +21,8 @@ static void event(const sapp_event* e) {
 }
 
 sapp_desc sokol_main(int argc, char* argv[]) {
-    (void)argc;
-    (void)argv;
+    (void) argc;
+    (void) argv;
 
     sapp_desc desc = {};
     desc.init_cb = init;

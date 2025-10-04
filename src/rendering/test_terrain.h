@@ -11,7 +11,7 @@ struct test_terrain {
 
     // Low platform (easy jump test)
     glm::vec3 low_platform_pos = glm::vec3(8.0f, 0.0f, 0.0f);
-    glm::vec3 low_platform_size = glm::vec3(3.0f, 3.0f, 1.5f);  // width, depth, height
+    glm::vec3 low_platform_size = glm::vec3(3.0f, 3.0f, 1.5f); // width, depth, height
 
     // High platform (heavy landing test)
     glm::vec3 high_platform_pos = glm::vec3(12.0f, 0.0f, 0.0f);

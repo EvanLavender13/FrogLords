@@ -7,8 +7,8 @@ class scene;
 
 struct character_controller {
     // Collision volumes
-    sphere bumper;           // Primary collision volume
-    sphere weightlifter;     // Step-up detection (smaller, offset below)
+    sphere bumper;       // Primary collision volume
+    sphere weightlifter; // Step-up detection (smaller, offset below)
 
     // State (source of truth)
     glm::vec3 position;
@@ -42,7 +42,7 @@ struct character_controller {
     void update(const scene* scn, float dt);
     float get_landing_impact() const;
 
-private:
+  private:
     void resolve_ground_collision();
     void resolve_box_collisions(const scene* scn);
     void detect_landing();

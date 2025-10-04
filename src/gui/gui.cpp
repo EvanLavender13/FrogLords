@@ -14,12 +14,7 @@ void init() {
 }
 
 void begin_frame() {
-    simgui_new_frame({
-        sapp_width(),
-        sapp_height(),
-        sapp_frame_duration(),
-        sapp_dpi_scale()
-    });
+    simgui_new_frame({sapp_width(), sapp_height(), sapp_frame_duration(), sapp_dpi_scale()});
 }
 
 void render() {

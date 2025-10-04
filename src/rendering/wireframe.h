@@ -7,7 +7,9 @@
 struct edge {
     int v0, v1;
 
-    edge(int vertex0, int vertex1) : v0(vertex0), v1(vertex1) {}
+    edge(int vertex0, int vertex1)
+        : v0(vertex0)
+        , v1(vertex1) {}
 };
 
 /// Wireframe mesh: vertices, edges, and transform
@@ -15,9 +17,9 @@ struct wireframe_mesh {
     std::vector<glm::vec3> vertices;
     std::vector<edge> edges;
 
-    glm::vec3 position;  // World position
-    glm::vec3 rotation;  // Euler angles (radians)
-    glm::vec3 scale;     // Per-axis scale
+    glm::vec3 position; // World position
+    glm::vec3 rotation; // Euler angles (radians)
+    glm::vec3 scale;    // Per-axis scale
 
     wireframe_mesh();
 
@@ -59,5 +61,5 @@ wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segmen
 /// @param end Spring end point
 /// @param coils Number of helical turns
 /// @param radius Spring radius
-wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils = 6, float radius = 0.05f);
-
+wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils = 6,
+                               float radius = 0.05f);

@@ -4,16 +4,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 enum class camera_mode {
-    orbit,   // Rotate around fixed center
-    follow   // Follow character with free rotation
+    orbit, // Rotate around fixed center
+    follow // Follow character with free rotation
 };
 
 class camera {
-public:
-    camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f),
-           float distance = 8.0f,
-           float latitude = 15.0f,
-           float longitude = 0.0f);
+  public:
+    camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), float distance = 8.0f,
+           float latitude = 15.0f, float longitude = 0.0f);
 
     /// Generate view matrix from current eye position
     glm::mat4 get_view_matrix() const;
@@ -71,7 +69,7 @@ public:
     void set_follow_distance(float dist) { follow_distance = dist; }
     void set_follow_height(float height) { follow_height_offset = height; }
 
-private:
+  private:
     void update_eye_position();
 
     glm::vec3 center;

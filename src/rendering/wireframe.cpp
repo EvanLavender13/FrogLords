@@ -7,9 +7,7 @@
 wireframe_mesh::wireframe_mesh()
     : position(0.0f, 0.0f, 0.0f)
     , rotation(0.0f, 0.0f, 0.0f)
-    , scale(1.0f, 1.0f, 1.0f)
-{
-}
+    , scale(1.0f, 1.0f, 1.0f) {}
 
 glm::mat4 wireframe_mesh::get_model_matrix() const {
     glm::mat4 model = glm::mat4(1.0f);
@@ -181,7 +179,7 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
     float length = glm::length(direction);
 
     if (length < 0.001f) {
-        return mesh;  // Degenerate arrow
+        return mesh; // Degenerate arrow
     }
 
     direction = glm::normalize(direction);
@@ -207,7 +205,8 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
     int base_start = static_cast<int>(mesh.vertices.size());
     for (int i = 0; i < 4; i++) {
         float angle = static_cast<float>(i) / 4.0f * 2.0f * glm::pi<float>();
-        glm::vec3 offset = cone_radius * (std::cos(angle) * perpendicular + std::sin(angle) * other_perp);
+        glm::vec3 offset =
+            cone_radius * (std::cos(angle) * perpendicular + std::sin(angle) * other_perp);
         mesh.vertices.push_back(cone_base + offset);
     }
 
@@ -242,7 +241,8 @@ wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segmen
 
     return mesh;
 }
-wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils, float radius) {
+wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils,
+                               float radius) {
     wireframe_mesh mesh;
 
     glm::vec3 axis = end - start;
@@ -256,7 +256,8 @@ wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int
     }
 
     glm::vec3 direction = axis / length;
-    glm::vec3 fallback = std::abs(direction.y) < 0.95f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 fallback =
+        std::abs(direction.y) < 0.95f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
     glm::vec3 tangent = glm::normalize(glm::cross(direction, fallback));
     glm::vec3 bitangent = glm::cross(direction, tangent);
 
@@ -268,7 +269,8 @@ wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int
         float t = static_cast<float>(i) / static_cast<float>(total_segments);
         float angle = t * static_cast<float>(coils) * 2.0f * glm::pi<float>();
         float envelope = std::sin(t * glm::pi<float>());
-        glm::vec3 radial = (std::cos(angle) * tangent + std::sin(angle) * bitangent) * (radius * envelope);
+        glm::vec3 radial =
+            (std::cos(angle) * tangent + std::sin(angle) * bitangent) * (radius * envelope);
         glm::vec3 point = start + direction * (t * length) + radial;
         mesh.vertices.push_back(point);
 
@@ -279,4 +281,3 @@ wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int
 
     return mesh;
 }
-

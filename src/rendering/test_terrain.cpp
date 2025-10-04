@@ -44,7 +44,7 @@ vec3 test_terrain::get_normal(vec3 position, float character_y) const {
         fabs(position.z) <= ramp_width * 0.5f) {
         vec3 ramp_direction = ramp_end - ramp_start;
         vec3 tangent = normalize(vec3(ramp_direction.x, ramp_direction.y, 0.0f));
-        vec3 normal = vec3(-tangent.y, tangent.x, 0.0f);  // Perpendicular in XY plane
+        vec3 normal = vec3(-tangent.y, tangent.x, 0.0f); // Perpendicular in XY plane
         return normalize(normal);
     }
 

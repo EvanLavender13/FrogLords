@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(FrogLords)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -66,4 +67,9 @@ add_executable(FrogLords
     ${WIREFRAME_SHADER_OUTPUT}
     ${IMGUI_SOURCES}
 )
+
+if (WIN32)
+    target_link_libraries(FrogLords PRIVATE d3d11 dxgi dxguid)
+endif()
+
 

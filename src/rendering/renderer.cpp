@@ -5,16 +5,15 @@
 
 wireframe_renderer::wireframe_renderer()
     : pipeline({0})
-    , shader({0})
-{
-}
+    , shader({0}) {}
 
 wireframe_renderer::~wireframe_renderer() {
     shutdown();
 }
 
 void wireframe_renderer::init() {
-    if (initialized) return;
+    if (initialized)
+        return;
 
     // Create shader from generated header
     shader = sg_make_shader(wireframe_shader_desc(sg_query_backend()));
@@ -38,7 +37,8 @@ void wireframe_renderer::init() {
 }
 
 void wireframe_renderer::shutdown() {
-    if (!initialized) return;
+    if (!initialized)
+        return;
 
     sg_destroy_pipeline(pipeline);
     sg_destroy_shader(shader);
@@ -46,9 +46,12 @@ void wireframe_renderer::shutdown() {
     initialized = false;
 }
 
-void wireframe_renderer::draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio, const glm::vec4& color) {
-    if (!initialized) return;
-    if (mesh.vertices.empty() || mesh.edges.empty()) return;
+void wireframe_renderer::draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio,
+                              const glm::vec4& color) {
+    if (!initialized)
+        return;
+    if (mesh.vertices.empty() || mesh.edges.empty())
+        return;
 
     // Build MVP matrix
     glm::mat4 model = mesh.get_model_matrix();

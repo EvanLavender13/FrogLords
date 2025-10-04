@@ -4,7 +4,7 @@
 #include <vector>
 
 class scene {
-public:
+  public:
     scene();
     ~scene();
 
@@ -16,7 +16,7 @@ public:
     const std::vector<wireframe_mesh>& objects() const;
     const std::vector<aabb>& collision_boxes() const;
 
-private:
+  private:
     std::vector<wireframe_mesh> meshes;
     std::vector<aabb> boxes;
 };

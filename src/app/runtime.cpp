@@ -206,13 +206,16 @@ void app_runtime::begin_gui_frame() {
 
 void app_runtime::build_character_panel() {
     ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(sapp_width()) - 370.0f, 20.0f), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(sapp_width()) - 370.0f, 20.0f),
+                            ImGuiCond_FirstUseEver);
 
     if (gui::panel::begin("Character Tuning", &show_character_panel)) {
         bool changed = false;
         changed |= gui::widget::slider_float("Max Speed (m/s)", &character.max_speed, 1.0f, 15.0f);
-        changed |= gui::widget::slider_float("Time to Max Speed (s)", &character_params.time_to_max_speed, 0.1f, 2.0f);
-        changed |= gui::widget::slider_float("Jump Height (m)", &character_params.jump_height, 0.5f, 3.0f);
+        changed |= gui::widget::slider_float("Time to Max Speed (s)",
+                                             &character_params.time_to_max_speed, 0.1f, 2.0f);
+        changed |=
+            gui::widget::slider_float("Jump Height (m)", &character_params.jump_height, 0.5f, 3.0f);
         changed |= gui::widget::slider_float("Gravity (m/s^2)", &character.gravity, -20.0f, -5.0f);
 
         if (changed) {
@@ -234,7 +237,8 @@ void app_runtime::build_character_panel() {
 
             gui::widget::text("");
             gui::widget::text("Ground Height: %.2f m", character.ground_height);
-            gui::widget::text("Ground Normal: (%.2f, %.2f, %.2f)", character.ground_normal.x, character.ground_normal.y, character.ground_normal.z);
+            gui::widget::text("Ground Normal: (%.2f, %.2f, %.2f)", character.ground_normal.x,
+                              character.ground_normal.y, character.ground_normal.z);
             gui::widget::text("Landing Impact: %.2f m/s", character.landing_impact_velocity);
 
             gui::widget::text("");
@@ -256,8 +260,10 @@ void app_runtime::build_character_panel() {
 
             gui::widget::text("Spring Vel: %.3f m/s", locomotion.vertical_spring.get_velocity());
 
-            ImGui::PlotLines("Position", spring_position_history, spring_history_size, spring_history_index, nullptr, -0.2f, 3.5f, ImVec2(0, 60));
-            ImGui::PlotLines("Velocity", spring_velocity_history, spring_history_size, spring_history_index, nullptr, -8.0f, 8.0f, ImVec2(0, 60));
+            ImGui::PlotLines("Position", spring_position_history, spring_history_size,
+                             spring_history_index, nullptr, -0.2f, 3.5f, ImVec2(0, 60));
+            ImGui::PlotLines("Velocity", spring_velocity_history, spring_history_size,
+                             spring_history_index, nullptr, -8.0f, 8.0f, ImVec2(0, 60));
         }
 
         gui::widget::text("");
@@ -280,7 +286,8 @@ void app_runtime::render_world() {
     }
 
     for (const auto& box : scn.collision_boxes()) {
-        wireframe_mesh box_mesh = generate_box(box.half_extents.x * 2.0f, box.half_extents.y * 2.0f, box.half_extents.z * 2.0f);
+        wireframe_mesh box_mesh = generate_box(box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
+                                               box.half_extents.z * 2.0f);
         box_mesh.position = box.center;
 
         glm::vec4 box_color = box.center.y < 1.0f ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 0, 0, 1);
@@ -311,7 +318,8 @@ void app_runtime::render_world() {
     }
     int spring_coils = 6;
     float spring_radius = glm::clamp(rest_length * 0.12f, 0.05f, 0.18f);
-    wireframe_mesh spring_debug = generate_spring(spring_base, spring_tip, spring_coils, spring_radius);
+    wireframe_mesh spring_debug =
+        generate_spring(spring_base, spring_tip, spring_coils, spring_radius);
 
     glm::vec4 spring_color;
     if (compression_ratio >= 0.0f) {
@@ -342,12 +350,14 @@ void app_runtime::render_world() {
 
     wireframe_mesh walk_circle = unit_circle;
     walk_circle.position = character.position;
-    walk_circle.scale = glm::vec3(locomotion.walk_speed_threshold, 1.0f, locomotion.walk_speed_threshold);
+    walk_circle.scale =
+        glm::vec3(locomotion.walk_speed_threshold, 1.0f, locomotion.walk_speed_threshold);
     renderer.draw(walk_circle, cam, aspect, glm::vec4(0, 1, 0, 0.5f));
 
     wireframe_mesh run_circle = unit_circle;
     run_circle.position = character.position;
-    run_circle.scale = glm::vec3(locomotion.run_speed_threshold, 1.0f, locomotion.run_speed_threshold);
+    run_circle.scale =
+        glm::vec3(locomotion.run_speed_threshold, 1.0f, locomotion.run_speed_threshold);
     renderer.draw(run_circle, cam, aspect, glm::vec4(1, 1, 0, 0.5f));
 
     glm::vec3 horiz_vel = character.velocity;
@@ -374,7 +384,8 @@ void app_runtime::render_world() {
         float brightness = 1.0f - static_cast<float>(i) * 0.08f;
 
         wireframe_mesh trail_sphere = unit_sphere_4;
-        trail_sphere.position = character.position + pose_offset - forward_dir * static_cast<float>(i) * 0.25f;
+        trail_sphere.position =
+            character.position + pose_offset - forward_dir * static_cast<float>(i) * 0.25f;
         trail_sphere.position.y += std::sin(trail_phase * 2.0f * 3.14159f) * 0.25f;
         trail_sphere.scale = glm::vec3(0.12f);
         renderer.draw(trail_sphere, cam, aspect, glm::vec4(brightness, brightness, brightness, 1));
@@ -383,7 +394,8 @@ void app_runtime::render_world() {
     float ground_contact_y = character.weightlifter.center.y - character.weightlifter.radius;
 
     float left_foot_offset = std::sin(locomotion.phase * 2.0f * 3.14159f) * 0.4f;
-    glm::vec3 left_foot_pos = character.position + forward_dir * left_foot_offset + right_dir * 0.2f;
+    glm::vec3 left_foot_pos =
+        character.position + forward_dir * left_foot_offset + right_dir * 0.2f;
     left_foot_pos.y = ground_contact_y;
     wireframe_mesh left_foot = unit_sphere_4;
     left_foot.position = left_foot_pos;
@@ -392,7 +404,8 @@ void app_runtime::render_world() {
 
     float right_phase = std::fmod(locomotion.phase + 0.5f, 1.0f);
     float right_foot_offset = std::sin(right_phase * 2.0f * 3.14159f) * 0.4f;
-    glm::vec3 right_foot_pos = character.position + forward_dir * right_foot_offset + right_dir * -0.2f;
+    glm::vec3 right_foot_pos =
+        character.position + forward_dir * right_foot_offset + right_dir * -0.2f;
     right_foot_pos.y = ground_contact_y;
     wireframe_mesh right_foot = unit_sphere_4;
     right_foot.position = right_foot_pos;
@@ -410,5 +423,3 @@ void app_runtime::update_spring_history() {
     spring_velocity_history[spring_history_index] = locomotion.vertical_spring.get_velocity();
     spring_history_index = (spring_history_index + 1) % spring_history_size;
 }
-
-

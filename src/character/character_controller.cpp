@@ -8,15 +8,15 @@
 #include <algorithm>
 
 character_controller::character_controller()
-    : position(0.0f, 0.4f, 0.0f)  // Adjusted so weightlifter touches ground (accounts for 0.3m spring offset)
+    : position(0.0f, 0.4f,
+               0.0f) // Adjusted so weightlifter touches ground (accounts for 0.3m spring offset)
     , velocity(0.0f)
     , acceleration(0.0f)
     , mass(70.0f)
     , friction(0.9f)
     , air_control(0.3f)
     , is_grounded(false)
-    , ground_normal(0.0f, 1.0f, 0.0f)
-{
+    , ground_normal(0.0f, 1.0f, 0.0f) {
     // Initialize bumper sphere
     bumper.center = position;
     bumper.radius = 0.5f;
@@ -30,10 +30,14 @@ void character_controller::apply_input(const camera& cam, float dt) {
     // Read WASD input
     glm::vec2 move_direction(0.0f, 0.0f);
 
-    if (input::is_key_down(SAPP_KEYCODE_W)) move_direction.y += 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_S)) move_direction.y -= 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_A)) move_direction.x -= 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_D)) move_direction.x += 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_W))
+        move_direction.y += 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_S))
+        move_direction.y -= 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_A))
+        move_direction.x -= 1.0f;
+    if (input::is_key_down(SAPP_KEYCODE_D))
+        move_direction.x += 1.0f;
 
     if (glm::length(move_direction) > 0.0f) {
         move_direction = glm::normalize(move_direction);
@@ -156,7 +160,8 @@ void character_controller::resolve_ground_collision() {
 }
 
 void character_controller::resolve_box_collisions(const scene* scn) {
-    if (!scn) return;
+    if (!scn)
+        return;
 
     using namespace glm;
 

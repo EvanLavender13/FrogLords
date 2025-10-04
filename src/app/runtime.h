@@ -26,7 +26,7 @@ struct app_runtime {
     void frame();
     void handle_event(const sapp_event* e);
 
-private:
+  private:
     void sync_locomotion_speed_targets();
     void ensure_static_meshes();
     void update_simulation(float dt);
