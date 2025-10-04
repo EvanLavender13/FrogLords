@@ -60,7 +60,7 @@ locomotion_system::locomotion_system() {
     vertical_spring.damping = damping_ratio * 2.0f * omega;
 
     // Initialize spring at target height
-    vertical_spring.reset(0.3f);
+    vertical_spring.reset(vertical_target_offset);
 }
 
 void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded, float ground_height) {
@@ -146,10 +146,9 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
         is_relaxing = false;
     }
 
-    // Spring seeks standing offset above ground (0.3m offset from surface)
+    // Spring seeks standing offset above ground (vertical_target_offset meters)
     // Spring position is RELATIVE offset, not absolute world position
-    float target_offset = 0.3f;
-    vertical_spring.update(target_offset, dt);
+    vertical_spring.update(vertical_target_offset, dt);
 }
 
 simple_pose locomotion_system::get_current_pose() const {
@@ -197,7 +196,4 @@ simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_p
     // cubic smooth easing maintains velocity continuity
     return lerp(a, b, t);
 }
-
-
-
 

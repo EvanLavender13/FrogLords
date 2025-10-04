@@ -1,6 +1,8 @@
 #include "wireframe.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 #include <cmath>
+#include <algorithm>
 
 wireframe_mesh::wireframe_mesh()
     : position(0.0f, 0.0f, 0.0f)
@@ -240,3 +242,41 @@ wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segmen
 
     return mesh;
 }
+wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils, float radius) {
+    wireframe_mesh mesh;
+
+    glm::vec3 axis = end - start;
+    float length = glm::length(axis);
+
+    if (length < 0.0001f || coils <= 0 || radius <= 0.0f) {
+        mesh.vertices.push_back(start);
+        mesh.vertices.push_back(end);
+        mesh.edges.push_back(edge(0, 1));
+        return mesh;
+    }
+
+    glm::vec3 direction = axis / length;
+    glm::vec3 fallback = std::abs(direction.y) < 0.95f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 tangent = glm::normalize(glm::cross(direction, fallback));
+    glm::vec3 bitangent = glm::cross(direction, tangent);
+
+    int segments_per_coil = std::max(6, coils * 2);
+    int total_segments = coils * segments_per_coil;
+
+    mesh.vertices.reserve(total_segments + 1);
+    for (int i = 0; i <= total_segments; i++) {
+        float t = static_cast<float>(i) / static_cast<float>(total_segments);
+        float angle = t * static_cast<float>(coils) * 2.0f * glm::pi<float>();
+        float envelope = std::sin(t * glm::pi<float>());
+        glm::vec3 radial = (std::cos(angle) * tangent + std::sin(angle) * bitangent) * (radius * envelope);
+        glm::vec3 point = start + direction * (t * length) + radial;
+        mesh.vertices.push_back(point);
+
+        if (i > 0) {
+            mesh.edges.push_back(edge(i - 1, i));
+        }
+    }
+
+    return mesh;
+}
+

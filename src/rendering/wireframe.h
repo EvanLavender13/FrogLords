@@ -53,3 +53,11 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
 /// @param radius Circle radius
 /// @param segments Number of line segments
 wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segments = 32);
+
+/// Generate helix-style spring between two points (world-space vertices)
+/// @param start Spring start point
+/// @param end Spring end point
+/// @param coils Number of helical turns
+/// @param radius Spring radius
+wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils = 6, float radius = 0.05f);
+

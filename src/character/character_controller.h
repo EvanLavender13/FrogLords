@@ -1,13 +1,9 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "foundation/collision_primitives.h"
 
 class camera;
 class scene;
-
-struct sphere {
-    glm::vec3 center;
-    float radius;
-};
 
 struct character_controller {
     // Collision volumes
@@ -32,10 +28,10 @@ struct character_controller {
     float landing_impact_velocity = 0.0f;
 
     // Tunable parameters
-    float ground_accel = 20.0f;    // m/s²
-    float air_accel = 10.0f;       // m/s²
+    float ground_accel = 20.0f;    // m/s^2
+    float air_accel = 10.0f;       // m/s^2
     float max_speed = 8.0f;        // m/s
-    float gravity = -9.8f;         // m/s²
+    float gravity = -9.8f;         // m/s^2
     float max_slope_angle = 45.0f; // degrees
     float step_height = 0.4f;      // meters
     float jump_velocity = 5.0f;    // m/s

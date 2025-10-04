@@ -29,6 +29,7 @@ struct locomotion_system {
 
     // Vertical motion (spring-damper)
     spring_damper vertical_spring;
+    float vertical_target_offset = 0.3f;
     float time_since_last_step = 0.0f;
     float step_period = 0.5f;
     float bounce_impulse_scale = 0.5f;
@@ -41,8 +42,10 @@ struct locomotion_system {
 
     void update(glm::vec3 ground_velocity, float dt, bool is_grounded, float ground_height = 0.0f);
     simple_pose get_current_pose() const;
+    float get_vertical_target_offset() const { return vertical_target_offset; }
 
 private:
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;
     simple_pose cubic_interp(const simple_pose& a, const simple_pose& b, float t) const;
 };
+
