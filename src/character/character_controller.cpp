@@ -1,4 +1,5 @@
 #include "character/character_controller.h"
+#include "rendering/scene.h"
 #include "camera/camera.h"
 #include "input/input.h"
 #include "sokol_app.h"
@@ -6,7 +7,7 @@
 #include <algorithm>
 
 character_controller::character_controller()
-    : position(0.0f, 1.0f, 0.0f)
+    : position(0.0f, 0.4f, 0.0f)  // Adjusted so weightlifter touches ground (accounts for 0.3m spring offset)
     , velocity(0.0f)
     , acceleration(0.0f)
     , mass(70.0f)
@@ -53,7 +54,7 @@ void character_controller::apply_input(const camera& cam, float dt) {
     }
 }
 
-void character_controller::update(float dt) {
+void character_controller::update(const scene* scn, float dt) {
     // Apply gravity
     acceleration.y += gravity;
 
@@ -91,7 +92,11 @@ void character_controller::update(float dt) {
     // Capture velocity before collision resolution zeroes it
     float pre_collision_velocity_y = velocity.y;
 
-    // Resolve collisions
+    // Reset grounded state - will be set by collision resolution
+    is_grounded = false;
+
+    // Resolve collisions (boxes first, then ground plane)
+    resolve_box_collisions(scn);
     resolve_ground_collision();
 
     // Detect landing (airborne → grounded transition with downward velocity)
@@ -114,14 +119,27 @@ void character_controller::update(float dt) {
 }
 
 void character_controller::resolve_ground_collision() {
+    using namespace glm;
+
+    // Only check ground plane if not already grounded by box collision
+    if (is_grounded) {
+        return;
+    }
+
+    // Update weightlifter position before collision check
+    weightlifter.center = position + vec3(0.0f, -0.4f, 0.0f);
+
     // Simple ground plane at y=0
     float ground_y = 0.0f;
-    float distance_to_ground = position.y - ground_y;
-    float penetration = bumper.radius - distance_to_ground;
+    float distance_to_ground = weightlifter.center.y - ground_y;
+    float penetration = weightlifter.radius - distance_to_ground;
 
     if (penetration > 0.0f) {
-        // Push out of ground
-        position.y += penetration;
+        // Push weightlifter out of ground
+        weightlifter.center.y += penetration;
+
+        // Update position to maintain offset
+        position = weightlifter.center + vec3(0.0f, 0.4f, 0.0f);
 
         // Remove velocity into ground
         if (velocity.y < 0.0f) {
@@ -129,9 +147,60 @@ void character_controller::resolve_ground_collision() {
         }
 
         is_grounded = true;
-        ground_normal = glm::vec3(0, 1, 0);
+        ground_normal = vec3(0, 1, 0);
+        ground_height = ground_y;
     } else {
         is_grounded = false;
+    }
+}
+
+void character_controller::resolve_box_collisions(const scene* scn) {
+    if (!scn) return;
+
+    using namespace glm;
+
+    // Resolve collisions with all boxes
+    for (const auto& box : scn->collision_boxes()) {
+        vec3 collision_normal;
+
+        // Check weightlifter first (ground contact)
+        sphere weightlifter_copy = weightlifter;
+        weightlifter_copy.center = position + vec3(0.0f, -0.4f, 0.0f);
+
+        if (box.resolve_sphere_collision(weightlifter_copy, collision_normal)) {
+            // Calculate position offset from weightlifter movement
+            vec3 weightlifter_displacement = weightlifter_copy.center - weightlifter.center;
+            position += weightlifter_displacement;
+            weightlifter.center = weightlifter_copy.center;
+
+            // Remove velocity in collision direction
+            float velocity_into_surface = dot(velocity, collision_normal);
+            if (velocity_into_surface < 0.0f) {
+                velocity -= collision_normal * velocity_into_surface;
+            }
+
+            // Check if collision is from above (standing on box)
+            if (collision_normal.y > 0.7f) {
+                is_grounded = true;
+                ground_normal = collision_normal;
+                ground_height = box.center.y + box.half_extents.y;
+            }
+        }
+
+        // Then check bumper (obstacle/ceiling collisions)
+        sphere bumper_copy = bumper;
+        bumper_copy.center = position;
+
+        if (box.resolve_sphere_collision(bumper_copy, collision_normal)) {
+            // Update position based on resolved collision
+            position = bumper_copy.center;
+
+            // Remove velocity in collision direction
+            float velocity_into_surface = dot(velocity, collision_normal);
+            if (velocity_into_surface < 0.0f) {
+                velocity -= collision_normal * velocity_into_surface;
+            }
+        }
     }
 }
 

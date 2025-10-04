@@ -63,7 +63,7 @@ locomotion_system::locomotion_system() {
     vertical_spring.reset(0.3f);
 }
 
-void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded) {
+void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded, float ground_height) {
     if (is_grounded) {
         current_speed = glm::length(ground_velocity);
 
@@ -146,10 +146,10 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
         is_relaxing = false;
     }
 
-    // Spring always seeks standing height (body elevated above ground)
-    // Steps compress spring downward, rebounds to this target
-    float target_height = 0.3f;
-    vertical_spring.update(target_height, dt);
+    // Spring seeks standing offset above ground (0.3m offset from surface)
+    // Spring position is RELATIVE offset, not absolute world position
+    float target_offset = 0.3f;
+    vertical_spring.update(target_offset, dt);
 }
 
 simple_pose locomotion_system::get_current_pose() const {
@@ -179,8 +179,8 @@ simple_pose locomotion_system::get_current_pose() const {
     // Blend between walk and run with eased weight
     simple_pose blended = lerp(walk_pose, run_pose, blend);
 
-    // Apply spring-damper vertical offset
-    // Spring position is the actual height (seeks 0.3m, compresses below that)
+    // Apply spring-damper vertical offset (relative to ground)
+    // Spring oscillates around 0.3m, compresses below that on landings/steps
     blended.root_offset.y = vertical_spring.get_position();
 
     return blended;

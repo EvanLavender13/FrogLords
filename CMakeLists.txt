@@ -56,6 +56,7 @@ add_executable(FrogLords
     src/foundation/easing.cpp
     src/foundation/spring_damper.cpp
     src/rendering/scene.cpp
+    src/rendering/test_terrain.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
     src/input/input.cpp

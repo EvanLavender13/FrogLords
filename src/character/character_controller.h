@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 
 class camera;
+class scene;
 
 struct sphere {
     glm::vec3 center;
@@ -27,6 +28,7 @@ struct character_controller {
     bool is_grounded;
     bool was_grounded_last_frame = false;
     glm::vec3 ground_normal;
+    float ground_height = 0.0f;
     float landing_impact_velocity = 0.0f;
 
     // Tunable parameters
@@ -41,10 +43,11 @@ struct character_controller {
     character_controller();
 
     void apply_input(const camera& cam, float dt);
-    void update(float dt);
+    void update(const scene* scn, float dt);
     float get_landing_impact() const;
 
 private:
     void resolve_ground_collision();
+    void resolve_box_collisions(const scene* scn);
     void detect_landing();
 };

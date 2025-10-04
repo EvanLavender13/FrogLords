@@ -121,8 +121,21 @@ static void init(void) {
     scn = new scene();
 
     // Add static grid floor
-    wireframe_mesh floor = generate_grid_floor(10.0f, 10);
+    wireframe_mesh floor = generate_grid_floor(20.0f, 20);
     scn->add_object(floor);
+
+    // Add collision boxes (platforms for testing)
+    // Low platform
+    aabb low_platform;
+    low_platform.center = glm::vec3(8.0f, 0.75f, 0.0f);
+    low_platform.half_extents = glm::vec3(1.5f, 0.75f, 1.5f);
+    scn->add_collision_box(low_platform);
+
+    // High platform
+    aabb high_platform;
+    high_platform.center = glm::vec3(12.0f, 1.5f, 0.0f);
+    high_platform.half_extents = glm::vec3(1.5f, 1.5f, 1.5f);
+    scn->add_collision_box(high_platform);
 }
 
 static void frame(void) {
@@ -159,7 +172,7 @@ static void frame(void) {
 
     // Character physics update
     character->apply_input(*cam, dt);
-    character->update(dt);
+    character->update(scn, dt);
 
     // Apply landing impact to vertical spring
     float landing_impact = character->get_landing_impact();
@@ -180,7 +193,7 @@ static void frame(void) {
 
     // Keep locomotion thresholds bound to character speed caps
     sync_locomotion_speed_targets();
-    locomotion->update(horizontal_velocity, dt, character->is_grounded);
+    locomotion->update(horizontal_velocity, dt, character->is_grounded, character->ground_height);
 
     // Update spring history for graphing
     spring_position_history[spring_history_index] = locomotion->vertical_spring.get_position();
@@ -232,13 +245,21 @@ static void frame(void) {
             gui::widget::text("Distance: %.2f m", locomotion->distance_traveled);
 
             gui::widget::text("");
+            gui::widget::text("Ground Height: %.2f m", character->ground_height);
+            gui::widget::text("Ground Normal: (%.2f, %.2f, %.2f)",
+                              character->ground_normal.x,
+                              character->ground_normal.y,
+                              character->ground_normal.z);
+            gui::widget::text("Landing Impact: %.2f m/s", character->landing_impact_velocity);
+
+            gui::widget::text("");
             gui::widget::text("Spring Pos: %.3f m", locomotion->vertical_spring.get_position());
             gui::widget::text("Spring Vel: %.3f m/s", locomotion->vertical_spring.get_velocity());
 
             ImGui::PlotLines("Position", spring_position_history, SPRING_HISTORY_SIZE,
-                             spring_history_index, nullptr, -0.2f, 0.8f, ImVec2(0, 60));
+                             spring_history_index, nullptr, -0.2f, 3.5f, ImVec2(0, 60));
             ImGui::PlotLines("Velocity", spring_velocity_history, SPRING_HISTORY_SIZE,
-                             spring_history_index, nullptr, -2.0f, 2.0f, ImVec2(0, 60));
+                             spring_history_index, nullptr, -8.0f, 8.0f, ImVec2(0, 60));
         }
 
         gui::widget::text("");
@@ -259,6 +280,23 @@ static void frame(void) {
         renderer->draw(mesh, *cam, aspect, color);
     }
 
+    // Draw collision boxes
+    for (const auto& box : scn->collision_boxes()) {
+        wireframe_mesh box_mesh = generate_box(
+            box.half_extents.x * 2.0f,
+            box.half_extents.y * 2.0f,
+            box.half_extents.z * 2.0f
+        );
+        box_mesh.position = box.center;
+
+        // Color based on height
+        glm::vec4 box_color = box.center.y < 1.0f ?
+            glm::vec4(1, 1, 0, 1) :  // Yellow for low
+            glm::vec4(1, 0, 0, 1);   // Red for high
+
+        renderer->draw(box_mesh, *cam, aspect, box_color);
+    }
+
     // Draw character debug spheres with pose offset
     simple_pose current_pose = locomotion->get_current_pose();
     glm::vec3 pose_offset = current_pose.root_offset;
@@ -269,7 +307,7 @@ static void frame(void) {
     renderer->draw(bumper_vis, *cam, aspect, glm::vec4(0, 1, 1, 1));  // Cyan
 
     wireframe_mesh weightlifter_vis = unit_sphere_6;
-    weightlifter_vis.position = character->position + pose_offset + glm::vec3(0, -0.4f, 0);
+    weightlifter_vis.position = character->weightlifter.center;  // Use actual physics position (not affected by spring offset)
     weightlifter_vis.scale = glm::vec3(character->weightlifter.radius);
     renderer->draw(weightlifter_vis, *cam, aspect, glm::vec4(1, 1, 0, 1));  // Yellow
 
@@ -326,27 +364,28 @@ static void frame(void) {
         renderer->draw(trail_sphere, *cam, aspect, glm::vec4(brightness, brightness, brightness, 1));
     }
 
-    // Draw foot positions (only when grounded)
-    if (character->is_grounded) {
-        // Left foot oscillates based on animation phase
-        float left_foot_offset = sinf(locomotion->phase * 2.0f * 3.14159f) * 0.4f;
-        glm::vec3 left_foot_pos = character->position + forward_dir * left_foot_offset + right_dir * 0.2f;
-        left_foot_pos.y = 0.0f;  // Ground level
-        wireframe_mesh left_foot = unit_sphere_4;
-        left_foot.position = left_foot_pos;
-        left_foot.scale = glm::vec3(0.08f);
-        renderer->draw(left_foot, *cam, aspect, glm::vec4(1, 0, 1, 1));  // Magenta
+    // Draw foot positions (always visible)
+    // Feet follow weightlifter sphere (actual ground contact point)
+    float ground_contact_y = character->weightlifter.center.y - character->weightlifter.radius;
 
-        // Right foot (opposite phase - offset by 0.5)
-        float right_phase = fmodf(locomotion->phase + 0.5f, 1.0f);
-        float right_foot_offset = sinf(right_phase * 2.0f * 3.14159f) * 0.4f;
-        glm::vec3 right_foot_pos = character->position + forward_dir * right_foot_offset + right_dir * -0.2f;
-        right_foot_pos.y = 0.0f;  // Ground level
-        wireframe_mesh right_foot = unit_sphere_4;
-        right_foot.position = right_foot_pos;
-        right_foot.scale = glm::vec3(0.08f);
-        renderer->draw(right_foot, *cam, aspect, glm::vec4(1, 0.5f, 0, 1));  // Orange
-    }
+    // Left foot oscillates based on animation phase
+    float left_foot_offset = sinf(locomotion->phase * 2.0f * 3.14159f) * 0.4f;
+    glm::vec3 left_foot_pos = character->position + forward_dir * left_foot_offset + right_dir * 0.2f;
+    left_foot_pos.y = ground_contact_y;  // Weightlifter ground contact level
+    wireframe_mesh left_foot = unit_sphere_4;
+    left_foot.position = left_foot_pos;
+    left_foot.scale = glm::vec3(0.08f);
+    renderer->draw(left_foot, *cam, aspect, glm::vec4(1, 0, 1, 1));  // Magenta
+
+    // Right foot (opposite phase - offset by 0.5)
+    float right_phase = fmodf(locomotion->phase + 0.5f, 1.0f);
+    float right_foot_offset = sinf(right_phase * 2.0f * 3.14159f) * 0.4f;
+    glm::vec3 right_foot_pos = character->position + forward_dir * right_foot_offset + right_dir * -0.2f;
+    right_foot_pos.y = ground_contact_y;  // Weightlifter ground contact level
+    wireframe_mesh right_foot = unit_sphere_4;
+    right_foot.position = right_foot_pos;
+    right_foot.scale = glm::vec3(0.08f);
+    renderer->draw(right_foot, *cam, aspect, glm::vec4(1, 0.5f, 0, 1));  // Orange
 
     // Render GUI
     gui::render();
