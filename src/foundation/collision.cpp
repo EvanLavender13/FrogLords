@@ -3,7 +3,7 @@
 #include <cmath>
 
 namespace {
-constexpr float epsilon = 0.0001f;
+constexpr float EPSILON = 0.0001f;
 }
 
 sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
@@ -23,7 +23,7 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
 
     float distance = std::sqrt(std::max(distance_sq, 0.0f));
 
-    if (distance < epsilon) {
+    if (distance < EPSILON) {
         glm::vec3 offset_from_center = s.center - box.center;
         glm::vec3 abs_offset = glm::abs(offset_from_center);
         glm::vec3 distance_to_surface = box.half_extents - abs_offset;

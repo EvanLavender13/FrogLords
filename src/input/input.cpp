@@ -133,14 +133,12 @@ bool is_mouse_button_released(int button) {
     return !mouse_button_state[button] && prev_mouse_button_state[button];
 }
 
-void get_mouse_position(float& x, float& y) {
-    x = mouse_pos_x;
-    y = mouse_pos_y;
+cursor_position get_mouse_position() {
+    return cursor_position{mouse_pos_x, mouse_pos_y};
 }
 
-void get_mouse_position_i(int& x, int& y) {
-    x = static_cast<int>(mouse_pos_x);
-    y = static_cast<int>(mouse_pos_y);
+cursor_position_i get_mouse_position_i() {
+    return cursor_position_i{static_cast<int>(mouse_pos_x), static_cast<int>(mouse_pos_y)};
 }
 
 float mouse_x() {

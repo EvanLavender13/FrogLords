@@ -1,9 +1,5 @@
 #include "rendering/scene.h"
 
-scene::scene() {}
-
-scene::~scene() {}
-
 void scene::add_object(const wireframe_mesh& mesh) {
     meshes.push_back(mesh);
 }

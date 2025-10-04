@@ -13,9 +13,9 @@ float cubic_smooth(float t) {
     return t * t * (3.0f - 2.0f * t);
 }
 
-float smooth_mix(float a, float b, float t) {
+float smooth_mix(scalar_span span, float t) {
     float weight = cubic_smooth(t);
-    return a + (b - a) * weight;
+    return span.start + (span.end - span.start) * weight;
 }
 
 glm::vec3 smooth_mix(const glm::vec3& a, const glm::vec3& b, float t) {

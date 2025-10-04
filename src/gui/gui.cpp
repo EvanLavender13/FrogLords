@@ -42,7 +42,7 @@ bool wants_keyboard() {
 namespace panel {
 
 bool begin(const char* title, bool* open) {
-    if (open) {
+    if (open != nullptr) {
         return ImGui::Begin(title, open);
     }
     return ImGui::Begin(title);

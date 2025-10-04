@@ -25,92 +25,90 @@ glm::mat4 wireframe_mesh::get_model_matrix() const {
     return model;
 }
 
-wireframe_mesh generate_sphere(int segments, int rings, float radius) {
+wireframe_mesh generate_sphere(sphere_config config) {
     wireframe_mesh mesh;
 
+    if (config.radius <= 0.0f) {
+        mesh.vertices.push_back(glm::vec3(0.0f));
+        return mesh;
+    }
+
+    int segments = std::max(3, config.segments);
+    int rings = std::max(3, config.rings);
+    float radius = config.radius;
+
     // Generate vertices using UV sphere topology
-    // Top pole
     mesh.vertices.push_back(glm::vec3(0.0f, radius, 0.0f));
 
-    // Intermediate rings
     for (int r = 1; r < rings; r++) {
-        float phi = static_cast<float>(r) / rings * glm::pi<float>();
+        float phi = static_cast<float>(r) / static_cast<float>(rings) * glm::pi<float>();
         float y = radius * std::cos(phi);
-        float ringRadius = radius * std::sin(phi);
+        float ring_radius = radius * std::sin(phi);
 
         for (int s = 0; s < segments; s++) {
-            float theta = static_cast<float>(s) / segments * 2.0f * glm::pi<float>();
-            float x = ringRadius * std::cos(theta);
-            float z = ringRadius * std::sin(theta);
+            float theta = static_cast<float>(s) / static_cast<float>(segments) * 2.0f * glm::pi<float>();
+            float x = ring_radius * std::cos(theta);
+            float z = ring_radius * std::sin(theta);
             mesh.vertices.push_back(glm::vec3(x, y, z));
         }
     }
 
-    // Bottom pole
     mesh.vertices.push_back(glm::vec3(0.0f, -radius, 0.0f));
 
-    // Generate edges
-    int topPoleIndex = 0;
-    int bottomPoleIndex = static_cast<int>(mesh.vertices.size()) - 1;
+    int top_pole_index = 0;
+    int bottom_pole_index = static_cast<int>(mesh.vertices.size()) - 1;
 
-    // Top pole to first ring
     for (int s = 0; s < segments; s++) {
-        int vertexIndex = 1 + s;
-        mesh.edges.push_back(edge(topPoleIndex, vertexIndex));
+        int vertex_index = 1 + s;
+        mesh.edges.push_back(edge(top_pole_index, vertex_index));
     }
 
-    // Intermediate rings (horizontal edges and vertical segments)
     for (int r = 0; r < rings - 2; r++) {
-        int currentRingStart = 1 + r * segments;
-        int nextRingStart = 1 + (r + 1) * segments;
+        int current_ring_start = 1 + r * segments;
+        int next_ring_start = 1 + (r + 1) * segments;
 
         for (int s = 0; s < segments; s++) {
-            int currentVertex = currentRingStart + s;
-            int nextSegmentVertex = currentRingStart + (s + 1) % segments;
-            int verticalVertex = nextRingStart + s;
+            int current_vertex = current_ring_start + s;
+            int next_segment_vertex = current_ring_start + (s + 1) % segments;
+            int vertical_vertex = next_ring_start + s;
 
-            // Horizontal edge (along current ring)
-            mesh.edges.push_back(edge(currentVertex, nextSegmentVertex));
-
-            // Vertical edge (to next ring)
-            mesh.edges.push_back(edge(currentVertex, verticalVertex));
+            mesh.edges.push_back(edge(current_vertex, next_segment_vertex));
+            mesh.edges.push_back(edge(current_vertex, vertical_vertex));
         }
     }
 
-    // Last ring horizontal edges
-    int lastRingStart = 1 + (rings - 2) * segments;
+    int last_ring_start = 1 + (rings - 2) * segments;
     for (int s = 0; s < segments; s++) {
-        int currentVertex = lastRingStart + s;
-        int nextSegmentVertex = lastRingStart + (s + 1) % segments;
-        mesh.edges.push_back(edge(currentVertex, nextSegmentVertex));
+        int current_vertex = last_ring_start + s;
+        int next_segment_vertex = last_ring_start + (s + 1) % segments;
+        mesh.edges.push_back(edge(current_vertex, next_segment_vertex));
     }
 
-    // Last ring to bottom pole
     for (int s = 0; s < segments; s++) {
-        int vertexIndex = lastRingStart + s;
-        mesh.edges.push_back(edge(vertexIndex, bottomPoleIndex));
+        int vertex_index = last_ring_start + s;
+        mesh.edges.push_back(edge(vertex_index, bottom_pole_index));
     }
 
     return mesh;
 }
 
-wireframe_mesh generate_box(float width, float height, float depth) {
+wireframe_mesh generate_box(box_dimensions dims) {
     wireframe_mesh mesh;
 
     // Half-extents
-    float hw = width * 0.5f;
-    float hh = height * 0.5f;
-    float hd = depth * 0.5f;
+    float half_width = dims.width * 0.5f;
+    float half_height = dims.height * 0.5f;
+    float half_depth = dims.depth * 0.5f;
 
     // 8 vertices (cube corners)
-    mesh.vertices.push_back(glm::vec3(-hw, -hh, hd));  // 0: front-bottom-left
-    mesh.vertices.push_back(glm::vec3(hw, -hh, hd));   // 1: front-bottom-right
-    mesh.vertices.push_back(glm::vec3(-hw, hh, hd));   // 2: front-top-left
-    mesh.vertices.push_back(glm::vec3(hw, hh, hd));    // 3: front-top-right
-    mesh.vertices.push_back(glm::vec3(-hw, -hh, -hd)); // 4: back-bottom-left
-    mesh.vertices.push_back(glm::vec3(hw, -hh, -hd));  // 5: back-bottom-right
-    mesh.vertices.push_back(glm::vec3(-hw, hh, -hd));  // 6: back-top-left
-    mesh.vertices.push_back(glm::vec3(hw, hh, -hd));   // 7: back-top-right
+    mesh.vertices.push_back(glm::vec3(-half_width, -half_height, half_depth));  // 0: front-bottom-left
+    mesh.vertices.push_back(glm::vec3(half_width, -half_height, half_depth));   // 1: front-bottom-right
+    mesh.vertices.push_back(glm::vec3(-half_width, half_height, half_depth));   // 2: front-top-left
+    mesh.vertices.push_back(glm::vec3(half_width, half_height, half_depth));    // 3: front-top-right
+    mesh.vertices.push_back(glm::vec3(-half_width, -half_height, -half_depth)); // 4: back-bottom-left
+    mesh.vertices.push_back(glm::vec3(half_width, -half_height, -half_depth));  // 5: back-bottom-right
+    mesh.vertices.push_back(glm::vec3(-half_width, half_height, -half_depth));  // 6: back-top-left
+    mesh.vertices.push_back(glm::vec3(half_width, half_height, -half_depth));   // 7: back-top-right
 
     // 12 edges
     // Bottom quad
@@ -137,14 +135,18 @@ wireframe_mesh generate_box(float width, float height, float depth) {
 wireframe_mesh generate_grid_floor(float size, int divisions) {
     wireframe_mesh mesh;
 
+    if (divisions <= 0) {
+        return mesh;
+    }
+
     float half_size = size * 0.5f;
-    float step = size / divisions;
+    float step = size / static_cast<float>(divisions);
 
     // Generate vertices at grid intersections
     for (int z = 0; z <= divisions; z++) {
         for (int x = 0; x <= divisions; x++) {
-            float px = -half_size + x * step;
-            float pz = -half_size + z * step;
+            float px = -half_size + static_cast<float>(x) * step;
+            float pz = -half_size + static_cast<float>(z) * step;
             mesh.vertices.push_back(glm::vec3(px, 0.0f, pz));
         }
     }
@@ -223,20 +225,24 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
     return mesh;
 }
 
-wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segments) {
+wireframe_mesh generate_circle(const glm::vec3& center, circle_config config) {
     wireframe_mesh mesh;
 
+    if (config.segments <= 0) {
+        return mesh;
+    }
+
     // Generate vertices around circle (horizontal, in XZ plane)
-    for (int i = 0; i < segments; i++) {
-        float angle = static_cast<float>(i) / segments * 2.0f * glm::pi<float>();
-        float x = center.x + radius * std::cos(angle);
-        float z = center.z + radius * std::sin(angle);
+    for (int i = 0; i < config.segments; i++) {
+        float angle = static_cast<float>(i) / static_cast<float>(config.segments) * 2.0f * glm::pi<float>();
+        float x = center.x + config.radius * std::cos(angle);
+        float z = center.z + config.radius * std::sin(angle);
         mesh.vertices.push_back(glm::vec3(x, center.y, z));
     }
 
     // Connect adjacent vertices
-    for (int i = 0; i < segments; i++) {
-        mesh.edges.push_back(edge(i, (i + 1) % segments));
+    for (int i = 0; i < config.segments; i++) {
+        mesh.edges.push_back(edge(i, (i + 1) % config.segments));
     }
 
     return mesh;

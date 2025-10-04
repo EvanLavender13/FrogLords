@@ -10,7 +10,11 @@ float shortest_unit_delta(float from, float to) {
     return delta;
 }
 
-bool crossed_phase_threshold(float previous, float delta, float threshold) {
+struct phase_threshold {
+    float value;
+};
+
+bool crossed_phase_threshold(float previous, float delta, phase_threshold threshold) {
     if (delta <= 0.0f) {
         return false;
     }
@@ -18,13 +22,13 @@ bool crossed_phase_threshold(float previous, float delta, float threshold) {
     float end = previous + delta;
     if (end >= 1.0f) {
         float wrapped_end = end - 1.0f;
-        if (previous < threshold) {
+        if (previous < threshold.value) {
             return true;
         }
-        return threshold <= wrapped_end;
+        return threshold.value <= wrapped_end;
     }
 
-    return previous < threshold && threshold <= end;
+    return previous < threshold.value && threshold.value <= end;
 }
 } // namespace
 
@@ -40,12 +44,12 @@ locomotion_system::locomotion_system() {
     run_state.stride_length = 2.0f;
 
     // Slightly overdamped vertical spring (~2.2 Hz) to match cadence
-    constexpr float natural_frequency = 2.2f;
-    constexpr float damping_ratio = 0.9f;
-    constexpr float two_pi = 6.28318530718f;
-    float omega = two_pi * natural_frequency;
+    constexpr float NATURAL_FREQUENCY = 2.2f;
+    constexpr float DAMPING_RATIO = 0.9f;
+    constexpr float TWO_PI = 6.28318530718f;
+    float omega = TWO_PI * NATURAL_FREQUENCY;
     vertical_spring.stiffness = omega * omega;
-    vertical_spring.damping = damping_ratio * 2.0f * omega;
+    vertical_spring.damping = DAMPING_RATIO * 2.0f * omega;
 
     // Initialize spring at target height
     vertical_spring.reset(vertical_target_offset);
@@ -71,57 +75,35 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
         }
 
         // Blend stride length with eased blend weight
-        float blended_stride =
-            easing::smooth_mix(walk_state.stride_length, run_state.stride_length, blend);
+        float blended_stride = easing::smooth_mix(
+            easing::scalar_span{walk_state.stride_length, run_state.stride_length}, blend);
         if (blended_stride <= 0.0f) {
             phase = 0.0f;
             distance_traveled = 0.0f;
-            is_relaxing = false;
-        } else if (smoothed_speed < idle_speed_threshold) {
-            if (!is_relaxing) {
-                is_relaxing = true;
-                relax_stride = blended_stride;
-            }
-
-            float relax_t = 1.0f - std::exp(-idle_relax_rate * dt);
-            float delta = shortest_unit_delta(phase, 0.0f);
-            phase += delta * relax_t;
-            phase = std::fmod(phase, 1.0f);
-            if (phase < 0.0f) {
-                phase += 1.0f;
-            }
-            if (std::abs(delta) < 1e-4f || phase > 1.0f - 1e-4f || phase < 1e-4f) {
-                phase = 0.0f;
-            }
-
-            distance_traveled = phase * relax_stride;
-            time_since_last_step += dt;
         } else {
-            is_relaxing = false;
-
-            if (smoothed_speed > 0.1f) {
-                step_period = blended_stride / smoothed_speed;
+            float drive_speed = std::max(0.0f, current_speed);
+            if (drive_speed > 0.1f) {
+                step_period = blended_stride / drive_speed;
             }
 
             float prev_phase = phase;
+            float new_phase = phase + (drive_speed / blended_stride) * dt;
+            float phase_delta = new_phase - prev_phase;
 
-            distance_traveled += smoothed_speed * dt;
-            distance_traveled = std::fmod(distance_traveled, blended_stride);
-            if (distance_traveled < 0.0f) {
-                distance_traveled += blended_stride;
+            phase = std::fmod(new_phase, 1.0f);
+            if (phase < 0.0f) {
+                phase += 1.0f;
             }
 
-            phase = distance_traveled / blended_stride;
+            distance_traveled = phase * blended_stride;
 
             time_since_last_step += dt;
 
-            float phase_delta = shortest_unit_delta(prev_phase, phase);
-
             int steps_crossed = 0;
-            if (crossed_phase_threshold(prev_phase, phase_delta, 0.5f)) {
+            if (crossed_phase_threshold(prev_phase, phase_delta, phase_threshold{0.5f})) {
                 steps_crossed += 1;
             }
-            if (crossed_phase_threshold(prev_phase, phase_delta, 0.0f)) {
+            if (crossed_phase_threshold(prev_phase, phase_delta, phase_threshold{0.0f})) {
                 steps_crossed += 1;
             }
 
@@ -135,12 +117,12 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             }
         }
     } else {
-        is_relaxing = false;
+        time_since_last_step += dt;
     }
 
     // Spring seeks standing offset above ground (vertical_target_offset meters)
     // Spring position is RELATIVE offset, not absolute world position
-    vertical_spring.update(vertical_target_offset, dt);
+    vertical_spring.update(spring_step{vertical_target_offset, dt});
 }
 
 simple_pose locomotion_system::get_current_pose() const {
@@ -179,7 +161,7 @@ simple_pose locomotion_system::get_current_pose() const {
 
 simple_pose locomotion_system::lerp(const simple_pose& a, const simple_pose& b, float t) const {
     return {.root_offset = easing::smooth_mix(a.root_offset, b.root_offset, t),
-            .leg_phase_offset = easing::smooth_mix(a.leg_phase_offset, b.leg_phase_offset, t)};
+            .leg_phase_offset = easing::smooth_mix(easing::scalar_span{a.leg_phase_offset, b.leg_phase_offset}, t)};
 }
 
 simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_pose& b,

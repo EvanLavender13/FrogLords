@@ -10,19 +10,24 @@
 #include <cmath>
 #include <algorithm>
 
+namespace {
+constexpr float WHEEL_RADIUS = 0.45f;
+constexpr float TWO_PI = 6.28318530718f;
+} // namespace
+
 void intuitive_character_params::apply_to(character_controller& c) const {
     if (time_to_max_speed <= 0.0f) {
         return;
     }
 
     float desired_accel = c.max_speed / time_to_max_speed;
-    constexpr float friction_ratio = 0.75f;
-    constexpr float net_fraction = 1.0f - friction_ratio;
-    if (net_fraction <= 0.0f) {
+    constexpr float FRICTION_RATIO = 0.75f;
+    constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
+    if (NET_FRACTION <= 0.0f) {
         return;
     }
 
-    c.ground_accel = desired_accel / net_fraction;
+    c.ground_accel = desired_accel / NET_FRACTION;
     c.air_accel = desired_accel;
 
     float gravity_mag = std::abs(c.gravity);
@@ -33,10 +38,10 @@ void intuitive_character_params::apply_to(character_controller& c) const {
 }
 
 void intuitive_character_params::read_from(const character_controller& c) {
-    constexpr float friction_ratio = 0.75f;
-    constexpr float net_fraction = 1.0f - friction_ratio;
-    if (c.ground_accel > 0.0f && net_fraction > 0.0f) {
-        float net_accel = c.ground_accel * net_fraction;
+    constexpr float FRICTION_RATIO = 0.75f;
+    constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
+    if (c.ground_accel > 0.0f && NET_FRACTION > 0.0f) {
+        float net_accel = c.ground_accel * NET_FRACTION;
         time_to_max_speed = c.max_speed / net_accel;
     }
 
@@ -77,7 +82,7 @@ void app_runtime::initialize() {
 
     sync_locomotion_speed_targets();
 
-    cam = camera(character.position, 5.0f, 15.0f, 0.0f);
+    cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
     cam.set_mode(camera_mode::follow);
 
     scn = scene();
@@ -156,7 +161,7 @@ void app_runtime::handle_event(const sapp_event* e) {
 void app_runtime::sync_locomotion_speed_targets() {
     float run_speed = character.max_speed;
     locomotion.run_speed_threshold = run_speed;
-    locomotion.walk_speed_threshold = run_speed * 0.33f;
+    locomotion.walk_speed_threshold = run_speed * 0.2f;
     locomotion.walk_state.stride_length = locomotion.walk_speed_threshold * 1.0f;
     locomotion.run_state.stride_length = run_speed * 0.8f;
 }
@@ -166,10 +171,10 @@ void app_runtime::ensure_static_meshes() {
         return;
     }
 
-    unit_circle = generate_circle(glm::vec3(0.0f), 1.0f);
-    unit_sphere_8 = generate_sphere(8, 8, 1.0f);
-    unit_sphere_6 = generate_sphere(6, 6, 1.0f);
-    unit_sphere_4 = generate_sphere(4, 4, 1.0f);
+    unit_circle = generate_circle(glm::vec3(0.0f), circle_config{1.0f});
+    unit_sphere_8 = generate_sphere(sphere_config{8, 8, 1.0f});
+    unit_sphere_6 = generate_sphere(sphere_config{6, 6, 1.0f});
+    unit_sphere_4 = generate_sphere(sphere_config{4, 4, 1.0f});
 
     static_meshes_initialized = true;
 }
@@ -187,13 +192,22 @@ void app_runtime::update_simulation(float dt) {
     horizontal_velocity.y = 0.0f;
 
     if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
-        orientation.update_forced(cam.get_yaw(), dt);
+        orientation.update_forced(forced_orientation_input{cam.get_yaw(), dt});
     } else {
         orientation.update(horizontal_velocity, dt);
     }
 
     sync_locomotion_speed_targets();
     locomotion.update(horizontal_velocity, dt, character.is_grounded, character.ground_height);
+
+    float angular_speed = 0.0f;
+    if (WHEEL_RADIUS > 0.0001f) {
+        angular_speed = locomotion.smoothed_speed / WHEEL_RADIUS;
+    }
+    wheel_spin_angle += angular_speed * dt;
+    if (wheel_spin_angle > TWO_PI) {
+        wheel_spin_angle = std::fmod(wheel_spin_angle, TWO_PI);
+    }
 
     if (cam.get_mode() == camera_mode::follow) {
         cam.follow_update(character.position, dt);
@@ -260,9 +274,9 @@ void app_runtime::build_character_panel() {
 
             gui::widget::text("Spring Vel: %.3f m/s", locomotion.vertical_spring.get_velocity());
 
-            ImGui::PlotLines("Position", spring_position_history, spring_history_size,
+            ImGui::PlotLines("Position", spring_position_history, SPRING_HISTORY_SIZE,
                              spring_history_index, nullptr, -0.2f, 3.5f, ImVec2(0, 60));
-            ImGui::PlotLines("Velocity", spring_velocity_history, spring_history_size,
+            ImGui::PlotLines("Velocity", spring_velocity_history, SPRING_HISTORY_SIZE,
                              spring_history_index, nullptr, -8.0f, 8.0f, ImVec2(0, 60));
         }
 
@@ -286,8 +300,9 @@ void app_runtime::render_world() {
     }
 
     for (const auto& box : scn.collision_boxes()) {
-        wireframe_mesh box_mesh = generate_box(box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
-                                               box.half_extents.z * 2.0f);
+        box_dimensions box_size{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
+                                 box.half_extents.z * 2.0f};
+        wireframe_mesh box_mesh = generate_box(box_size);
         box_mesh.position = box.center;
 
         glm::vec4 box_color = box.center.y < 1.0f ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 0, 0, 1);
@@ -378,20 +393,40 @@ void app_runtime::render_world() {
     yaw_indicator.scale = glm::vec3(0.1f);
     renderer.draw(yaw_indicator, cam, aspect, glm::vec4(0, 1, 0, 1));
 
-    for (int i = 0; i < 10; i++) {
-        float phase_offset = static_cast<float>(i) * 0.1f;
-        float trail_phase = std::fmod(locomotion.phase + phase_offset, 1.0f);
-        float brightness = 1.0f - static_cast<float>(i) * 0.08f;
+    glm::vec3 up_axis(0.0f, 1.0f, 0.0f);
+    float wheel_ground_y = character.weightlifter.center.y - character.weightlifter.radius;
+    glm::vec3 wheel_center = character.position + pose_offset;
+    wheel_center.y = wheel_ground_y + WHEEL_RADIUS;
 
-        wireframe_mesh trail_sphere = unit_sphere_4;
-        trail_sphere.position =
-            character.position + pose_offset - forward_dir * static_cast<float>(i) * 0.25f;
-        trail_sphere.position.y += std::sin(trail_phase * 2.0f * 3.14159f) * 0.25f;
-        trail_sphere.scale = glm::vec3(0.12f);
-        renderer.draw(trail_sphere, cam, aspect, glm::vec4(brightness, brightness, brightness, 1));
+    const int RIM_SEGMENTS = 24;
+    const int SPOKE_COUNT = 6;
+
+    wireframe_mesh wheel_mesh;
+    wheel_mesh.vertices.reserve(RIM_SEGMENTS + 1);
+    wheel_mesh.edges.reserve(RIM_SEGMENTS + SPOKE_COUNT);
+
+    wheel_mesh.vertices.push_back(wheel_center);
+    for (int i = 0; i < RIM_SEGMENTS; ++i) {
+        float base_angle = static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * TWO_PI;
+        float rim_angle = base_angle - wheel_spin_angle;
+        glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * up_axis;
+        wheel_mesh.vertices.push_back(wheel_center + offset * WHEEL_RADIUS);
     }
 
-    float ground_contact_y = character.weightlifter.center.y - character.weightlifter.radius;
+    for (int i = 0; i < RIM_SEGMENTS; ++i) {
+        int current = 1 + i;
+        int next = 1 + ((i + 1) % RIM_SEGMENTS);
+        wheel_mesh.edges.emplace_back(current, next);
+    }
+
+    for (int i = 0; i < SPOKE_COUNT; ++i) {
+        int rim_index = 1 + (i * RIM_SEGMENTS) / SPOKE_COUNT;
+        wheel_mesh.edges.emplace_back(0, rim_index);
+    }
+
+    renderer.draw(wheel_mesh, cam, aspect, glm::vec4(0.85f, 0.85f, 0.85f, 1.0f));
+
+    float ground_contact_y = wheel_ground_y;
 
     float left_foot_offset = std::sin(locomotion.phase * 2.0f * 3.14159f) * 0.4f;
     glm::vec3 left_foot_pos =
@@ -421,5 +456,5 @@ void app_runtime::render_world() {
 void app_runtime::update_spring_history() {
     spring_position_history[spring_history_index] = locomotion.vertical_spring.get_position();
     spring_velocity_history[spring_history_index] = locomotion.vertical_spring.get_velocity();
-    spring_history_index = (spring_history_index + 1) % spring_history_size;
+    spring_history_index = (spring_history_index + 1) % SPRING_HISTORY_SIZE;
 }

@@ -27,17 +27,34 @@ struct wireframe_mesh {
     glm::mat4 get_model_matrix() const;
 };
 
+struct sphere_config {
+    int segments = 8;
+    int rings = 8;
+    float radius = 1.0f;
+};
+
+struct box_dimensions {
+    float width = 1.0f;
+    float height = 1.0f;
+    float depth = 1.0f;
+};
+
+struct circle_config {
+    float radius = 1.0f;
+    int segments = 32;
+};
+
 /// Generate UV sphere wireframe
 /// @param segments Vertical divisions (longitude lines)
 /// @param rings Horizontal divisions (latitude lines)
 /// @param radius Sphere radius
-wireframe_mesh generate_sphere(int segments = 8, int rings = 8, float radius = 1.0f);
+wireframe_mesh generate_sphere(sphere_config config = {});
 
 /// Generate box wireframe
 /// @param width Box extent along X axis
 /// @param height Box extent along Y axis
 /// @param depth Box extent along Z axis
-wireframe_mesh generate_box(float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+wireframe_mesh generate_box(box_dimensions dims = {});
 
 /// Generate grid floor wireframe
 /// @param size Total size of the floor
@@ -54,7 +71,7 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
 /// @param center Circle center position
 /// @param radius Circle radius
 /// @param segments Number of line segments
-wireframe_mesh generate_circle(const glm::vec3& center, float radius, int segments = 32);
+wireframe_mesh generate_circle(const glm::vec3& center, circle_config config = {});
 
 /// Generate helix-style spring between two points (world-space vertices)
 /// @param start Spring start point

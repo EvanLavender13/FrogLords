@@ -5,8 +5,8 @@
 
 class scene {
   public:
-    scene();
-    ~scene();
+    scene() = default;
+    ~scene() = default;
 
     void add_object(const wireframe_mesh& mesh);
     void add_collision_box(const aabb& box);

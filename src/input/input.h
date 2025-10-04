@@ -11,6 +11,16 @@ namespace input {
 constexpr int MAX_KEYS = 512;
 constexpr int MAX_MOUSE_BUTTONS = 8;
 
+struct cursor_position {
+    float x = 0.0f;
+    float y = 0.0f;
+};
+
+struct cursor_position_i {
+    int x = 0;
+    int y = 0;
+};
+
 // Initialize the input system (call once at startup)
 void init();
 
@@ -41,10 +51,10 @@ bool is_mouse_button_pressed(int button);
 bool is_mouse_button_released(int button);
 
 // Get current mouse position
-void get_mouse_position(float& x, float& y);
+cursor_position get_mouse_position();
 
 // Get mouse position as integers
-void get_mouse_position_i(int& x, int& y);
+cursor_position_i get_mouse_position_i();
 
 // Get mouse position (shorthand accessors)
 float mouse_x();

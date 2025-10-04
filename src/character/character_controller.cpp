@@ -12,10 +12,6 @@ character_controller::character_controller()
                0.0f) // Adjusted so weightlifter touches ground (accounts for 0.3m spring offset)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , mass(70.0f)
-    , friction(0.9f)
-    , air_control(0.3f)
-    , is_grounded(false)
     , ground_normal(0.0f, 1.0f, 0.0f) {
     // Initialize bumper sphere
     bumper.center = position;
@@ -160,7 +156,7 @@ void character_controller::resolve_ground_collision() {
 }
 
 void character_controller::resolve_box_collisions(const scene* scn) {
-    if (!scn)
+    if (scn == nullptr)
         return;
 
     using namespace glm;

@@ -47,6 +47,8 @@ struct app_runtime {
     locomotion_system locomotion{};
     intuitive_character_params character_params{};
 
+    float wheel_spin_angle = 0.0f;
+
     float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     bool show_character_panel = true;
 
@@ -56,9 +58,9 @@ struct app_runtime {
     wireframe_mesh unit_sphere_4{};
     bool static_meshes_initialized = false;
 
-    static constexpr int spring_history_size = 200;
-    float spring_position_history[spring_history_size] = {};
-    float spring_velocity_history[spring_history_size] = {};
+    static constexpr int SPRING_HISTORY_SIZE = 200;
+    float spring_position_history[SPRING_HISTORY_SIZE] = {};
+    float spring_velocity_history[SPRING_HISTORY_SIZE] = {};
     int spring_history_index = 0;
 };
 

@@ -16,12 +16,12 @@ struct character_controller {
     glm::vec3 acceleration;
 
     // Properties
-    float mass;
-    float friction;
-    float air_control;
+    float mass = 70.0f;
+    float friction = 0.9f;
+    float air_control = 0.3f;
 
     // Ground state
-    bool is_grounded;
+    bool is_grounded = false;
     bool was_grounded_last_frame = false;
     glm::vec3 ground_normal;
     float ground_height = 0.0f;

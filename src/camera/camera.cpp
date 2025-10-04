@@ -2,11 +2,11 @@
 #include <cmath>
 #include <algorithm>
 
-camera::camera(glm::vec3 center, float distance, float latitude, float longitude)
+camera::camera(glm::vec3 center, orbit_config orbit)
     : center(center)
-    , distance(distance)
-    , latitude(latitude)
-    , longitude(longitude) {
+    , distance(orbit.distance)
+    , latitude(orbit.latitude)
+    , longitude(orbit.longitude) {
     update_eye_position();
 }
 

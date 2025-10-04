@@ -33,10 +33,6 @@ struct locomotion_system {
     float time_since_last_step = 0.0f;
     float step_period = 0.5f;
     float bounce_impulse_scale = 0.5f;
-    float idle_speed_threshold = 0.15f; // m/s before easing toward idle pose
-    float idle_relax_rate = 8.0f;       // exponential relax speed for phase settling
-    bool is_relaxing = false;
-    float relax_stride = 1.0f;
 
     locomotion_system();
 

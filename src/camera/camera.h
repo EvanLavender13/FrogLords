@@ -8,10 +8,20 @@ enum class camera_mode {
     follow // Follow character with free rotation
 };
 
+struct orbit_config {
+    float distance = 8.0f;
+    float latitude = 15.0f;
+    float longitude = 0.0f;
+};
+
+struct clip_planes {
+    float near_plane = 0.1f;
+    float far_plane = 100.0f;
+};
+
 class camera {
   public:
-    camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), float distance = 8.0f,
-           float latitude = 15.0f, float longitude = 0.0f);
+    camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), orbit_config orbit = {});
 
     /// Generate view matrix from current eye position
     glm::mat4 get_view_matrix() const;
@@ -34,11 +44,10 @@ class camera {
     void set_fov(float fov) { fov_degrees = fov; }
 
     /// Set near/far clip planes
-    /// @param near_plane Near clip distance
-    /// @param far_plane Far clip distance
-    void set_near_far(float near_plane, float far_plane) {
-        z_near = near_plane;
-        z_far = far_plane;
+    /// @param planes Pair of near/far clip distances
+    void set_clip_planes(clip_planes planes) {
+        z_near = planes.near_plane;
+        z_far = planes.far_plane;
     }
 
     /// Get current camera eye position in world space
