@@ -31,12 +31,54 @@ static float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 static glm::vec3 wheel_direction = glm::vec3(0, 0, 1);  // Debug: wheel orientation
 static float wheel_distance = 0.0f;  // Debug: signed distance for wheel rotation
 
+// Spring graph history
+static constexpr int SPRING_HISTORY_SIZE = 200;
+static float spring_position_history[SPRING_HISTORY_SIZE] = {0};
+static float spring_velocity_history[SPRING_HISTORY_SIZE] = {0};
+static int spring_history_index = 0;
+
+// GUI-friendly parameter wrappers (convert to/from implementation params)
+struct intuitive_character_params {
+    float time_to_max_speed = 0.4f;      // seconds
+    float jump_height = 1.3f;            // meters
+
+    void apply_to(character_controller* c) {
+        c->ground_accel = c->max_speed / time_to_max_speed;
+        c->air_accel = c->ground_accel * 0.5f;
+        // Friction coefficient (multiplied by gravity in implementation)
+        // 0.75 means deceleration is 0.75 * ground_accel
+        // (since friction_decel = friction * |gravity| in character_controller.cpp)
+        c->friction = (c->ground_accel * 0.75f) / fabsf(c->gravity);
+        c->jump_velocity = sqrtf(2.0f * fabsf(c->gravity) * jump_height);
+    }
+
+    void read_from(character_controller* c) {
+        time_to_max_speed = c->max_speed / c->ground_accel;
+        jump_height = (c->jump_velocity * c->jump_velocity) / (2.0f * fabsf(c->gravity));
+    }
+};
+
+
+static intuitive_character_params character_params;
+
 // Static unit meshes (generated once, reused with transforms)
 static wireframe_mesh unit_circle;
 static wireframe_mesh unit_sphere_8;
 static wireframe_mesh unit_sphere_6;
 static wireframe_mesh unit_sphere_4;
 static bool static_meshes_initialized = false;
+
+static void sync_locomotion_speed_targets() {
+    if (!character || !locomotion) {
+        return;
+    }
+
+    float run_speed = character->max_speed;
+    locomotion->run_speed_threshold = run_speed;
+    locomotion->walk_speed_threshold = run_speed * 0.33f;
+    locomotion->walk_state.stride_length = locomotion->walk_speed_threshold * 1.0f;
+    locomotion->run_state.stride_length = run_speed * 0.8f;
+}
 
 static void init(void) {
     sg_desc desc = {};
@@ -64,6 +106,12 @@ static void init(void) {
     // Initialize animation systems
     orientation = new orientation_system();
     locomotion = new locomotion_system();
+
+    // Initialize GUI parameter wrappers from defaults
+    character_params.read_from(character);
+
+    // Align locomotion speed thresholds with character defaults
+    sync_locomotion_speed_targets();
 
     // Initialize camera in follow mode
     cam = new camera(character->position, 5.0f, 15.0f, 0.0f);
@@ -113,6 +161,12 @@ static void frame(void) {
     character->apply_input(*cam, dt);
     character->update(dt);
 
+    // Apply landing impact to vertical spring
+    float landing_impact = character->get_landing_impact();
+    if (landing_impact > 0.0f) {
+        locomotion->vertical_spring.add_impulse(-landing_impact * 0.5f);
+    }
+
     // Animation systems update
     glm::vec3 horizontal_velocity = character->velocity;
     horizontal_velocity.y = 0.0f;
@@ -124,7 +178,14 @@ static void frame(void) {
         orientation->update(horizontal_velocity, dt);
     }
 
+    // Keep locomotion thresholds bound to character speed caps
+    sync_locomotion_speed_targets();
     locomotion->update(horizontal_velocity, dt, character->is_grounded);
+
+    // Update spring history for graphing
+    spring_position_history[spring_history_index] = locomotion->vertical_spring.get_position();
+    spring_velocity_history[spring_history_index] = locomotion->vertical_spring.get_velocity();
+    spring_history_index = (spring_history_index + 1) % SPRING_HISTORY_SIZE;
 
     // Camera follow character
     if (cam->get_mode() == camera_mode::follow) {
@@ -138,30 +199,47 @@ static void frame(void) {
     gui::begin_frame();
 
     // Character debug window
-    ImGui::SetNextWindowSize(ImVec2(350, 500), ImGuiCond_FirstUseEver);
-    if (gui::panel::begin("Character Debug", &show_demo_window)) {
-        gui::widget::text("Grounded: %s", character->is_grounded ? "YES" : "NO");
-        gui::widget::text("Phase: %.2f", locomotion->phase);
-        gui::widget::text("Distance: %.2f m", locomotion->distance_traveled);
+    ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2((float)sapp_width() - 370.0f, 20.0f), ImGuiCond_FirstUseEver);
+    if (gui::panel::begin("Character Tuning", &show_demo_window)) {
 
-        gui::widget::text("");
-        gui::widget::slider_float("Jump Velocity", &character->jump_velocity, 0.0f, 10.0f);
-        gui::widget::slider_float("Ground Accel", &character->ground_accel, 0.0f, 100.0f);
-        gui::widget::slider_float("Air Accel", &character->air_accel, 0.0f, 50.0f);
-        gui::widget::slider_float("Max Speed", &character->max_speed, 0.0f, 20.0f);
-        gui::widget::slider_float("Friction", &character->friction, 0.0f, 2.0f);
-        gui::widget::slider_float("Gravity", &character->gravity, -20.0f, 0.0f);
+        // Core Movement Feel
+        if (ImGui::CollapsingHeader("Movement Feel", ImGuiTreeNodeFlags_DefaultOpen)) {
+            bool changed = false;
+            changed |= gui::widget::slider_float("Max Speed (m/s)", &character->max_speed, 1.0f, 15.0f);
+            changed |= gui::widget::slider_float("Time to Max Speed (s)", &character_params.time_to_max_speed, 0.1f, 2.0f);
+            changed |= gui::widget::slider_float("Jump Height (m)", &character_params.jump_height, 0.5f, 3.0f);
+            changed |= gui::widget::slider_float("Gravity (m/s²)", &character->gravity, -20.0f, -5.0f);
 
-        gui::widget::text("");
-        gui::widget::text("--- Locomotion Tuning ---");
-        gui::widget::slider_float("Walk Stride", &locomotion->walk_state.stride_length, 0.5f, 2.5f);
-        gui::widget::slider_float("Run Stride", &locomotion->run_state.stride_length, 1.0f, 5.0f);
-        gui::widget::slider_float("Walk Threshold", &locomotion->walk_speed_threshold, 0.5f, 5.0f);
-        gui::widget::slider_float("Run Threshold", &locomotion->run_speed_threshold, 3.0f, 10.0f);
-        gui::widget::slider_float("Speed Smoothing", &locomotion->speed_smoothing, 0.1f, 20.0f);
+            if (changed) {
+                character_params.apply_to(character);
+                sync_locomotion_speed_targets();
+            }
+        }
 
-        gui::widget::text("");
-        gui::widget::slider_float("Yaw Smoothing", &orientation->yaw_smoothing, 0.1f, 20.0f);
+        // Locomotion
+        if (ImGui::CollapsingHeader("Locomotion")) {
+            gui::widget::text("Run speed threshold: %.1f m/s (locked to max speed)", locomotion->run_speed_threshold);
+            gui::widget::text("Walk threshold: %.1f m/s", locomotion->walk_speed_threshold);
+            gui::widget::text("Walk stride: %.1f m", locomotion->walk_state.stride_length);
+            gui::widget::text("Run stride: %.1f m", locomotion->run_state.stride_length);
+        }
+
+        // Debug Visualization
+        if (ImGui::CollapsingHeader("Debug Info")) {
+            gui::widget::text("Grounded: %s", character->is_grounded ? "YES" : "NO");
+            gui::widget::text("Phase: %.2f", locomotion->phase);
+            gui::widget::text("Distance: %.2f m", locomotion->distance_traveled);
+
+            gui::widget::text("");
+            gui::widget::text("Spring Pos: %.3f m", locomotion->vertical_spring.get_position());
+            gui::widget::text("Spring Vel: %.3f m/s", locomotion->vertical_spring.get_velocity());
+
+            ImGui::PlotLines("Position", spring_position_history, SPRING_HISTORY_SIZE,
+                             spring_history_index, nullptr, -0.2f, 0.8f, ImVec2(0, 60));
+            ImGui::PlotLines("Velocity", spring_velocity_history, SPRING_HISTORY_SIZE,
+                             spring_history_index, nullptr, -2.0f, 2.0f, ImVec2(0, 60));
+        }
 
         gui::widget::text("");
         gui::widget::text("FPS: %.1f", 1.0f / sapp_frame_duration());
@@ -195,15 +273,13 @@ static void frame(void) {
     weightlifter_vis.scale = glm::vec3(character->weightlifter.radius);
     renderer->draw(weightlifter_vis, *cam, aspect, glm::vec4(1, 1, 0, 1));  // Yellow
 
-    // Draw velocity arrow
+    // Draw velocity indicator
     glm::vec3 vel = character->velocity;
     if (glm::length(vel) > 0.1f) {
-        wireframe_mesh velocity_arrow = generate_arrow(
-            character->position + pose_offset,
-            character->position + pose_offset + vel,
-            0.15f
-        );
-        renderer->draw(velocity_arrow, *cam, aspect, glm::vec4(1, 0, 0, 1));  // Red
+        wireframe_mesh velocity_indicator = unit_sphere_4;
+        velocity_indicator.position = character->position + pose_offset + vel;
+        velocity_indicator.scale = glm::vec3(0.1f);
+        renderer->draw(velocity_indicator, *cam, aspect, glm::vec4(1, 0, 0, 1));  // Red
     }
 
     // Draw speed threshold circles on ground

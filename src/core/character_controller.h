@@ -25,6 +25,7 @@ struct character_controller {
 
     // Ground state
     bool is_grounded;
+    bool was_grounded_last_frame = false;
     glm::vec3 ground_normal;
 
     // Tunable parameters
@@ -40,7 +41,9 @@ struct character_controller {
 
     void apply_input(const camera& cam, float dt);
     void update(float dt);
+    float get_landing_impact() const;
 
 private:
     void resolve_ground_collision();
+    void detect_landing();
 };

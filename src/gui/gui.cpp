@@ -76,8 +76,8 @@ bool checkbox(const char* label, bool* value) {
     return ImGui::Checkbox(label, value);
 }
 
-void slider_float(const char* label, float* value, float min, float max) {
-    ImGui::SliderFloat(label, value, min, max);
+bool slider_float(const char* label, float* value, float min, float max) {
+    return ImGui::SliderFloat(label, value, min, max);
 }
 
 void color_edit(const char* label, float* color) {

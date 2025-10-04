@@ -46,7 +46,7 @@ namespace gui {
         void text(const char* fmt, ...);
         bool button(const char* label);
         bool checkbox(const char* label, bool* value);
-        void slider_float(const char* label, float* value, float min, float max);
+        bool slider_float(const char* label, float* value, float min, float max);
         void color_edit(const char* label, float* color);  // RGB or RGBA
     }
 }

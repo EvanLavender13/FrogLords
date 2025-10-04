@@ -91,6 +91,9 @@ void character_controller::update(float dt) {
     // Resolve collisions
     resolve_ground_collision();
 
+    // Detect landing events
+    detect_landing();
+
     // Update collision volumes
     bumper.center = position;
     weightlifter.center = position + glm::vec3(0.0f, -0.4f, 0.0f);
@@ -119,4 +122,18 @@ void character_controller::resolve_ground_collision() {
     } else {
         is_grounded = false;
     }
+}
+
+void character_controller::detect_landing() {
+    // Update landing state for next frame
+    was_grounded_last_frame = is_grounded;
+}
+
+float character_controller::get_landing_impact() const {
+    // Returns impact velocity if just landed, 0 otherwise
+    bool just_landed = is_grounded && !was_grounded_last_frame;
+    if (just_landed && velocity.y < 0.0f) {
+        return -velocity.y;  // Downward velocity as positive impact
+    }
+    return 0.0f;
 }
