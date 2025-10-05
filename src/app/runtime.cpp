@@ -56,6 +56,15 @@ void app_runtime::initialize() {
     wireframe_mesh floor = generate_grid_floor(20.0f, 20);
     scn.add_object(floor);
 
+    // Add 5 platforms for collision testing
+    for (int i = 0; i < 5; ++i) {
+        float height = 1.0f + static_cast<float>(i) * 1.5f;
+        aabb platform;
+        platform.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
+        platform.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
+        scn.add_collision_box(platform);
+    }
+
     initialized = true;
 }
 
@@ -169,19 +178,10 @@ void app_runtime::render_world() {
         renderer.draw(mesh, cam, aspect, color);
     }
 
-    for (const auto& box : scn.collision_boxes()) {
-        box_dimensions box_size{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
-                                box.half_extents.z * 2.0f};
-        wireframe_mesh box_mesh = generate_box(box_size);
-        box_mesh.position = box.center;
-
-        glm::vec4 box_color = box.center.y < 1.0f ? glm::vec4(1, 1, 0, 1) : glm::vec4(1, 0, 0, 1);
-        renderer.draw(box_mesh, cam, aspect, box_color);
-    }
-
     debug::draw_context debug_ctx{renderer,      cam,           aspect,       unit_circle,
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
+    debug::draw_collision_state(debug_ctx, character, scn);
     debug::draw_character_state(debug_ctx, character, locomotion, orientation);
     debug::draw_physics_springs(debug_ctx, character, locomotion);
     debug::draw_locomotion_wheel(debug_ctx, character, locomotion, orientation, wheel_spin_angle);

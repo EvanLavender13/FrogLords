@@ -1,4 +1,6 @@
 #include "rendering/debug_draw.h"
+#include "rendering/scene.h"
+#include "character/controller.h"
 #include <glm/gtc/constants.hpp>
 #include <cmath>
 
@@ -150,6 +152,30 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
     right_foot.position = right_foot_pos;
     right_foot.scale = glm::vec3(0.08f);
     ctx.renderer.draw(right_foot, ctx.cam, ctx.aspect, glm::vec4(1, 0.5f, 0, 1));
+}
+
+void draw_collision_state(draw_context& ctx, const controller& character, const scene& scn) {
+    // Draw all collision boxes
+    for (const auto& box : scn.collision_boxes()) {
+        box_dimensions dims{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
+                            box.half_extents.z * 2.0f};
+        wireframe_mesh box_mesh = generate_box(dims);
+        box_mesh.position = box.center;
+
+        // Color based on collision state
+        glm::vec4 color = glm::vec4(0.7f, 0.3f, 0.3f, 0.8f); // Red for platforms
+
+        ctx.renderer.draw(box_mesh, ctx.cam, ctx.aspect, color);
+    }
+
+    // Draw ground contact point (if grounded)
+    if (character.is_grounded) {
+        wireframe_mesh contact = ctx.unit_sphere_4;
+        contact.position =
+            character.weightlifter.center - glm::vec3(0, character.weightlifter.radius, 0);
+        contact.scale = glm::vec3(0.05f);
+        ctx.renderer.draw(contact, ctx.cam, ctx.aspect, glm::vec4(0, 1, 0, 1));
+    }
 }
 
 } // namespace debug

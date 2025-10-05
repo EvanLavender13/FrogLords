@@ -21,24 +21,38 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
         return result;
     }
 
-    float distance = std::sqrt(std::max(distance_sq, 0.0f));
+    float distance = std::sqrt(distance_sq);
 
+    // Special case: sphere center is inside the AABB.
+    // We need to find the smallest push-out vector.
     if (distance < EPSILON) {
-        glm::vec3 offset_from_center = s.center - box.center;
-        glm::vec3 abs_offset = glm::abs(offset_from_center);
-        glm::vec3 distance_to_surface = glm::max(box.half_extents - abs_offset, glm::vec3(0.0f));
+        glm::vec3 dist_to_max = max_corner - s.center;
+        glm::vec3 dist_to_min = s.center - min_corner;
 
-        if (distance_to_surface.x <= distance_to_surface.y &&
-            distance_to_surface.x <= distance_to_surface.z) {
-            result.normal = glm::vec3(offset_from_center.x > 0 ? 1.0f : -1.0f, 0.0f, 0.0f);
-            result.penetration = distance_to_surface.x + s.radius;
-        } else if (distance_to_surface.y <= distance_to_surface.z) {
-            result.normal = glm::vec3(0.0f, offset_from_center.y > 0 ? 1.0f : -1.0f, 0.0f);
-            result.penetration = distance_to_surface.y + s.radius;
-        } else {
-            result.normal = glm::vec3(0.0f, 0.0f, offset_from_center.z > 0 ? 1.0f : -1.0f);
-            result.penetration = distance_to_surface.z + s.radius;
+        float min_dist = dist_to_max.x;
+        result.normal = glm::vec3(1, 0, 0);
+
+        if (dist_to_min.x < min_dist) {
+            min_dist = dist_to_min.x;
+            result.normal = glm::vec3(-1, 0, 0);
         }
+        if (dist_to_max.y < min_dist) {
+            min_dist = dist_to_max.y;
+            result.normal = glm::vec3(0, 1, 0);
+        }
+        if (dist_to_min.y < min_dist) {
+            min_dist = dist_to_min.y;
+            result.normal = glm::vec3(0, -1, 0);
+        }
+        if (dist_to_max.z < min_dist) {
+            min_dist = dist_to_max.z;
+            result.normal = glm::vec3(0, 0, 1);
+        }
+        if (dist_to_min.z < min_dist) {
+            min_dist = dist_to_min.z;
+            result.normal = glm::vec3(0, 0, -1);
+        }
+        result.penetration = s.radius + min_dist;
     } else {
         result.normal = delta / distance;
         result.penetration = s.radius - distance;

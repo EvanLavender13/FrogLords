@@ -26,6 +26,50 @@ void draw_character_panel(character_panel_state& state, controller& character,
         }
 
         if (ImGui::CollapsingHeader("Debug Info")) {
+            gui::widget::text("Grounded: %s", character.is_grounded ? "yes" : "no");
+            gui::widget::text("Position Y: %.3f", character.position.y);
+            gui::widget::text("Velocity Y: %.3f", character.velocity.y);
+            gui::widget::text("Bumper center Y: %.3f", character.bumper.center.y);
+            gui::widget::text("Weightlifter center Y: %.3f", character.weightlifter.center.y);
+
+            if (character.is_grounded) {
+                gui::widget::text("Ground height: %.3f", character.ground_height);
+                gui::widget::text("Ground normal: (%.2f, %.2f, %.2f)", character.ground_normal.x,
+                                  character.ground_normal.y, character.ground_normal.z);
+
+                float bumper_surface_offset =
+                    character.bumper.center.y - (character.ground_height + character.bumper.radius);
+                float weightlifter_burial = character.ground_height +
+                                            character.weightlifter.radius -
+                                            character.weightlifter.center.y;
+
+                gui::widget::text("Bumper surface offset: %.3f", bumper_surface_offset);
+                gui::widget::text("Weightlifter burial: %.3f", weightlifter_burial);
+            }
+
+            gui::widget::text("");
+
+            const controller::contact_debug_info& lifter_dbg = character.weightlifter_contact_debug;
+            gui::widget::text("Weightlifter contact: %s",
+                              lifter_dbg.active ? (lifter_dbg.from_box ? "box" : "ground plane")
+                                                : "none");
+            if (lifter_dbg.active) {
+                gui::widget::text("  Normal: (%.2f, %.2f, %.2f)", lifter_dbg.normal.x,
+                                  lifter_dbg.normal.y, lifter_dbg.normal.z);
+                gui::widget::text("  Penetration (normal): %.4f", lifter_dbg.penetration);
+                gui::widget::text("  Vertical penetration: %.4f", lifter_dbg.vertical_penetration);
+            }
+
+            const controller::contact_debug_info& bumper_dbg = character.bumper_contact_debug;
+            gui::widget::text("Bumper contact: %s",
+                              bumper_dbg.active ? (bumper_dbg.from_box ? "box" : "ground plane")
+                                                : "none");
+            if (bumper_dbg.active) {
+                gui::widget::text("  Normal: (%.2f, %.2f, %.2f)", bumper_dbg.normal.x,
+                                  bumper_dbg.normal.y, bumper_dbg.normal.z);
+                gui::widget::text("  Penetration (normal): %.4f", bumper_dbg.penetration);
+                gui::widget::text("  Vertical penetration: %.4f", bumper_dbg.vertical_penetration);
+            }
         }
 
         gui::widget::text("");

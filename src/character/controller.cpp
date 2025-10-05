@@ -1,4 +1,5 @@
 #include "character/controller.h"
+#include "foundation/collision.h"
 #include "rendering/scene.h"
 #include "camera/camera.h"
 #include "input/input.h"
@@ -9,15 +10,15 @@
 namespace {
 // Overgrowth-style configuration: Similar-sized spheres, lifter slightly buried
 constexpr float BUMPER_RADIUS = 0.50f;
-constexpr float WEIGHTLIFTER_RADIUS = 0.45f; // Nearly same size as bumper
-constexpr float WEIGHTLIFTER_DROP = 0.10f;   // Small offset - lifter just below bumper
-constexpr float STANDING_HEIGHT = WEIGHTLIFTER_RADIUS - 0.10f; // Lifter buried 0.10m in ground
+constexpr float WEIGHTLIFTER_RADIUS = 0.45f;     // Nearly same size as bumper
+constexpr float WEIGHTLIFTER_DROP = 0.15f;       // Offsets lifter so bumper rests on surface
+constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // Spawn with bumper resting on ground
 const glm::vec3 WEIGHTLIFTER_OFFSET(0.0f, -WEIGHTLIFTER_DROP, 0.0f);
 } // namespace
 
 controller::controller()
     : position(0.0f, STANDING_HEIGHT,
-               0.0f) // Start at standing height so weightlifter rests on ground
+               0.0f) // Start with bumper flush and lifter 0.10m submerged
     , velocity(0.0f)
     , acceleration(0.0f)
     , ground_normal(0.0f, 1.0f, 0.0f) {
@@ -64,7 +65,6 @@ void controller::apply_input(const camera& cam, float dt) {
 }
 
 void controller::update(const scene* scn, float dt) {
-    (void) scn;
     // Apply gravity
     acceleration.y += gravity;
 
@@ -99,15 +99,22 @@ void controller::update(const scene* scn, float dt) {
     // Integrate position
     position += velocity * dt;
 
-    // Reset grounded state - will be set by collision resolution
+    // Reset grounded state
     is_grounded = false;
+    weightlifter_contact_debug = contact_debug_info{};
+    bumper_contact_debug = contact_debug_info{};
 
-    // Resolve collision against ground plane
-    resolve_ground_collision();
-
-    // Update collision volumes
+    // Update collision sphere positions
     bumper.center = position;
     weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+
+    // Box collision resolution
+    if (scn != nullptr) {
+        resolve_box_collisions(*scn);
+    }
+
+    // Ground plane (fallback if no box collision)
+    resolve_ground_collision();
 
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
@@ -121,25 +128,20 @@ void controller::resolve_ground_collision() {
         return;
     }
 
-    // Update weightlifter position before collision check
-    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+    // Update bumper position before collision check
+    bumper.center = position;
 
     // Simple ground plane at y=0
-    // Overgrowth-style: Allow lifter to remain buried ~0.10m in ground for stable contact
-    constexpr float INTENDED_BURIAL_DEPTH = 0.10f;
+    // Bumper handles flat ground - rests directly on surface
     float ground_y = 0.0f;
-    float distance_to_ground = weightlifter.center.y - ground_y;
-    float penetration = weightlifter.radius - distance_to_ground;
+    float distance_to_ground = bumper.center.y - ground_y;
+    float penetration = bumper.radius - distance_to_ground;
 
-    // Only resolve if penetration exceeds the intentional burial depth
-    float excess_penetration = penetration - INTENDED_BURIAL_DEPTH;
-
-    if (excess_penetration > 0.0f) {
-        // Push weightlifter up only by the excess penetration
-        weightlifter.center.y += excess_penetration;
-
-        // Update position to maintain offset
-        position = weightlifter.center - WEIGHTLIFTER_OFFSET;
+    if (penetration > 0.0f) {
+        // Push bumper up to rest on surface
+        bumper.center.y += penetration;
+        position = bumper.center;
+        weightlifter.center = position + WEIGHTLIFTER_OFFSET;
 
         // Remove velocity into ground
         if (velocity.y < 0.0f) {
@@ -149,17 +151,131 @@ void controller::resolve_ground_collision() {
         is_grounded = true;
         ground_normal = vec3(0, 1, 0);
         ground_height = ground_y;
-    } else if (penetration > 0.0f) {
-        // Within intended burial range - grounded but don't adjust position
-        is_grounded = true;
-        ground_normal = vec3(0, 1, 0);
-        ground_height = ground_y;
 
-        // Still remove downward velocity to prevent falling through
-        if (velocity.y < 0.0f) {
-            velocity.y = 0.0f;
-        }
+        bumper_contact_debug.active = true;
+        bumper_contact_debug.from_box = false;
+        bumper_contact_debug.normal = vec3(0, 1, 0);
+        bumper_contact_debug.penetration = 0.0f;
+        bumper_contact_debug.vertical_penetration = 0.0f;
     } else {
         is_grounded = false;
+    }
+}
+
+void controller::resolve_box_collisions(const scene& scn) {
+    // Phase 1a: Bumper collision (flat ground surfaces)
+    for (const auto& box : scn.collision_boxes()) {
+        sphere bumper_copy = bumper;
+        sphere_collision col = resolve_sphere_aabb(bumper_copy, box);
+
+        if (col.hit) {
+            // Check if this is a flat ground surface (nearly vertical normal)
+            if (col.normal.y > 0.9f) {
+                // Push out fully - bumper rests on surface
+                position += col.normal * col.penetration;
+                bumper.center = position;
+                weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+
+                // Set grounded state
+                is_grounded = true;
+                ground_normal = col.normal;
+                ground_height = box.center.y + box.half_extents.y;
+
+                bumper_contact_debug.active = true;
+                bumper_contact_debug.from_box = true;
+                bumper_contact_debug.normal = col.normal;
+                bumper_contact_debug.penetration = 0.0f;
+                bumper_contact_debug.vertical_penetration = 0.0f;
+
+                // Kill downward velocity
+                if (velocity.y < 0.0f) {
+                    velocity.y = 0.0f;
+                }
+            }
+        }
+    }
+
+    // Phase 1b: Weightlifter collision (sloped/transitional surfaces)
+    for (const auto& box : scn.collision_boxes()) {
+        sphere lifter_copy = weightlifter;
+        sphere_collision col = resolve_sphere_aabb(lifter_copy, box);
+
+        if (col.hit) {
+            // Check if this is a sloped surface (angled but still supporting)
+            if (col.normal.y > 0.5f && col.normal.y <= 0.9f) {
+                // Apply intentional burial logic for slopes/edges
+                constexpr float INTENDED_BURIAL_DEPTH = 0.10f;
+                float vertical_penetration = col.penetration * std::max(col.normal.y, 0.0f);
+                if (vertical_penetration <= 0.0f) {
+                    continue;
+                }
+
+                float vertical_delta = vertical_penetration - INTENDED_BURIAL_DEPTH;
+                float corrected_vertical = vertical_penetration;
+                if (vertical_delta > 0.0f) {
+                    float correction = vertical_delta / std::max(col.normal.y, 0.001f);
+                    position += col.normal * correction;
+                    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+                    bumper.center = position;
+                    corrected_vertical -= vertical_delta;
+                } else {
+                    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+                    bumper.center = position;
+                }
+
+                corrected_vertical = std::max(corrected_vertical, 0.0f);
+                float corrected_penetration = corrected_vertical / std::max(col.normal.y, 0.001f);
+
+                // Set grounded state
+                is_grounded = true;
+                ground_normal = col.normal;
+                ground_height = box.center.y + box.half_extents.y;
+
+                weightlifter_contact_debug.active = true;
+                weightlifter_contact_debug.from_box = true;
+                weightlifter_contact_debug.normal = col.normal;
+                weightlifter_contact_debug.penetration = corrected_penetration;
+                weightlifter_contact_debug.vertical_penetration = corrected_vertical;
+
+                // Kill downward velocity
+                if (glm::dot(velocity, col.normal) < 0.0f) {
+                    velocity -= col.normal * glm::dot(velocity, col.normal);
+                }
+            }
+        }
+    }
+
+    // Phase 2: Bumper collision (sliding/bouncing)
+    // Only handle walls and obstacles, not ground surfaces
+    for (const auto& box : scn.collision_boxes()) {
+        sphere bumper_copy = bumper;
+        sphere_collision col = resolve_sphere_aabb(bumper_copy, box);
+
+        if (col.hit) {
+            // Skip all upward-facing surfaces - weightlifter has exclusive authority
+            if (col.normal.y > 0.5f) {
+                continue;
+            }
+
+            // Push out of collision
+            position += col.normal * col.penetration;
+
+            // Update sphere positions
+            bumper.center = position;
+            weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+
+            // Remove velocity into surface
+            float vel_into_surface = glm::dot(velocity, col.normal);
+            if (vel_into_surface < 0.0f) {
+                velocity -= col.normal * vel_into_surface;
+            }
+
+            bumper_contact_debug.active = true;
+            bumper_contact_debug.from_box = true;
+            bumper_contact_debug.normal = col.normal;
+            bumper_contact_debug.penetration = col.penetration;
+            bumper_contact_debug.vertical_penetration =
+                col.penetration * std::max(col.normal.y, 0.0f);
+        }
     }
 }

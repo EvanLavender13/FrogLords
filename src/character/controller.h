@@ -18,6 +18,17 @@ struct controller {
     // Input intent (for animation/orientation when velocity is blocked)
     glm::vec3 input_direction;
 
+    struct contact_debug_info {
+        bool active = false;
+        bool from_box = false;
+        glm::vec3 normal{0.0f};
+        float penetration = 0.0f;
+        float vertical_penetration = 0.0f;
+    };
+
+    contact_debug_info weightlifter_contact_debug;
+    contact_debug_info bumper_contact_debug;
+
     // Properties
     float mass = 70.0f;
     float friction = 0.9f;
@@ -44,4 +55,5 @@ struct controller {
 
   private:
     void resolve_ground_collision();
+    void resolve_box_collisions(const scene& scn);
 };
