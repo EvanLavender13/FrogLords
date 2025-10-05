@@ -55,6 +55,7 @@ add_executable(FrogLords
     src/character/character_controller.cpp
     src/character/orientation.cpp
     src/character/locomotion.cpp
+    src/character/tuning.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp
@@ -62,8 +63,10 @@ add_executable(FrogLords
     src/rendering/test_terrain.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
+    src/rendering/debug_draw.cpp
     src/input/input.cpp
     src/gui/gui.cpp
+    src/gui/character_panel.cpp
     ${WIREFRAME_SHADER_OUTPUT}
     ${IMGUI_SOURCES}
 )

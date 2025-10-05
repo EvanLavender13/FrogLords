@@ -15,6 +15,9 @@ struct character_controller {
     glm::vec3 velocity;
     glm::vec3 acceleration;
 
+    // Input intent (for animation/orientation when velocity is blocked)
+    glm::vec3 input_direction;
+
     // Properties
     float mass = 70.0f;
     float friction = 0.9f;

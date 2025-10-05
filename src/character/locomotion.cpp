@@ -167,6 +167,7 @@ simple_pose locomotion_system::lerp(const simple_pose& a, const simple_pose& b, 
 
 simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_pose& b,
                                             float t) const {
-    // cubic smooth easing maintains velocity continuity
-    return lerp(a, b, t);
+    // Cubic Hermite with zero tangents ensures velocity continuity between keyframes
+    return {.root_offset = easing::cubic_hermite(a.root_offset, b.root_offset, t),
+            .leg_phase_offset = easing::cubic_hermite(a.leg_phase_offset, b.leg_phase_offset, t)};
 }

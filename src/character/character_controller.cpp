@@ -43,7 +43,7 @@ void character_controller::apply_input(const camera& cam, float dt) {
     glm::vec3 forward = cam.get_forward_horizontal();
     glm::vec3 right = cam.get_right();
 
-    glm::vec3 input_direction = forward * move_direction.y + right * move_direction.x;
+    input_direction = forward * move_direction.y + right * move_direction.x;
 
     // Direct acceleration (instant response)
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
