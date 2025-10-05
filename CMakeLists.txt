@@ -52,7 +52,7 @@ add_executable(FrogLords
     src/main.cpp
     src/app/runtime.cpp
     src/camera/camera.cpp
-    src/character/character_controller.cpp
+    src/character/controller.cpp
     src/character/orientation.cpp
     src/character/locomotion.cpp
     src/character/tuning.cpp
@@ -60,7 +60,6 @@ add_executable(FrogLords
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp
     src/rendering/scene.cpp
-    src/rendering/test_terrain.cpp
     src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
     src/rendering/debug_draw.cpp

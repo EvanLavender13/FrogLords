@@ -23,16 +23,14 @@ glm::vec3 smooth_mix(const glm::vec3& a, const glm::vec3& b, float t) {
     return glm::mix(a, b, weight);
 }
 
-float cubic_hermite(float p0, float p1, float t) {
+float cubic_hermite(float p0, float p1, float t) { // NOLINT(bugprone-easily-swappable-parameters)
     t = clamp01(t);
     // Hermite basis functions with zero tangents at endpoints
     // This ensures smooth velocity continuity between keyframes
     float t2 = t * t;
     float t3 = t2 * t;
     float h00 = 2.0f * t3 - 3.0f * t2 + 1.0f; // p0 weight
-    float h10 = t3 - 2.0f * t2 + t;             // m0 weight (tangent at p0)
-    float h01 = -2.0f * t3 + 3.0f * t2;         // p1 weight
-    float h11 = t3 - t2;                        // m1 weight (tangent at p1)
+    float h01 = -2.0f * t3 + 3.0f * t2;       // p1 weight
 
     // Zero tangents (m0 = m1 = 0) for natural continuity
     return h00 * p0 + h01 * p1;

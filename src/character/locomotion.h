@@ -1,6 +1,5 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "foundation/spring_damper.h"
 
 struct simple_pose {
     glm::vec3 root_offset;
@@ -27,18 +26,10 @@ struct locomotion_system {
     float walk_speed_threshold = 2.0f; // m/s
     float run_speed_threshold = 6.0f;  // m/s
 
-    // Vertical motion (spring-damper)
-    spring_damper vertical_spring;
-    float vertical_target_offset = 0.3f;
-    float time_since_last_step = 0.0f;
-    float step_period = 0.5f;
-    float bounce_impulse_scale = 0.5f;
-
     locomotion_system();
 
-    void update(glm::vec3 ground_velocity, float dt, bool is_grounded, float ground_height = 0.0f);
+    void update(glm::vec3 ground_velocity, float dt, bool is_grounded);
     simple_pose get_current_pose() const;
-    float get_vertical_target_offset() const { return vertical_target_offset; }
 
   private:
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;

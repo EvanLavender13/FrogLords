@@ -26,13 +26,13 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
     if (distance < EPSILON) {
         glm::vec3 offset_from_center = s.center - box.center;
         glm::vec3 abs_offset = glm::abs(offset_from_center);
-        glm::vec3 distance_to_surface = box.half_extents - abs_offset;
+        glm::vec3 distance_to_surface = glm::max(box.half_extents - abs_offset, glm::vec3(0.0f));
 
-        if (distance_to_surface.x < distance_to_surface.y &&
-            distance_to_surface.x < distance_to_surface.z) {
+        if (distance_to_surface.x <= distance_to_surface.y &&
+            distance_to_surface.x <= distance_to_surface.z) {
             result.normal = glm::vec3(offset_from_center.x > 0 ? 1.0f : -1.0f, 0.0f, 0.0f);
             result.penetration = distance_to_surface.x + s.radius;
-        } else if (distance_to_surface.y < distance_to_surface.z) {
+        } else if (distance_to_surface.y <= distance_to_surface.z) {
             result.normal = glm::vec3(0.0f, offset_from_center.y > 0 ? 1.0f : -1.0f, 0.0f);
             result.penetration = distance_to_surface.y + s.radius;
         } else {

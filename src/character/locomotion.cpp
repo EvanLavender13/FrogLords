@@ -33,30 +33,18 @@ bool crossed_phase_threshold(float previous, float delta, phase_threshold thresh
 } // namespace
 
 locomotion_system::locomotion_system() {
-    // Walk keyframes (no vertical offset - spring-damper will handle vertical motion in Phase 3)
+    // Walk keyframes (lower vertical bob)
     walk_state.pass_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.0f};
-    walk_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.5f};
+    walk_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.08f, 0.0f), .leg_phase_offset = 0.5f};
     walk_state.stride_length = 1.2f;
 
-    // Run keyframes (no vertical offset - spring-damper will handle vertical motion in Phase 3)
+    // Run keyframes (higher vertical bob)
     run_state.pass_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.0f};
-    run_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.5f};
+    run_state.reach_pose = {.root_offset = glm::vec3(0.0f, 0.15f, 0.0f), .leg_phase_offset = 0.5f};
     run_state.stride_length = 2.0f;
-
-    // Slightly overdamped vertical spring (~2.2 Hz) to match cadence
-    constexpr float NATURAL_FREQUENCY = 2.2f;
-    constexpr float DAMPING_RATIO = 0.9f;
-    constexpr float TWO_PI = 6.28318530718f;
-    float omega = TWO_PI * NATURAL_FREQUENCY;
-    vertical_spring.stiffness = omega * omega;
-    vertical_spring.damping = DAMPING_RATIO * 2.0f * omega;
-
-    // Initialize spring at target height
-    vertical_spring.reset(vertical_target_offset);
 }
 
-void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded,
-                               float ground_height) {
+void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded) {
     if (is_grounded) {
         current_speed = glm::length(ground_velocity);
 
@@ -82,13 +70,8 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             distance_traveled = 0.0f;
         } else {
             float drive_speed = std::max(0.0f, current_speed);
-            if (drive_speed > 0.1f) {
-                step_period = blended_stride / drive_speed;
-            }
 
-            float prev_phase = phase;
             float new_phase = phase + (drive_speed / blended_stride) * dt;
-            float phase_delta = new_phase - prev_phase;
 
             phase = std::fmod(new_phase, 1.0f);
             if (phase < 0.0f) {
@@ -96,33 +79,8 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             }
 
             distance_traveled = phase * blended_stride;
-
-            time_since_last_step += dt;
-
-            int steps_crossed = 0;
-            if (crossed_phase_threshold(prev_phase, phase_delta, phase_threshold{0.5f})) {
-                steps_crossed += 1;
-            }
-            if (crossed_phase_threshold(prev_phase, phase_delta, phase_threshold{0.0f})) {
-                steps_crossed += 1;
-            }
-
-            if (steps_crossed > 0) {
-                // Apply subtle downward impulse when foot plants (much smaller than landing
-                // impacts) Footsteps should be gentle bounce, landings should be pronounced
-                float impulse = -smoothed_speed * bounce_impulse_scale * 0.15f *
-                                static_cast<float>(steps_crossed);
-                vertical_spring.add_impulse(impulse);
-                time_since_last_step = 0.0f;
-            }
         }
-    } else {
-        time_since_last_step += dt;
     }
-
-    // Spring seeks standing offset above ground (vertical_target_offset meters)
-    // Spring position is RELATIVE offset, not absolute world position
-    vertical_spring.update(spring_step{vertical_target_offset, dt});
 }
 
 simple_pose locomotion_system::get_current_pose() const {
@@ -151,10 +109,6 @@ simple_pose locomotion_system::get_current_pose() const {
 
     // Blend between walk and run with eased weight
     simple_pose blended = lerp(walk_pose, run_pose, blend);
-
-    // Apply spring-damper vertical offset (relative to ground)
-    // Spring oscillates around 0.3m, compresses below that on landings/steps
-    blended.root_offset.y = vertical_spring.get_position();
 
     return blended;
 }

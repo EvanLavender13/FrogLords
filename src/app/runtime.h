@@ -2,7 +2,7 @@
 
 #include "sokol_gfx.h"
 #include "camera/camera.h"
-#include "character/character_controller.h"
+#include "character/controller.h"
 #include "character/locomotion.h"
 #include "character/orientation.h"
 #include "character/tuning.h"
@@ -32,7 +32,7 @@ struct app_runtime {
     camera cam{};
     scene scn{};
     wireframe_renderer renderer{};
-    character_controller character{};
+    controller character{};
     orientation_system orientation{};
     locomotion_system locomotion{};
     character::tuning_params character_params{};

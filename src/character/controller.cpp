@@ -1,28 +1,36 @@
-#include "character/character_controller.h"
+#include "character/controller.h"
 #include "rendering/scene.h"
 #include "camera/camera.h"
 #include "input/input.h"
-#include "foundation/collision.h"
 #include "sokol_app.h"
 #include <glm/gtc/constants.hpp>
 #include <algorithm>
 
-character_controller::character_controller()
-    : position(0.0f, 0.4f,
-               0.0f) // Adjusted so weightlifter touches ground (accounts for 0.3m spring offset)
+namespace {
+// Overgrowth-style configuration: Similar-sized spheres, lifter slightly buried
+constexpr float BUMPER_RADIUS = 0.50f;
+constexpr float WEIGHTLIFTER_RADIUS = 0.45f; // Nearly same size as bumper
+constexpr float WEIGHTLIFTER_DROP = 0.10f;   // Small offset - lifter just below bumper
+constexpr float STANDING_HEIGHT = WEIGHTLIFTER_RADIUS - 0.10f; // Lifter buried 0.10m in ground
+const glm::vec3 WEIGHTLIFTER_OFFSET(0.0f, -WEIGHTLIFTER_DROP, 0.0f);
+} // namespace
+
+controller::controller()
+    : position(0.0f, STANDING_HEIGHT,
+               0.0f) // Start at standing height so weightlifter rests on ground
     , velocity(0.0f)
     , acceleration(0.0f)
     , ground_normal(0.0f, 1.0f, 0.0f) {
     // Initialize bumper sphere
     bumper.center = position;
-    bumper.radius = 0.5f;
+    bumper.radius = BUMPER_RADIUS;
 
     // Initialize weightlifter sphere (offset below bumper)
-    weightlifter.center = position + glm::vec3(0.0f, -0.4f, 0.0f);
-    weightlifter.radius = 0.3f;
+    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
+    weightlifter.radius = WEIGHTLIFTER_RADIUS;
 }
 
-void character_controller::apply_input(const camera& cam, float dt) {
+void controller::apply_input(const camera& cam, float dt) {
     // Read WASD input
     glm::vec2 move_direction(0.0f, 0.0f);
 
@@ -55,7 +63,8 @@ void character_controller::apply_input(const camera& cam, float dt) {
     }
 }
 
-void character_controller::update(const scene* scn, float dt) {
+void controller::update(const scene* scn, float dt) {
+    (void) scn;
     // Apply gravity
     acceleration.y += gravity;
 
@@ -90,36 +99,21 @@ void character_controller::update(const scene* scn, float dt) {
     // Integrate position
     position += velocity * dt;
 
-    // Capture velocity before collision resolution zeroes it
-    float pre_collision_velocity_y = velocity.y;
-
     // Reset grounded state - will be set by collision resolution
     is_grounded = false;
 
-    // Resolve collisions (boxes first, then ground plane)
-    resolve_box_collisions(scn);
+    // Resolve collision against ground plane
     resolve_ground_collision();
-
-    // Detect landing (airborne -> grounded transition with downward velocity)
-    bool just_landed = is_grounded && !was_grounded_last_frame;
-    if (just_landed && pre_collision_velocity_y < 0.0f) {
-        landing_impact_velocity = -pre_collision_velocity_y;
-    } else {
-        landing_impact_velocity = 0.0f;
-    }
-
-    // Update state for next frame
-    was_grounded_last_frame = is_grounded;
 
     // Update collision volumes
     bumper.center = position;
-    weightlifter.center = position + glm::vec3(0.0f, -0.4f, 0.0f);
+    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
 
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
 }
 
-void character_controller::resolve_ground_collision() {
+void controller::resolve_ground_collision() {
     using namespace glm;
 
     // Only check ground plane if not already grounded by box collision
@@ -128,19 +122,24 @@ void character_controller::resolve_ground_collision() {
     }
 
     // Update weightlifter position before collision check
-    weightlifter.center = position + vec3(0.0f, -0.4f, 0.0f);
+    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
 
     // Simple ground plane at y=0
+    // Overgrowth-style: Allow lifter to remain buried ~0.10m in ground for stable contact
+    constexpr float INTENDED_BURIAL_DEPTH = 0.10f;
     float ground_y = 0.0f;
     float distance_to_ground = weightlifter.center.y - ground_y;
     float penetration = weightlifter.radius - distance_to_ground;
 
-    if (penetration > 0.0f) {
-        // Push weightlifter out of ground
-        weightlifter.center.y += penetration;
+    // Only resolve if penetration exceeds the intentional burial depth
+    float excess_penetration = penetration - INTENDED_BURIAL_DEPTH;
+
+    if (excess_penetration > 0.0f) {
+        // Push weightlifter up only by the excess penetration
+        weightlifter.center.y += excess_penetration;
 
         // Update position to maintain offset
-        position = weightlifter.center + vec3(0.0f, 0.4f, 0.0f);
+        position = weightlifter.center - WEIGHTLIFTER_OFFSET;
 
         // Remove velocity into ground
         if (velocity.y < 0.0f) {
@@ -150,61 +149,17 @@ void character_controller::resolve_ground_collision() {
         is_grounded = true;
         ground_normal = vec3(0, 1, 0);
         ground_height = ground_y;
+    } else if (penetration > 0.0f) {
+        // Within intended burial range - grounded but don't adjust position
+        is_grounded = true;
+        ground_normal = vec3(0, 1, 0);
+        ground_height = ground_y;
+
+        // Still remove downward velocity to prevent falling through
+        if (velocity.y < 0.0f) {
+            velocity.y = 0.0f;
+        }
     } else {
         is_grounded = false;
     }
-}
-
-void character_controller::resolve_box_collisions(const scene* scn) {
-    if (scn == nullptr)
-        return;
-
-    using namespace glm;
-
-    for (const auto& box : scn->collision_boxes()) {
-        sphere weightlifter_copy = weightlifter;
-        weightlifter_copy.center = position + vec3(0.0f, -0.4f, 0.0f);
-
-        sphere_collision weightlifter_hit = resolve_sphere_aabb(weightlifter_copy, box);
-        if (weightlifter_hit.hit) {
-            vec3 collision_normal = weightlifter_hit.normal;
-
-            position += collision_normal * weightlifter_hit.penetration;
-            weightlifter.center = position + vec3(0.0f, -0.4f, 0.0f);
-
-            float velocity_into_surface = dot(velocity, collision_normal);
-            if (velocity_into_surface < 0.0f) {
-                velocity -= collision_normal * velocity_into_surface;
-            }
-
-            if (collision_normal.y > 0.7f) {
-                is_grounded = true;
-                ground_normal = collision_normal;
-                ground_height = box.center.y + box.half_extents.y;
-            }
-        }
-
-        sphere bumper_copy = bumper;
-        bumper_copy.center = position;
-
-        sphere_collision bumper_hit = resolve_sphere_aabb(bumper_copy, box);
-        if (bumper_hit.hit) {
-            vec3 collision_normal = bumper_hit.normal;
-
-            position += collision_normal * bumper_hit.penetration;
-
-            float velocity_into_surface = dot(velocity, collision_normal);
-            if (velocity_into_surface < 0.0f) {
-                velocity -= collision_normal * velocity_into_surface;
-            }
-        }
-    }
-}
-
-void character_controller::detect_landing() {
-    // Deprecated - landing detection now inline in update()
-}
-
-float character_controller::get_landing_impact() const {
-    return landing_impact_velocity;
 }

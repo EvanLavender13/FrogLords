@@ -6,7 +6,7 @@
 
 namespace gui {
 
-void draw_character_panel(character_panel_state& state, character_controller& character,
+void draw_character_panel(character_panel_state& state, controller& character,
                           locomotion_system& locomotion, character::tuning_params& params) {
     ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(static_cast<float>(sapp_width()) - 370.0f, 20.0f),
@@ -15,8 +15,8 @@ void draw_character_panel(character_panel_state& state, character_controller& ch
     if (gui::panel::begin("Character Tuning", &state.show)) {
         bool changed = false;
         changed |= gui::widget::slider_float("Max Speed (m/s)", &character.max_speed, 1.0f, 15.0f);
-        changed |= gui::widget::slider_float("Time to Max Speed (s)",
-                                             &params.time_to_max_speed, 0.1f, 2.0f);
+        changed |= gui::widget::slider_float("Time to Max Speed (s)", &params.time_to_max_speed,
+                                             0.1f, 2.0f);
         changed |= gui::widget::slider_float("Jump Height (m)", &params.jump_height, 0.5f, 3.0f);
         changed |= gui::widget::slider_float("Gravity (m/s^2)", &character.gravity, -20.0f, -5.0f);
 

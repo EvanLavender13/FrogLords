@@ -1,5 +1,4 @@
 #include "rendering/debug_draw.h"
-#include "rendering/test_terrain.h"
 #include <glm/gtc/constants.hpp>
 #include <cmath>
 
@@ -10,15 +9,15 @@ constexpr float TWO_PI = 6.28318530718f;
 
 namespace debug {
 
-void draw_character_state(draw_context& ctx, const character_controller& character,
+void draw_character_state(draw_context& ctx, const controller& character,
                           const locomotion_system& locomotion,
                           const orientation_system& orientation) {
     simple_pose current_pose = locomotion.get_current_pose();
     glm::vec3 pose_offset = current_pose.root_offset;
 
-    // Bumper sphere
+    // Bumper sphere (no pose offset - follows physics position)
     wireframe_mesh bumper_vis = ctx.unit_sphere_8;
-    bumper_vis.position = character.position + pose_offset;
+    bumper_vis.position = character.bumper.center;
     bumper_vis.scale = glm::vec3(character.bumper.radius);
     ctx.renderer.draw(bumper_vis, ctx.cam, ctx.aspect, glm::vec4(0, 1, 1, 1));
 
@@ -28,11 +27,11 @@ void draw_character_state(draw_context& ctx, const character_controller& charact
     weightlifter_vis.scale = glm::vec3(character.weightlifter.radius);
     ctx.renderer.draw(weightlifter_vis, ctx.cam, ctx.aspect, glm::vec4(1, 1, 0, 1));
 
-    // Velocity indicator
+    // Velocity indicator (no pose offset - attached to physics position)
     glm::vec3 vel = character.velocity;
     if (glm::length(vel) > 0.1f) {
         wireframe_mesh velocity_indicator = ctx.unit_sphere_4;
-        velocity_indicator.position = character.position + pose_offset + vel;
+        velocity_indicator.position = character.position + vel;
         velocity_indicator.scale = glm::vec3(0.1f);
         ctx.renderer.draw(velocity_indicator, ctx.cam, ctx.aspect, glm::vec4(1, 0, 0, 1));
     }
@@ -61,69 +60,35 @@ void draw_character_state(draw_context& ctx, const character_controller& charact
         ctx.renderer.draw(speed_circle, ctx.cam, ctx.aspect, glm::vec4(1, 0, 0, 0.8f));
     }
 
-    // Orientation indicator
+    // Orientation indicator (attached to physics position)
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
     wireframe_mesh yaw_indicator = ctx.unit_sphere_4;
-    yaw_indicator.position = character.position + pose_offset + forward_dir * 0.8f;
+    yaw_indicator.position = character.position + forward_dir * 0.8f;
     yaw_indicator.scale = glm::vec3(0.1f);
     ctx.renderer.draw(yaw_indicator, ctx.cam, ctx.aspect, glm::vec4(0, 1, 0, 1));
 }
 
-void draw_physics_springs(draw_context& ctx, const character_controller& character,
+void draw_physics_springs(draw_context& ctx, const controller& character,
                           const locomotion_system& locomotion) {
-    simple_pose current_pose = locomotion.get_current_pose();
-    glm::vec3 pose_offset = current_pose.root_offset;
-
-    glm::vec3 spring_base = character.weightlifter.center;
-    glm::vec3 spring_tip = character.position + pose_offset;
-    float base_to_bumper = glm::length(character.position - spring_base);
-    float rest_length = base_to_bumper + locomotion.get_vertical_target_offset();
-    float current_length = glm::length(spring_tip - spring_base);
-    
-    float compression_ratio = 0.0f;
-    if (rest_length > 0.0001f) {
-        compression_ratio = (rest_length - current_length) / rest_length;
-    }
-    
-    int spring_coils = 6;
-    float spring_radius = glm::clamp(rest_length * 0.12f, 0.05f, 0.18f);
-    wireframe_mesh spring_debug =
-        generate_spring(spring_base, spring_tip, spring_coils, spring_radius);
-
-    glm::vec4 spring_color;
-    if (compression_ratio >= 0.0f) {
-        float heat = glm::clamp(compression_ratio * 3.0f, 0.0f, 1.0f);
-        spring_color = glm::vec4(1.0f, 1.0f - heat * 0.6f, 0.0f, 1.0f);
-    } else {
-        float stretch = glm::clamp(-compression_ratio * 2.0f, 0.0f, 1.0f);
-        spring_color = glm::vec4(0.0f, 0.6f + (1.0f - stretch) * 0.3f, 1.0f, 1.0f);
-    }
-    ctx.renderer.draw(spring_debug, ctx.cam, ctx.aspect, spring_color);
-
-    // Rest length indicator
-    glm::vec3 rest_tip = spring_base + glm::vec3(0.0f, rest_length, 0.0f);
-    wireframe_mesh rest_line = generate_arrow(spring_base, rest_tip, 0.05f);
-    ctx.renderer.draw(rest_line, ctx.cam, ctx.aspect, glm::vec4(0.4f, 0.4f, 0.4f, 0.5f));
-
-    wireframe_mesh rest_marker = ctx.unit_sphere_4;
-    rest_marker.position = rest_tip;
-    rest_marker.scale = glm::vec3(0.06f);
-    ctx.renderer.draw(rest_marker, ctx.cam, ctx.aspect, glm::vec4(0.4f, 0.4f, 0.4f, 0.6f));
+    (void) ctx;
+    (void) character;
+    (void) locomotion;
+    // Phase 2: No spring visualization - vertical motion comes from keyframe interpolation
+    // Spring visualization will be added in Phase 3
 }
 
-void draw_locomotion_wheel(draw_context& ctx, const character_controller& character,
+void draw_locomotion_wheel(draw_context& ctx, const controller& character,
                            const locomotion_system& locomotion,
                            const orientation_system& orientation, float wheel_spin_angle) {
-    simple_pose current_pose = locomotion.get_current_pose();
-    glm::vec3 pose_offset = current_pose.root_offset;
+    (void) locomotion; // Phase information used for foot placement, not wheel center
 
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
     glm::vec3 up_axis(0.0f, 1.0f, 0.0f);
-    
+
     float wheel_ground_y = character.weightlifter.center.y - character.weightlifter.radius;
-    glm::vec3 wheel_center = character.position + pose_offset;
+    glm::vec3 wheel_center = character.position;
     wheel_center.y = wheel_ground_y + WHEEL_RADIUS;
 
     const int RIM_SEGMENTS = 24;
@@ -155,13 +120,13 @@ void draw_locomotion_wheel(draw_context& ctx, const character_controller& charac
     ctx.renderer.draw(wheel_mesh, ctx.cam, ctx.aspect, glm::vec4(0.85f, 0.85f, 0.85f, 1.0f));
 }
 
-void draw_foot_positions(draw_context& ctx, const character_controller& character,
+void draw_foot_positions(draw_context& ctx, const controller& character,
                          const locomotion_system& locomotion,
                          const orientation_system& orientation) {
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
     glm::vec3 right_dir(-std::cos(yaw), 0, std::sin(yaw));
-    
+
     float wheel_ground_y = character.weightlifter.center.y - character.weightlifter.radius;
     float ground_contact_y = wheel_ground_y;
 

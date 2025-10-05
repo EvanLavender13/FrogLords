@@ -1,5 +1,6 @@
 #include "app/runtime.h"
 #include "sokol_app.h"
+#include "sokol_gfx.h"
 #include "sokol_glue.h"
 #include "sokol_log.h"
 #include "input/input.h"
@@ -41,7 +42,7 @@ void app_runtime::initialize() {
 
     renderer.init();
 
-    character = character_controller();
+    character = controller();
     orientation = orientation_system();
     locomotion = locomotion_system();
     character_params.read_from(character);
@@ -54,21 +55,6 @@ void app_runtime::initialize() {
     scn = scene();
     wireframe_mesh floor = generate_grid_floor(20.0f, 20);
     scn.add_object(floor);
-
-    aabb low_platform;
-    low_platform.center = glm::vec3(8.0f, 0.75f, 0.0f);
-    low_platform.half_extents = glm::vec3(1.5f, 0.75f, 1.5f);
-    scn.add_collision_box(low_platform);
-
-    aabb high_platform;
-    high_platform.center = glm::vec3(12.0f, 1.5f, 0.0f);
-    high_platform.half_extents = glm::vec3(1.5f, 1.5f, 1.5f);
-    scn.add_collision_box(high_platform);
-
-    aabb test_platform;
-    test_platform.center = glm::vec3(0.0f, 0.05f, 15.0f);
-    test_platform.half_extents = glm::vec3(10.0f, 0.05f, 10.0f);
-    scn.add_collision_box(test_platform);
 
     initialized = true;
 }
@@ -145,25 +131,16 @@ void app_runtime::update_simulation(float dt) {
     character.apply_input(cam, dt);
     character.update(&scn, dt);
 
-    float landing_impact = character.get_landing_impact();
-    if (landing_impact > 0.0f) {
-        locomotion.vertical_spring.add_impulse(-landing_impact * 0.5f);
-    }
-
     glm::vec3 horizontal_velocity = character.velocity;
     horizontal_velocity.y = 0.0f;
 
     // Use input intent for animation/orientation (allows running against walls)
     glm::vec3 intended_velocity = character.input_direction * character.max_speed;
 
-    if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
-        orientation.update_forced(forced_orientation_input{cam.get_yaw(), dt});
-    } else {
-        orientation.update(intended_velocity, dt);
-    }
+    orientation.update(intended_velocity, dt);
 
     character::sync_locomotion_targets(character, locomotion);
-    locomotion.update(intended_velocity, dt, character.is_grounded, character.ground_height);
+    locomotion.update(horizontal_velocity, dt, character.is_grounded);
 
     float angular_speed = 0.0f;
     if (WHEEL_RADIUS > 0.0001f) {
@@ -202,8 +179,8 @@ void app_runtime::render_world() {
         renderer.draw(box_mesh, cam, aspect, box_color);
     }
 
-    debug::draw_context debug_ctx{renderer, cam,      aspect,        unit_circle,
-                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
+    debug::draw_context debug_ctx{renderer,      cam,           aspect,       unit_circle,
+                                  unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
     debug::draw_character_state(debug_ctx, character, locomotion, orientation);
     debug::draw_physics_springs(debug_ctx, character, locomotion);
