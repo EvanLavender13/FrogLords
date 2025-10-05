@@ -31,21 +31,17 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
         if (distance_to_surface.x < distance_to_surface.y &&
             distance_to_surface.x < distance_to_surface.z) {
             result.normal = glm::vec3(offset_from_center.x > 0 ? 1.0f : -1.0f, 0.0f, 0.0f);
-            float push = distance_to_surface.x + s.radius;
-            s.center += result.normal * push;
+            result.penetration = distance_to_surface.x + s.radius;
         } else if (distance_to_surface.y < distance_to_surface.z) {
             result.normal = glm::vec3(0.0f, offset_from_center.y > 0 ? 1.0f : -1.0f, 0.0f);
-            float push = distance_to_surface.y + s.radius;
-            s.center += result.normal * push;
+            result.penetration = distance_to_surface.y + s.radius;
         } else {
             result.normal = glm::vec3(0.0f, 0.0f, offset_from_center.z > 0 ? 1.0f : -1.0f);
-            float push = distance_to_surface.z + s.radius;
-            s.center += result.normal * push;
+            result.penetration = distance_to_surface.z + s.radius;
         }
     } else {
         result.normal = delta / distance;
-        float penetration = s.radius - distance;
-        s.center += result.normal * penetration;
+        result.penetration = s.radius - distance;
     }
 
     result.hit = true;

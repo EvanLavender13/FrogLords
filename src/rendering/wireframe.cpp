@@ -46,7 +46,8 @@ wireframe_mesh generate_sphere(sphere_config config) {
         float ring_radius = radius * std::sin(phi);
 
         for (int s = 0; s < segments; s++) {
-            float theta = static_cast<float>(s) / static_cast<float>(segments) * 2.0f * glm::pi<float>();
+            float theta =
+                static_cast<float>(s) / static_cast<float>(segments) * 2.0f * glm::pi<float>();
             float x = ring_radius * std::cos(theta);
             float z = ring_radius * std::sin(theta);
             mesh.vertices.push_back(glm::vec3(x, y, z));
@@ -101,14 +102,18 @@ wireframe_mesh generate_box(box_dimensions dims) {
     float half_depth = dims.depth * 0.5f;
 
     // 8 vertices (cube corners)
-    mesh.vertices.push_back(glm::vec3(-half_width, -half_height, half_depth));  // 0: front-bottom-left
-    mesh.vertices.push_back(glm::vec3(half_width, -half_height, half_depth));   // 1: front-bottom-right
-    mesh.vertices.push_back(glm::vec3(-half_width, half_height, half_depth));   // 2: front-top-left
-    mesh.vertices.push_back(glm::vec3(half_width, half_height, half_depth));    // 3: front-top-right
-    mesh.vertices.push_back(glm::vec3(-half_width, -half_height, -half_depth)); // 4: back-bottom-left
-    mesh.vertices.push_back(glm::vec3(half_width, -half_height, -half_depth));  // 5: back-bottom-right
-    mesh.vertices.push_back(glm::vec3(-half_width, half_height, -half_depth));  // 6: back-top-left
-    mesh.vertices.push_back(glm::vec3(half_width, half_height, -half_depth));   // 7: back-top-right
+    mesh.vertices.push_back(
+        glm::vec3(-half_width, -half_height, half_depth)); // 0: front-bottom-left
+    mesh.vertices.push_back(
+        glm::vec3(half_width, -half_height, half_depth)); // 1: front-bottom-right
+    mesh.vertices.push_back(glm::vec3(-half_width, half_height, half_depth)); // 2: front-top-left
+    mesh.vertices.push_back(glm::vec3(half_width, half_height, half_depth));  // 3: front-top-right
+    mesh.vertices.push_back(
+        glm::vec3(-half_width, -half_height, -half_depth)); // 4: back-bottom-left
+    mesh.vertices.push_back(
+        glm::vec3(half_width, -half_height, -half_depth)); // 5: back-bottom-right
+    mesh.vertices.push_back(glm::vec3(-half_width, half_height, -half_depth)); // 6: back-top-left
+    mesh.vertices.push_back(glm::vec3(half_width, half_height, -half_depth));  // 7: back-top-right
 
     // 12 edges
     // Bottom quad
@@ -234,7 +239,8 @@ wireframe_mesh generate_circle(const glm::vec3& center, circle_config config) {
 
     // Generate vertices around circle (horizontal, in XZ plane)
     for (int i = 0; i < config.segments; i++) {
-        float angle = static_cast<float>(i) / static_cast<float>(config.segments) * 2.0f * glm::pi<float>();
+        float angle =
+            static_cast<float>(i) / static_cast<float>(config.segments) * 2.0f * glm::pi<float>();
         float x = center.x + config.radius * std::cos(angle);
         float z = center.z + config.radius * std::sin(angle);
         mesh.vertices.push_back(glm::vec3(x, center.y, z));

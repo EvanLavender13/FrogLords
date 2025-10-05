@@ -99,6 +99,11 @@ void app_runtime::initialize() {
     high_platform.half_extents = glm::vec3(1.5f, 1.5f, 1.5f);
     scn.add_collision_box(high_platform);
 
+    aabb test_platform;
+    test_platform.center = glm::vec3(0.0f, 0.15f, 15.0f);
+    test_platform.half_extents = glm::vec3(10.0f, 0.15f, 10.0f);
+    scn.add_collision_box(test_platform);
+
     initialized = true;
 }
 
@@ -301,7 +306,7 @@ void app_runtime::render_world() {
 
     for (const auto& box : scn.collision_boxes()) {
         box_dimensions box_size{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
-                                 box.half_extents.z * 2.0f};
+                                box.half_extents.z * 2.0f};
         wireframe_mesh box_mesh = generate_box(box_size);
         box_mesh.position = box.center;
 

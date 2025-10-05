@@ -161,7 +161,8 @@ simple_pose locomotion_system::get_current_pose() const {
 
 simple_pose locomotion_system::lerp(const simple_pose& a, const simple_pose& b, float t) const {
     return {.root_offset = easing::smooth_mix(a.root_offset, b.root_offset, t),
-            .leg_phase_offset = easing::smooth_mix(easing::scalar_span{a.leg_phase_offset, b.leg_phase_offset}, t)};
+            .leg_phase_offset =
+                easing::smooth_mix(easing::scalar_span{a.leg_phase_offset, b.leg_phase_offset}, t)};
 }
 
 simple_pose locomotion_system::cubic_interp(const simple_pose& a, const simple_pose& b,

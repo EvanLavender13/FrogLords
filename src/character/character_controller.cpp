@@ -169,9 +169,8 @@ void character_controller::resolve_box_collisions(const scene* scn) {
         if (weightlifter_hit.hit) {
             vec3 collision_normal = weightlifter_hit.normal;
 
-            vec3 weightlifter_displacement = weightlifter_copy.center - weightlifter.center;
-            position += weightlifter_displacement;
-            weightlifter.center = weightlifter_copy.center;
+            position += collision_normal * weightlifter_hit.penetration;
+            weightlifter.center = position + vec3(0.0f, -0.4f, 0.0f);
 
             float velocity_into_surface = dot(velocity, collision_normal);
             if (velocity_into_surface < 0.0f) {
@@ -192,7 +191,7 @@ void character_controller::resolve_box_collisions(const scene* scn) {
         if (bumper_hit.hit) {
             vec3 collision_normal = bumper_hit.normal;
 
-            position = bumper_copy.center;
+            position += collision_normal * bumper_hit.penetration;
 
             float velocity_into_surface = dot(velocity, collision_normal);
             if (velocity_into_surface < 0.0f) {
