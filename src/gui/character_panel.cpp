@@ -37,7 +37,8 @@ void draw_character_panel(character_panel_state& state, controller& character,
                                   character.ground_normal.y, character.ground_normal.z);
 
                 float surface_offset =
-                    character.collision_sphere.center.y - (character.ground_height + character.collision_sphere.radius);
+                    character.collision_sphere.center.y -
+                    (character.ground_height + character.collision_sphere.radius);
 
                 gui::widget::text("Surface offset: %.3f", surface_offset);
             }
@@ -47,7 +48,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
             const controller::contact_debug_info& contact_dbg = character.collision_contact_debug;
             gui::widget::text("Collision contact: %s",
                               contact_dbg.active ? (contact_dbg.from_box ? "box" : "ground plane")
-                                                : "none");
+                                                 : "none");
             if (contact_dbg.active) {
                 gui::widget::text("  Normal: (%.2f, %.2f, %.2f)", contact_dbg.normal.x,
                                   contact_dbg.normal.y, contact_dbg.normal.z);

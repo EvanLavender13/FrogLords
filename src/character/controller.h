@@ -7,7 +7,7 @@ class scene;
 
 struct controller {
     // Collision volumes
-    sphere collision_sphere;  // Single sphere used for all collision
+    sphere collision_sphere; // Single sphere used for all collision
 
     // State (source of truth)
     glm::vec3 position;
@@ -26,12 +26,9 @@ struct controller {
     };
 
     contact_debug_info collision_contact_debug;
-    contact_debug_info debug_contact_unused;
 
     // Properties
-    float mass = 70.0f;
     float friction = 0.9f;
-    float air_control = 0.3f;
 
     // Ground state
     bool is_grounded = false;
@@ -44,7 +41,6 @@ struct controller {
     float max_speed = 8.0f;        // m/s
     float gravity = -9.8f;         // m/s^2
     float max_slope_angle = 45.0f; // degrees
-    float step_height = 0.4f;      // meters
     float jump_velocity = 5.0f;    // m/s
 
     controller();

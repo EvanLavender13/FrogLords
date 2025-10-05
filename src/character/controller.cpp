@@ -5,6 +5,7 @@
 #include "input/input.h"
 #include "sokol_app.h"
 #include <glm/gtc/constants.hpp>
+#include <glm/trigonometric.hpp>
 #include <algorithm>
 
 namespace {
@@ -13,8 +14,7 @@ namespace {
 constexpr float BUMPER_RADIUS = 0.50f;
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // Spawn with sphere resting on ground
 
-// Collision surface classification (based on surface normal.y)
-constexpr float SLOPE_NORMAL_THRESHOLD = 0.5f; // cos(60°) - ground vs wall boundary
+// (Surface classification constants removed as part of single-sphere simplification)
 } // namespace
 
 controller::controller()
@@ -98,7 +98,6 @@ void controller::update(const scene* scn, float dt) {
     // Reset grounded state
     is_grounded = false;
     collision_contact_debug = contact_debug_info{};
-    debug_contact_unused = contact_debug_info{};
 
     // Update collision sphere position
     collision_sphere.center = position;
@@ -156,42 +155,46 @@ void controller::resolve_box_collisions(const scene& scn) {
     // EXPERIMENT: Single-sphere collision system
     // One sphere handles ALL collision - no dual-sphere complexity
     // Goal: Test if simpler system feels more responsive and stable
-    
-    for (const auto& box : scn.collision_boxes()) {
-        sphere_collision col = resolve_sphere_aabb(collision_sphere, box);
 
-        if (col.hit) {
-            // Push out of collision
-            position += col.normal * col.penetration;
-            collision_sphere.center = position;
+    // Multi-pass collision resolution to handle corner cases
+    for (int pass = 0; pass < 3; ++pass) {
+        bool any_collision = false;
 
-            // Check if this is a ground surface (upward-facing normal)
-            if (col.normal.y > SLOPE_NORMAL_THRESHOLD) {
-                // Set grounded state
-                is_grounded = true;
-                ground_normal = col.normal;
-                ground_height = box.center.y + box.half_extents.y;
+        for (const auto& box : scn.collision_boxes()) {
+            sphere_collision col = resolve_sphere_aabb(collision_sphere, box);
 
-                collision_contact_debug.active = true;
-                collision_contact_debug.from_box = true;
-                collision_contact_debug.normal = col.normal;
-                collision_contact_debug.penetration = 0.0f;
-                collision_contact_debug.vertical_penetration = 0.0f;
-            } else {
-                // Wall or ceiling - just record collision for debug
+            if (col.hit) {
+                // Push out of collision
+                position += col.normal * col.penetration;
+                collision_sphere.center = position;
+
+                // Check if this is a ground surface (upward-facing normal)
+                if (col.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
+                    // Set grounded state
+                    is_grounded = true;
+                    ground_normal = col.normal;
+                    ground_height = box.center.y + box.half_extents.y;
+                }
+
+                // Record all collisions for debug
                 collision_contact_debug.active = true;
                 collision_contact_debug.from_box = true;
                 collision_contact_debug.normal = col.normal;
                 collision_contact_debug.penetration = col.penetration;
                 collision_contact_debug.vertical_penetration =
                     col.penetration * std::max(col.normal.y, 0.0f);
-            }
 
-            // Remove velocity into surface
-            float vel_into_surface = glm::dot(velocity, col.normal);
-            if (vel_into_surface < 0.0f) {
-                velocity -= col.normal * vel_into_surface;
+                // Remove velocity into surface
+                float vel_into_surface = glm::dot(velocity, col.normal);
+                if (vel_into_surface < 0.0f) {
+                    velocity -= col.normal * vel_into_surface;
+                }
+
+                any_collision = true;
             }
         }
+
+        if (!any_collision)
+            break; // Early exit if no collisions in this pass
     }
 }

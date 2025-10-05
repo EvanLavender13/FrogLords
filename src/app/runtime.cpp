@@ -96,9 +96,9 @@ void app_runtime::initialize() {
 
     // Step-up test: Graduated steps (0.15m, 0.30m, 0.40m, 0.60m)
     for (int i = 0; i < 4; ++i) {
-        float height = 0.15f * (i + 1);
+        float height = 0.15f * static_cast<float>(i + 1);
         aabb step;
-        step.center = glm::vec3(-5.0f + i * 2.0f, height * 0.5f, -8.0f);
+        step.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
         step.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
         scn.add_collision_box(step);
     }

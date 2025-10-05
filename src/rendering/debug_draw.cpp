@@ -158,16 +158,17 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
 
         // Color based on box type (heuristic classification)
         glm::vec4 color;
-        
+
         // Steps (small, square-ish boxes near ground)
-        if (box.half_extents.y < 0.4f && box.half_extents.x < 1.2f && 
-            box.half_extents.z < 1.2f && box.center.y < 1.0f) {
+        if (box.half_extents.y < 0.4f && box.half_extents.x < 1.2f && box.half_extents.z < 1.2f &&
+            box.center.y < 1.0f) {
             // Graduated color for steps: cyan to blue
             float height_ratio = box.half_extents.y / 0.3f;
             color = glm::vec4(0.2f, 0.5f + height_ratio * 0.5f, 1.0f, 1.0f); // Cyan to bright blue
         }
         // Tall walls (height > width)
-        else if (box.half_extents.y > box.half_extents.x && box.half_extents.y > box.half_extents.z) {
+        else if (box.half_extents.y > box.half_extents.x &&
+                 box.half_extents.y > box.half_extents.z) {
             color = glm::vec4(1.0f, 0.5f, 0.2f, 1.0f); // Bright orange
         }
         // Long walls (one horizontal dimension much larger)
@@ -175,7 +176,8 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
             color = glm::vec4(0.9f, 0.9f, 0.2f, 1.0f); // Bright yellow
         }
         // Platforms (flat, wide boxes)
-        else if (box.half_extents.y < 0.5f && (box.half_extents.x > 1.5f || box.half_extents.z > 1.5f)) {
+        else if (box.half_extents.y < 0.5f &&
+                 (box.half_extents.x > 1.5f || box.half_extents.z > 1.5f)) {
             color = glm::vec4(0.3f, 1.0f, 0.3f, 1.0f); // Bright green
         }
         // Default (miscellaneous)
