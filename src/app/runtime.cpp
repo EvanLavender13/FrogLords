@@ -198,7 +198,7 @@ void app_runtime::update_simulation(float dt) {
 
     float angular_speed = 0.0f;
     if (WHEEL_RADIUS > 0.0001f) {
-        angular_speed = locomotion.smoothed_speed / WHEEL_RADIUS;
+        angular_speed = locomotion.current_speed / WHEEL_RADIUS;
     }
     wheel_spin_angle += angular_speed * dt;
     if (wheel_spin_angle > TWO_PI) {
