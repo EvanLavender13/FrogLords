@@ -151,7 +151,7 @@ void app_runtime::frame() {
     input::update();
 
     gui::begin_frame();
-    gui::draw_character_panel(panel_state, character, locomotion, character_params);
+    gui::draw_character_panel(panel_state, character, locomotion, orientation, character_params);
 
     render_world();
 }

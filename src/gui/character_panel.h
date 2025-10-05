@@ -2,6 +2,7 @@
 
 #include "character/controller.h"
 #include "character/locomotion.h"
+#include "character/orientation.h"
 #include "character/tuning.h"
 
 namespace gui {
@@ -11,6 +12,7 @@ struct character_panel_state {
 };
 
 void draw_character_panel(character_panel_state& state, controller& character,
-                          locomotion_system& locomotion, character::tuning_params& params);
+                          locomotion_system& locomotion, orientation_system& orientation,
+                          character::tuning_params& params);
 
 } // namespace gui
