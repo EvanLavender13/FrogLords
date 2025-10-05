@@ -10,14 +10,19 @@
 
 ### Reactive Animation (Architecture Proven ✅)
 - **Acceleration tilt:** ✅ COMPLETE - Character leans into acceleration (Segway effect)
-  - *Status:* Implemented, tested, tuned
-  - *Files:* `src/character/animation.h/cpp`, detailed in `acceleration_tilt_implementation.md`
+  - *Status:* Implemented, tested, tuned, UI exposed
+  - *Files:* `src/character/animation.h/cpp`
   - *Learning:* Character-local space transformation critical, exponential smoothing sufficient
   
 - **Spring-damper landings:** ✅ COMPLETE - Crouch/recover on landing driven by spring-damper
-  - *Status:* Implemented, tested, tuned
+  - *Status:* Implemented, tested, tuned, UI exposed
   - *Files:* `src/character/animation.h/cpp`, detailed in `landing_spring_implementation.md`
   - *Learning:* Flag-based event communication works well, spring visualization critical for tuning, collision-sphere-to-body endpoint prevents stretching during jumps
+
+- **Animation tuning UI:** ✅ COMPLETE - Real-time parameter adjustment for all animation systems
+  - *Status:* Implemented across acceleration tilt, landing spring, orientation, locomotion
+  - *Files:* `src/gui/character_panel.h/cpp`, detailed in `animation_tuning_plan.md`
+  - *Learning:* Public member access sufficient for tuning (no getters needed), consistent UX pattern (collapsing headers + live feedback) scales well, scope expanded during implementation (orientation/locomotion smoothing added), walk/run thresholds deliberately excluded (procedurally derived from max_speed)
   
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Prerequisite:* Skeletal system with joints
@@ -27,6 +32,24 @@
   - *Prerequisite:* Acceleration tilt working ✅
   - *Certainty:* High (~80%) - simple extension of proven system
   - *Note:* May not be necessary - current constant magnitude feels good
+
+- **Tunable tilt velocity scaling:** Expose hardcoded velocity scaling constants (0.5x-1.5x)
+  - *Current:* Velocity scaling automatically applies (faster = more tilt)
+  - *Prerequisite:* Test current feel first (may be unnecessary)
+  - *Certainty:* Low (~30%) - premature optimization until feel requires it
+  - *Note:* Added to backlog from animation_tuning_plan learnings
+
+- **Independent walk/run thresholds:** Decouple from max_speed auto-sync
+  - *Current:* Thresholds procedurally derived (walk = 20% max_speed, run = 100%)
+  - *Risk:* Breaks elegant abstraction, adds parameter complexity
+  - *Certainty:* Very Low (~10%) - only if procedural approach fails
+  - *Note:* Deliberately excluded from tuning UI to preserve simplicity
+
+- **Parameter persistence:** Save/load tuned values between sessions
+  - *Current:* Manual adjustment at runtime, no persistence
+  - *Prerequisite:* Determine if iteration workflow needs it
+  - *Certainty:* Medium (~50%) - useful but not urgent
+  - *Note:* Would require config file system (JSON/TOML)
 
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
@@ -120,20 +143,28 @@
 
 ## UI & Menus
 
-### Debug UI (Medium Priority)
-- **Real-time parameter tuning:** GUI sliders for animation parameters (tilt_smoothing, tilt_magnitude, etc.)
-  - *Currently:* character_panel exists for locomotion
-  - *Need:* Expand for animation_state parameters
-  - *Certainty:* High (~80%) - proven pattern, just add sliders
-  - *Note:* Current parameters well-tuned; not urgent unless more systems added
+### Debug UI (Partially Complete)
+- **Real-time parameter tuning:** ✅ COMPLETE - GUI sliders for animation/orientation/locomotion parameters
+  - *Status:* Comprehensive tuning UI implemented
+  - *Exposed:* Acceleration tilt (smoothing, magnitude), landing spring (stiffness, damping, impulse_scale), orientation (yaw_smoothing), locomotion (speed_smoothing)
+  - *Pattern:* Collapsing headers with real-time state feedback displays
+  - *Files:* `src/gui/character_panel.h/cpp`, see `animation_tuning_plan.md`
   
 - **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
   - *Status:* Tilt visualization complete via character body box
-  - *Potential additions:* Acceleration vector arrows, velocity trails
+  - *Potential additions:* Acceleration vector arrows, velocity trails, ground normal visualization
   - *Certainty:* High (~90%) - straightforward debug draw additions
+  - *Priority:* Low - current visualization sufficient for tuning
   
-- **Performance stats:** Frame time, draw calls
-- **State display:** Grounded, velocity magnitude, etc.
+- **Performance stats:** Frame time, draw calls, memory usage
+  - *Status:* FPS display exists in character panel
+  - *Potential additions:* Frame time graph, draw call count, memory profiling
+  - *Priority:* Low - premature optimization
+  
+- **State display:** Grounded, velocity magnitude, collision contacts
+  - *Status:* Partial - some state visible in locomotion/orientation sections
+  - *Potential additions:* Physics state panel, collision debug info
+  - *Priority:* Medium - useful for debugging physics edge cases
 
 ### Game UI (Uncertain - Defer)
 - **Main menu:** Start, options, quit

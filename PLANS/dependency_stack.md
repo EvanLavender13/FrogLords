@@ -15,9 +15,10 @@
 │  Secondary Motion / Bone Wobble     │  ← Needs skeletal joints
 │  Speed-Based Animation Scaling      │  ← May not be necessary
 ├─────────────────────────────────────┤
-│  Reactive Animation Layer (95%)     │  ← Interpret physics state
+│  Reactive Animation Layer (100%) ✅  │  ← Interpret physics state
 │  • Acceleration Tilt (100%) ✅       │     Character-local space, tilt matrix
 │  • Landing Spring (100%) ✅          │     Spring-damper crouch/recover
+│  • Animation Tuning UI (100%) ✅    │     Real-time parameter adjustment
 ├─────────────────────────────────────┤
 │  Procedural Orientation (95%)       │  ← Velocity-based facing
 │  Procedural Locomotion (95%)        │  ← Surveyor wheel, cubic interp
@@ -69,24 +70,29 @@
 
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
-### Reactive Systems Layer (Implemented, ~95% certain)
+### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
-**Status:** Architecture proven through two complete implementations
+**Status:** Architecture proven, tuning UI complete, ready for iteration
 
 **Completed: Acceleration Tilt ✅**
 - Character-local space transformation of world acceleration
 - Exponential smoothing for natural response
 - Pure reactive layer ("do no harm" principle verified)
 - 45 lines of code, 2 tunable parameters
-- See `acceleration_tilt_implementation.md` for full details
+- UI controls: tilt_smoothing, tilt_magnitude with real-time pitch/roll display
 
 **Completed: Landing Spring ✅**
 - Spring-damper driven crouch/recover on landing
 - Impulse proportional to fall velocity
 - Critically damped for natural feel (no bounce)
 - Visual debug spring (collision sphere to body center)
-- GUI controls for real-time parameter tuning
-- See `landing_spring_implementation.md` for full details
+- UI controls: stiffness, damping, impulse_scale with spring state display
+
+**Completed: Animation Tuning UI ✅**
+- Comprehensive parameter exposure across animation/orientation/locomotion systems
+- Real-time adjustment during gameplay (zero rebuild iteration)
+- Consistent UX pattern: collapsing headers + live state feedback
+- See `animation_tuning_plan.md` for implementation details and learnings
 
 **Architecture Validated:**
 - `character::animation_state` pattern works well (proven twice)
@@ -94,13 +100,15 @@
 - Transform injection: position → orient → landing offset → tilt → render
 - Parameters over assets paradigm successful
 - Flag-based event communication (just_landed) pattern works
+- Public member access for tuning (no getters/setters needed)
+- Direct UI binding to system parameters (no intermediate abstractions)
 
 **Next Candidates:**
 - Secondary motion / bone wobble (needs skeletal joints)
 - Speed-based animation scaling (may not be necessary)
 - Additional reactive systems as gameplay needs emerge
 
-**Certainty:** High for architecture (~95%), medium for specific features (depends on future rendering/gameplay decisions).
+**Certainty:** ~100% for current systems. Architecture solid, tuning enabled, ready for feel iteration.
 
 **Dependencies:** Requires stable physics core. Changes in controller would force redesign here.
 
@@ -114,15 +122,16 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Iterate/playtest core feel, then pull next feature from backlog.
+**Current Focus:** Iteration/playtesting of core feel with full tuning capability.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
 2. ✅ Core rendering and app runtime
 3. ✅ Core gameplay (physics controller, basic animation)
-4. ✅ First reactive system (acceleration tilt)
-5. 🔄 Iteration/playtesting of core feel ← **YOU ARE HERE**
-6. ⏸️ Pull next item from backlog (spring landings or debug UI)
+4. ✅ Reactive animation systems (acceleration tilt, landing spring)
+5. ✅ Animation tuning UI (comprehensive parameter exposure)
+6. 🔄 Iteration/playtesting of core feel ← **YOU ARE HERE**
+7. ⏸️ Pull next item from backlog based on playtest discoveries
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
