@@ -190,8 +190,8 @@ void app_runtime::update_simulation(float dt) {
     character.animation.update_landing_spring(character.just_landed,
                                               character.vertical_velocity_on_land, dt);
     character.just_landed = false; // Clear flag after animation reads it
-    character.animation.update_acceleration_tilt(character.last_acceleration, orientation.get_yaw(),
-                                                 dt);
+    character.animation.update_acceleration_tilt(character.last_acceleration, character.velocity,
+                                                 character.max_speed, orientation.get_yaw(), dt);
 
     character::sync_locomotion_targets(character, locomotion);
     locomotion.update(horizontal_velocity, dt, character.is_grounded);

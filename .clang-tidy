@@ -2,6 +2,7 @@ Checks: >-
   -*,
   clang-analyzer-*,
   bugprone-*,
+  -bugprone-easily-swappable-parameters,
   readability-identifier-naming,
   readability-implicit-bool-conversion,
   readability-inconsistent-declaration-parameter-name,

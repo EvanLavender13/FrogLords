@@ -9,6 +9,7 @@ struct animation_update_params {
     float dt;
     float orientation_yaw;
     glm::vec3 acceleration;
+    glm::vec3 velocity;
 };
 
 struct animation_state {
@@ -23,7 +24,7 @@ struct animation_state {
 
     animation_state();
 
-    void update_acceleration_tilt(glm::vec3 acceleration,
+    void update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity, float max_speed,
                                   float orientation_yaw, // NOLINT
                                   float dt);
     void update_landing_spring(bool just_landed,

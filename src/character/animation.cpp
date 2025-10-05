@@ -1,6 +1,5 @@
 #include "animation.h"
 #include <cmath>
-#include <cstdio>
 
 namespace character {
 
@@ -10,12 +9,15 @@ animation_state::animation_state()
     landing_spring.damping = critical_damping(landing_spring.stiffness);
 }
 
-void animation_state::update_acceleration_tilt(glm::vec3 acceleration,
+void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity,
+                                               float max_speed,
                                                float orientation_yaw, // NOLINT
                                                float dt) {
     // Extract horizontal acceleration (ignore vertical/gravity)
     glm::vec3 horizontal_accel = glm::vec3(acceleration.x, 0.0f, acceleration.z);
+    glm::vec3 horizontal_velocity = glm::vec3(velocity.x, 0.0f, velocity.z);
     float accel_magnitude = glm::length(horizontal_accel);
+    float velocity_magnitude = glm::length(horizontal_velocity);
 
     if (accel_magnitude > 0.01f) {
         // Transform world-space acceleration to character-local space
@@ -25,11 +27,24 @@ void animation_state::update_acceleration_tilt(glm::vec3 acceleration,
         float local_forward = horizontal_accel.z * cos_yaw - horizontal_accel.x * sin_yaw;
         float local_right = horizontal_accel.x * cos_yaw + horizontal_accel.z * sin_yaw;
 
-        // Map local acceleration to tilt angles
+        // Normalize local acceleration direction (tilt should show direction, not magnitude)
+        float local_accel_magnitude =
+            std::sqrt(local_forward * local_forward + local_right * local_right);
+        if (local_accel_magnitude > 0.01f) {
+            local_forward /= local_accel_magnitude;
+            local_right /= local_accel_magnitude;
+        }
+
+        // Scale tilt based on velocity (faster movement = more tilt, but clamped)
+        // Use velocity relative to max speed for scaling (0.5x to 1.5x tilt magnitude)
+        float velocity_scale = glm::clamp(velocity_magnitude / max_speed, 0.0f, 1.0f);
+        float effective_tilt_magnitude = tilt_magnitude * (0.5f + velocity_scale * 1.0f);
+
+        // Map normalized local acceleration to tilt angles
         // Forward acceleration → pitch forward (positive pitch)
         // Right acceleration → roll right (positive roll)
-        float target_pitch = local_forward * tilt_magnitude / 20.0f;
-        float target_roll = local_right * tilt_magnitude / 20.0f;
+        float target_pitch = local_forward * effective_tilt_magnitude;
+        float target_roll = local_right * effective_tilt_magnitude;
 
         // Smooth toward target (exponential decay)
         float blend = 1.0f - glm::exp(-tilt_smoothing * dt);
@@ -48,19 +63,10 @@ void animation_state::update_landing_spring(bool just_landed,
     if (just_landed) {
         float impulse = -glm::abs(vertical_velocity) * landing_impulse_scale;
         landing_spring.add_impulse(impulse);
-        printf("[SPRING] Applying impulse: %.3f (from velocity: %.3f, scale: %.3f)\n", impulse,
-               vertical_velocity, landing_impulse_scale);
-        printf("[SPRING] Position before: %.3f, velocity before: %.3f\n", landing_spring.position,
-               landing_spring.velocity);
     }
 
     spring_step step{.target = 0.0f, .delta_time = dt};
     landing_spring.update(step);
-
-    if (just_landed) {
-        printf("[SPRING] Position after: %.3f, velocity after: %.3f\n", landing_spring.position,
-               landing_spring.velocity);
-    }
 }
 
 glm::mat4 animation_state::get_tilt_matrix() const {
@@ -80,7 +86,8 @@ float animation_state::get_vertical_offset() const {
 }
 
 void animation_state::update(const animation_update_params& params) {
-    update_acceleration_tilt(params.acceleration, params.orientation_yaw, params.dt);
+    update_acceleration_tilt(params.acceleration, params.velocity, 8.0f, params.orientation_yaw,
+                             params.dt);
 }
 
 } // namespace character
