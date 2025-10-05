@@ -2,6 +2,7 @@
 #include "rendering/scene.h"
 #include "character/controller.h"
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
 namespace {
@@ -196,6 +197,34 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
         contact.scale = glm::vec3(0.05f);
         ctx.renderer.draw(contact, ctx.cam, ctx.aspect, glm::vec4(0, 1, 0, 1));
     }
+}
+
+void draw_character_body(draw_context& ctx, const controller& character,
+                         const orientation_system& orientation) {
+    // Generate tall box as character body stand-in
+    wireframe_mesh body = generate_box({0.4f, 0.8f, 0.3f}); // Width, height, depth
+
+    // Build transform: translate → orient → tilt → scale
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    // Translate to character position
+    transform = glm::translate(transform, character.position);
+
+    // Apply orientation (yaw rotation around Y axis)
+    float yaw = orientation.get_yaw();
+    transform = glm::rotate(transform, yaw, glm::vec3(0, 1, 0));
+
+    // Apply acceleration tilt
+    transform *= character.animation.get_tilt_matrix();
+
+    // Apply body vertices to transform
+    for (auto& vertex : body.vertices) {
+        glm::vec4 transformed = transform * glm::vec4(vertex, 1.0f);
+        vertex = glm::vec3(transformed);
+    }
+
+    // Draw with distinctive color (magenta for character body)
+    ctx.renderer.draw(body, ctx.cam, ctx.aspect, glm::vec4(1.0f, 0.2f, 1.0f, 1.0f));
 }
 
 } // namespace debug

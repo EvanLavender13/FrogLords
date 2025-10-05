@@ -186,6 +186,9 @@ void app_runtime::update_simulation(float dt) {
 
     orientation.update(intended_velocity, dt);
 
+    // Update reactive animation (after physics and orientation resolved)
+    character.animation.update({dt, orientation.get_yaw(), character.last_acceleration});
+
     character::sync_locomotion_targets(character, locomotion);
     locomotion.update(horizontal_velocity, dt, character.is_grounded);
 
@@ -220,6 +223,7 @@ void app_runtime::render_world() {
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
     debug::draw_collision_state(debug_ctx, character, scn);
+    debug::draw_character_body(debug_ctx, character, orientation);
     debug::draw_character_state(debug_ctx, character, locomotion, orientation);
     debug::draw_physics_springs(debug_ctx, character, locomotion);
     debug::draw_locomotion_wheel(debug_ctx, character, locomotion, orientation, wheel_spin_angle);

@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
+#include "character/animation.h"
 
 class camera;
 class scene;
@@ -13,6 +14,7 @@ struct controller {
     glm::vec3 position;
     glm::vec3 velocity;
     glm::vec3 acceleration;
+    glm::vec3 last_acceleration; // Previous frame's acceleration (for animation)
 
     // Input intent (for animation/orientation when velocity is blocked)
     glm::vec3 input_direction;
@@ -42,6 +44,9 @@ struct controller {
     float gravity = -9.8f;         // m/s^2
     float max_slope_angle = 45.0f; // degrees
     float jump_velocity = 5.0f;    // m/s
+
+    // Reactive animation layer
+    character::animation_state animation;
 
     controller();
 

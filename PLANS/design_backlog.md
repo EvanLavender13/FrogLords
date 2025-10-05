@@ -8,16 +8,25 @@
 
 ## Animation & Feel
 
-### Reactive Animation (High Priority - Pull Next)
+### Reactive Animation (Architecture Proven ✅)
+- **Acceleration tilt:** ✅ COMPLETE - Character leans into acceleration (Segway effect)
+  - *Status:* Implemented, tested, tuned
+  - *Files:* `src/character/animation.h/cpp`, detailed in `acceleration_tilt_implementation.md`
+  - *Learning:* Character-local space transformation critical, exponential smoothing sufficient
+  
 - **Spring-damper landings:** Detect airborne→grounded transition, apply impulse proportional to fall velocity, drive crouch/recover
-  - *Prerequisite:* Visible character body (not just sphere)
-  - *Certainty:* Medium (~60%) - simple system, but rendering dependency unclear
+  - *Prerequisite:* Visible character body (not just sphere/box)
+  - *Certainty:* High (~70%) - architecture proven, just needs rendering decision
+  - *Priority:* High - natural next step for reactive animation layer
+  
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Prerequisite:* Skeletal system with joints
   - *Certainty:* Low (~30%) - rendering approach unknown
+  
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
-  - *Prerequisite:* Acceleration tilt working
-  - *Certainty:* Medium (~50%) - simple extension
+  - *Prerequisite:* Acceleration tilt working ✅
+  - *Certainty:* High (~80%) - simple extension of proven system
+  - *Note:* May not be necessary - current constant magnitude feels good
 
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
@@ -111,12 +120,18 @@
 
 ## UI & Menus
 
-### Debug UI (High Priority - Pull Soon)
-- **Real-time parameter tuning:** GUI sliders for tilt_smoothing, tilt_magnitude, etc.
+### Debug UI (Medium Priority)
+- **Real-time parameter tuning:** GUI sliders for animation parameters (tilt_smoothing, tilt_magnitude, etc.)
   - *Currently:* character_panel exists for locomotion
-  - *Need:* Expand for animation parameters
+  - *Need:* Expand for animation_state parameters
   - *Certainty:* High (~80%) - proven pattern, just add sliders
+  - *Note:* Current parameters well-tuned; not urgent unless more systems added
+  
 - **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
+  - *Status:* Tilt visualization complete via character body box
+  - *Potential additions:* Acceleration vector arrows, velocity trails
+  - *Certainty:* High (~90%) - straightforward debug draw additions
+  
 - **Performance stats:** Frame time, draw calls
 - **State display:** Grounded, velocity magnitude, etc.
 

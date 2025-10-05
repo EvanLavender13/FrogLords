@@ -110,6 +110,9 @@ void controller::update(const scene* scn, float dt) {
     // Ground plane (fallback if no box collision)
     resolve_ground_collision();
 
+    // Save acceleration for animation system (before reset)
+    last_acceleration = acceleration;
+
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
 }

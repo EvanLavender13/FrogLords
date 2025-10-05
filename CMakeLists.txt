@@ -55,6 +55,7 @@ add_executable(FrogLords
     src/character/controller.cpp
     src/character/orientation.cpp
     src/character/locomotion.cpp
+    src/character/animation.cpp
     src/character/tuning.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp

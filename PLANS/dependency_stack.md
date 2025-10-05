@@ -12,10 +12,14 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
-│     Acceleration Tilt (NEXT)        │  ← Next implementation
+│  Spring-Damper Landings (NEXT?)     │  ← Needs character body rendering
+│  Debug Parameter Tuning UI          │  ← GUI sliders for parameters
 ├─────────────────────────────────────┤
-│  Procedural Orientation (90%)       │  ← Velocity-based facing
-│  Procedural Locomotion (90%)        │  ← Surveyor wheel, cubic interp
+│  Reactive Animation Layer (90%)     │  ← Interpret physics state
+│  • Acceleration Tilt (100%) ✅       │     Character-local space, tilt matrix
+├─────────────────────────────────────┤
+│  Procedural Orientation (95%)       │  ← Velocity-based facing
+│  Procedural Locomotion (95%)        │  ← Surveyor wheel, cubic interp
 ├─────────────────────────────────────┤
 │    Character Controller (95%)       │  ← Physics, input, collision
 │    Collision Detection (95%)        │  ← Sphere-AABB resolution
@@ -64,21 +68,29 @@
 
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
-### Reactive Systems Layer (In Progress, ~40% certain)
+### Reactive Systems Layer (Implemented, ~90% certain)
 
-**Status:** Next implementation target
+**Status:** Architecture proven through acceleration tilt implementation
 
-**Next Up: Acceleration Tilt**
-- Simple reactive animation interpreting physics state
-- Does not affect controller physics ("do no harm")
-- See `acceleration_tilt_implementation.md` for details
+**Completed: Acceleration Tilt ✅**
+- Character-local space transformation of world acceleration
+- Exponential smoothing for natural response
+- Pure reactive layer ("do no harm" principle verified)
+- 45 lines of code, 2 tunable parameters
+- See `acceleration_tilt_implementation.md` for full details
 
-**Other Planned:**
-- Spring-damper landings (detect airborne→grounded, apply impulse)
-- Secondary motion (if character gets visible body)
-- IK foot placement (if terrain becomes complex)
+**Architecture Validated:**
+- `character::animation_state` pattern works well
+- Update timing: after physics, after orientation, before render
+- Transform injection: position → orient → tilt → render
+- Parameters over assets paradigm successful
 
-**Certainty:** Low. Acceleration tilt is ~70% (simple), others ~30% (depend on rendering/content decisions not yet made).
+**Next Candidates:**
+- Spring-damper landings (needs visible body to show crouch)
+- Secondary motion (needs skeletal joints)
+- Debug parameter UI (expand character_panel with sliders)
+
+**Certainty:** High for architecture (~90%), medium for specific features (50-70% each, depends on rendering decisions).
 
 **Dependencies:** Requires stable physics core. Changes in controller would force redesign here.
 
@@ -92,26 +104,27 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Complete acceleration tilt implementation, then iterate/playtest.
+**Current Focus:** Iterate/playtest core feel, then pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
 2. ✅ Core rendering and app runtime
 3. ✅ Core gameplay (physics controller, basic animation)
-4. 🔄 First reactive system (acceleration tilt) ← **YOU ARE HERE**
-5. ⏸️ Iteration/playtesting of core feel
-6. ⏸️ Pull next item from backlog when foundation solidifies
+4. ✅ First reactive system (acceleration tilt)
+5. 🔄 Iteration/playtesting of core feel ← **YOU ARE HERE**
+6. ⏸️ Pull next item from backlog (spring landings or debug UI)
 
 **Planning Horizon:**
-- Foundation: Days to weeks (high certainty, derivative work)
-- Core gameplay: Days (testing needed, but simple scope)
-- Reactive systems: Short iterations (2-4 hours per feature)
+- Foundation: Weeks to months (high certainty, stable)
+- Core gameplay: Weeks (testing/tuning, but proven)
+- Reactive systems: Short iterations (2-4 hours per feature, proven pattern)
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**
-- Foundation layer: ~95% certain (won't change)
-- Core gameplay: ~90% certain (minor tuning expected)
-- Acceleration tilt: ~70% certain (simple, but untested)
+- Foundation layer: ~95% certain (stable, won't change)
+- Core gameplay: ~95% certain (proven through testing)
+- Reactive animation: ~90% certain (architecture validated)
+- Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 
 **Risk Management:**
