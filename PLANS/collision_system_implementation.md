@@ -4,6 +4,20 @@
 **Purpose:** Implement sphere-vs-AABB collision detection for terrain/platform handling  
 **Sources:** GDC 2013 (David Rosen), AnimationDoc1.md, Elegance.md, lifter_bumper_system_analysis.md
 
+**Status:** Phase A complete, Phase B ready to begin
+
+---
+
+## Revision History
+
+**October 5, 2025 - Phase A Completion Update**
+- Documented actual Phase A implementation (surface-classified approach)
+- Added playtest justifications for deviation from original "lifter-first" plan
+- Removed code examples from Phase A (now implemented in codebase)
+- Added validation results and bug resolution notes
+- Updated success criteria to reflect achieved state
+- Cross-referenced supporting documents (reviews, bug reports, action summaries)
+
 ---
 
 ## Design Philosophy
@@ -87,152 +101,101 @@ sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box);
 
 ## Phase A: Basic Box Collision (Minimum Viable)
 
+**Status:** ✅ **COMPLETE** (with playtest revisions)
+
 **Goal:** Character collides with boxes. Can stand on platforms, bump into walls.
 
-**Scope:** Lifter grounding + bumper sliding. No step-up yet.
+**Scope:** Surface-classified collision response. No step-up yet.
 
-### A.1: Add Box Collision Loop to Character Controller
+### Implementation Summary
 
-**File:** `src/character/controller.cpp`
+Phase A implementation diverged from the original "lifter-first" plan based on playtesting feedback. The final implementation uses a three-phase approach that emerged from empirical testing:
 
-**Location:** In `controller::update()`, after physics integration, before ground plane collision.
+1. **Phase 1a:** Bumper handles flat ground (`normal.y > 0.9f`)
+2. **Phase 1b:** Weightlifter handles slopes (`0.5f < normal.y ≤ 0.9f`)
+3. **Phase 2:** Bumper handles walls (`normal.y ≤ 0.5f`)
 
-**Changes:**
-1. Accept `scene` parameter (change signature from `(const scene*, float)` to actually use scene)
-2. Add collision testing loop against all boxes
-3. Test **weightlifter first** (grounding), then **bumper** (sliding)
+### Design Decisions
 
-**Implementation:**
+**Original Plan:** Weightlifter handles all grounding, bumper handles all walls.
+
+**Playtest Issue:** Character exhibited visible "settling" behavior on flat platforms. The weightlifter's intentional 0.10m burial created visual penetration artifacts and unstable ground contact on horizontal surfaces.
+
+**Revised Approach:** Split ground authority by surface angle:
+- **Bumper on flat surfaces** → Clean, immediate contact with zero penetration
+- **Lifter on slopes/edges** → Smooth transitions with stability burial logic
+- **Bumper on walls** → Sliding and collision response
+
+**Rationale:** This division leverages each sphere's geometric position naturally. The bumper (outer sphere, primary contact volume) provides responsive solid feel on clean surfaces. The weightlifter (recessed sphere) handles transitional terrain where grip and stability matter.
+
+**Principle Alignment:**
+- ✅ "Iteration over planning" - Adapted based on feel testing
+- ✅ "Graybox until mechanics proven" - Empirical validation drove design
+- ✅ "Honor serendipity" - Discovered behavior over pre-planned spec
+
+### Key Implementation Details
+
+**Surface Classification Constants:**
 ```cpp
-void controller::update(const scene* scn, float dt) {
-    // [Existing physics integration code...]
-    position += velocity * dt;
-    
-    // Reset grounded state
-    is_grounded = false;
-    
-    // Update collision sphere positions
-    bumper.center = position;
-    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
-    
-    // ===== NEW: Box collision resolution =====
-    if (scn) {
-        resolve_box_collisions(*scn);
-    }
-    
-    // Ground plane (fallback if no box collision)
-    resolve_ground_collision();
-    
-    // [Existing cleanup code...]
-}
+FLAT_GROUND_NORMAL_THRESHOLD = 0.9f;  // cos(~25°) - bumper authority
+SLOPE_NORMAL_THRESHOLD = 0.5f;        // cos(60°) - lifter/wall boundary
+INTENDED_BURIAL_DEPTH = 0.10f;        // Lifter penetration target on slopes
 ```
 
-### A.2: Implement `resolve_box_collisions()` Method
+**Collision Resolution Method:**
+- `controller::resolve_box_collisions(const scene&)` - Three-phase collision loop
+- Integrated into `controller::update()` after physics integration
+- Ground plane remains as fallback for areas without collision boxes
 
-**File:** `src/character/controller.cpp` (implementation)  
-**File:** `src/character/controller.h` (declaration)
+**Files Modified:**
+- `src/character/controller.cpp` - Added `resolve_box_collisions()`, updated constants
+- `src/character/controller.h` - Added method declaration
+- `src/app/runtime.cpp` - Enhanced test environment with wall geometry
 
-**Add to header:**
-```cpp
-private:
-    void resolve_ground_collision();
-    void resolve_box_collisions(const scene& scn);  // NEW
-```
+### Validation Results
 
-**Implementation (basic version - no step-up):**
-```cpp
-void controller::resolve_box_collisions(const scene& scn) {
-    // Phase 1: Weightlifter collision (grounding detection)
-    for (const auto& box : scn.collision_boxes()) {
-        sphere lifter_copy = weightlifter;
-        sphere_collision col = resolve_sphere_aabb(lifter_copy, box);
-        
-        if (col.hit) {
-            // Check if this is a ground surface (normal points mostly upward)
-            if (col.normal.y > 0.5f) {
-                // Apply intentional burial logic (same as ground plane)
-                constexpr float INTENDED_BURIAL_DEPTH = 0.10f;
-                float excess = col.penetration - INTENDED_BURIAL_DEPTH;
-                
-                if (excess > 0.0f) {
-                    // Push up by excess only
-                    position += col.normal * excess;
-                    weightlifter.center = position + WEIGHTLIFTER_OFFSET;
-                }
-                
-                // Set grounded state
-                is_grounded = true;
-                ground_normal = col.normal;
-                ground_height = box.center.y + box.half_extents.y;
-                
-                // Kill downward velocity
-                if (glm::dot(velocity, col.normal) < 0.0f) {
-                    velocity -= col.normal * glm::dot(velocity, col.normal);
-                }
-            }
-        }
-    }
-    
-    // Phase 2: Bumper collision (sliding/bouncing)
-    for (const auto& box : scn.collision_boxes()) {
-        sphere bumper_copy = bumper;
-        sphere_collision col = resolve_sphere_aabb(bumper_copy, box);
-        
-        if (col.hit) {
-            // Push out of collision
-            position += col.normal * col.penetration;
-            
-            // Update sphere positions
-            bumper.center = position;
-            weightlifter.center = position + WEIGHTLIFTER_OFFSET;
-            
-            // Remove velocity into surface
-            float vel_into_surface = glm::dot(velocity, col.normal);
-            if (vel_into_surface < 0.0f) {
-                velocity -= col.normal * vel_into_surface;
-            }
-        }
-    }
-}
-```
+**Functional Testing:**
+- ✅ Character stands on flat platforms with instant, solid contact
+- ✅ Character handles sloped surfaces (0.5-0.9 normal.y) smoothly
+- ✅ Character slides along walls without passing through
+- ✅ Ground plane fallback works correctly
+- ✅ No settling/sinking behavior on landing
+- ✅ Spawn pose stable (bumper at 0.50m, lifter at 0.35m)
 
-### A.3: Include Required Headers
+**Test Environment:**
+- 5 platform boxes at varying heights (1.0m to 8.5m)
+- 5 wall boxes for collision validation:
+  - Long wall (8m) for sustained sliding tests
+  - Corner walls (L-shape) for multi-surface collision
+  - Gap walls (1.8m apart) for tight space navigation
 
-**File:** `src/character/controller.cpp`
+**Bug Resolution:**
+Fixed "character slow sink" issue documented in `ISSUES/character_slow_sink.md`. Root cause was lifter claiming authority over flat ground, causing gradual settling toward 0.10m burial target. Solution: bumper handles flat surfaces with zero-penetration contact.
 
-Add:
-```cpp
-#include "foundation/collision.h"  // For resolve_sphere_aabb
-```
+### Known Limitations
 
-### A.4: Update Call Site
+- **No step-up capability** - Character cannot walk up obstacles (Phase B feature)
+- **Single-pass resolution** - Complex multi-box collisions may show minor penetration (Phase C feature)
+- **No velocity damping** - Repeated collisions don't dissipate energy (Phase C feature)
+- **Three-loop structure** - Iterates collision boxes 3x per frame (acceptable for <50 boxes, optimization deferred to Phase E)
 
-**File:** `src/app/runtime.cpp`
+### References
 
-No changes needed - already passes `&scn` to `character.update()`.
-
-### Testing Phase A
-
-**Expected Behavior:**
-- ✅ Character stands on platform boxes
-- ✅ Character slides along walls
-- ✅ Character cannot pass through boxes
-- ✅ Ground plane still works as fallback
-- ⚠️ Character **cannot** step up onto boxes yet (handled in Phase B)
-
-**Test Cases:**
-1. Walk onto existing platforms - should stand on top
-2. Jump and land on platforms - should stop on surface
-3. Run into walls - should slide along them
-4. Walk off platform edge - should fall to ground plane
+- **Bug Report:** `ISSUES/character_slow_sink.md` - Documents settling behavior and fix
+- **Review:** `REVIEWS/collision_system_phase_a_review.md` - Analysis of implementation vs. plan
+- **Actions:** `REVIEWS/collision_phase_a_implementation_actions.md` - Code quality improvements applied
 
 ---
 
 ## Phase B: Step-Up Behavior
 
+**Status:** 🔲 **PLANNED** (not yet implemented)
+
 **Goal:** Character automatically steps up onto obstacles within lifter radius height.
 
 **Rationale:** From GDC talk - "weightlifter's sphere which moves up over small obstacles"
+
+**Prerequisites:** Phase A complete ✅
 
 ### B.1: Enhance Lifter Collision with Step-Up Logic
 
@@ -323,7 +286,11 @@ for (int i = 0; i < 4; ++i) {
 
 ## Phase C: Collision Response Tuning
 
+**Status:** 🔲 **PLANNED** (not yet implemented)
+
 **Goal:** Refine collision behavior for feel and stability.
+
+**Prerequisites:** Phase B complete
 
 ### C.1: Multi-Iteration Collision Resolution
 
@@ -385,7 +352,11 @@ Already implemented in Phase A (lifter loop before bumper loop).
 
 ## Phase D: Debug Visualization
 
+**Status:** 🔲 **PLANNED** (not yet implemented)
+
 **Goal:** Visualize collision state for debugging.
+
+**Prerequisites:** Phase C complete
 
 ### D.1: Add Collision Visualization
 
@@ -446,7 +417,11 @@ debug::draw_collision_state(debug_ctx, character, scn);
 
 ## Phase E: Optimization (Future)
 
+**Status:** 🔲 **DEFERRED**
+
 **Note:** Only implement if profiling shows collision is a bottleneck (unlikely with ~10-100 boxes).
+
+**Prerequisites:** Phases A-D complete, performance profiling conducted
 
 ### Potential Optimizations
 
@@ -468,33 +443,38 @@ debug::draw_collision_state(debug_ctx, character, scn);
 
 ## Implementation Order Summary
 
-### Minimum Viable (Phase A)
-1. ✅ Add `resolve_box_collisions()` method
-2. ✅ Implement weightlifter grounding detection
-3. ✅ Implement bumper sliding
-4. ✅ Call from `update()` loop
+### Minimum Viable (Phase A) ✅ COMPLETE
+1. ✅ Added `resolve_box_collisions()` method with three-phase approach
+2. ✅ Implemented bumper flat-ground detection (`normal.y > 0.9f`)
+3. ✅ Implemented weightlifter slope grounding (`0.5f < normal.y ≤ 0.9f`)
+4. ✅ Implemented bumper wall sliding (`normal.y ≤ 0.5f`)
+5. ✅ Added surface classification constants
+6. ✅ Enhanced test environment with wall geometry
 
-**Outcome:** Character collides with world geometry.
+**Outcome:** Character collides with world geometry. Stable, responsive ground contact on all surface types.
 
-### Essential Feature (Phase B)
-1. ✅ Add step-up logic to weightlifter collision
-2. ✅ Tune step height limits
-3. ✅ Test with graduated step geometry
+**Playtest Notes:** Revised from plan-specified "lifter-first" to "surface-classified" approach based on stability testing. Bumper-on-flat eliminates settling artifacts, lifter-on-slopes enables smooth transitions.
 
-**Outcome:** Character walks up stairs/obstacles naturally.
+### Essential Feature (Phase B) 🔲 NOT STARTED
+1. 🔲 Add step-up logic to weightlifter collision
+2. 🔲 Tune step height limits
+3. 🔲 Add graduated step test geometry
 
-### Polish (Phase C)
-1. ✅ Multi-iteration resolution
-2. ✅ Velocity damping
-3. ✅ Stability tuning
+**Planned Outcome:** Character walks up stairs/obstacles naturally.
 
-**Outcome:** Smooth, stable collision response.
+### Polish (Phase C) 🔲 NOT STARTED
+1. 🔲 Multi-iteration resolution (2-3 passes per frame)
+2. 🔲 Velocity damping on impact
+3. 🔲 Stability tuning for complex geometry
 
-### Debugging (Phase D)
-1. ✅ Collision box visualization
-2. ✅ Ground contact indicators
+**Planned Outcome:** Smooth, stable collision response in all scenarios.
 
-**Outcome:** Easy to diagnose collision issues.
+### Debugging (Phase D) 🔲 NOT STARTED
+1. 🔲 Collision box visualization in scene
+2. 🔲 Ground contact indicators
+3. 🔲 Surface normal visualization
+
+**Planned Outcome:** Easy to diagnose collision issues visually.
 
 ### Future (Phase E)
 - Spatial optimization (if needed)
@@ -532,23 +512,27 @@ Once implemented, validate against:
 
 ## Success Criteria
 
-✅ **Phase A Complete When:**
-- Character stands on all platform boxes in scene
-- Character slides along walls without passing through
-- Ground plane still works as fallback
+✅ **Phase A Complete:** (achieved October 5, 2025)
+- ✅ Character stands on all platform boxes in scene
+- ✅ Character slides along walls without passing through
+- ✅ Ground plane still works as fallback
+- ✅ No settling/sinking behavior on landing
+- ✅ Stable spawn pose and ground contact
+- ✅ Test environment includes dedicated wall geometry
 
-✅ **Phase B Complete When:**
+🔲 **Phase B Complete When:**
 - Character walks up 0.15m steps without jumping
 - Character walks up 0.30m steps without jumping
 - Character is blocked by 0.60m obstacles
-- No manual jumping required to navigate terrain
+- No manual jumping required to navigate stepped terrain
 
-✅ **All Phases Complete When:**
+🔲 **All Phases Complete When:**
 - Character navigates entire test level naturally
-- Collision feels smooth and predictable
+- Collision feels smooth and predictable in all scenarios
 - "Intuitive and responsive" (GDC design goal achieved)
+- Debug visualization aids rapid iteration
 
 ---
 
-**Status:** Phase A.1 complete. Ready for testing.  
-**Next Action:** Implement Phase A.2 - Test basic box collision.
+**Overall Status:** Phase A complete. Phase B ready to begin.  
+**Next Action:** Implement Phase B - Step-up behavior for weightlifter sphere.

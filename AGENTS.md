@@ -141,23 +141,25 @@ private:
 ```
 
 ### Namespaces
-- **System namespaces** for stateless utilities: `input::`, `gui::`
-- **No namespace** for core types with clear, unique names: `camera`, `scene`
+- **System namespaces** for stateless utilities: `input::`, `gui::`, `debug::`, `easing::`
+- **Domain namespaces** for related utilities: `character::`
+- **No namespace** for core types with clear, unique names: `camera`, `scene`, `controller`
 - **Nested namespaces** only when preventing real conflicts
 
 ### File Organization
     src/
+        app/           # Application runtime and lifecycle
         camera/        # Camera control and view matrices
-        character/     # Character movement, orientation, locomotion
-        foundation/    # Reusable procedural primitives (easing, springs)
-        rendering/     # Renderers, scene composition, pipelines
+        character/     # Character movement, orientation, locomotion, tuning
+        foundation/    # Reusable procedural primitives (easing, springs, collision)
+        rendering/     # Renderers, scene composition, pipelines, debug draw
         input/         # Keyboard, mouse, gamepad
-        gui/           # Interface systems
+        gui/           # Interface systems, panels
         main.cpp       # Application entry point
 
     shaders/          # .glsl source
     generated/        # Shader headers (build artifacts)
-Foundation -> Character -> Rendering defines the dependency flow; higher layers do not include sideways.
+Foundation -> Character -> Rendering -> App defines the dependency flow; higher layers do not include sideways.
 
 ### Documentation
 ```cpp

@@ -65,6 +65,35 @@ void app_runtime::initialize() {
         scn.add_collision_box(platform);
     }
 
+    // Add wall geometry for Phase A validation
+    // Long wall - test sustained sliding behavior
+    aabb long_wall;
+    long_wall.center = glm::vec3(6.0f, 2.0f, -10.0f);
+    long_wall.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
+    scn.add_collision_box(long_wall);
+
+    // Corner walls - test multi-surface collision
+    aabb corner_wall_1;
+    corner_wall_1.center = glm::vec3(-6.0f, 1.5f, -8.0f);
+    corner_wall_1.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
+    scn.add_collision_box(corner_wall_1);
+
+    aabb corner_wall_2;
+    corner_wall_2.center = glm::vec3(-4.0f, 1.5f, -12.0f);
+    corner_wall_2.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
+    scn.add_collision_box(corner_wall_2);
+
+    // Narrow gap - test tight space navigation
+    aabb gap_wall_1;
+    gap_wall_1.center = glm::vec3(3.0f, 1.0f, 2.0f);
+    gap_wall_1.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    scn.add_collision_box(gap_wall_1);
+
+    aabb gap_wall_2;
+    gap_wall_2.center = glm::vec3(3.0f, 1.0f, 4.0f);
+    gap_wall_2.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    scn.add_collision_box(gap_wall_2);
+
     initialized = true;
 }
 

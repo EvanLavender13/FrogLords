@@ -14,6 +14,11 @@ constexpr float WEIGHTLIFTER_RADIUS = 0.45f;     // Nearly same size as bumper
 constexpr float WEIGHTLIFTER_DROP = 0.15f;       // Offsets lifter so bumper rests on surface
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // Spawn with bumper resting on ground
 const glm::vec3 WEIGHTLIFTER_OFFSET(0.0f, -WEIGHTLIFTER_DROP, 0.0f);
+
+// Collision surface classification (based on surface normal.y)
+constexpr float FLAT_GROUND_NORMAL_THRESHOLD = 0.9f; // cos(~25°) - bumper authority
+constexpr float SLOPE_NORMAL_THRESHOLD = 0.5f;       // cos(60°) - lifter/wall boundary
+constexpr float INTENDED_BURIAL_DEPTH = 0.10f;       // Target lifter penetration on slopes
 } // namespace
 
 controller::controller()
@@ -170,7 +175,7 @@ void controller::resolve_box_collisions(const scene& scn) {
 
         if (col.hit) {
             // Check if this is a flat ground surface (nearly vertical normal)
-            if (col.normal.y > 0.9f) {
+            if (col.normal.y > FLAT_GROUND_NORMAL_THRESHOLD) {
                 // Push out fully - bumper rests on surface
                 position += col.normal * col.penetration;
                 bumper.center = position;
@@ -202,9 +207,9 @@ void controller::resolve_box_collisions(const scene& scn) {
 
         if (col.hit) {
             // Check if this is a sloped surface (angled but still supporting)
-            if (col.normal.y > 0.5f && col.normal.y <= 0.9f) {
+            if (col.normal.y > SLOPE_NORMAL_THRESHOLD &&
+                col.normal.y <= FLAT_GROUND_NORMAL_THRESHOLD) {
                 // Apply intentional burial logic for slopes/edges
-                constexpr float INTENDED_BURIAL_DEPTH = 0.10f;
                 float vertical_penetration = col.penetration * std::max(col.normal.y, 0.0f);
                 if (vertical_penetration <= 0.0f) {
                     continue;
@@ -253,7 +258,7 @@ void controller::resolve_box_collisions(const scene& scn) {
 
         if (col.hit) {
             // Skip all upward-facing surfaces - weightlifter has exclusive authority
-            if (col.normal.y > 0.5f) {
+            if (col.normal.y > SLOPE_NORMAL_THRESHOLD) {
                 continue;
             }
 
