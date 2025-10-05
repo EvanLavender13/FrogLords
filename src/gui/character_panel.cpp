@@ -25,36 +25,22 @@ void draw_character_panel(character_panel_state& state, controller& character,
             character::sync_locomotion_targets(character, locomotion);
         }
 
+        // Landing spring parameters
+        if (ImGui::CollapsingHeader("Landing Spring")) {
+            gui::widget::slider_float("Stiffness", &character.animation.landing_spring.stiffness,
+                                      100.0f, 1000.0f);
+            gui::widget::slider_float("Damping", &character.animation.landing_spring.damping, 10.0f,
+                                      100.0f);
+            gui::widget::slider_float("Impulse Scale", &character.animation.landing_impulse_scale,
+                                      0.1f, 1.5f);
+
+            // Read-only spring state display
+            gui::widget::text("Spring Position: %.3f", character.animation.get_vertical_offset());
+            gui::widget::text("Spring Velocity: %.3f",
+                              character.animation.landing_spring.get_velocity());
+        }
+
         if (ImGui::CollapsingHeader("Debug Info")) {
-            gui::widget::text("Grounded: %s", character.is_grounded ? "yes" : "no");
-            gui::widget::text("Position Y: %.3f", character.position.y);
-            gui::widget::text("Velocity Y: %.3f", character.velocity.y);
-            gui::widget::text("Collision sphere Y: %.3f", character.collision_sphere.center.y);
-
-            if (character.is_grounded) {
-                gui::widget::text("Ground height: %.3f", character.ground_height);
-                gui::widget::text("Ground normal: (%.2f, %.2f, %.2f)", character.ground_normal.x,
-                                  character.ground_normal.y, character.ground_normal.z);
-
-                float surface_offset =
-                    character.collision_sphere.center.y -
-                    (character.ground_height + character.collision_sphere.radius);
-
-                gui::widget::text("Surface offset: %.3f", surface_offset);
-            }
-
-            gui::widget::text("");
-
-            const controller::contact_debug_info& contact_dbg = character.collision_contact_debug;
-            gui::widget::text("Collision contact: %s",
-                              contact_dbg.active ? (contact_dbg.from_box ? "box" : "ground plane")
-                                                 : "none");
-            if (contact_dbg.active) {
-                gui::widget::text("  Normal: (%.2f, %.2f, %.2f)", contact_dbg.normal.x,
-                                  contact_dbg.normal.y, contact_dbg.normal.z);
-                gui::widget::text("  Penetration (normal): %.4f", contact_dbg.penetration);
-                gui::widget::text("  Vertical penetration: %.4f", contact_dbg.vertical_penetration);
-            }
         }
 
         gui::widget::text("");

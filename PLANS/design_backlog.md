@@ -14,10 +14,10 @@
   - *Files:* `src/character/animation.h/cpp`, detailed in `acceleration_tilt_implementation.md`
   - *Learning:* Character-local space transformation critical, exponential smoothing sufficient
   
-- **Spring-damper landings:** Detect airborne→grounded transition, apply impulse proportional to fall velocity, drive crouch/recover
-  - *Prerequisite:* Visible character body (not just sphere/box)
-  - *Certainty:* High (~70%) - architecture proven, just needs rendering decision
-  - *Priority:* High - natural next step for reactive animation layer
+- **Spring-damper landings:** ✅ COMPLETE - Crouch/recover on landing driven by spring-damper
+  - *Status:* Implemented, tested, tuned
+  - *Files:* `src/character/animation.h/cpp`, detailed in `landing_spring_implementation.md`
+  - *Learning:* Flag-based event communication works well, spring visualization critical for tuning, collision-sphere-to-body endpoint prevents stretching during jumps
   
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Prerequisite:* Skeletal system with joints

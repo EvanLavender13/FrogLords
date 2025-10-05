@@ -68,11 +68,36 @@ void draw_character_state(draw_context& ctx, const controller& character,
 
 void draw_physics_springs(draw_context& ctx, const controller& character,
                           const locomotion_system& locomotion) {
-    (void) ctx;
-    (void) character;
     (void) locomotion;
-    // Phase 2: No spring visualization - vertical motion comes from keyframe interpolation
-    // Spring visualization will be added in Phase 3
+
+    // Landing spring visualization: collision sphere bottom to character body center
+    float spring_offset = character.animation.get_vertical_offset();
+
+    // Spring bottom: bottom of collision sphere (acts as "feet")
+    glm::vec3 spring_bottom = character.collision_sphere.center;
+    spring_bottom.y -= character.collision_sphere.radius;
+
+    // Spring top: character body center (affected by spring compression)
+    glm::vec3 spring_top = character.position;
+    spring_top.y += spring_offset; // Negative when compressed
+
+    // Generate spring mesh (coils compress as spring compresses)
+    int coil_count = 8;
+    float spring_radius = 0.2f;
+    wireframe_mesh spring = generate_spring(spring_bottom, spring_top, coil_count, spring_radius);
+
+    // Color: bright yellow/orange when compressed, dim when at rest
+    glm::vec4 spring_color;
+    if (spring_offset < -0.01f) {
+        // Compressed: bright yellow with intensity based on compression
+        float compression_factor = glm::min(1.0f, -spring_offset / 0.3f);
+        spring_color = glm::vec4(1.0f, 0.8f, 0.1f, 0.7f + compression_factor * 0.3f);
+    } else {
+        // At rest: subtle gray
+        spring_color = glm::vec4(0.6f, 0.6f, 0.6f, 0.25f);
+    }
+
+    ctx.renderer.draw(spring, ctx.cam, ctx.aspect, spring_color);
 }
 
 void draw_locomotion_wheel(draw_context& ctx, const controller& character,
@@ -204,7 +229,7 @@ void draw_character_body(draw_context& ctx, const controller& character,
     // Generate tall box as character body stand-in
     wireframe_mesh body = generate_box({0.4f, 0.8f, 0.3f}); // Width, height, depth
 
-    // Build transform: translate → orient → tilt → scale
+    // Build transform: translate → orient → landing offset → tilt → scale
     glm::mat4 transform = glm::mat4(1.0f);
 
     // Translate to character position
@@ -213,6 +238,9 @@ void draw_character_body(draw_context& ctx, const controller& character,
     // Apply orientation (yaw rotation around Y axis)
     float yaw = orientation.get_yaw();
     transform = glm::rotate(transform, yaw, glm::vec3(0, 1, 0));
+
+    // Apply landing spring vertical offset (crouch effect)
+    transform *= character.animation.get_vertical_offset_matrix();
 
     // Apply acceleration tilt
     transform *= character.animation.get_tilt_matrix();

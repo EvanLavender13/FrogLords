@@ -186,8 +186,12 @@ void app_runtime::update_simulation(float dt) {
 
     orientation.update(intended_velocity, dt);
 
-    // Update reactive animation (after physics and orientation resolved)
-    character.animation.update({dt, orientation.get_yaw(), character.last_acceleration});
+    // Update reactive animation systems (after physics and orientation resolved)
+    character.animation.update_landing_spring(character.just_landed,
+                                              character.vertical_velocity_on_land, dt);
+    character.just_landed = false; // Clear flag after animation reads it
+    character.animation.update_acceleration_tilt(character.last_acceleration, orientation.get_yaw(),
+                                                 dt);
 
     character::sync_locomotion_targets(character, locomotion);
     locomotion.update(horizontal_velocity, dt, character.is_grounded);

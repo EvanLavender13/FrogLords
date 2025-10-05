@@ -7,6 +7,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
+#include <cstdio>
 
 namespace {
 // Single-sphere collision configuration (experiment branch)
@@ -102,6 +103,9 @@ void controller::update(const scene* scn, float dt) {
     // Update collision sphere position
     collision_sphere.center = position;
 
+    // Capture vertical velocity BEFORE collision resolution (for landing spring)
+    float pre_collision_vertical_velocity = velocity.y;
+
     // Box collision resolution
     if (scn != nullptr) {
         resolve_box_collisions(*scn);
@@ -109,6 +113,14 @@ void controller::update(const scene* scn, float dt) {
 
     // Ground plane (fallback if no box collision)
     resolve_ground_collision();
+
+    // Landing detection (after collision resolution, using pre-collision velocity)
+    just_landed = !was_grounded && is_grounded;
+    if (just_landed) {
+        vertical_velocity_on_land = pre_collision_vertical_velocity;
+        printf("[LANDING] just_landed=true, velocity.y = %.3f\n", pre_collision_vertical_velocity);
+    }
+    was_grounded = is_grounded;
 
     // Save acceleration for animation system (before reset)
     last_acceleration = acceleration;

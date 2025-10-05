@@ -12,11 +12,12 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
-│  Spring-Damper Landings (NEXT?)     │  ← Needs character body rendering
-│  Debug Parameter Tuning UI          │  ← GUI sliders for parameters
+│  Secondary Motion / Bone Wobble     │  ← Needs skeletal joints
+│  Speed-Based Animation Scaling      │  ← May not be necessary
 ├─────────────────────────────────────┤
-│  Reactive Animation Layer (90%)     │  ← Interpret physics state
+│  Reactive Animation Layer (95%)     │  ← Interpret physics state
 │  • Acceleration Tilt (100%) ✅       │     Character-local space, tilt matrix
+│  • Landing Spring (100%) ✅          │     Spring-damper crouch/recover
 ├─────────────────────────────────────┤
 │  Procedural Orientation (95%)       │  ← Velocity-based facing
 │  Procedural Locomotion (95%)        │  ← Surveyor wheel, cubic interp
@@ -68,9 +69,9 @@
 
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
-### Reactive Systems Layer (Implemented, ~90% certain)
+### Reactive Systems Layer (Implemented, ~95% certain)
 
-**Status:** Architecture proven through acceleration tilt implementation
+**Status:** Architecture proven through two complete implementations
 
 **Completed: Acceleration Tilt ✅**
 - Character-local space transformation of world acceleration
@@ -79,18 +80,27 @@
 - 45 lines of code, 2 tunable parameters
 - See `acceleration_tilt_implementation.md` for full details
 
+**Completed: Landing Spring ✅**
+- Spring-damper driven crouch/recover on landing
+- Impulse proportional to fall velocity
+- Critically damped for natural feel (no bounce)
+- Visual debug spring (collision sphere to body center)
+- GUI controls for real-time parameter tuning
+- See `landing_spring_implementation.md` for full details
+
 **Architecture Validated:**
-- `character::animation_state` pattern works well
+- `character::animation_state` pattern works well (proven twice)
 - Update timing: after physics, after orientation, before render
-- Transform injection: position → orient → tilt → render
+- Transform injection: position → orient → landing offset → tilt → render
 - Parameters over assets paradigm successful
+- Flag-based event communication (just_landed) pattern works
 
 **Next Candidates:**
-- Spring-damper landings (needs visible body to show crouch)
-- Secondary motion (needs skeletal joints)
-- Debug parameter UI (expand character_panel with sliders)
+- Secondary motion / bone wobble (needs skeletal joints)
+- Speed-based animation scaling (may not be necessary)
+- Additional reactive systems as gameplay needs emerge
 
-**Certainty:** High for architecture (~90%), medium for specific features (50-70% each, depends on rendering decisions).
+**Certainty:** High for architecture (~95%), medium for specific features (depends on future rendering/gameplay decisions).
 
 **Dependencies:** Requires stable physics core. Changes in controller would force redesign here.
 
