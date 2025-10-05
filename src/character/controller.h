@@ -7,8 +7,7 @@ class scene;
 
 struct controller {
     // Collision volumes
-    sphere bumper;       // Primary collision volume
-    sphere weightlifter; // Step-up detection (smaller, offset below)
+    sphere collision_sphere;  // Single sphere used for all collision
 
     // State (source of truth)
     glm::vec3 position;
@@ -26,8 +25,8 @@ struct controller {
         float vertical_penetration = 0.0f;
     };
 
-    contact_debug_info weightlifter_contact_debug;
-    contact_debug_info bumper_contact_debug;
+    contact_debug_info collision_contact_debug;
+    contact_debug_info debug_contact_unused;
 
     // Properties
     float mass = 70.0f;

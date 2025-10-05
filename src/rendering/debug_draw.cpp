@@ -17,17 +17,11 @@ void draw_character_state(draw_context& ctx, const controller& character,
     simple_pose current_pose = locomotion.get_current_pose();
     glm::vec3 pose_offset = current_pose.root_offset;
 
-    // Bumper sphere (no pose offset - follows physics position)
-    wireframe_mesh bumper_vis = ctx.unit_sphere_8;
-    bumper_vis.position = character.bumper.center;
-    bumper_vis.scale = glm::vec3(character.bumper.radius);
-    ctx.renderer.draw(bumper_vis, ctx.cam, ctx.aspect, glm::vec4(0, 1, 1, 1));
-
-    // Weightlifter sphere
-    wireframe_mesh weightlifter_vis = ctx.unit_sphere_6;
-    weightlifter_vis.position = character.weightlifter.center;
-    weightlifter_vis.scale = glm::vec3(character.weightlifter.radius);
-    ctx.renderer.draw(weightlifter_vis, ctx.cam, ctx.aspect, glm::vec4(1, 1, 0, 1));
+    // Collision sphere (cyan = physics sphere)
+    wireframe_mesh collision_vis = ctx.unit_sphere_8;
+    collision_vis.position = character.collision_sphere.center;
+    collision_vis.scale = glm::vec3(character.collision_sphere.radius);
+    ctx.renderer.draw(collision_vis, ctx.cam, ctx.aspect, glm::vec4(0, 1, 1, 1));
 
     // Velocity indicator (no pose offset - attached to physics position)
     glm::vec3 vel = character.velocity;
@@ -89,7 +83,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
     glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
     glm::vec3 up_axis(0.0f, 1.0f, 0.0f);
 
-    float wheel_ground_y = character.weightlifter.center.y - character.weightlifter.radius;
+    float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
     glm::vec3 wheel_center = character.position;
     wheel_center.y = wheel_ground_y + WHEEL_RADIUS;
 
@@ -129,7 +123,7 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
     glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
     glm::vec3 right_dir(-std::cos(yaw), 0, std::sin(yaw));
 
-    float wheel_ground_y = character.weightlifter.center.y - character.weightlifter.radius;
+    float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
     float ground_contact_y = wheel_ground_y;
 
     // Left foot
@@ -155,15 +149,39 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
 }
 
 void draw_collision_state(draw_context& ctx, const controller& character, const scene& scn) {
-    // Draw all collision boxes
+    // Draw all collision boxes with distinct colors based on type
     for (const auto& box : scn.collision_boxes()) {
         box_dimensions dims{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
                             box.half_extents.z * 2.0f};
         wireframe_mesh box_mesh = generate_box(dims);
         box_mesh.position = box.center;
 
-        // Color based on collision state
-        glm::vec4 color = glm::vec4(0.7f, 0.3f, 0.3f, 0.8f); // Red for platforms
+        // Color based on box type (heuristic classification)
+        glm::vec4 color;
+        
+        // Steps (small, square-ish boxes near ground)
+        if (box.half_extents.y < 0.4f && box.half_extents.x < 1.2f && 
+            box.half_extents.z < 1.2f && box.center.y < 1.0f) {
+            // Graduated color for steps: cyan to blue
+            float height_ratio = box.half_extents.y / 0.3f;
+            color = glm::vec4(0.2f, 0.5f + height_ratio * 0.5f, 1.0f, 1.0f); // Cyan to bright blue
+        }
+        // Tall walls (height > width)
+        else if (box.half_extents.y > box.half_extents.x && box.half_extents.y > box.half_extents.z) {
+            color = glm::vec4(1.0f, 0.5f, 0.2f, 1.0f); // Bright orange
+        }
+        // Long walls (one horizontal dimension much larger)
+        else if (box.half_extents.x > 3.0f || box.half_extents.z > 3.0f) {
+            color = glm::vec4(0.9f, 0.9f, 0.2f, 1.0f); // Bright yellow
+        }
+        // Platforms (flat, wide boxes)
+        else if (box.half_extents.y < 0.5f && (box.half_extents.x > 1.5f || box.half_extents.z > 1.5f)) {
+            color = glm::vec4(0.3f, 1.0f, 0.3f, 1.0f); // Bright green
+        }
+        // Default (miscellaneous)
+        else {
+            color = glm::vec4(1.0f, 0.3f, 0.9f, 1.0f); // Bright magenta
+        }
 
         ctx.renderer.draw(box_mesh, ctx.cam, ctx.aspect, color);
     }
@@ -172,7 +190,7 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
     if (character.is_grounded) {
         wireframe_mesh contact = ctx.unit_sphere_4;
         contact.position =
-            character.weightlifter.center - glm::vec3(0, character.weightlifter.radius, 0);
+            character.collision_sphere.center - glm::vec3(0, character.collision_sphere.radius, 0);
         contact.scale = glm::vec3(0.05f);
         ctx.renderer.draw(contact, ctx.cam, ctx.aspect, glm::vec4(0, 1, 0, 1));
     }
