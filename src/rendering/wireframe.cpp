@@ -253,6 +253,7 @@ wireframe_mesh generate_circle(const glm::vec3& center, circle_config config) {
 
     return mesh;
 }
+
 wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils,
                                float radius) {
     wireframe_mesh mesh;

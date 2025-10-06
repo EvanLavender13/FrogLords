@@ -6,19 +6,22 @@ Extract the feature name from the current git branch name (format: `iteration/<f
 
 ### 2. Gather Context
 
-1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference.
+1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference
 2.  **Planning Documents:** Read the following files:
     *   `PLANS/iteration_<feature_name>.md`
-    *   `PLANS/implementation_<feature_name>.md` (if exists)
+    *   `PLANS/implementation_<feature_name>.md` (must exist)
     *   `PLANS/dependency_stack.md`
     *   `PLANS/design_backlog.md`
 
 ### 3. Perform Analysis
-Cross-reference the planning documents against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
 
--   **Check for Contradictions:** Does any part of the iteration or implementation plan directly violate a directive from `AGENTS.md`? (e.g., planning polish before graybox, letting reactive layers control core logic, creating content restrictions).
+Cross-reference both the iteration and implementation plans against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
+
+-   **Check for Contradictions:** Does any part of the iteration or implementation plan directly violate a directive from `AGENTS.md`? (e.g., planning polish before graybox, letting reactive layers control core logic, creating content restrictions)
 -   **Verify Dependency & Certainty:** Does the feature's placement in `dependency_stack.md` seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
 -   **Assess Design Rationale:** Does the `iteration_plan.md` align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
+-   **Verify Implementation Decomposition:** Does the `implementation_plan.md` correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
+-   **Check Consistency:** Do the iteration and implementation plans align? Does the implementation actually build what the iteration plan describes?
 -   **Review Process:** Does the iteration plan reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
 
 ### 4. Save and Propose

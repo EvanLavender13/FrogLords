@@ -7,7 +7,8 @@
                 "${workspaceFolder}/external/sokol",
                 "${workspaceFolder}/external/glm",
                 "${workspaceFolder}/external/imgui",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/generated"
             ],
             "defines": [
                 "_DEBUG",

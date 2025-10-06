@@ -5,12 +5,12 @@ This diagram shows the complete iteration workflow and task dependencies.
 ```mermaid
 graph TD
     A[NEXT_FEATURE] --> B[PLAN_ITERATION]
-    B --> C[REVIEW_PLAN]
-    C --> D{Issues?}
-    D -->|Yes| E[Revise Plans]
-    E --> C
-    D -->|No| F[DECOMPOSE_PLAN]
-    F --> G[IMPLEMENTATION_STEP]
+    B --> C[DECOMPOSE_PLAN]
+    C --> D[REVIEW_PLAN]
+    D --> E{Issues?}
+    E -->|Yes| F[Revise Plans]
+    F --> B
+    E -->|No| G[IMPLEMENTATION_STEP]
     G --> H{More Steps?}
     H -->|Yes| G
     H -->|No| I[REVIEW_IMPLEMENTATION]
@@ -29,7 +29,7 @@ graph TD
     style A fill:#e1f5ff
     style B fill:#e1f5ff
     style C fill:#e1f5ff
-    style F fill:#e1f5ff
+    style D fill:#e1f5ff
     style G fill:#e1f5ff
     style I fill:#e1f5ff
     style L fill:#e1f5ff
