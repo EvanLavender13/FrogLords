@@ -69,7 +69,7 @@
 
 - Date completed: 2025-10-06
 - Final certainty score: 100%
-- Link to code review document: PLANS/code_review_attach-skeleton-to-body.md
+- Link to code review document: PLANS/ARCHIVE/20251006_130000_code_review_attach-skeleton-to-body.md
 - Brief outcome summary: Successfully attached skeleton to character body, enabling movement and reactive animations. Unblocks secondary motion.
 
 ---

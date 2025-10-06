@@ -17,19 +17,19 @@ None identified. The plans follow the principles correctly.
 ### 3. Misalignments & Risks
 
 **Resolved: Transform Hierarchy Clarified**
-- **Source:** `PLANS/implementation_attach-skeleton-to-body.md` (updated)
+- **Source:** `PLANS/ARCHIVE/20251006_130000_implementation_attach-skeleton-to-body.md` (updated)
 - **Previous Concern:** Original review noted potential offset issues and lack of clarity about transform hierarchy
 - **Resolution:** The updated implementation plan now clearly states the skeleton will use `character.get_world_transform()`, which already includes the full transform hierarchy: position → orientation → reactive offsets (tilt/spring). This matches the debug body box exactly.
 - **Status:** Risk eliminated by scope expansion. The skeleton will automatically mirror all reactive animations.
 
 **Positive: Reuse Over Duplication**
-- **Source:** `PLANS/implementation_attach-skeleton-to-body.md`
+- **Source:** `PLANS/ARCHIVE/20251006_130000_implementation_attach-skeleton-to-body.md`
 - **Principle:** "Abstract repeated patterns into systems; prefer parameters over assets"
 - **Details:** The updated plan leverages existing `get_world_transform()` method instead of duplicating position/rotation/offset logic. This is a single source of truth for the character's visual transform, ensuring skeleton and debug body stay synchronized automatically.
 - **Impact:** Future changes to reactive animation (e.g., new tilt behavior) will automatically apply to both debug body and skeleton without additional code.
 
 **Positive: Scope Expansion Justified**
-- **Source:** `PLANS/iteration_attach-skeleton-to-body.md` changelog
+- **Source:** `PLANS/ARCHIVE/20251006_130000_iteration_attach-skeleton-to-body.md` changelog
 - **Principle:** "Iteration over planning" / "Knowledge Creation > Implementation"
 - **Details:** The scope addition (orientation + reactive transforms) was added based on a concrete need: visual consistency between skeleton and debug body. The rationale is documented in the iteration plan changelog. The expansion doesn't add complexity (still one line of code) and actually simplifies future work by establishing transform hierarchy from the start.
 - **Note:** This demonstrates proper scope modification: identified need → documented rationale → minimal implementation expansion → preserved certainty.

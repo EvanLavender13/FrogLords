@@ -32,7 +32,7 @@
 
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Prerequisite:* Skeletal system with joints ✅ (T-pose debug skeleton now available)
-  - *Certainty:* Low (~30%) - rendering approach unknown
+  - *Certainty:* Low (~35%) - rendering approach unknown, but skeleton now attached to character
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅

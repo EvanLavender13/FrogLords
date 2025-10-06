@@ -20,7 +20,7 @@ Extract the feature name from the current git branch name (format: `iteration/<f
 
 ### 4. Update Dependency Stack
 
-Execute `TASKS/UPDATE_DEPENDENCIES.md` to:
+Read and execute `TASKS/UPDATE_DEPENDENCIES.md` to:
 -   Update feature's certainty score based on implementation learnings
 -   Mark as `✅` if stable and proven (95%+)
 -   Move `← YOU ARE HERE` marker to next layer
@@ -28,7 +28,7 @@ Execute `TASKS/UPDATE_DEPENDENCIES.md` to:
 
 ### 5. Update Design Backlog
 
-Execute `TASKS/UPDATE_BACKLOG.md` to:
+Read and execute `TASKS/UPDATE_BACKLOG.md` to:
 -   Mark feature as `✅ COMPLETE`
 -   Add `Learning:` section documenting key knowledge gained
 -   Update certainty scores for newly unblocked dependent features
