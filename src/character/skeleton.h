@@ -25,4 +25,8 @@ struct skeleton {
     std::vector<joint> joints; // Hierarchical joint array, root at index 0
 };
 
+/// Compute model (global) transforms for the entire skeleton from local transforms.
+/// Assumes parent-before-child ordering in the joints array and that joint 0 is the root.
+void update_global_transforms(skeleton& skel);
+
 } // namespace character

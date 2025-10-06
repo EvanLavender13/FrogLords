@@ -12,6 +12,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cmath>
 #include <algorithm>
+#include "character/t_pose.h"
+#include "character/skeleton.h"
 
 namespace {
 constexpr float WHEEL_RADIUS = 0.45f;
@@ -102,6 +104,10 @@ void app_runtime::initialize() {
         step.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
         scn.add_collision_box(step);
     }
+
+    // Create T-pose skeleton for debug visualization and compute global transforms
+    create_t_pose(t_pose_skeleton);
+    character::update_global_transforms(t_pose_skeleton);
 
     initialized = true;
 }
@@ -232,6 +238,13 @@ void app_runtime::render_world() {
     debug::draw_physics_springs(debug_ctx, character, locomotion);
     debug::draw_locomotion_wheel(debug_ctx, character, locomotion, orientation, wheel_spin_angle);
     debug::draw_foot_positions(debug_ctx, character, locomotion, orientation);
+
+    // Draw skeleton if enabled (simple runtime toggle)
+    if (show_skeleton_debug) {
+        // Ensure transforms are up-to-date in case any procedural motion is added later
+        character::update_global_transforms(t_pose_skeleton);
+        debug::draw_skeleton(debug_ctx, t_pose_skeleton);
+    }
 
     gui::render();
 

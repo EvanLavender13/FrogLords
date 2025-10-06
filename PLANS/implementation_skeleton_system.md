@@ -50,13 +50,17 @@
 
 #### 5. Integration
 
-- [ ] **File:** `src/app/runtime.h`
-    - [ ] Include `character/skeleton.h`.
-    - [ ] Add `skeleton t_pose_skeleton;` to `app_runtime`.
-- [ ] **File:** `src/app/runtime.cpp`
-    - [ ] Include `character/t_pose.h` and `character/skeleton.h`.
-    - [ ] In `app_runtime::initialize()`, call `create_t_pose(t_pose_skeleton);` then `update_global_transforms(t_pose_skeleton);`.
-    - [ ] In `app_runtime::render_world()`, call `debug::draw_skeleton(debug_ctx, t_pose_skeleton);`.
+- [x] **File:** `src/app/runtime.h`
+    - [x] Include `character/skeleton.h`.
+    - [x] Add `skeleton t_pose_skeleton;` to `app_runtime`.
+- [x] **File:** `src/app/runtime.cpp`
+    - [x] Include `character/t_pose.h` and `character/skeleton.h`.
+    - [x] In `app_runtime::initialize()`, call `create_t_pose(t_pose_skeleton);` then `update_global_transforms(t_pose_skeleton);`.
+    - [x] In `app_runtime::render_world()`, call `debug::draw_skeleton(debug_ctx, t_pose_skeleton);`.
+
+Notes:
+- A temporary runtime toggle `show_skeleton_debug` was added to `app_runtime` so the skeleton can be displayed immediately from code. GUI toggles (Character panel) are intentionally left for the next iteration.
+- Also corrected joint parent indices in `src/character/t_pose.cpp` to ensure a valid humanoid hierarchy (shoulders/elbows/wrists and hips/knees/ankles now parent correctly).
 
 #### 6. Debug UI (Toggle & Labels)
 
@@ -65,14 +69,23 @@
     - [ ] Add checkboxes in the Character panel: “Show Skeleton”, “Show Joint Labels”.
     - [ ] When `show_skeleton` is true, call `debug::draw_skeleton`; when `show_joint_labels` is true, draw joint names near joint positions.
 
+Notes: GUI toggles are not yet implemented; prefer to wire these next so the debug flag is controllable from the panel.
+
 #### 7. Minimal Animated-Joint Verification
 
 - [ ] **File:** `src/app/runtime.cpp`
     - [ ] In a temporary test path (guarded by a debug flag), apply a small rotation to a forearm joint’s `local_transform` each frame; call `update_global_transforms(t_pose_skeleton)`; verify expected motion on screen.
+
+Notes: Still pending. I can add a debug animation (forearm wiggle) and a GUI toggle in the next pass.
 
 #### 8. Quality Gates
 
 - [ ] Build passes (`CMake: Build (Debug)`).
 - [ ] Lint/format clean (run clang-format/clang-tidy tasks).
 - [ ] Smoke run compiles and launches (`Run (Debug)`), UI toggles work, and animated-joint verification behaves correctly.
+
+Status:
+- [x] Build passes (`CMake: Build (Debug)`).
+- [ ] Lint/format clean (run clang-format/clang-tidy tasks).
+- [x] Smoke run compiles and launches (`Run (Debug)`) — verified after stopping a running exe during link; skeleton rendered as expected.
 

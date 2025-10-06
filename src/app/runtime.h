@@ -11,6 +11,7 @@
 #include "rendering/wireframe.h"
 #include "gui/character_panel.h"
 #include <glm/glm.hpp>
+#include "character/skeleton.h"
 
 struct sapp_event;
 
@@ -47,6 +48,10 @@ struct app_runtime {
     wireframe_mesh unit_sphere_6{};
     wireframe_mesh unit_sphere_4{};
     bool static_meshes_initialized = false;
+    // T-pose skeleton for debug visualization
+    character::skeleton t_pose_skeleton{};
+    // Simple runtime toggle for skeleton debug draw (temporary until GUI toggle added)
+    bool show_skeleton_debug = true;
 };
 
 app_runtime& runtime();
