@@ -9,11 +9,13 @@ namespace gui {
 void draw_character_panel(character_panel_state& state, controller& character,
                           locomotion_system& locomotion, orientation_system& orientation,
                           character::tuning_params& params) {
-    ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(sapp_width()) - 370.0f, 20.0f),
-                            ImGuiCond_FirstUseEver);
+    // Position at left side, full height, auto-fit width to content
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(0.0f, static_cast<float>(sapp_height())), ImGuiCond_Always);
 
-    if (gui::panel::begin("Character Tuning", &state.show)) {
+    ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Character Tuning", &state.show, flags)) {
         bool changed = false;
         changed |= gui::widget::slider_float("Max Speed (m/s)", &character.max_speed, 1.0f, 15.0f);
         changed |= gui::widget::slider_float("Time to Max Speed (s)", &params.time_to_max_speed,
@@ -81,7 +83,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::text("");
         gui::widget::text("FPS: %.1f", 1.0f / sapp_frame_duration());
     }
-    gui::panel::end();
+    ImGui::End();
 }
 
 } // namespace gui

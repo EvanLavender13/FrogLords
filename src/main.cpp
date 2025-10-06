@@ -1,4 +1,5 @@
 #include "sokol_app.h"
+#include <cstdio>
 #include "sokol_gfx.h"
 #include "sokol_log.h"
 #include "sokol_glue.h"
@@ -6,6 +7,8 @@
 
 static void init(void) {
     runtime().initialize();
+    // Log the sample count requested/created by sokol_app (helps verify MSAA)
+    printf("sapp_sample_count = %d\n", sapp_sample_count());
 }
 
 static void frame(void) {
@@ -29,6 +32,8 @@ sapp_desc sokol_main(int argc, char* argv[]) {
     desc.frame_cb = frame;
     desc.cleanup_cb = cleanup;
     desc.event_cb = event;
+    // Enable multisampling (MSAA) to reduce edge aliasing on thin wireframes
+    desc.sample_count = 8;
     desc.width = 1920;
     desc.height = 1080;
     desc.window_title = "FrogLords - GUI Demo";

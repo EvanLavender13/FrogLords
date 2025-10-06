@@ -55,7 +55,7 @@ void app_runtime::initialize() {
     cam.set_mode(camera_mode::follow);
 
     scn = scene();
-    wireframe_mesh floor = generate_grid_floor(20.0f, 20);
+    wireframe_mesh floor = generate_grid_floor(40.0f, 40);
     scn.add_object(floor);
 
     // Add 5 platforms for collision testing

@@ -118,7 +118,6 @@ void controller::update(const scene* scn, float dt) {
     just_landed = !was_grounded && is_grounded;
     if (just_landed) {
         vertical_velocity_on_land = pre_collision_vertical_velocity;
-        printf("[LANDING] just_landed=true, velocity.y = %.3f\n", pre_collision_vertical_velocity);
     }
     was_grounded = is_grounded;
 

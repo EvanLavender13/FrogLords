@@ -95,7 +95,9 @@ class camera {
     float max_latitude = 85.0f;
 
     float fov_degrees = 60.0f;
-    float z_near = 0.1f;
+    // Use a slightly larger near plane to get better floating-point precision in the
+    // depth buffer (reduces z-fighting/aliasing when rendering distant thin geometry).
+    float z_near = 0.5f;
     float z_far = 100.0f;
 
     camera_mode mode = camera_mode::orbit;

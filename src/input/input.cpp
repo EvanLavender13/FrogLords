@@ -51,30 +51,30 @@ void process_event(const sapp_event* event) {
     case SAPP_EVENTTYPE_KEY_DOWN:
         if (event->key_code < MAX_KEYS) {
             key_state[event->key_code] = true;
-            printf("[INPUT] Key pressed: %d\n", event->key_code);
+            // printf("[INPUT] Key pressed: %d\n", event->key_code);
         }
         break;
 
     case SAPP_EVENTTYPE_KEY_UP:
         if (event->key_code < MAX_KEYS) {
             key_state[event->key_code] = false;
-            printf("[INPUT] Key released: %d\n", event->key_code);
+            // printf("[INPUT] Key released: %d\n", event->key_code);
         }
         break;
 
     case SAPP_EVENTTYPE_MOUSE_DOWN:
         if (event->mouse_button < MAX_MOUSE_BUTTONS) {
             mouse_button_state[event->mouse_button] = true;
-            printf("[INPUT] Mouse button pressed: %d at (%.1f, %.1f)\n", event->mouse_button,
-                   event->mouse_x, event->mouse_y);
+            // printf("[INPUT] Mouse button pressed: %d at (%.1f, %.1f)\n", event->mouse_button,
+            //        event->mouse_x, event->mouse_y);
         }
         break;
 
     case SAPP_EVENTTYPE_MOUSE_UP:
         if (event->mouse_button < MAX_MOUSE_BUTTONS) {
             mouse_button_state[event->mouse_button] = false;
-            printf("[INPUT] Mouse button released: %d at (%.1f, %.1f)\n", event->mouse_button,
-                   event->mouse_x, event->mouse_y);
+            // printf("[INPUT] Mouse button released: %d at (%.1f, %.1f)\n", event->mouse_button,
+            //        event->mouse_x, event->mouse_y);
         }
         break;
 
