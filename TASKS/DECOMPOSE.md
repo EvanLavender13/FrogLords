@@ -14,8 +14,8 @@ Receive the file path for an iteration plan located in the `PLANS/` directory fr
 -   **Task Specificity:** Each step must be a clear, imperative instruction referencing specific files, functions, and data structures (e.g., "In `character/controller.h`, add a `dash_speed` parameter to the `tuning` struct.").
 -   **Logical Order:** Sequence tasks logically based on dependencies (e.g., define data structures before creating functions that use them).
 -   **Include UI:** Ensure the plan includes a step to expose any new tunable parameters in the debug UI (`src/gui/character_panel.cpp`).
--   **Adhere to Conventions:** All proposed changes must strictly follow the project's existing code standards (snake_case, file structure, etc.) as defined in `AGENTS.md`.
--   **Gameplay‑First:** Movement/animation/input changes must keep input→acceleration mapping, rotate model to velocity, and keep transitions interruptible. Prefer spring‑damper/cubic interpolation and targeted IK.
+-   **Adhere to Conventions:** Follow `AGENTS.md` (snake_case, file organization, dependency flow; brief comments only where non‑obvious).
+-   **Gameplay‑First:** Preserve input→acceleration mapping; rotate model to velocity; transitions remain interruptible. Prefer spring‑damper and cubic interpolation; use targeted IK only where necessary.
 
 ### 3. Format and Save
 
@@ -23,6 +23,12 @@ Format the output as a markdown checklist and save it to a new file in the `PLAN
 
 -   **Filename:** `implementation_[feature_name].md`.
 -   Propose the generated implementation plan to the user for review.
+
+### 4. Quality Gates
+
+- Build passes (CMake: Configure/Build Debug tasks).
+- Lint/format clean (clang‑format/clang‑tidy tasks).
+- Smoke run launches and the graybox switch is reachable.
 
 ---
 

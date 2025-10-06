@@ -25,13 +25,21 @@
   - *Learning:* Public member access sufficient for tuning (no getters needed), consistent UX pattern (collapsing headers + live feedback) scales well, scope expanded during implementation (orientation/locomotion smoothing added), walk/run thresholds deliberately excluded (procedurally derived from max_speed)
   
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
-  - *Prerequisite:* Skeletal system with joints
+  - *Prerequisite:* Skeletal system with joints ✅ (T-pose debug skeleton now available)
   - *Certainty:* Low (~30%) - rendering approach unknown
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅
   - *Certainty:* High (~80%) - simple extension of proven system
   - *Note:* May not be necessary - current constant magnitude feels good
+
+- **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
+  - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
+  - *Certainty:* Medium (~60%) - likely a small helper that copies defaults stored alongside the T-pose.
+
+- **Skeleton validation hooks:** Optional per-joint debug asserts/visual warnings when parent indices are invalid or hierarchy order breaks.
+  - *Rationale:* Completes the "no cycles" guard promised in plan; keeps future authoring honest.
+  - *Certainty:* Medium (~50%) - cheap runtime check toggled via debug flag.
 
 - **Tunable tilt velocity scaling:** Expose hardcoded velocity scaling constants (0.5x-1.5x)
   - *Current:* Velocity scaling automatically applies (faster = more tilt)

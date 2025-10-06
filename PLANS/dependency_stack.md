@@ -12,8 +12,13 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
-│  Secondary Motion / Bone Wobble     │  ← Needs skeletal joints
+│  Secondary Motion / Bone Wobble     │  ← Now unblocked by skeleton debug
 │  Speed-Based Animation Scaling      │  ← May not be necessary
+├─────────────────────────────────────┤
+│  Skeleton Debug System (100%) ✅     │  ← Hierarchical joints + visualizer
+│  • Skeleton Data + Updates (100%) ✅ │     `skeleton.h/.cpp`
+│  • T-Pose Asset (100%) ✅            │     Hardcoded humanoid
+│  • Debug Draw & GUI Toggles (100%) ✅│     Render + labels + animation
 ├─────────────────────────────────────┤
 │  Reactive Animation Layer (100%) ✅  │  ← Interpret physics state
 │  • Acceleration Tilt (100%) ✅       │     Character-local space, tilt matrix
@@ -70,6 +75,19 @@
 
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
+### Skeleton Debug Layer (Implemented, 100% certain)
+
+**Status:** Minimum skeleton system delivered and integrated
+
+- `character::skeleton` data model with transform propagation
+- Hardcoded humanoid T-pose asset for graybox visualization
+- Debug draw support with GUI toggles and optional animation probe
+- Build + lint + runtime smoke test verified (see implementation checklist)
+
+**Certainty:** 100% — matches plan scope and validated in runtime.
+
+**Dependencies:** Requires rendering + runtime scaffolding; now unblocks secondary motion, IK, and pose tooling work.
+
 ### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
 **Status:** Architecture proven, tuning UI complete, ready for iteration
@@ -122,7 +140,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Iteration/playtesting of core feel with full tuning capability.
+**Current Focus:** Iteration/playtesting of core feel with full tuning capability plus skeleton overlay validation.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -130,8 +148,9 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 3. ✅ Core gameplay (physics controller, basic animation)
 4. ✅ Reactive animation systems (acceleration tilt, landing spring)
 5. ✅ Animation tuning UI (comprehensive parameter exposure)
-6. 🔄 Iteration/playtesting of core feel ← **YOU ARE HERE**
-7. ⏸️ Pull next item from backlog based on playtest discoveries
+6. ✅ Skeleton debug system (hierarchical joints + T-pose visualizer)
+7. 🔄 Iteration/playtesting of core feel with skeletal readouts ← **YOU ARE HERE**
+8. ⏸️ Pull next item from backlog based on playtest discoveries
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
@@ -142,6 +161,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 **Certainty Analysis:**
 - Foundation layer: ~95% certain (stable, won't change)
 - Core gameplay: ~95% certain (proven through testing)
+- Skeleton debug: 100% certain (meets plan; minimal risk)
 - Reactive animation: ~90% certain (architecture validated)
 - Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
