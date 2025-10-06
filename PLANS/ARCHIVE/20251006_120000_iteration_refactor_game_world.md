@@ -106,5 +106,5 @@
 
 - **Date:** 2025-10-06
 - **Final Certainty:** 100%
-- **Code Review:** `REVIEWS/code_review_refactor_game_world.md`
+- **Code Review:** `PLANS/ARCHIVE/20251006_120000_code_review_refactor_game_world.md`
 - **Outcome:** The refactor successfully separated game simulation state from the application runtime, improving code clarity and testability without any behavioral changes.

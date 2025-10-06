@@ -168,4 +168,4 @@
 
 - **Date:** 2025-10-06
 - **Checklist:** All items confirmed complete.
-- **Code Review:** `REVIEWS/code_review_refactor_game_world.md`
+- **Code Review:** `PLANS/ARCHIVE/20251006_120000_code_review_refactor_game_world.md`
