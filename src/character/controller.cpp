@@ -128,6 +128,25 @@ void controller::update(const scene* scn, float dt) {
     acceleration = glm::vec3(0, 0, 0);
 }
 
+glm::mat4 controller::get_world_transform() const {
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    // Translate to character position
+    transform = glm::translate(transform, position);
+
+    // Apply orientation (yaw rotation around Y axis)
+    float yaw = orientation.get_yaw();
+    transform = glm::rotate(transform, yaw, glm::vec3(0, 1, 0));
+
+    // Apply landing spring vertical offset (crouch effect)
+    transform *= animation.get_vertical_offset_matrix();
+
+    // Apply acceleration tilt
+    transform *= animation.get_tilt_matrix();
+
+    return transform;
+}
+
 void controller::resolve_ground_collision() {
     using namespace glm;
 

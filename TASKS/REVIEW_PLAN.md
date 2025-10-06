@@ -29,6 +29,10 @@ Cross-reference both the iteration and implementation plans against the synthesi
 Generate a new markdown document summarizing the findings.
 
 -   **Filename:** `PLANS/plan_review_<feature_name>.md`
+-   **If the review file already exists:** 
+    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via MODIFY_PLAN")
+    -   Update the analysis sections (Summary, Violations, Misalignments, Actionable Items) with current findings
+    -   Preserve the overall structure and previous context where relevant
 -   **Content:** Use the template below
 -   Propose the document to the user for review
 

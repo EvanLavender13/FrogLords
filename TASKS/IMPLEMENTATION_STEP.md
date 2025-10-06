@@ -18,7 +18,9 @@ Read `AGENTS.md` to ensure all actions adhere to development principles and codi
 1.  **Identify Next Major Step:** Find the first major step in implementation plan with unchecked boxes (e.g., "####" heading)
 2.  **Analyze Code:** Read relevant source files (`.h` and `.cpp`) to understand current state
 3.  **Perform Actions:** Before taking action, provide concise summary of changes referencing implementation plan. Then execute all actions for that single major step only
-4.  **Mark Complete:** Propose change to `PLANS/implementation_<feature_name>.md` marking completed items as `[x]`
+4.  **Mark Complete:** 
+    - Propose change to `PLANS/implementation_<feature_name>.md` marking completed items as `[x]`
+    - Update the implementation plan with a running list of files changed during this step.
 
 ### 5. Await Guidance
 

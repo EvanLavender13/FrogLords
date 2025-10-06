@@ -83,8 +83,9 @@ void app_runtime::frame() {
     input::update();
 
     gui::begin_frame();
-    gui::draw_character_panel(panel_state, world.character, world.locomotion, world.orientation,
-                              world.character_params);
+    // Updated to use character.orientation
+    gui::draw_character_panel(panel_state, world.character, world.locomotion,
+                              world.character.orientation, world.character_params);
 
     render_world();
 }
@@ -124,12 +125,14 @@ void app_runtime::render_world() {
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
     debug::draw_collision_state(debug_ctx, world.character, world.scn);
-    debug::draw_character_body(debug_ctx, world.character, world.orientation);
-    debug::draw_character_state(debug_ctx, world.character, world.locomotion, world.orientation);
+    debug::draw_character_body(debug_ctx, world.character, world.character.orientation);
+    debug::draw_character_state(debug_ctx, world.character, world.locomotion,
+                                world.character.orientation);
     debug::draw_physics_springs(debug_ctx, world.character, world.locomotion);
-    debug::draw_locomotion_wheel(debug_ctx, world.character, world.locomotion, world.orientation,
-                                 world.wheel_spin_angle);
-    debug::draw_foot_positions(debug_ctx, world.character, world.locomotion, world.orientation);
+    debug::draw_locomotion_wheel(debug_ctx, world.character, world.locomotion,
+                                 world.character.orientation, world.wheel_spin_angle);
+    debug::draw_foot_positions(debug_ctx, world.character, world.locomotion,
+                               world.character.orientation);
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {

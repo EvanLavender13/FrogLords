@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
 #include "character/animation.h"
+#include "character/orientation.h"
 
 class camera;
 class scene;
@@ -51,10 +52,14 @@ struct controller {
     // Reactive animation layer
     character::animation_state animation;
 
+    // Orientation system
+    orientation_system orientation;
+
     controller();
 
     void apply_input(const camera& cam, float dt);
     void update(const scene* scn, float dt);
+    glm::mat4 get_world_transform() const;
 
   private:
     void resolve_ground_collision();

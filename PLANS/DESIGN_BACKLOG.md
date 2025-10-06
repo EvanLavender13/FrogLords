@@ -24,6 +24,11 @@
   - *Files:* `src/gui/character_panel.h/cpp`, detailed in `animation_tuning_plan.md`
   - *Learning:* Public member access sufficient for tuning (no getters needed), consistent UX pattern (collapsing headers + live feedback) scales well, scope expanded during implementation (orientation/locomotion smoothing added), walk/run thresholds deliberately excluded (procedurally derived from max_speed)
   
+- **Attach skeleton to character body:** Attach the T-pose skeleton's root to the character controller's rigid body.
+  - *Prerequisite:* Skeleton Debug System ✅
+  - *Certainty:* High (~95%) - A simple transform update; moving the skeleton's root position to the character's position each frame.
+  - *Rationale:* The skeleton is currently static. This is the necessary next step to connect the skeleton to the player's actions and unblock any further skeletal animation work (like secondary motion or IK).
+
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Prerequisite:* Skeletal system with joints ✅ (T-pose debug skeleton now available)
   - *Certainty:* Low (~30%) - rendering approach unknown

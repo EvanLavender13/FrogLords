@@ -14,7 +14,6 @@ constexpr float TWO_PI = 6.28318530718f;
 
 void game_world::init() {
     character = controller();
-    orientation = orientation_system();
     locomotion = locomotion_system();
     character_params.read_from(character);
     character::sync_locomotion_targets(character, locomotion);
@@ -30,18 +29,21 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     character.apply_input(cam, dt);
     character.update(&scn, dt);
 
+    t_pose_skeleton.joints[0].local_transform = character.get_world_transform();
+
     glm::vec3 horizontal_velocity = character.velocity;
     horizontal_velocity.y = 0.0f;
 
     glm::vec3 intended_velocity = character.input_direction * character.max_speed;
 
-    orientation.update(intended_velocity, dt);
+    character.orientation.update(intended_velocity, dt);
 
     character.animation.update_landing_spring(character.just_landed,
                                               character.vertical_velocity_on_land, dt);
     character.just_landed = false;
     character.animation.update_acceleration_tilt(character.last_acceleration, character.velocity,
-                                                 character.max_speed, orientation.get_yaw(), dt);
+                                                 character.max_speed,
+                                                 character.orientation.get_yaw(), dt);
 
     character::sync_locomotion_targets(character, locomotion);
     locomotion.update(horizontal_velocity, dt, character.is_grounded);

@@ -3,7 +3,6 @@
 #include "camera/camera.h"
 #include "character/controller.h"
 #include "character/locomotion.h"
-#include "character/orientation.h"
 #include "character/tuning.h"
 #include "character/skeleton.h"
 #include "rendering/scene.h"
@@ -16,7 +15,6 @@ struct game_world {
     camera cam;
     scene scn;
     controller character;
-    orientation_system orientation;
     locomotion_system locomotion;
     character::tuning_params character_params;
     character::skeleton t_pose_skeleton;

@@ -4,7 +4,8 @@ This diagram shows the complete iteration workflow and task dependencies.
 
 ```mermaid
 graph TD
-    A[NEXT_FEATURE] --> B[PLAN_ITERATION]
+    REQ[REQUEST_FEATURE] --> A[NEXT_FEATURE]
+    A --> B[PLAN_ITERATION]
     B --> C[DECOMPOSE_PLAN]
     C --> D[REVIEW_PLAN]
     D --> E{Issues?}
@@ -34,6 +35,13 @@ graph TD
     T --> U
     U --> A
     
+    %% Mid-iteration scope changes
+    H --> AS[ADD_SCOPE]
+    AS --> B
+    B --> MP[MODIFY_PLAN]
+    MP --> C
+    
+    style REQ fill:#d4edda
     style A fill:#e1f5ff
     style B fill:#e1f5ff
     style C fill:#e1f5ff
@@ -45,18 +53,27 @@ graph TD
     style N fill:#e1f5ff
     style O fill:#e1f5ff
     style P fill:#e1f5ff
+    style AS fill:#fff3cd
+    style MP fill:#fff3cd
 ```
 
 ## Existing Tasks
 
+### Pre-Workflow
+- **REQUEST_FEATURE**: Propose a new feature for evaluation and backlog entry
+
 ### Primary Workflow
 - **NEXT_FEATURE**: Identify next feature from backlog based on dependencies and certainty
 - **PLAN_ITERATION**: Create detailed iteration plan with graybox scope and testing protocol
-- **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps
-- **REVIEW_PLAN**: Check iteration plan against principles for violations and misalignments
-- **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist
+- **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
+- **REVIEW_PLAN**: Check iteration and implementation plans against principles; prepend changelog entry on re-review
+- **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist; mark completed items and track changed files
 - **REVIEW_IMPLEMENTATION**: Verify code against standards and principles; approve if passing
 - **FINALIZE_ITERATION**: Update stack, backlog, archive documents; prepare for next feature
+
+### Mid-Iteration Adjustments
+- **ADD_SCOPE**: Add requirements to an active iteration plan (triggers re-decompose)
+- **MODIFY_PLAN**: Update implementation plan to match modified iteration scope
 
 ### Alternative Path
 - **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning phase
@@ -77,6 +94,10 @@ graph TD
 
 ## Workflow Paths
 
+### Feature Request Path
+1. REQUEST_FEATURE → Evaluate against principles & dependencies
+2. Add to backlog if viable → Eventually pulled via NEXT_FEATURE
+
 ### Success Path
 1. NEXT_FEATURE → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
 2. IMPLEMENTATION_STEP (loop until complete)
@@ -89,8 +110,15 @@ graph TD
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
 ### Revision Path
-1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review
+1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review (prepends changelog to review)
 2. REVIEW_IMPLEMENTATION identifies issues → Fix Code → Re-implement
+
+### Mid-Iteration Scope Change Path
+1. During IMPLEMENTATION_STEP, discover need for scope adjustment
+2. ADD_SCOPE → Update iteration plan with changelog entry
+3. MODIFY_PLAN → Update implementation plan with changelog entry
+4. DECOMPOSE_PLAN → Synchronize implementation steps (adds changelog if updating existing plan)
+5. Return to IMPLEMENTATION_STEP with synchronized plans
 
 ## Notes
 
@@ -100,3 +128,7 @@ graph TD
 - Bottom-up: dependency stack guides feature selection
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
+- Scope changes: ADD_SCOPE + MODIFY_PLAN + DECOMPOSE_PLAN keep plans synchronized when discovery requires mid-iteration adjustment
+- Feature requests: REQUEST_FEATURE formalizes backlog entry with principle alignment and dependency analysis
+- Plan versioning: DECOMPOSE_PLAN and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
+- Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context

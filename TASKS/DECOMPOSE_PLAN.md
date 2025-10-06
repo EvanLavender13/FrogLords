@@ -27,9 +27,13 @@ Extract the feature name from the current git branch name (format: `iteration/<f
 
 ### 4. Save and Propose
 
-Format as a markdown checklist and save to a new file in `PLANS/` directory.
+Format as a markdown checklist and save to `PLANS/` directory.
 
 -   **Filename:** `implementation_[feature_name].md`
+-   **If the implementation plan already exists:**
+    -   Add a changelog entry at the bottom noting the update date and reason (e.g., "Plan updated after scope modification via MODIFY_PLAN")
+    -   Update the checklist to reflect current implementation steps
+    -   Preserve completed checkboxes and historical context where relevant
 -   Propose the document to the user for review
 
 ### 5. Quality Gates
