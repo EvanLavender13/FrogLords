@@ -15,10 +15,11 @@ Receive the file path for an iteration plan located in the `PLANS/` directory fr
 -   **Logical Order:** Sequence tasks logically based on dependencies (e.g., define data structures before creating functions that use them).
 -   **Include UI:** Ensure the plan includes a step to expose any new tunable parameters in the debug UI (`src/gui/character_panel.cpp`).
 -   **Adhere to Conventions:** All proposed changes must strictly follow the project's existing code standards (snake_case, file structure, etc.) as defined in `AGENTS.md`.
+-   **Gameplay‑First:** Movement/animation/input changes must keep input→acceleration mapping, rotate model to velocity, and keep transitions interruptible. Prefer spring‑damper/cubic interpolation and targeted IK.
 
 ### 3. Format and Save
 
-Format the output as a markdown checklist and save it to a new file in the `TASKS/` directory.
+Format the output as a markdown checklist and save it to a new file in the `PLANS/` directory.
 
 -   **Filename:** `implementation_[feature_name].md`.
 -   Propose the generated implementation plan to the user for review.
@@ -51,6 +52,7 @@ Format the output as a markdown checklist and save it to a new file in the `TASK
     - [ ] If dash input is detected and character is not already dashing, set `is_dashing = true` and reset `dash_timer`.
     - [ ] While `is_dashing` is true, override velocity with `tuning.dash_speed` in the input direction.
     - [ ] Decrement `dash_timer` and set `is_dashing = false` when it reaches zero.
+    - [ ] Ensure animation/pose transitions use spring‑damper interpolation and remain interruptible.
 
 #### 4. Debug UI
 
@@ -58,4 +60,10 @@ Format the output as a markdown checklist and save it to a new file in the `TASK
     - [ ] In the "Locomotion" section, add a new `ImGui::InputFloat` for "Dash Speed".
     - [ ] Add a new `ImGui::InputFloat` for "Dash Duration".
     - [ ] Add a read-only `ImGui::Text` to display the current value of `is_dashing`.
+
+#### 5. Quality Gates
+
+- [ ] Build passes (`CMake: Build (Debug)`).
+- [ ] Lint/format clean (run clang-format/clang-tidy tasks).
+- [ ] Smoke run compiles and launches (`Run (Debug)`), and feature toggle works.
 ```
