@@ -2,7 +2,7 @@
 
 ### 1. Review Current State
 
-1.  Open `PLANS/dependency_stack.md`
+1.  Open `PLANS/DEPENDENCY_STACK.md`
 2.  Identify current layer of work, marked with `← YOU ARE HERE`
 3.  Review certainty scores of all systems, especially foundational ones
 
@@ -13,7 +13,7 @@
 
 ### 3. Modify Stack Structure
 
-1.  **Add New System:** When beginning work on new feature from `design_backlog.md`, add to top of stack
+1.  **Add New System:** When beginning work on new feature from `DESIGN_BACKLOG.md`, add to top of stack
     -   Place above systems it depends on
     -   Assign low, realistic initial certainty score (e.g., `~40%`)
     -   Add corresponding entry to "Layer Descriptions" section

@@ -1,12 +1,12 @@
 # Update Design Backlog
 
 ### 1. Review Recent Developments
-1.  Consider the results of the latest iteration loop, including playtest feedback, serendipitous discoveries, and newly stabilized systems in `PLANS/dependency_stack.md`.
+1.  Consider the results of the latest iteration loop, including playtest feedback, serendipitous discoveries, and newly stabilized systems in `PLANS/DEPENDENCY_STACK.md`.
 2.  Review any new ideas or insights that have emerged since the last update.
 
 ### 2. Add and Update Backlog Items
 
-1.  **Add New Ideas:** For any new feature or system idea, create a new entry in `PLANS/design_backlog.md`
+1.  **Add New Ideas:** For any new feature or system idea, create a new entry in `PLANS/DESIGN_BACKLOG.md`
     -   Place under most relevant category
     -   Write single, concise line for description
     -   Add required metadata (`Prerequisite`, `Certainty`, `Note`)
@@ -14,11 +14,11 @@
     -   If feature implemented and proven, mark as `✅ COMPLETE` and add `Learning:` section
     -   If feature now blocked or irrelevant, mark as `CUT` with brief explanation
     -   If foundational system certainty changed, update dependent items accordingly
-    -   If dependency relationships shifted, reflect in `PLANS/dependency_stack.md`
+    -   If dependency relationships shifted, reflect in `PLANS/DEPENDENCY_STACK.md`
 
 ### 3. Propose for Review
 
-1.  After updating `PLANS/design_backlog.md`, inform the user of the changes
+1.  After updating `PLANS/DESIGN_BACKLOG.md`, inform the user of the changes
 2.  If a previously blocked feature is now unblocked, propose it using `TASKS/NEXT_FEATURE.md`
 
 ### Tone & Constraints

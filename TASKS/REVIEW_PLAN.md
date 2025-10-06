@@ -10,15 +10,15 @@ Extract the feature name from the current git branch name (format: `iteration/<f
 2.  **Planning Documents:** Read the following files:
     *   `PLANS/iteration_<feature_name>.md`
     *   `PLANS/implementation_<feature_name>.md` (must exist)
-    *   `PLANS/dependency_stack.md`
-    *   `PLANS/design_backlog.md`
+    *   `PLANS/DEPENDENCY_STACK.md`
+    *   `PLANS/DESIGN_BACKLOG.md`
 
 ### 3. Perform Analysis
 
 Cross-reference both the iteration and implementation plans against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
 
 -   **Check for Contradictions:** Does any part of the iteration or implementation plan directly violate a directive from `AGENTS.md`? (e.g., planning polish before graybox, letting reactive layers control core logic, creating content restrictions)
--   **Verify Dependency & Certainty:** Does the feature's placement in `dependency_stack.md` seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
+-   **Verify Dependency & Certainty:** Does the feature's placement in `DEPENDENCY_STACK.md` seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
 -   **Assess Design Rationale:** Does the `iteration_plan.md` align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
 -   **Verify Implementation Decomposition:** Does the `implementation_plan.md` correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
 -   **Check Consistency:** Do the iteration and implementation plans align? Does the implementation actually build what the iteration plan describes?
@@ -72,5 +72,5 @@ Generate a new markdown document summarizing the findings.
 
 - [ ] Revise `implementation_...md` to remove tasks related to final art assets.
 - [ ] Update `iteration_...md` to simplify the graybox scope.
-- [ ] Re-evaluate the certainty score for this feature in `dependency_stack.md` based on the identified risks.
+- [ ] Re-evaluate the certainty score for this feature in `DEPENDENCY_STACK.md` based on the identified risks.
 ```

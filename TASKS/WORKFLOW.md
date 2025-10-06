@@ -46,7 +46,7 @@ graph TD
 - **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist
 - **REVIEW_IMPLEMENTATION**: Verify code against standards and principles; approve if passing
 - **FINALIZE_ITERATION**: Update stack, backlog, archive documents; prepare for next feature
-- **UPDATE_DEPENDENCIES**: Update dependency_stack.md with new certainty scores
+- **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
 - **UPDATE_BACKLOG**: Mark features complete, document learnings, update dependent items
 - **COMMIT**: Format and create git commits following project conventions
 

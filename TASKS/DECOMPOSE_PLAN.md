@@ -1,13 +1,21 @@
 # Decompose Iteration Plan into Implementation Steps
 
-### 1. Identify Target Plan
+### 1. Review Development Principles
+
+Read `AGENTS.md` to synthesize coding standards and architectural principles. Essential for ensuring implementation steps follow:
+-   snake_case naming conventions and file organization
+-   Dependency flow (Foundation → Character → Rendering → App)
+-   Gameplay-first principles (interruptible transitions, physics-first)
+-   Procedural animation patterns (spring-damper, cubic interpolation)
+
+### 2. Identify Target Plan
 
 Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate the corresponding iteration plan at `PLANS/iteration_<feature_name>.md`.
 
-### 2. Analyze and Decompose
+### 3. Analyze and Decompose
 
 1.  **Read Iteration Plan:** Read the specified plan file
-2.  **Identify Core Systems:** Determine which systems and source files are affected by the "Graybox Scope". Consult `PLANS/dependency_stack.md` to verify
+2.  **Identify Core Systems:** Determine which systems and source files are affected by the "Graybox Scope". Consult `PLANS/DEPENDENCY_STACK.md` to verify
 3.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
 4.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
 
@@ -17,14 +25,14 @@ Extract the feature name from the current git branch name (format: `iteration/<f
 -   **Adhere to Conventions:** Follow `AGENTS.md` (snake_case, file organization, dependency flow; brief comments only where non‑obvious).
 -   **Gameplay‑First:** Preserve input→acceleration mapping; rotate model to velocity; transitions remain interruptible. Prefer spring‑damper and cubic interpolation; use targeted IK only where necessary.
 
-### 3. Save and Propose
+### 4. Save and Propose
 
 Format as a markdown checklist and save to a new file in `PLANS/` directory.
 
 -   **Filename:** `implementation_[feature_name].md`
 -   Propose the document to the user for review
 
-### 4. Quality Gates
+### 5. Quality Gates
 
 -   Build passes (CMake: Configure/Build Debug tasks)
 -   Lint/format clean (clang‑format/clang‑tidy tasks)

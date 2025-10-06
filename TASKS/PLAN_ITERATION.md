@@ -1,6 +1,15 @@
 # Create Iteration Plan
 
-### 1. Create Branch
+### 1. Review Development Principles
+
+Read `AGENTS.md` to synthesize core project principles. Essential for ensuring iteration plans align with:
+-   Elegance through emergence, simplicity over sophistication
+-   Iteration over planning, graybox before polish
+-   Dependency management and certainty scoring
+-   Gameplay-first control (input→acceleration, interruptibility)
+-   Procedural foundation and animation principles
+
+### 2. Create Branch
 
 Run the script to create and switch to a new feature branch.
 
@@ -8,19 +17,19 @@ Run the script to create and switch to a new feature branch.
 ./scripts/create_iteration_branch.ps1 <feature_name>
 ```
 
-### 2. Understand Feature
+### 3. Understand Feature
 
 Receive a high-level feature description from the user. This may be a single sentence or a paragraph.
 
-### 3. Generate Plan
+### 4. Generate Plan
 
 Generate a detailed iteration plan based on the template below. The plan must distill the user's request and align with core design principles (elegance, emergence, iteration, dependency management).
 
--   **Analyze Dependencies:** Consult `PLANS/dependency_stack.md` and `PLANS/design_backlog.md` to determine feature placement and certainty. Consider cascading uncertainty
+-   **Analyze Dependencies:** Consult `PLANS/DEPENDENCY_STACK.md` and `PLANS/DESIGN_BACKLOG.md` to determine feature placement and certainty. Consider cascading uncertainty
 -   **Be Specific:** Provide concrete, actionable steps for graybox implementation and testing protocol
 -   **Stay Grounded:** Ensure the plan is realistic and directly addresses the feature request
 
-### 4. Save and Propose
+### 5. Save and Propose
 
 Save the generated plan to a new file in `PLANS/` directory, then propose for review.
 
@@ -53,7 +62,7 @@ Save the generated plan to a new file in `PLANS/` directory, then propose for re
 
 ### 3. Dependencies & Uncertainty
 
-*   **Placement in Stack:** (Where does this feature fit in `dependency_stack.md`? What are its direct dependencies? What will depend on it?)
+*   **Placement in Stack:** (Where does this feature fit in `DEPENDENCY_STACK.md`? What are its direct dependencies? What will depend on it?)
 *   **Certainty Score:** (Estimated certainty: 1-100%. Justify the score based on novelty and dependencies; call out cascading uncertainty.)
 
 ### 4. Implementation & Testing Loop
@@ -82,5 +91,5 @@ Save the generated plan to a new file in `PLANS/` directory, then propose for re
 *   **Potential Risks:** (What are the biggest risks? e.g., "May not feel good without significant tuning," "Could introduce physics instability.")
 *   **Content Restrictions:** (Could this feature impose restrictions on future content? e.g., "Requires all levels to have ceilings of a certain height.")
 *   **Decision Impacts (Checklist):** (Implementation cost; immaturity burden; critical failure risk; process burden; political/cultural effects; decision cost.)
-*   **Backlog Candidates:** (What related ideas have come up that should be captured in `design_backlog.md`?)
+*   **Backlog Candidates:** (What related ideas have come up that should be captured in `DESIGN_BACKLOG.md`?)
 ```

@@ -100,6 +100,11 @@
 
 ## World & Environment
 
+- **Game World Refactor:** ✅ COMPLETE - Extracted simulation state into `game_world` struct.
+  - *Status:* Implemented, tested, verified.
+  - *Files:* `src/app/game_world.h/cpp`, `src/app/runtime.h/cpp`
+  - *Learning:* Separating the application lifecycle from the game simulation logic greatly improves clarity and testability. It makes it easier to swap out levels or test different scenarios in the future.
+
 ### Terrain (Low-Medium Priority)
 - **Heightmap terrain:** Procedural ground with elevation
 - **Uneven surfaces:** IK foot placement becomes necessary here

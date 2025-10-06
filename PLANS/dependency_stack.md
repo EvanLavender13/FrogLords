@@ -39,7 +39,7 @@
 │  • Collision Primitives (100%)      │
 ├─────────────────────────────────────┤
 │       Rendering Layer (90%)         │  ← Scene, debug draw, wireframe
-│       Runtime/App (95%)             │  ← Main loop, lifecycle
+│       Runtime/App (100%) ✅         │  ← Main loop, lifecycle
 └─────────────────────────────────────┘
 ```
 
@@ -140,7 +140,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Iteration/playtesting of core feel with full tuning capability plus skeleton overlay validation.
+**Current Focus:** Refactor of game world complete. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -149,8 +149,8 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 4. ✅ Reactive animation systems (acceleration tilt, landing spring)
 5. ✅ Animation tuning UI (comprehensive parameter exposure)
 6. ✅ Skeleton debug system (hierarchical joints + T-pose visualizer)
-7. 🔄 Iteration/playtesting of core feel with skeletal readouts ← **YOU ARE HERE**
-8. ⏸️ Pull next item from backlog based on playtest discoveries
+7. ✅ Refactor: Game World Separation
+8. ⏸️ Pull next item from backlog based on playtest discoveries ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
