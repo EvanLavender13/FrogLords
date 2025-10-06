@@ -75,6 +75,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
         if (ImGui::CollapsingHeader("Skeleton")) {
             gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
             gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
+            gui::widget::checkbox("Animate Skeleton", &state.animate_skeleton);
         }
 
         gui::widget::text("");

@@ -40,6 +40,7 @@ struct app_runtime {
     gui::character_panel_state panel_state{};
 
     float wheel_spin_angle = 0.0f;
+    float skeleton_animation_time = 0.0f;
 
     float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 

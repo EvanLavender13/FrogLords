@@ -214,6 +214,17 @@ void app_runtime::update_simulation(float dt) {
     if (cam.get_mode() == camera_mode::follow) {
         cam.follow_update(character.position, dt);
     }
+
+    // Animate skeleton if enabled
+    if (panel_state.animate_skeleton) {
+        skeleton_animation_time += dt;
+        // Simple forearm wiggle: rotate left_elbow (index 6) around Z-axis
+        float angle = 0.5f * std::sin(skeleton_animation_time * 2.0f); // ±0.5 radians
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        t_pose_skeleton.joints[6].local_transform =
+            rotation * glm::translate(glm::mat4(1.0f), glm::vec3(-0.15f, 0.0f, 0.0f));
+        character::update_global_transforms(t_pose_skeleton);
+    }
 }
 
 void app_runtime::render_world() {
@@ -241,8 +252,11 @@ void app_runtime::render_world() {
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {
-        // Ensure transforms are up-to-date in case any procedural motion is added later
-        character::update_global_transforms(t_pose_skeleton);
+        // Ensure transforms are up-to-date (only if not animated, as animation updates in
+        // update_simulation)
+        if (!panel_state.animate_skeleton) {
+            character::update_global_transforms(t_pose_skeleton);
+        }
         debug::draw_skeleton(debug_ctx, t_pose_skeleton, panel_state.show_joint_labels);
     }
 
