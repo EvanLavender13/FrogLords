@@ -4,28 +4,28 @@
 
 #### 1. Data Structures & State
 
-- [ ] **File:** `src/character/skeleton.h`
-    - [ ] Create a new file `src/character/skeleton.h`.
-    - [ ] Document transform conventions at the top of the file:
+- [x] **File:** `src/character/skeleton.h`
+    - [x] Create a new file `src/character/skeleton.h`.
+    - [x] Document transform conventions at the top of the file:
       - Units: meters; Up-axis: Y (project default).
       - Column-major glm; model = parent.model * local.
       - `constexpr int NO_PARENT = -1;` root at index 0 uses NO_PARENT.
-    - [ ] Define a `joint` struct containing:
+    - [x] Define a `joint` struct containing:
         - `glm::mat4 model_transform`
         - `glm::mat4 local_transform`
         - `int parent_index`
         - `const char* name`
-    - [ ] Define a `skeleton` struct containing:
+    - [x] Define a `skeleton` struct containing:
         - `std::vector<joint> joints`
 
 #### 2. Transforms
 
-- [ ] **File:** `src/character/skeleton.cpp`
-    - [ ] Create a new file.
-    - [ ] Implement `void update_global_transforms(skeleton& skel)`:
-        - [ ] Assert `joints[0].parent_index == NO_PARENT`.
-        - [ ] For each joint in parent-first order, set `model_transform = (parent_index == NO_PARENT) ? local_transform : skel.joints[parent_index].model_transform * local_transform;`
-        - [ ] Add debug asserts: valid parent indices for non-root; no cycles (optional simple guard via visited set in debug builds).
+- [x] **File:** `src/character/skeleton.cpp`
+    - [x] Create a new file.
+    - [x] Implement `void update_global_transforms(skeleton& skel)`:
+        - [x] Assert `joints[0].parent_index == NO_PARENT`.
+        - [x] For each joint in parent-first order, set `model_transform = (parent_index == NO_PARENT) ? local_transform : skel.joints[parent_index].model_transform * local_transform;`
+        - [x] Add debug asserts: valid parent indices for non-root; no cycles (optional simple guard via visited set in debug builds).
 
 #### 3. T-Pose Asset
 
