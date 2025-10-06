@@ -13,7 +13,6 @@
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
 │  Secondary Motion / Bone Wobble     │  ← Now unblocked by skeleton debug
-│  Speed-Based Animation Scaling      │  ← May not be necessary
 ├─────────────────────────────────────┤
 │  Skeleton Debug System (100%) ✅     │  ← Hierarchical joints + visualizer
 │  • Skeleton Data + Updates (100%) ✅ │     `skeleton.h/.cpp`
@@ -123,7 +122,6 @@
 
 **Next Candidates:**
 - Secondary motion / bone wobble (needs skeletal joints)
-- Speed-based animation scaling (may not be necessary)
 - Additional reactive systems as gameplay needs emerge
 
 **Certainty:** ~100% for current systems. Architecture solid, tuning enabled, ready for feel iteration.

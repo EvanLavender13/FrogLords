@@ -30,8 +30,10 @@
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅
-  - *Certainty:* High (~80%) - simple extension of proven system
-  - *Note:* May not be necessary - current constant magnitude feels good
+  - *Status:* **DEFERRED** - Investigated 2025-10-06, current constant magnitude feels good
+  - *Certainty:* Low (~30%) - no evidence of problem; premature optimization
+  - *Note:* Needs test-first evidence before implementation. Document specific gameplay moments where constant magnitude fails (e.g., "tilt too subtle at max speed"). Current system works; don't fix what isn't broken.
+  - *Review:* See `PLANS/plan_review_speed_animation_scaling.md` for detailed analysis
 
 - **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
   - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
