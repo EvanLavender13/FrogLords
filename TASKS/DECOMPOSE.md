@@ -2,7 +2,7 @@
 
 ### 1. Identify Target Plan
 
-Receive the file path for an iteration plan located in the `PLANS/` directory from the user.
+Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate the corresponding iteration plan at `PLANS/iteration_<feature_name>.md`.
 
 ### 2. Analyze and Decompose
 
