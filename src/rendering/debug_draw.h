@@ -6,6 +6,7 @@
 #include "character/controller.h"
 #include "character/locomotion.h"
 #include "character/orientation.h"
+#include "character/skeleton.h"
 #include <glm/glm.hpp>
 
 namespace debug {
@@ -40,5 +41,7 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
 
 void draw_character_body(draw_context& ctx, const controller& character,
                          const orientation_system& orientation);
+
+void draw_skeleton(draw_context& ctx, const character::skeleton& skel);
 
 } // namespace debug

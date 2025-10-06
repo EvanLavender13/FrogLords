@@ -15,14 +15,14 @@ namespace character {
 constexpr int NO_PARENT = -1;
 
 struct joint {
-    glm::mat4 model_transform;  // Computed global transform (parent.model * local)
-    glm::mat4 local_transform;  // Local transform relative to parent
-    int parent_index;           // Index of parent joint, or NO_PARENT for root
-    const char* name;           // Joint name for debugging
+    glm::mat4 model_transform; // Computed global transform (parent.model * local)
+    glm::mat4 local_transform; // Local transform relative to parent
+    int parent_index;          // Index of parent joint, or NO_PARENT for root
+    const char* name;          // Joint name for debugging
 };
 
 struct skeleton {
-    std::vector<joint> joints;  // Hierarchical joint array, root at index 0
+    std::vector<joint> joints; // Hierarchical joint array, root at index 0
 };
 
-}  // namespace character
+} // namespace character

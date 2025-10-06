@@ -1,6 +1,7 @@
 #include "rendering/debug_draw.h"
 #include "rendering/scene.h"
 #include "character/controller.h"
+#include "character/skeleton.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
@@ -253,6 +254,42 @@ void draw_character_body(draw_context& ctx, const controller& character,
 
     // Draw with distinctive color (magenta for character body)
     ctx.renderer.draw(body, ctx.cam, ctx.aspect, glm::vec4(1.0f, 0.2f, 1.0f, 1.0f));
+}
+
+void draw_skeleton(draw_context& ctx, const character::skeleton& skel) {
+    // Draw joints as small spheres
+    for (const auto& joint : skel.joints) {
+        // Extract position from model transform (translation component)
+        glm::vec3 joint_pos = glm::vec3(joint.model_transform[3]);
+
+        wireframe_mesh joint_sphere = ctx.unit_sphere_4;
+        joint_sphere.position = joint_pos;
+        joint_sphere.scale = glm::vec3(0.05f); // Small joint spheres
+        ctx.renderer.draw(joint_sphere, ctx.cam, ctx.aspect,
+                          glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)); // Yellow joints
+    }
+
+    // Draw bones as lines between parent and child joints
+    wireframe_mesh bones;
+    bones.vertices.reserve(skel.joints.size());
+    bones.edges.reserve(skel.joints.size() - 1); // At least one edge per non-root joint
+
+    // Add all joint positions as vertices
+    for (const auto& joint : skel.joints) {
+        glm::vec3 joint_pos = glm::vec3(joint.model_transform[3]);
+        bones.vertices.push_back(joint_pos);
+    }
+
+    // Add edges between parent and child joints
+    for (size_t i = 0; i < skel.joints.size(); ++i) {
+        int parent_idx = skel.joints[i].parent_index;
+        if (parent_idx != character::NO_PARENT) {
+            bones.edges.emplace_back(parent_idx, i);
+        }
+    }
+
+    // Draw bones with white color
+    ctx.renderer.draw(bones, ctx.cam, ctx.aspect, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 } // namespace debug

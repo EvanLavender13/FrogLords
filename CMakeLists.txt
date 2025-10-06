@@ -58,6 +58,7 @@ add_executable(FrogLords
     src/character/animation.cpp
     src/character/tuning.cpp
     src/character/skeleton.cpp
+    src/character/t_pose.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp

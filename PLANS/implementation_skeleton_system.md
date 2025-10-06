@@ -29,23 +29,24 @@
 
 #### 3. T-Pose Asset
 
-- [ ] **File:** `src/character/t_pose.h`
-    - [ ] Create a new file `src/character/t_pose.h`.
-    - [ ] Declare `void create_t_pose(skeleton& skel);`.
-- [ ] **File:** `src/character/t_pose.cpp`
-    - [ ] Implement `create_t_pose` to construct a hardcoded humanoid T-pose.
-        - [ ] Populate `joints` with root first; set `parent_index` for children.
-        - [ ] Initialize each joint `local_transform`; leave `model_transform` to be computed by `update_global_transforms`.
+- [x] **File:** `src/character/t_pose.h`
+    - [x] Create a new file `src/character/t_pose.h`.
+    - [x] Declare `void create_t_pose(skeleton& skel);`.
+- [x] **File:** `src/character/t_pose.cpp`
+    - [x] Implement `create_t_pose` to construct a hardcoded humanoid T-pose.
+        - [x] Populate `joints` with root first; set `parent_index` for children.
+        - [x] Initialize each joint `local_transform`; leave `model_transform` to be computed by `update_global_transforms`.
+- [x] Add `src/character/t_pose.cpp` to CMakeLists.txt build sources.
 
 #### 4. Rendering
 
-- [ ] **File:** `src/rendering/debug_draw.h`
-    - [ ] Add the include `#include "character/skeleton.h"`.
-    - [ ] In `namespace debug { }`, declare: `void draw_skeleton(draw_context& ctx, const skeleton& skel);`.
-- [ ] **File:** `src/rendering/debug_draw.cpp`
-    - [ ] Implement `debug::draw_skeleton`.
-    - [ ] Iterate joints; compute joint positions from `model_transform`.
-    - [ ] Draw joints as small spheres or points; draw bones as lines between parent and child. (Fallback if capsules/boxes are unavailable.)
+- [x] **File:** `src/rendering/debug_draw.h`
+    - [x] Add the include `#include "character/skeleton.h"`.
+    - [x] In `namespace debug { }`, declare: `void draw_skeleton(draw_context& ctx, const skeleton& skel);`.
+- [x] **File:** `src/rendering/debug_draw.cpp`
+    - [x] Implement `debug::draw_skeleton`.
+    - [x] Iterate joints; compute joint positions from `model_transform`.
+    - [x] Draw joints as small spheres or points; draw bones as lines between parent and child. (Fallback if capsules/boxes are unavailable.)
 
 #### 5. Integration
 
