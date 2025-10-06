@@ -12,7 +12,9 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
-│  Secondary Motion / Bone Wobble     │  ← Now unblocked by skeleton debug
+│  Secondary Motion / Bone Wobble     │  ← Now unblocked by skeleton attachment
+├─────────────────────────────────────┤
+│  Attach Skeleton to Body (100%) ✅  │  ← Skeleton follows character transform
 ├─────────────────────────────────────┤
 │  Skeleton Debug System (100%) ✅     │  ← Hierarchical joints + visualizer
 │  • Skeleton Data + Updates (100%) ✅ │     `skeleton.h/.cpp`
