@@ -5,6 +5,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
+#include "imgui.h"
 
 namespace {
 constexpr float WHEEL_RADIUS = 0.45f;
@@ -256,7 +257,7 @@ void draw_character_body(draw_context& ctx, const controller& character,
     ctx.renderer.draw(body, ctx.cam, ctx.aspect, glm::vec4(1.0f, 0.2f, 1.0f, 1.0f));
 }
 
-void draw_skeleton(draw_context& ctx, const character::skeleton& skel) {
+void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show_labels) {
     // Draw joints as small spheres
     for (const auto& joint : skel.joints) {
         // Extract position from model transform (translation component)
@@ -290,6 +291,24 @@ void draw_skeleton(draw_context& ctx, const character::skeleton& skel) {
 
     // Draw bones with white color
     ctx.renderer.draw(bones, ctx.cam, ctx.aspect, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    // Draw joint labels if requested
+    if (show_labels) {
+        glm::mat4 view_proj = ctx.cam.get_projection_matrix(ctx.aspect) * ctx.cam.get_view_matrix();
+        ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+        for (const auto& joint : skel.joints) {
+            glm::vec3 world_pos = glm::vec3(joint.model_transform[3]);
+            glm::vec4 clip = view_proj * glm::vec4(world_pos, 1.0f);
+            if (clip.w > 0.0f) {
+                glm::vec3 ndc = glm::vec3(clip) / clip.w;
+                if (ndc.z >= 0.0f && ndc.z <= 1.0f) { // In front of camera
+                    ImVec2 screen_pos((ndc.x + 1.0f) * 0.5f * ImGui::GetIO().DisplaySize.x,
+                                      (1.0f - ndc.y) * 0.5f * ImGui::GetIO().DisplaySize.y);
+                    draw_list->AddText(screen_pos, IM_COL32(255, 255, 0, 255), joint.name);
+                }
+            }
+        }
+    }
 }
 
 } // namespace debug

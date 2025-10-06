@@ -72,7 +72,9 @@ void draw_character_panel(character_panel_state& state, controller& character,
             gui::widget::text("Animation Phase: %.2f", locomotion.phase);
         }
 
-        if (ImGui::CollapsingHeader("Debug Info")) {
+        if (ImGui::CollapsingHeader("Skeleton")) {
+            gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
+            gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
         }
 
         gui::widget::text("");

@@ -239,11 +239,11 @@ void app_runtime::render_world() {
     debug::draw_locomotion_wheel(debug_ctx, character, locomotion, orientation, wheel_spin_angle);
     debug::draw_foot_positions(debug_ctx, character, locomotion, orientation);
 
-    // Draw skeleton if enabled (simple runtime toggle)
-    if (show_skeleton_debug) {
+    // Draw skeleton if enabled
+    if (panel_state.show_skeleton) {
         // Ensure transforms are up-to-date in case any procedural motion is added later
         character::update_global_transforms(t_pose_skeleton);
-        debug::draw_skeleton(debug_ctx, t_pose_skeleton);
+        debug::draw_skeleton(debug_ctx, t_pose_skeleton, panel_state.show_joint_labels);
     }
 
     gui::render();

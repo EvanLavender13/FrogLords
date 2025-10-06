@@ -50,8 +50,6 @@ struct app_runtime {
     bool static_meshes_initialized = false;
     // T-pose skeleton for debug visualization
     character::skeleton t_pose_skeleton{};
-    // Simple runtime toggle for skeleton debug draw (temporary until GUI toggle added)
-    bool show_skeleton_debug = true;
 };
 
 app_runtime& runtime();

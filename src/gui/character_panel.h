@@ -9,6 +9,8 @@ namespace gui {
 
 struct character_panel_state {
     bool show = true;
+    bool show_skeleton = true;
+    bool show_joint_labels = false;
 };
 
 void draw_character_panel(character_panel_state& state, controller& character,

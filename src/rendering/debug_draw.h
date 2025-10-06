@@ -42,6 +42,6 @@ void draw_collision_state(draw_context& ctx, const controller& character, const 
 void draw_character_body(draw_context& ctx, const controller& character,
                          const orientation_system& orientation);
 
-void draw_skeleton(draw_context& ctx, const character::skeleton& skel);
+void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show_labels = false);
 
 } // namespace debug
