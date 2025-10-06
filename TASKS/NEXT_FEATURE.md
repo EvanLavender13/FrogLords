@@ -17,12 +17,17 @@
     *   **Highest Certainty / Lowest Risk:** Which feature has the highest initial `Certainty` score in the backlog and depends on the fewest *other* uncertain systems?
 
 ### 4. Propose the Feature
-1.  State the name of the selected feature.
-2.  Provide a brief (1–3 sentence) justification, referencing the criteria above. Keep it concrete and mechanical (avoid fiction).
 
-Tone/constraints:
-- Concise, imperative, gameplay‑first. Mention dependencies and expected test loop length.
-- Prefer systemic, reusable mechanics; avoid content restrictions.
+1.  State the name of the selected feature
+2.  Provide a brief (1–3 sentence) justification, referencing the criteria above
+
+### Tone & Constraints
+
+-   Concise, imperative, gameplay‑first
+-   Keep it concrete and mechanical (avoid fiction)
+-   Mention dependencies and expected test loop length
+-   Prefer systemic, reusable mechanics
+-   Avoid content restrictions
 
 ---
 

@@ -1,13 +1,15 @@
 # Check Plans Against Principles
 
 ### 1. Identify Target Feature
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`). This will be used to locate the relevant planning documents.
 
-### 2. Gather Inputs
-1.  **Principles:** Read and synthesize the core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as a secondary reference for high-level philosophy.
-2.  **Planning Documents:** Read the contents of the following files:
+Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+
+### 2. Gather Context
+
+1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference.
+2.  **Planning Documents:** Read the following files:
     *   `PLANS/iteration_<feature_name>.md`
-    *   `PLANS/implementation_<feature_name>.md` (if it exists)
+    *   `PLANS/implementation_<feature_name>.md` (if exists)
     *   `PLANS/dependency_stack.md`
     *   `PLANS/design_backlog.md`
 
@@ -19,12 +21,20 @@ Cross-reference the planning documents against the synthesized principles. The g
 -   **Assess Design Rationale:** Does the `iteration_plan.md` align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
 -   **Review Process:** Does the iteration plan reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
 
-### 4. Format and Save Review
-Generate a new markdown document summarizing the findings of the analysis.
+### 4. Save and Propose
 
--   **Filename:** `PLANS/review_<feature_name>.md`.
--   **Content:** The document should be structured to clearly present the findings. Use the template below.
--   Propose the generated review document to the user.
+Generate a new markdown document summarizing the findings.
+
+-   **Filename:** `PLANS/plan_review_<feature_name>.md`
+-   **Content:** Use the template below
+-   Propose the document to the user for review
+
+### Tone & Constraints
+
+-   Concise and direct; no preamble or postamble
+-   Detail scales with risk and complexity
+-   Cite specific principles from `AGENTS.md`
+-   Focus on actionable recommendations
 
 ---
 

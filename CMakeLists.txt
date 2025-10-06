@@ -51,6 +51,7 @@ add_executable(FrogLords
     src/sokol_impl.cpp
     src/main.cpp
     src/app/runtime.cpp
+    src/app/game_world.cpp
     src/camera/camera.cpp
     src/character/controller.cpp
     src/character/orientation.cpp

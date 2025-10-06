@@ -5,22 +5,28 @@
 2.  Review any new ideas or insights that have emerged since the last update.
 
 ### 2. Add and Update Backlog Items
-1.  **Add New Ideas:** For any new feature or system idea, create a new entry in `PLANS/design_backlog.md`.
-    -   Place it under the most relevant category.
-    -   Write a single, concise line for the description.
-  -   Add the required metadata (`Prerequisite`, `Certainty`, `Note`). Assign a low, honest `Certainty` score; avoid optimism.
+
+1.  **Add New Ideas:** For any new feature or system idea, create a new entry in `PLANS/design_backlog.md`
+    -   Place under most relevant category
+    -   Write single, concise line for description
+    -   Add required metadata (`Prerequisite`, `Certainty`, `Note`)
 2.  **Update Existing Items:**
-    -   If a feature has been implemented and proven, find its entry in the backlog, mark it as `✅ COMPLETE`, and add a `Learning:` section to document the knowledge gained.
-    -   If a feature idea is now blocked or made irrelevant by other changes, mark it as `CUT` and add a brief note explaining why.
-  -   If the certainty of a foundational system has changed, review dependent backlog items and update their `Certainty` scores accordingly.
-  -   If a dependency relationship has shifted, reflect that in `PLANS/dependency_stack.md`.
+    -   If feature implemented and proven, mark as `✅ COMPLETE` and add `Learning:` section
+    -   If feature now blocked or irrelevant, mark as `CUT` with brief explanation
+    -   If foundational system certainty changed, update dependent items accordingly
+    -   If dependency relationships shifted, reflect in `PLANS/dependency_stack.md`
 
 ### 3. Propose for Review
-1.  After updating `PLANS/design_backlog.md`, inform the user of the changes.
-2.  If a previously blocked feature is now unblocked, propose it using `TASKS/NEXT_FEATURE.md`.
 
-Tone/constraints:
-- Be concise and mechanical. Focus on dependencies, certainty, and testability.
+1.  After updating `PLANS/design_backlog.md`, inform the user of the changes
+2.  If a previously blocked feature is now unblocked, propose it using `TASKS/NEXT_FEATURE.md`
+
+### Tone & Constraints
+
+-   Concise and mechanical
+-   Focus on dependencies, certainty, and testability
+-   Assign low, honest certainty scores; avoid optimism
+-   Document learnings from completed features
 
 ---
 

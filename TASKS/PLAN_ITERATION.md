@@ -14,20 +14,25 @@ Receive a high-level feature description from the user. This may be a single sen
 
 ### 3. Generate Plan
 
-Generate a detailed iteration plan based on the template below. The plan must distill the user's request and align it with the project's core design principles (elegance, emergence, iteration, dependency management).
+Generate a detailed iteration plan based on the template below. The plan must distill the user's request and align with core design principles (elegance, emergence, iteration, dependency management).
 
-- **Analyze Dependencies:** Before writing, consult `PLANS/dependency_stack.md` and `PLANS/design_backlog.md` to determine the feature's correct placement and certainty. Consider cascading uncertainty and assign a provisional certainty tag.
-- **Be Specific:** Provide concrete, actionable steps for the graybox implementation and testing protocol.
-- **Stay Grounded:** Ensure the plan is realistic and directly addresses the feature request.
-- **Gameplay‑First:** Apply the "do no harm" rule—input maps to acceleration; animation layers never steal control; transitions remain interruptible; rotate model to velocity; prefer spring‑damper and cubic interpolation.
-- **Planning Horizon:** Choose a short horizon when uncertainty is high or test cost is low; expand only as certainty rises.
+-   **Analyze Dependencies:** Consult `PLANS/dependency_stack.md` and `PLANS/design_backlog.md` to determine feature placement and certainty. Consider cascading uncertainty
+-   **Be Specific:** Provide concrete, actionable steps for graybox implementation and testing protocol
+-   **Stay Grounded:** Ensure the plan is realistic and directly addresses the feature request
 
 ### 4. Save and Propose
 
-Save the generated plan to a new file in the `PLANS/` directory, then propose it for review.
+Save the generated plan to a new file in `PLANS/` directory, then propose for review.
 
-- **Filename:** `iteration_[feature_name].md` (e.g., `iteration_tongue_grapple.md`).
-- Keep tone concise and direct. Favor clarity over cleverness.
+-   **Filename:** `iteration_[feature_name].md` (e.g., `iteration_tongue_grapple.md`)
+
+### Tone & Constraints
+
+-   Concise and direct; favor clarity over cleverness
+-   Gameplay‑first: input→acceleration; interruptible transitions; rotate to velocity
+-   Prefer spring‑damper and cubic interpolation
+-   Short planning horizon when uncertainty is high
+-   Avoid content restrictions
 
 ---
 

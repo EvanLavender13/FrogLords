@@ -6,19 +6,8 @@
 #include "input/input.h"
 #include "gui/gui.h"
 #include "gui/character_panel.h"
-#include "character/tuning.h"
 #include "rendering/debug_draw.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <cmath>
-#include <algorithm>
-#include "character/t_pose.h"
-#include "character/skeleton.h"
-
-namespace {
-constexpr float WHEEL_RADIUS = 0.45f;
-constexpr float TWO_PI = 6.28318530718f;
-} // namespace
 
 app_runtime& runtime() {
     static app_runtime instance;
@@ -44,70 +33,7 @@ void app_runtime::initialize() {
 
     renderer.init();
 
-    character = controller();
-    orientation = orientation_system();
-    locomotion = locomotion_system();
-    character_params.read_from(character);
-
-    character::sync_locomotion_targets(character, locomotion);
-
-    cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
-    cam.set_mode(camera_mode::follow);
-
-    scn = scene();
-    wireframe_mesh floor = generate_grid_floor(40.0f, 40);
-    scn.add_object(floor);
-
-    // Add 5 platforms for collision testing
-    for (int i = 0; i < 5; ++i) {
-        float height = 1.0f + static_cast<float>(i) * 1.5f;
-        aabb platform;
-        platform.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
-        platform.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
-        scn.add_collision_box(platform);
-    }
-
-    // Add wall geometry for Phase A validation
-    // Long wall - test sustained sliding behavior
-    aabb long_wall;
-    long_wall.center = glm::vec3(6.0f, 2.0f, -10.0f);
-    long_wall.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
-    scn.add_collision_box(long_wall);
-
-    // Corner walls - test multi-surface collision
-    aabb corner_wall_1;
-    corner_wall_1.center = glm::vec3(-6.0f, 1.5f, -8.0f);
-    corner_wall_1.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
-    scn.add_collision_box(corner_wall_1);
-
-    aabb corner_wall_2;
-    corner_wall_2.center = glm::vec3(-4.0f, 1.5f, -12.0f);
-    corner_wall_2.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
-    scn.add_collision_box(corner_wall_2);
-
-    // Narrow gap - test tight space navigation
-    aabb gap_wall_1;
-    gap_wall_1.center = glm::vec3(3.0f, 1.0f, 2.0f);
-    gap_wall_1.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
-    scn.add_collision_box(gap_wall_1);
-
-    aabb gap_wall_2;
-    gap_wall_2.center = glm::vec3(3.0f, 1.0f, 4.0f);
-    gap_wall_2.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
-    scn.add_collision_box(gap_wall_2);
-
-    // Step-up test: Graduated steps (0.15m, 0.30m, 0.40m, 0.60m)
-    for (int i = 0; i < 4; ++i) {
-        float height = 0.15f * static_cast<float>(i + 1);
-        aabb step;
-        step.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
-        step.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
-        scn.add_collision_box(step);
-    }
-
-    // Create T-pose skeleton for debug visualization and compute global transforms
-    create_t_pose(t_pose_skeleton);
-    character::update_global_transforms(t_pose_skeleton);
+    world.init();
 
     initialized = true;
 }
@@ -140,24 +66,25 @@ void app_runtime::frame() {
         if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
             float delta_x = (input::mouse_x() - last_mouse_x) * 0.5f;
             float delta_y = (input::mouse_y() - last_mouse_y) * 0.5f;
-            cam.orbit(-delta_x, delta_y);
+            world.cam.orbit(-delta_x, delta_y);
         }
 
         float scroll_delta = input::mouse_scroll_y();
         if (scroll_delta != 0.0f) {
-            cam.zoom(-scroll_delta * 0.5f);
+            world.cam.zoom(-scroll_delta * 0.5f);
         }
 
         last_mouse_x = input::mouse_x();
         last_mouse_y = input::mouse_y();
     }
 
-    update_simulation(dt);
+    world.update(dt, panel_state);
 
     input::update();
 
     gui::begin_frame();
-    gui::draw_character_panel(panel_state, character, locomotion, orientation, character_params);
+    gui::draw_character_panel(panel_state, world.character, world.locomotion, world.orientation,
+                              world.character_params);
 
     render_world();
 }
@@ -180,53 +107,6 @@ void app_runtime::ensure_static_meshes() {
     static_meshes_initialized = true;
 }
 
-void app_runtime::update_simulation(float dt) {
-    character.apply_input(cam, dt);
-    character.update(&scn, dt);
-
-    glm::vec3 horizontal_velocity = character.velocity;
-    horizontal_velocity.y = 0.0f;
-
-    // Use input intent for animation/orientation (allows running against walls)
-    glm::vec3 intended_velocity = character.input_direction * character.max_speed;
-
-    orientation.update(intended_velocity, dt);
-
-    // Update reactive animation systems (after physics and orientation resolved)
-    character.animation.update_landing_spring(character.just_landed,
-                                              character.vertical_velocity_on_land, dt);
-    character.just_landed = false; // Clear flag after animation reads it
-    character.animation.update_acceleration_tilt(character.last_acceleration, character.velocity,
-                                                 character.max_speed, orientation.get_yaw(), dt);
-
-    character::sync_locomotion_targets(character, locomotion);
-    locomotion.update(horizontal_velocity, dt, character.is_grounded);
-
-    float angular_speed = 0.0f;
-    if (WHEEL_RADIUS > 0.0001f) {
-        angular_speed = locomotion.current_speed / WHEEL_RADIUS;
-    }
-    wheel_spin_angle += angular_speed * dt;
-    if (wheel_spin_angle > TWO_PI) {
-        wheel_spin_angle = std::fmod(wheel_spin_angle, TWO_PI);
-    }
-
-    if (cam.get_mode() == camera_mode::follow) {
-        cam.follow_update(character.position, dt);
-    }
-
-    // Animate skeleton if enabled
-    if (panel_state.animate_skeleton) {
-        skeleton_animation_time += dt;
-        // Simple forearm wiggle: rotate left_elbow (index 6) around Z-axis
-        float angle = 0.5f * std::sin(skeleton_animation_time * 2.0f); // ±0.5 radians
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        t_pose_skeleton.joints[6].local_transform =
-            rotation * glm::translate(glm::mat4(1.0f), glm::vec3(-0.15f, 0.0f, 0.0f));
-        character::update_global_transforms(t_pose_skeleton);
-    }
-}
-
 void app_runtime::render_world() {
     sg_pass pass = {};
     pass.action = pass_action;
@@ -236,28 +116,29 @@ void app_runtime::render_world() {
     float aspect = static_cast<float>(sapp_width()) / static_cast<float>(sapp_height());
 
     glm::vec4 color(wireframe_color[0], wireframe_color[1], wireframe_color[2], wireframe_color[3]);
-    for (const auto& mesh : scn.objects()) {
-        renderer.draw(mesh, cam, aspect, color);
+    for (const auto& mesh : world.scn.objects()) {
+        renderer.draw(mesh, world.cam, aspect, color);
     }
 
-    debug::draw_context debug_ctx{renderer,      cam,           aspect,       unit_circle,
+    debug::draw_context debug_ctx{renderer,      world.cam,     aspect,       unit_circle,
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
-    debug::draw_collision_state(debug_ctx, character, scn);
-    debug::draw_character_body(debug_ctx, character, orientation);
-    debug::draw_character_state(debug_ctx, character, locomotion, orientation);
-    debug::draw_physics_springs(debug_ctx, character, locomotion);
-    debug::draw_locomotion_wheel(debug_ctx, character, locomotion, orientation, wheel_spin_angle);
-    debug::draw_foot_positions(debug_ctx, character, locomotion, orientation);
+    debug::draw_collision_state(debug_ctx, world.character, world.scn);
+    debug::draw_character_body(debug_ctx, world.character, world.orientation);
+    debug::draw_character_state(debug_ctx, world.character, world.locomotion, world.orientation);
+    debug::draw_physics_springs(debug_ctx, world.character, world.locomotion);
+    debug::draw_locomotion_wheel(debug_ctx, world.character, world.locomotion, world.orientation,
+                                 world.wheel_spin_angle);
+    debug::draw_foot_positions(debug_ctx, world.character, world.locomotion, world.orientation);
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {
         // Ensure transforms are up-to-date (only if not animated, as animation updates in
         // update_simulation)
         if (!panel_state.animate_skeleton) {
-            character::update_global_transforms(t_pose_skeleton);
+            character::update_global_transforms(world.t_pose_skeleton);
         }
-        debug::draw_skeleton(debug_ctx, t_pose_skeleton, panel_state.show_joint_labels);
+        debug::draw_skeleton(debug_ctx, world.t_pose_skeleton, panel_state.show_joint_labels);
     }
 
     gui::render();
