@@ -13,6 +13,6 @@ struct tuning_params {
     void read_from(const controller& c);
 };
 
-void sync_locomotion_targets(controller& c, locomotion_system& loco);
+void sync_locomotion_targets(const controller& c, locomotion_system& loco);
 
 } // namespace character

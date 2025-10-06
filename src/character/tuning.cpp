@@ -11,9 +11,6 @@ void tuning_params::apply_to(controller& c) const {
     float desired_accel = c.max_speed / time_to_max_speed;
     constexpr float FRICTION_RATIO = 0.75f;
     constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
-    if (NET_FRACTION <= 0.0f) {
-        return;
-    }
 
     c.ground_accel = desired_accel / NET_FRACTION;
     c.air_accel = desired_accel;
@@ -28,7 +25,7 @@ void tuning_params::apply_to(controller& c) const {
 void tuning_params::read_from(const controller& c) {
     constexpr float FRICTION_RATIO = 0.75f;
     constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
-    if (c.ground_accel > 0.0f && NET_FRACTION > 0.0f) {
+    if (c.ground_accel > 0.0f) {
         float net_accel = c.ground_accel * NET_FRACTION;
         time_to_max_speed = c.max_speed / net_accel;
     }
@@ -39,7 +36,7 @@ void tuning_params::read_from(const controller& c) {
     }
 }
 
-void sync_locomotion_targets(controller& c, locomotion_system& loco) {
+void sync_locomotion_targets(const controller& c, locomotion_system& loco) {
     float run_speed = c.max_speed;
     loco.run_speed_threshold = run_speed;
     loco.walk_speed_threshold = run_speed * 0.2f;

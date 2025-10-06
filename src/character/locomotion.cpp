@@ -3,35 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-namespace {
-float shortest_unit_delta(float from, float to) {
-    float delta = to - from;
-    delta -= std::floor(delta + 0.5f);
-    return delta;
-}
-
-struct phase_threshold {
-    float value;
-};
-
-bool crossed_phase_threshold(float previous, float delta, phase_threshold threshold) {
-    if (delta <= 0.0f) {
-        return false;
-    }
-
-    float end = previous + delta;
-    if (end >= 1.0f) {
-        float wrapped_end = end - 1.0f;
-        if (previous < threshold.value) {
-            return true;
-        }
-        return threshold.value <= wrapped_end;
-    }
-
-    return previous < threshold.value && threshold.value <= end;
-}
-} // namespace
-
 locomotion_system::locomotion_system() {
     // Walk keyframes (lower vertical bob)
     walk_state.pass_pose = {.root_offset = glm::vec3(0.0f, 0.0f, 0.0f), .leg_phase_offset = 0.0f};

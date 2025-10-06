@@ -9,4 +9,4 @@ struct sphere_collision {
     float penetration = 0.0f;
 };
 
-sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box);
+sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box);

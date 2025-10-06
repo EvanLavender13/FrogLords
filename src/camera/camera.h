@@ -21,7 +21,7 @@ struct clip_planes {
 
 class camera {
   public:
-    camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), orbit_config orbit = {});
+    explicit camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), orbit_config orbit = {});
 
     /// Generate view matrix from current eye position
     glm::mat4 get_view_matrix() const;

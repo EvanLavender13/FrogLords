@@ -100,11 +100,12 @@ void controller::update(const scene* scn, float dt) {
     is_grounded = false;
     collision_contact_debug = contact_debug_info{};
 
+    // Capture vertical velocity BEFORE collision resolution (for landing spring)
+    // cppcheck-suppress variableScope
+    float pre_collision_vertical_velocity = velocity.y;
+
     // Update collision sphere position
     collision_sphere.center = position;
-
-    // Capture vertical velocity BEFORE collision resolution (for landing spring)
-    float pre_collision_vertical_velocity = velocity.y;
 
     // Box collision resolution
     if (scn != nullptr) {

@@ -6,7 +6,7 @@ namespace {
 constexpr float EPSILON = 0.0001f;
 }
 
-sphere_collision resolve_sphere_aabb(sphere& s, const aabb& box) {
+sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
     sphere_collision result{};
 
     glm::vec3 min_corner = box.center - box.half_extents;

@@ -30,12 +30,12 @@ void handle_event(const sapp_event* event) {
 }
 
 bool wants_mouse() {
-    ImGuiIO& io = ImGui::GetIO();
+    const ImGuiIO& io = ImGui::GetIO();
     return io.WantCaptureMouse;
 }
 
 bool wants_keyboard() {
-    ImGuiIO& io = ImGui::GetIO();
+    const ImGuiIO& io = ImGui::GetIO();
     return io.WantCaptureKeyboard;
 }
 

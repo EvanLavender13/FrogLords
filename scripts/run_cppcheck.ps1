@@ -18,5 +18,5 @@ if (-not (Test-Path -Path $cppcheckBuildDir)) {
 }
 
 # Run cppcheck
-& 'cppcheck' ('--project=' + $compileDb) ('--cppcheck-build-dir=' + $cppcheckBuildDir) '--enable=all' '--std=c++20' '--file-filter=src/**' '--suppress=missingIncludeSystem' '--suppress=*:external/**' '--check-level=exhaustive'
+& 'cppcheck' ('--project=' + $compileDb) ('--cppcheck-build-dir=' + $cppcheckBuildDir) '--enable=all' '--std=c++20' '--file-filter=src/**' '--suppress=missingIncludeSystem' '--suppress=*:external/**' '--suppress=*:generated/**' '--check-level=exhaustive'
 exit $LASTEXITCODE
