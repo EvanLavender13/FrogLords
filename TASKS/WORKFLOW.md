@@ -41,6 +41,10 @@ graph TD
     B --> MP[MODIFY_PLAN]
     MP --> C
     
+    %% Implementation-phase deferral
+    H --> F
+    J --> F
+    
     style REQ fill:#d4edda
     style A fill:#e1f5ff
     style B fill:#e1f5ff
@@ -76,7 +80,7 @@ graph TD
 - **MODIFY_PLAN**: Update implementation plan to match modified iteration scope
 
 ### Alternative Path
-- **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning phase
+- **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning or implementation phase
 
 ### Supporting Tasks
 - **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
@@ -109,6 +113,11 @@ graph TD
 2. DEFER_FEATURE
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
+### Deferral Path (Implementation Phase)
+1. During IMPLEMENTATION_STEP or REVIEW_IMPLEMENTATION, discover blockers/missing prerequisites
+2. DEFER_FEATURE
+3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
+
 ### Revision Path
 1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review (prepends changelog to review)
 2. REVIEW_IMPLEMENTATION identifies issues → Fix Code → Re-implement
@@ -124,7 +133,8 @@ graph TD
 
 - Short loops: implementation should be tight (hours to days)
 - Interruptibility: revision loops at multiple decision points
-- Deferral is cheap: celebrate avoiding expensive mistakes during planning
+- Deferral is cheap: celebrate avoiding expensive mistakes during planning or implementation
+- Deferral phases: planning phase (principle violations, premature features) and implementation phase (missing prerequisites, blockers discovered)
 - Bottom-up: dependency stack guides feature selection
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
