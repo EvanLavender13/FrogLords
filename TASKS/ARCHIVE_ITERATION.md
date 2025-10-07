@@ -4,6 +4,7 @@
 
 1.  **Get Feature Name:** Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
 2.  **Locate Artifacts:** Find all related markdown files in the `PLANS/` directory. These typically include:
+    -   `feature_<feature_name>.md`
     -   `iteration_<feature_name>.md`
     -   `implementation_<feature_name>.md`
     -   `review_<feature_name>.md`

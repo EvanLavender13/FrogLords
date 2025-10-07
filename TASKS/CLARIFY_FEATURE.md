@@ -118,9 +118,34 @@ This becomes the **authoritative reference** for the iteration plan and implemen
 
 ---
 
-### 6. Proceed to Planning
+### 6. Consolidate Feature Description (Final Pass)
 
-Once clarity is achieved and documented, proceed to `PLAN_ITERATION.md`. The iteration plan should reference the clarified requirements explicitly and include the visual references as validation checkpoints.
+**CRITICAL:** Once all clarifications are resolved, perform a consistency and redundancy pass:
+
+**Consistency Check:**
+- **Ordering:** Ensure lists/sequences maintain identical structure throughout (e.g., if keyframes list properties in a specific order, all keyframes use that order; if parameters are listed in one section, other sections use the same sequence).
+- **Terminology:** Verify the same terms are used consistently throughout (e.g., "forward" always means the same direction, technical terms don't shift meaning).
+- **Value precision:** Remove contradictions like "~90°" (approximate) vs "locked at 90°" (exact) — pick one and be consistent.
+- **Cross-references:** Ensure sections reference each other correctly and the referenced content actually exists.
+
+**Redundancy Elimination:**
+- **Single source of truth:** Each fact should appear exactly once. Define concepts in one place, reference them elsewhere.
+- **Remove verbose padding:** Strip phrases that add no information ("for isolated tuning", "in real-time", "next to live", etc.).
+- **Consolidate repeated concepts:** If the same information is mentioned multiple times, consolidate into one clear statement.
+- **Collapse redundant sections:** Merge overlapping sections that describe the same thing from different angles.
+
+**Clarity Enhancement:**
+- **Remove ambiguous qualifiers:** Replace "approximately", "should", "may" with concrete values or decisions.
+- **Consolidate scope markers:** Clearly separate active implementation vs deferred features (avoid mixing throughout document).
+- **Streamline language:** Follow AGENTS.md communication principle: "Concise and direct. No preamble/postamble."
+
+**Output:** A terse, zero-redundancy, internally consistent feature description ready for implementation planning.
+
+---
+
+### 7. Proceed to Planning
+
+Once clarity is achieved, documented, and consolidated, proceed to `PLAN_ITERATION.md`. The iteration plan should reference the clarified requirements explicitly and include the visual references as validation checkpoints.
 
 ---
 
