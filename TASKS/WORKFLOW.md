@@ -5,7 +5,10 @@ This diagram shows the complete iteration workflow and task dependencies.
 ```mermaid
 graph TD
     REQ[REQUEST_FEATURE] --> A[NEXT_FEATURE]
-    A --> B[PLAN_ITERATION]
+    A --> CLAR{Needs<br/>Clarity?}
+    CLAR -->|Yes| CF[CLARIFY_FEATURE]
+    CF --> B[PLAN_ITERATION]
+    CLAR -->|No| B
     B --> C[DECOMPOSE_PLAN]
     C --> D[REVIEW_PLAN]
     D --> E{Issues?}
@@ -47,6 +50,7 @@ graph TD
     
     style REQ fill:#d4edda
     style A fill:#e1f5ff
+    style CF fill:#fff3cd
     style B fill:#e1f5ff
     style C fill:#e1f5ff
     style D fill:#e1f5ff
@@ -67,8 +71,9 @@ graph TD
 - **REQUEST_FEATURE**: Propose a new feature for evaluation and backlog entry
 
 ### Primary Workflow
-- **NEXT_FEATURE**: Identify next feature from backlog based on dependencies and certainty
-- **PLAN_ITERATION**: Create detailed iteration plan with graybox scope and testing protocol
+- **NEXT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; write high-level feature description and save to `PLANS/feature_<feature_name>.md`
+- **CLARIFY_FEATURE**: (Optional) Eliminate ambiguity by asking targeted questions before planning; captures visual references and concrete requirements
+- **PLAN_ITERATION**: Create detailed iteration plan from feature description with graybox scope and testing protocol
 - **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
 - **REVIEW_PLAN**: Check iteration and implementation plans against principles; prepend changelog entry on re-review
 - **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist; mark completed items and track changed files
@@ -103,13 +108,13 @@ graph TD
 2. Add to backlog if viable → Eventually pulled via NEXT_FEATURE
 
 ### Success Path
-1. NEXT_FEATURE → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
+1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
 2. IMPLEMENTATION_STEP (loop until complete)
 3. REVIEW_IMPLEMENTATION (pass) → FINALIZE_ITERATION
 4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
 ### Deferral Path (Planning Phase)
-1. NEXT_FEATURE → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
+1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
 2. DEFER_FEATURE
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
@@ -133,6 +138,7 @@ graph TD
 
 - Short loops: implementation should be tight (hours to days)
 - Interruptibility: revision loops at multiple decision points
+- Clarification upfront: use CLARIFY_FEATURE when ambiguity exists; visual references prevent wasted iteration loops
 - Deferral is cheap: celebrate avoiding expensive mistakes during planning or implementation
 - Deferral phases: planning phase (principle violations, premature features) and implementation phase (missing prerequisites, blockers discovered)
 - Bottom-up: dependency stack guides feature selection

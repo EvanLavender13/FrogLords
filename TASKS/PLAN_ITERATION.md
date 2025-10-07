@@ -19,7 +19,11 @@ Run the script to create and switch to a new feature branch.
 
 ### 3. Understand Feature
 
-Receive a high-level feature description from the user. This may be a single sentence or a paragraph.
+Receive a high-level feature description from the user or read from `PLANS/feature_<feature_name>.md`. The description should include:
+-   Core mechanic and pattern reuse
+-   Graybox scope and minimal implementation approach
+-   What future features this unlocks
+-   Test loop and certainty estimate
 
 ### 4. Generate Plan
 
