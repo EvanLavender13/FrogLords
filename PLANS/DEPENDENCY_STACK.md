@@ -12,8 +12,6 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
-│  Secondary Motion / Bone Wobble     │  ← Now unblocked by skeleton attachment
-├─────────────────────────────────────┤
 │  Attach Skeleton to Body (100%) ✅  │  ← Skeleton follows character transform
 ├─────────────────────────────────────┤
 │  Skeleton Debug System (100%) ✅     │  ← Hierarchical joints + visualizer
@@ -123,8 +121,8 @@
 - Direct UI binding to system parameters (no intermediate abstractions)
 
 **Next Candidates:**
-- Secondary motion / bone wobble (needs skeletal joints)
 - Additional reactive systems as gameplay needs emerge
+- Primary skeletal animation (walk/run limb cycles) - prerequisite for secondary motion
 
 **Certainty:** ~100% for current systems. Architecture solid, tuning enabled, ready for feel iteration.
 

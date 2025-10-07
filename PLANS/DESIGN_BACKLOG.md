@@ -31,8 +31,12 @@
   - *Learning:* Single transform method (`get_world_transform()`) provides consistent visual hierarchy for skeleton and debug body; reuse over duplication eliminates drift; scope expansion for orientation/reactive offsets justified by visual consistency and future-proofing.
 
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
-  - *Prerequisite:* Skeletal system with joints ✅ (T-pose debug skeleton now available)
-  - *Certainty:* Low (~35%) - rendering approach unknown, but skeleton now attached to character
+  - *Status:* **DEFERRED** (2025-10-06) - Missing critical prerequisite: primary skeletal animation system
+  - *Prerequisite:* Locomotion-driven skeletal animation (walk/run arm swing cycles) - **NOT YET IMPLEMENTED**
+  - *Certainty:* Very Low (~15%) - reactive layer requires base animation to react to; static T-pose has no motion to add wobble on top of
+  - *Reason:* Implementation attempts revealed architectural blocker. Secondary motion is a reactive animation layer that needs a stable primary animation layer beneath it (per procedural animation principles). Current static T-pose provides no parent motion for joints to lag behind.
+  - *Reconsideration:* After implementing distance-phased primary limb animation synchronized to locomotion
+  - *Note:* Two implementation approaches attempted (parent rotation lag, acceleration-driven wobble) - both failed due to missing prerequisite, not implementation bugs. See archived implementation plan for details.
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅

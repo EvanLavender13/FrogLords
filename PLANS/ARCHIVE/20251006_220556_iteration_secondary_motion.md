@@ -155,3 +155,26 @@
 **Estimated Completion:** 2-4 hours for graybox; additional 1-2 hours for tuning iteration
 
 **Success Definition:** Character movement feels more organic without compromising responsiveness or introducing visual artifacts. Parameters converge to stable values.
+
+---
+
+## Deferral
+
+**Date:** 2025-10-06
+
+**Reason:** Feature requires primary skeletal animation system as prerequisite. Current static T-pose skeleton has no base motion for secondary motion to react to. Dependency analysis missed that reactive animation layers need stable primary animation layers beneath them.
+
+**Missing Prerequisites:**
+-   Locomotion-driven primary limb animation (walk/run arm swing cycles)
+-   Distance-phased animation system for synchronized gait
+-   Base skeletal animation layer for reactive systems to layer upon
+
+**Implementation Attempts:**
+1.  **Parent rotation lag approach:** Measured joint rotation changes frame-to-frame to compute angular velocity. Failed because T-pose joints don't rotate—there's no parent motion to lag behind. Skeleton is static; only character controller moves through space.
+2.  **Acceleration-driven wobble:** Applied character acceleration directly to joint rotations (pitch from forward/back accel, roll from lateral accel + turning). Produced unstable wild spinning because there's no base pose to offset from—springs were driving absolute rotations rather than subtle offsets on top of primary animation.
+
+**Reconsideration Criteria:** After implementing primary locomotion animation system (dependency layer below reactive animation). Secondary motion will work as designed once there's base skeletal motion (arm swings, leg movement) to add wobble on top of.
+
+**Technical Insight:** Secondary motion is definitionally a reactive layer—it requires stable primary animation beneath it per procedural animation layering principles (AGENTS.md: "Reactive systems interpret state"). Without primary animation, there's no state to react to. The skeleton needs to be moving first before we can make joints lag behind that movement.
+
+**Architectural Learning:** Reactive animation layer dependencies aren't just about data structures existing (skeleton ✅) but about having **motion** to react to. Static data ≠ animation. Future features in "reactive systems" layer must verify prerequisite motion sources, not just prerequisite data structures.
