@@ -12,20 +12,77 @@ Read `AGENTS.md` to synthesize coding standards and architectural principles. Es
 
 Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate the corresponding iteration plan at `PLANS/iteration_<feature_name>.md`.
 
-### 3. Analyze and Decompose
+### 3. Foundation Architecture Review (CRITICAL)
+
+**Before decomposing, perform a thorough architectural audit to identify existing system states and prevent duplicate/conflicting implementations:**
+
+1.  **Identify All Systems Involved:**
+    -   Read the iteration plan's "Graybox Scope" to list all systems the feature touches
+    -   Check `PLANS/DEPENDENCY_STACK.md` to verify system placement and dependencies
+    
+2.  **Audit Current System Ownership:**
+    -   For each identified system, search the codebase to find ALL current instances:
+        -   Where is the system instantiated? (game_world, controller, etc.)
+        -   Where is the system updated?
+        -   Where is the system referenced for rendering/debug/GUI?
+    -   Use `grep_search` to find all references to key system types (e.g., `locomotion_system`, `skeleton`)
+    
+3.  **Document Current State:**
+    -   List all files that currently own or reference each system
+    -   Note any duplicate instances (e.g., `game_world.locomotion` AND `controller.locomotion`)
+    -   Flag architectural conflicts BEFORE creating implementation steps
+    
+4.  **Plan Migration/Consolidation:**
+    -   If systems need to move ownership (e.g., locomotion from game_world to controller):
+        -   Include explicit steps to remove old instances
+        -   Include steps to update all references (rendering, GUI, debug draw)
+        -   List all files that need changes
+    -   If new systems are being added, verify they don't conflict with existing ones
+
+**Example Foundation Audit:**
+```
+Feature: Primary Skeletal Animation
+Systems Involved: skeleton, locomotion, animation_state
+
+Current State Audit:
+- skeleton: 
+  - game_world.t_pose_skeleton (separate T-pose for display)
+  - controller.skeleton (MISSING - needs to be added)
+  - Rendered from: runtime.cpp draws game_world.t_pose_skeleton
+  
+- locomotion:
+  - game_world.locomotion (initialized in game_world::init, updated in game_world::update)
+  - controller.locomotion (MISSING - needs to be added)
+  - Referenced by: debug_draw, character_panel (all pass game_world.locomotion)
+
+Architecture Issues Found:
+1. locomotion exists in game_world but needs to be in controller
+2. Multiple skeletons will exist - need to consolidate
+3. All rendering/debug references point to game_world instances
+
+Required Migrations:
+- Remove game_world.locomotion, move to controller.locomotion
+- Remove game_world.t_pose_skeleton
+- Update runtime.cpp to draw controller.skeleton
+- Update all debug_draw calls to use controller.locomotion
+- Update character_panel to receive controller.locomotion
+```
+
+### 4. Analyze and Decompose
 
 1.  **Read Iteration Plan:** Read the specified plan file
-2.  **Identify Core Systems:** Determine which systems and source files are affected by the "Graybox Scope". Consult `PLANS/DEPENDENCY_STACK.md` to verify
-3.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
-4.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
+2.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
+3.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
 
 -   **Task Specificity:** Each step must be a clear, imperative instruction referencing specific files, functions, and data structures (e.g., "In `character/controller.h`, add a `dash_speed` parameter to the `tuning` struct.").
+-   **Include Migration Steps:** If foundation audit found duplicates/conflicts, include explicit removal and reference-update steps
+-   **Natural Language First:** Use natural language descriptions and pseudocode to describe logic and algorithms. Avoid writing actual source code in the plan to prevent duplicating implementation effort.
 -   **Logical Order:** Sequence tasks logically based on dependencies (e.g., define data structures before creating functions that use them).
 -   **Include UI:** Ensure the plan includes a step to expose any new tunable parameters in the debug UI (`src/gui/character_panel.cpp`).
 -   **Adhere to Conventions:** Follow `AGENTS.md` (snake_case, file organization, dependency flow; brief comments only where non‑obvious).
 -   **Gameplay‑First:** Preserve input→acceleration mapping; rotate model to velocity; transitions remain interruptible. Prefer spring‑damper and cubic interpolation; use targeted IK only where necessary.
 
-### 4. Save and Propose
+### 5. Save and Propose
 
 Format as a markdown checklist and save to `PLANS/` directory.
 
@@ -45,6 +102,7 @@ Format as a markdown checklist and save to `PLANS/` directory.
 ### Tone & Constraints
 
 -   Concise, imperative instructions
+-   Prefer natural language and pseudocode over actual source code
 -   Reference specific files, functions, and data structures
 -   Adhere to `AGENTS.md` conventions (snake_case, dependency flow)
 -   Gameplay‑first: input→acceleration; rotate to velocity; interruptible transitions
@@ -74,11 +132,24 @@ Format as a markdown checklist and save to `PLANS/` directory.
 #### 3. Core Logic
 
 - [ ] **File:** `src/character/locomotion.cpp`
-    - [ ] In `update_locomotion()`, add a check for the dash input.
-    - [ ] If dash input is detected and character is not already dashing, set `is_dashing = true` and reset `dash_timer`.
-    - [ ] While `is_dashing` is true, override velocity with `tuning.dash_speed` in the input direction.
-    - [ ] Decrement `dash_timer` and set `is_dashing = false` when it reaches zero.
-    - [ ] Ensure animation/pose transitions use spring‑damper interpolation and remain interruptible.
+    - [ ] In `update_locomotion()`, check for dash input
+    - [ ] If dash input detected and not already dashing: set `is_dashing = true`, reset `dash_timer`
+    - [ ] While `is_dashing == true`: override velocity with `tuning.dash_speed` in input direction
+    - [ ] Decrement `dash_timer` by delta time; set `is_dashing = false` when timer reaches zero
+    - [ ] Ensure animation/pose transitions use spring‑damper interpolation and remain interruptible
+
+**Pseudocode:**
+```
+if dash_input_pressed and not is_dashing:
+    is_dashing = true
+    dash_timer = tuning.dash_duration
+
+if is_dashing:
+    velocity = input_direction * tuning.dash_speed
+    dash_timer -= delta_time
+    if dash_timer <= 0:
+        is_dashing = false
+```
 
 #### 4. Debug UI
 

@@ -100,11 +100,19 @@ State this synthesis back to the user for confirmation: **"My understanding is..
 
 ### 5. Document Clarifications
 
-Update the feature description document (`PLANS/feature_<name>.md`) with:
-- Concrete visual references (attach images, link videos).
-- Specific joint/system names and rotation axes.
-- Exact keyframe descriptions or pose breakdowns.
-- Clear success criteria (e.g., "arms must alternate 180° out of phase, pointing down at rest").
+**CRITICAL:** Add a clearly labeled `## CLARIFICATION QUESTIONS (Pending)` section to the feature description document (`PLANS/feature_<name>.md`) containing:
+
+- **All identified ambiguities** organized by category (Visual/Behavioral, Mechanical, Scope, Success Criteria)
+- **Specific questions** that need answers before proceeding
+- **Priority indicators** highlighting the most critical missing information
+- **Examples/options** where helpful to illustrate different interpretations
+
+Once answers are received, update the same document by:
+- Moving resolved items from "Pending" to "Resolved" (or removing the questions section)
+- Adding concrete visual references (attach images, link videos)
+- Adding specific joint/system names and rotation axes
+- Adding exact keyframe descriptions or pose breakdowns
+- Adding clear success criteria (e.g., "arms must alternate 180° out of phase, pointing down at rest")
 
 This becomes the **authoritative reference** for the iteration plan and implementation.
 
@@ -119,32 +127,34 @@ Once clarity is achieved and documented, proceed to `PLAN_ITERATION.md`. The ite
 ## Example Clarification Flow
 
 **Initial Feature Description:**
-> "Add skeletal animation for running. Arms and legs should move naturally using the surveyor-wheel pattern."
+> "Add smooth camera transitions when changing view modes. Should feel natural and responsive."
 
 **Identified Ambiguities:**
-- What does "naturally" mean? (arms swinging? pumping? T-pose?)
-- How do arms "move" — which joints rotate, around which axes?
-- What is the relationship between arm and leg motion? (alternating? synchronized?)
-- Is there a reference animation showing the desired result?
+- What does "smooth" mean? (linear? eased? spring-damped?)
+- What does "natural" mean? (fast? slow? overshooting allowed?)
+- What triggers a "view mode change"? (user input? automatic? distance-based?)
+- How many view modes are there, and what defines each one?
+- Is there a reference game/video showing the desired behavior?
 
 **Targeted Questions:**
-1. "Do you have a reference image or animation showing the desired arm/leg poses?"
-2. "Should arms alternate with legs (left arm forward when right leg forward) or move independently?"
-3. "In the rest pose, where should the arms point — down at sides, or extended horizontally?"
-4. "Which joints need to rotate — just shoulders/hips, or also elbows/knees?"
+1. "Do you have a reference video showing the desired camera transition behavior?"
+2. "Should transitions use spring-damper curves, easing curves, or linear interpolation?"
+3. "What is the target transition duration — fast (<0.2s), medium (0.2-0.5s), or slow (>0.5s)?"
+4. "Should the camera overshoot the target position and settle, or move directly without overshoot?"
+5. "Which camera properties transition — position only, or also rotation and FOV?"
 
 **User Provides Reference:**
-> [Bunny running animation image showing two keyframes: PASS pose and REACH pose, arms down at sides, alternating forward/back]
+> "Like the quick-snap in [Game X], about 0.3s with slight overshoot. Position and rotation both transition, FOV stays constant."
 
 **Synthesized Understanding:**
-- **Visual target:** Two distinct keyframes (PASS/REACH) that alternate based on distance traveled.
-- **Arm position:** Arms hang down at sides (not T-pose), swing forward/back like pendulums.
-- **Joint involvement:** Shoulders (3-axis rotation), elbows (bend), hips, knees.
-- **Motion pattern:** Left leg forward = right arm forward (opposite limbs move together).
-- **Success criteria:** When standing still, skeleton should show discrete PASS or REACH pose matching bunny reference.
+- **Visual target:** Quick transition (~0.3s) with subtle overshoot/settle behavior matching [Game X].
+- **Interpolation method:** Spring-damper curve (allows overshoot).
+- **Properties affected:** Camera position and rotation; FOV remains constant.
+- **Trigger:** User input (specific key/button).
+- **Success criteria:** Transition completes in 0.3s ± 0.1s; visible overshoot <10% of travel distance.
 
 **Confirmation:**
-> "My understanding is you want two hardcoded keyframe poses (PASS and REACH) that alternate based on the surveyor-wheel pattern, matching the bunny reference image. Arms must hang down at sides and swing forward/back, with opposite limbs moving together (left leg forward = right arm forward). Correct?"
+> "My understanding is you want a spring-damped camera transition (~0.3s duration with slight overshoot) that affects position and rotation but not FOV, triggered by user input, matching the feel of [Game X]. Correct?"
 
 **User Confirms:** ✅
 

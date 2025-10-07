@@ -16,7 +16,11 @@ graph TD
     E -->|Minor| G[Revise Plans]
     G --> B
     E -->|No| H[IMPLEMENTATION_STEP]
-    H --> I{More Steps?}
+    H --> RS[REVIEW_STEP]
+    RS --> RSI{Issues?}
+    RSI -->|Yes| L2[Fix Code]
+    L2 --> H
+    RSI -->|No| I{More Steps?}
     I -->|Yes| H
     I -->|No| J[REVIEW_IMPLEMENTATION]
     J --> K{Issues?}
@@ -46,6 +50,7 @@ graph TD
     
     %% Implementation-phase deferral
     H --> F
+    RS --> F
     J --> F
     
     style REQ fill:#d4edda
@@ -56,6 +61,7 @@ graph TD
     style D fill:#e1f5ff
     style F fill:#ffe1e1
     style H fill:#e1f5ff
+    style RS fill:#e1f5ff
     style J fill:#e1f5ff
     style M fill:#e1f5ff
     style N fill:#e1f5ff
@@ -77,6 +83,7 @@ graph TD
 - **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
 - **REVIEW_PLAN**: Check iteration and implementation plans against principles; prepend changelog entry on re-review
 - **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist; mark completed items and track changed files
+- **REVIEW_STEP**: Verify last completed step against plan alignment, code standards, and gameplay-first principles; provide inline feedback
 - **REVIEW_IMPLEMENTATION**: Verify code against standards and principles; approve if passing
 - **FINALIZE_ITERATION**: Update stack, backlog, archive documents; prepare for next feature
 
@@ -109,7 +116,7 @@ graph TD
 
 ### Success Path
 1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
-2. IMPLEMENTATION_STEP (loop until complete)
+2. IMPLEMENTATION_STEP → REVIEW_STEP (loop until complete)
 3. REVIEW_IMPLEMENTATION (pass) → FINALIZE_ITERATION
 4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
@@ -119,13 +126,14 @@ graph TD
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
 ### Deferral Path (Implementation Phase)
-1. During IMPLEMENTATION_STEP or REVIEW_IMPLEMENTATION, discover blockers/missing prerequisites
+1. During IMPLEMENTATION_STEP, REVIEW_STEP, or REVIEW_IMPLEMENTATION, discover blockers/missing prerequisites
 2. DEFER_FEATURE
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
 
 ### Revision Path
 1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review (prepends changelog to review)
-2. REVIEW_IMPLEMENTATION identifies issues → Fix Code → Re-implement
+2. REVIEW_STEP identifies issues → Fix Code → Re-implement step
+3. REVIEW_IMPLEMENTATION identifies issues → Fix Code → Re-implement
 
 ### Mid-Iteration Scope Change Path
 1. During IMPLEMENTATION_STEP, discover need for scope adjustment
@@ -148,3 +156,38 @@ graph TD
 - Feature requests: REQUEST_FEATURE formalizes backlog entry with principle alignment and dependency analysis
 - Plan versioning: DECOMPOSE_PLAN and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
+
+## Proposed Numbering Scheme
+
+Once workflow stabilizes, consider renaming files with 3-digit prefixes to provide visual roadmap while allowing growth:
+
+### Primary Flow (000-099)
+- **000_REQUEST_FEATURE** - Entry point: propose new feature
+- **001_NEXT_FEATURE** - Select from backlog
+- **002_CLARIFY_FEATURE** - Optional: eliminate ambiguity
+- **003_PLAN_ITERATION** - Create iteration plan
+- **004_DECOMPOSE_PLAN** - Break into atomic steps
+- **005_REVIEW_PLAN** - Validate plans against principles
+- **006_IMPLEMENTATION_STEP** - Execute one step
+- **007_REVIEW_STEP** - Validate completed step
+- **008_REVIEW_IMPLEMENTATION** - Final code review
+- **009_FINALIZE_ITERATION** - Wrap up and prepare next
+
+### Mid-Iteration Adjustments (100-199)
+- **100_ADD_SCOPE** - Add requirements to active iteration
+- **101_MODIFY_PLAN** - Update implementation plan
+
+### Alternative Paths (200-299)
+- **200_DEFER_FEATURE** - Clean exit from premature features
+
+### Finalization Tasks (300-399)
+- **300_UPDATE_DEPENDENCIES** - Update DEPENDENCY_STACK.md
+- **301_UPDATE_BACKLOG** - Mark complete/deferred, document learnings
+- **302_ARCHIVE_ITERATION** - Move plans to ARCHIVE
+
+### Version Control (400-499)
+- **400_COMMIT** - Format and create git commits
+- **401_MERGE** - Merge feature branch to main
+
+Three-digit prefixes group by hundreds (0xx=main path, 1xx=adjustments, 2xx=alternatives, 3xx=cleanup, 4xx=git). Sequential numbering within each hundred allows up to 100 tasks per group. Defer renaming until workflow proves stable.
+

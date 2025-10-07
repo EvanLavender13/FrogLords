@@ -25,15 +25,45 @@ Receive a high-level feature description from the user or read from `PLANS/featu
 -   What future features this unlocks
 -   Test loop and certainty estimate
 
-### 4. Generate Plan
+### 4. System Ownership Survey (Quick Check)
+
+**Before planning implementation approach, perform a lightweight survey of existing system ownership to avoid conflicts:**
+
+1.  **Identify Key Systems:** Based on the feature description, list the 2-4 primary systems that will be involved (e.g., locomotion, animation, skeleton, camera)
+
+2.  **Quick Ownership Check:** For each system, do a fast `grep_search` to find:
+    -   Where is this system currently instantiated? (controller, game_world, etc.)
+    -   Is there more than one instance? (flag for potential conflict)
+    -   Where is it updated?
+
+3.  **Flag Architectural Questions:** Note any unclear ownership or potential conflicts to address in the iteration plan's "System Integration" section
+
+**Example Quick Check:**
+```
+Feature: Primary Skeletal Animation
+Key Systems: skeleton, locomotion
+
+Quick Search Results:
+- skeleton: Found in game_world.t_pose_skeleton (flag: may conflict with controller ownership)
+- locomotion: Found in game_world.locomotion (flag: feature needs it in controller)
+
+Architectural Questions to Address:
+- Should skeleton live in controller or game_world?
+- If locomotion moves to controller, what breaks?
+```
+
+This is NOT a full audit (that happens in DECOMPOSE_PLAN), just a quick sanity check to inform the iteration plan's approach.
+
+### 5. Generate Plan
 
 Generate a detailed iteration plan based on the template below. The plan must distill the user's request and align with core design principles (elegance, emergence, iteration, dependency management).
 
 -   **Analyze Dependencies:** Consult `PLANS/DEPENDENCY_STACK.md` and `PLANS/DESIGN_BACKLOG.md` to determine feature placement and certainty. Consider cascading uncertainty
+-   **Address System Ownership:** If the quick check found conflicts, note them in "System Integration" section
 -   **Be Specific:** Provide concrete, actionable steps for graybox implementation and testing protocol
 -   **Stay Grounded:** Ensure the plan is realistic and directly addresses the feature request
 
-### 5. Save and Propose
+### 6. Save and Propose
 
 Save the generated plan to a new file in `PLANS/` directory, then propose for review.
 
@@ -87,6 +117,7 @@ Save the generated plan to a new file in `PLANS/` directory, then propose for re
 
 ### 5. System Integration
 
+*   **System Ownership:** (Based on quick check - where do key systems currently live? Any ownership conflicts to resolve? e.g., "locomotion currently in game_world, needs to move to controller")
 *   **Mechanic Interactions:** (How will this feature interact with other existing mechanics? Where is the potential for emergence?)
 *   **Interface & Feedback:** (How will the player understand and interact with this feature? What metaphors will be used? Apply visual hierarchy and redundancy. What is the plan for visual/audio feedback, even in graybox?)
 
