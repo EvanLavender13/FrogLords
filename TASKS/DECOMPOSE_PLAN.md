@@ -8,9 +8,11 @@ Read `AGENTS.md` to synthesize coding standards and architectural principles. Es
 -   Gameplay-first principles (interruptible transitions, physics-first)
 -   Procedural animation patterns (spring-damper, cubic interpolation)
 
-### 2. Identify Target Plan
+### 2. Identify Target Documents
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate the corresponding iteration plan at `PLANS/iteration_<feature_name>.md`.
+Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate:
+-   Feature description: `PLANS/feature_<feature_name>.md` (high-level goals, constraints, design philosophy)
+-   Iteration plan: `PLANS/iteration_<feature_name>.md` (specific scope, implementation approach, graybox details)
 
 ### 3. Foundation Architecture Review (CRITICAL)
 
@@ -70,9 +72,10 @@ Required Migrations:
 
 ### 4. Analyze and Decompose
 
-1.  **Read Iteration Plan:** Read the specified plan file
-2.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
-3.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
+1.  **Read Feature Description:** Read `PLANS/feature_<feature_name>.md` to understand high-level goals, design constraints, and intended player experience
+2.  **Read Iteration Plan:** Read `PLANS/iteration_<feature_name>.md` for specific graybox scope and implementation approach
+3.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
+4.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
 
 -   **Task Specificity:** Each step must be a clear, imperative instruction referencing specific files, functions, and data structures (e.g., "In `character/controller.h`, add a `dash_speed` parameter to the `tuning` struct.").
 -   **Include Migration Steps:** If foundation audit found duplicates/conflicts, include explicit removal and reference-update steps
