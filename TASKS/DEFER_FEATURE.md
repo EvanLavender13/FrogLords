@@ -72,9 +72,9 @@ If implementation was attempted before deferral:
 
 **Do NOT delete planning documents.** They contain valuable knowledge about *why* something was deferred.
 
-1.  Add `## Deferral` section to end of `PLANS/iteration_<feature_name>.md`
-2.  Add `## Deferral` section to end of `PLANS/implementation_<feature_name>.md` (if exists)
-3.  Include: date, reason (1-2 sentences), evidence gap, reconsideration criteria, discovered prerequisites (if any), link to review document (if exists)
+1.  Add `## Deferral` section to end of `PLANS/feature_<feature_name>.md`
+2.  Include: date, reason (1-2 sentences), evidence gap, reconsideration criteria, discovered prerequisites (if any), link to review document (if exists)
+3.  For implementation-phase deferrals: add `### Implementation Attempts` subsection documenting each approach tried, what failed, and key technical insights
 4.  Run `TASKS/ARCHIVE_ITERATION.md` to move planning documents to `PLANS/ARCHIVE/` with timestamp prefix
 
 ### 8. Capture Learnings
@@ -110,7 +110,7 @@ Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog bas
 
 ---
 
-### Example Deferral Section (Planning Phase)
+### Example Deferral Section (Planning Phase, in feature_*.md)
 
 ```markdown
 ## Deferral
@@ -123,10 +123,10 @@ Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog bas
 
 **Reconsideration Criteria:** After playtesting identifies specific moments where tilt magnitude is inadequate at high speeds or distracting at low speeds.
 
-**Review:** See `PLANS/plan_review_speed_animation_scaling.md` for full analysis
+**Review:** See `PLANS/ARCHIVE/20251006_120000_plan_review_speed_animation_scaling.md` for full analysis
 ```
 
-### Example Deferral Section (Implementation Phase)
+### Example Deferral Section (Implementation Phase, in feature_*.md)
 
 ```markdown
 ## Deferral
@@ -140,13 +140,19 @@ Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog bas
 -   Distance-phased animation system for synchronized gait
 -   Base skeletal animation layer for reactive systems to layer upon
 
-**Implementation Attempts:**
-1.  **Parent rotation lag approach:** Measured joint rotation changes frame-to-frame. Failed because T-pose joints don't rotate—no parent motion to lag behind.
-2.  **Acceleration-driven wobble:** Applied character acceleration to joint rotations directly. Produced unstable/wild spinning due to lack of base pose to offset from.
-
 **Reconsideration Criteria:** After implementing primary locomotion animation system (dependency layer below reactive animation).
 
 **Technical Insight:** Secondary motion is a reactive layer—requires stable primary animation beneath it per procedural animation layering principles.
+
+### Implementation Attempts
+
+1.  **Parent rotation lag approach:** Measured joint rotation changes frame-to-frame. Failed because T-pose joints don't rotate—no parent motion to lag behind.
+2.  **Acceleration-driven wobble:** Applied character acceleration to joint rotations directly. Produced unstable/wild spinning due to lack of base pose to offset from.
+3.  **Slerp-based lag:** Attempted to interpolate between previous and current joint rotations. Failed for same reason—no meaningful rotation changes exist in static T-pose.
+
+**Key Insight:** Multiple implementation attempts confirmed the architectural blocker rather than implementation bugs. Static data structure ≠ animated data structure. Reactive layers need motion sources, not just data structures.
+
+**Review:** N/A (discovered during implementation)
 ```
 
 ---

@@ -122,7 +122,6 @@
 
 **Next Candidates:**
 - Additional reactive systems as gameplay needs emerge
-- Primary skeletal animation (walk/run limb cycles) - prerequisite for secondary motion
 
 **Certainty:** ~100% for current systems. Architecture solid, tuning enabled, ready for feel iteration.
 

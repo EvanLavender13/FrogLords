@@ -69,3 +69,34 @@
 * **Backlog Candidates:**
   * Log "Walk gait keyframes" and "Pose reset helper" as follow-on tasks once run cycle validated.
   * Capture findings for future "Secondary motion softness" tuning parameters if motion reveals obvious lag opportunities.
+
+---
+
+## Deferral
+
+**Date:** 2025-10-07
+
+**Reason:** Fundamental data structure limitation - single-float-per-joint cannot represent 3D rotation
+
+**Evidence Gap:** Original plan used `struct run_keyframe { float left_shoulder; float right_shoulder; ... }` storing one angle per joint. This is architecturally insufficient for skeletal animation:
+- Real 3D joint rotation requires 3+ degrees of freedom (pitch/yaw/roll or quaternion)
+- Single float cannot encode arbitrary 3D rotation
+- Transform composition with T-pose baselines produces incorrect results when axis-of-rotation varies by joint orientation
+- Multiple implementation attempts (custom swing vectors, direct axis rotation, baseline-ignoring transforms) all failed due to fundamental data limitation
+
+**Missing Prerequisites:**
+- Quaternion-based (or Euler-angle-based) keyframe data structure
+- Clear separation of keyframe authoring from animation playback
+- Understanding of per-joint rotation axes and composition rules
+
+**Reconsideration Criteria:** After implementing reduced-scope **Static Keyframe Preview** feature to validate quaternion storage/application:
+1. Upgrade keyframe struct to quaternions
+2. Store 4 hardcoded poses (no authoring UI)
+3. GUI manual selection only (no locomotion phase)
+4. Validates quaternion storage/application before adding animation
+
+**Technical Insight:** Attempted to shortcut proper keyframe representation; "simplicity" became "impossibility." Attempting to encode 3D rotation in 1D was too clever by half. Should have validated keyframe representation works before adding locomotion integration.
+
+**Review:** Architectural issue discovered during Step 4 GUI implementation review, not during principle review. See `PLANS/ARCHIVE/20251007_220651_implementation_primary_skeletal_animation.md` header for detailed technical analysis.
+
+**Implementation Notes:** Steps 1-4 of original plan completed but non-functional due to data structure issue. Code preserved on branch `iteration/primary_skeletal_animation` for reference.

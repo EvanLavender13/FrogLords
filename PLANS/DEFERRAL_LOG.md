@@ -1,5 +1,40 @@
 # Deferral Log
 
+## Primary Skeletal Animation (Locomotion-Driven) (2025-10-07)
+
+**Reason:** Fundamental data structure limitation - single-float-per-joint cannot represent 3D rotation
+
+**Key Learning:** The original plan used `struct run_keyframe { float left_shoulder; float right_shoulder; ... }` storing one angle per joint. This is architecturally insufficient for skeletal animation:
+- Real 3D joint rotation requires 3+ degrees of freedom (pitch/yaw/roll or quaternion)
+- Single float cannot encode arbitrary 3D rotation
+- Transform composition with T-pose baselines produces incorrect results when axis-of-rotation varies by joint orientation
+- Multiple implementation attempts (custom swing vectors, direct axis rotation, baseline-ignoring transforms) all failed due to fundamental data limitation
+
+Attempted to shortcut proper keyframe representation; "simplicity" became "impossibility."
+
+**Missing Prerequisites:** 
+- Quaternion-based (or Euler-angle-based) keyframe data structure
+- Clear separation of keyframe authoring from animation playback
+- Understanding of per-joint rotation axes and composition rules
+
+**Principle Reinforced:** 
+- "Clarity over cleverness" - attempting to encode 3D rotation in 1D was too clever by half
+- "Work bottom-up. Stabilize core gameplay before adding layers" - should have validated keyframe representation works before adding locomotion integration
+- "Short plans → build → test → repeat" - plan attempted too much in single iteration (keyframes + locomotion + GUI + phase computation)
+
+**Next Steps:** 
+Implement reduced-scope feature: **Static Keyframe Preview**
+1. Upgrade keyframe struct to quaternions
+2. Store 4 hardcoded poses (no authoring UI)
+3. GUI manual selection only (no locomotion phase)
+4. Validates quaternion storage/application before adding animation
+
+**Review Document:** N/A - architectural issue discovered during implementation (Step 4 GUI review)
+
+**Implementation Notes:** Steps 1-4 completed but non-functional due to data structure issue. Code preserved on branch `iteration/primary_skeletal_animation` for reference. See `PLANS/implementation_primary_skeletal_animation.md` header for detailed technical analysis.
+
+---
+
 ## Secondary Motion (2025-10-06)
 
 **Reason:** Missing critical prerequisite: primary skeletal animation system

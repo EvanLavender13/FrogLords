@@ -8,27 +8,34 @@
 
 ## Animation & Feel
 
-### Reactive Animation (Architecture Proven ✅)
-- **Acceleration tilt:** ✅ COMPLETE - Character leans into acceleration (Segway effect)
-  - *Status:* Implemented, tested, tuned, UI exposed
-  - *Files:* `src/character/animation.h/cpp`
-  - *Learning:* Character-local space transformation critical, exponential smoothing sufficient
-  
-- **Spring-damper landings:** ✅ COMPLETE - Crouch/recover on landing driven by spring-damper
-  - *Status:* Implemented, tested, tuned, UI exposed
-  - *Files:* `src/character/animation.h/cpp`, detailed in `landing_spring_implementation.md`
-  - *Learning:* Flag-based event communication works well, spring visualization critical for tuning, collision-sphere-to-body endpoint prevents stretching during jumps
+### Skeletal Animation (Keyframe Foundation)
+- **Static Keyframe Preview:** Manual GUI selection between hardcoded skeletal poses (validates quaternion-based keyframes before adding locomotion)
+  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
+  - *Certainty:* Medium-High (~70%) - reduced scope from failed primary skeletal animation attempt
+  - *Rationale:* Validates fundamental keyframe data structure (quaternion-based joint rotations) works correctly before attempting locomotion-driven animation. Separates keyframe authoring from animation playback per failed implementation learnings.
+  - *Scope:*
+    1. Upgrade keyframe struct to quaternions (or Euler angles minimum): `struct keyframe { glm::quat left_shoulder; glm::quat right_shoulder; ... }`
+    2. Store 4 hardcoded poses (REACH-RIGHT, PASS-LEFT, REACH-LEFT, PASS-RIGHT) derived from original feature brief
+    3. GUI dropdown/buttons for manual pose selection only (no locomotion phase integration)
+    4. Apply selected pose to skeleton each frame (validates quaternion storage/application/composition)
+  - *Success Criteria:* Selected pose displays correctly on skeleton without visual artifacts; quaternion composition with T-pose baselines produces expected limb positions; GUI switching between poses is instant and stable
+  - *Excludes:* Locomotion phase computation, distance-based triggering, animation blending, authoring UI for pose editing (hardcoded values only)
+  - *Next Step After Validation:* Re-approach locomotion-driven primary skeletal animation with proven quaternion keyframe foundation
+  - *Origin:* Reduced-scope feature identified during Primary Skeletal Animation deferral (2025-10-07). See `PLANS/DEFERRAL_LOG.md` for architectural issues that necessitated this simpler validation step.
 
-- **Animation tuning UI:** ✅ COMPLETE - Real-time parameter adjustment for all animation systems
-  - *Status:* Implemented across acceleration tilt, landing spring, orientation, locomotion
-  - *Files:* `src/gui/character_panel.h/cpp`, detailed in `animation_tuning_plan.md`
-  - *Learning:* Public member access sufficient for tuning (no getters needed), consistent UX pattern (collapsing headers + live feedback) scales well, scope expanded during implementation (orientation/locomotion smoothing added), walk/run thresholds deliberately excluded (procedurally derived from max_speed)
-  
-- **Attach skeleton to character body:** Attach the T-pose skeleton's root to the character controller's rigid body. ✅ COMPLETE
-  - *Prerequisite:* Skeleton Debug System ✅
-  - *Certainty:* High (~95%) - A simple transform update; moving the skeleton's root position to the character's position each frame.
-  - *Rationale:* The skeleton is currently static. This is the necessary next step to connect the skeleton to the player's actions and unblock any further skeletal animation work (like secondary motion or IK).
-  - *Learning:* Single transform method (`get_world_transform()`) provides consistent visual hierarchy for skeleton and debug body; reuse over duplication eliminates drift; scope expansion for orientation/reactive offsets justified by visual consistency and future-proofing.
+- **Primary skeletal animation (locomotion-driven):** Distance-phased limb animation synchronized to movement (walk/run arm swing cycles)
+  - *Status:* **DEFERRED** (2025-10-07) - Fundamental data structure limitation discovered during implementation
+  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
+  - *Certainty:* Very Low (~10%) - original approach architecturally flawed; needs complete redesign
+  - *Reason:* Original keyframe data structure used single float per joint (e.g., `float left_shoulder`), which is insufficient for 3D rotation. Real skeletal animation requires 3+ degrees of freedom per joint (quaternions or Euler angles). Multiple implementation attempts failed due to inability to represent arbitrary 3D rotations with single-value storage.
+  - *Missing Prerequisites:*
+    - Quaternion-based (or Euler-angle-based) keyframe data structure
+    - Clear separation of keyframe authoring from animation playback
+    - Understanding of per-joint rotation axes and composition rules
+  - *Reconsideration:* After implementing reduced-scope **Static Keyframe Preview** feature to validate quaternion storage/application with hardcoded poses (no locomotion phase, no authoring UI)
+  - *Next Steps:* Implement minimal feature first: quaternion keyframes + manual GUI selection + hardcoded poses (validates data structure before adding locomotion integration)
+  - *Note:* Steps 1-4 of original plan completed but non-functional. Code preserved on branch for reference. See `PLANS/implementation_primary_skeletal_animation.md` for detailed technical analysis of failed approaches.
+  - *Review:* Architectural issue discovered during Step 4 GUI implementation review, not during principle review
 
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Status:* **DEFERRED** (2025-10-06) - Missing critical prerequisite: primary skeletal animation system
@@ -112,11 +119,6 @@
 
 ## World & Environment
 
-- **Game World Refactor:** ✅ COMPLETE - Extracted simulation state into `game_world` struct.
-  - *Status:* Implemented, tested, verified.
-  - *Files:* `src/app/game_world.h/cpp`, `src/app/runtime.h/cpp`
-  - *Learning:* Separating the application lifecycle from the game simulation logic greatly improves clarity and testability. It makes it easier to swap out levels or test different scenarios in the future.
-
 ### Terrain (Low-Medium Priority)
 - **Heightmap terrain:** Procedural ground with elevation
 - **Uneven surfaces:** IK foot placement becomes necessary here
@@ -169,12 +171,6 @@
 ## UI & Menus
 
 ### Debug UI (Partially Complete)
-- **Real-time parameter tuning:** ✅ COMPLETE - GUI sliders for animation/orientation/locomotion parameters
-  - *Status:* Comprehensive tuning UI implemented
-  - *Exposed:* Acceleration tilt (smoothing, magnitude), landing spring (stiffness, damping, impulse_scale), orientation (yaw_smoothing), locomotion (speed_smoothing)
-  - *Pattern:* Collapsing headers with real-time state feedback displays
-  - *Files:* `src/gui/character_panel.h/cpp`, see `animation_tuning_plan.md`
-  
 - **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
   - *Status:* Tilt visualization complete via character body box
   - *Potential additions:* Acceleration vector arrows, velocity trails, ground normal visualization
