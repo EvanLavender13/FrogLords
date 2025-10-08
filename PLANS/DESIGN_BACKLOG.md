@@ -9,6 +9,13 @@
 ## Animation & Feel
 
 ### Skeletal Animation (Keyframe Foundation)
+- **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
+  - *Prerequisite:* Static Keyframe Preview validated (8-joint minimum working)
+  - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
+  - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for validating quaternion architecture
+  - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
+  - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
+
 - **Static Keyframe Preview:** Manual GUI selection between hardcoded skeletal poses (validates quaternion-based keyframes before adding locomotion)
   - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
   - *Certainty:* Medium-High (~70%) - reduced scope from failed primary skeletal animation attempt

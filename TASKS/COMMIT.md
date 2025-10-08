@@ -2,16 +2,19 @@
 
 ### 1. Analyze Changes
 
-1.  Run `git status` to confirm staged files
-2.  Run `git diff --staged` to review exactly what will be committed
+Run `scripts/review_staged_changes.ps1` to confirm staged files and review changes.
 
 ### 2. Draft Commit Message
 
-Use the exact format below. Match tone and style of the most recent commit (`git log -n 1`).
+Use the exact format below.
 
 ### 3. Propose for Review
 
 Post the drafted message for approval. Do not commit until approved.
+
+### 4. Commit
+
+After approval, run `scripts/commit_changes.ps1 -Message "<commit message>"`
 
 ### Tone & Constraints
 

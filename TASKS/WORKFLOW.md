@@ -99,7 +99,6 @@ graph TD
 - **UPDATE_BACKLOG**: Mark features complete/deferred, document learnings, update dependent items
 - **ARCHIVE_ITERATION**: Move planning documents to ARCHIVE with timestamp prefix
 - **COMMIT**: Format and create git commits following project conventions
-- **MERGE**: Merge feature branch to main using fast-forward only
 
 ### Maintenance Tasks
 - **REVIEW_CODEBASE**: Random walk through src/ to identify code smells, principle violations, and cleanup opportunities; populate MAINTENANCE_BACKLOG.md
@@ -191,7 +190,6 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 
 ### Version Control (400-499)
 - **400_COMMIT** - Format and create git commits
-- **401_MERGE** - Merge feature branch to main
 
 Three-digit prefixes group by hundreds (0xx=main path, 1xx=adjustments, 2xx=alternatives, 3xx=cleanup, 4xx=git). Sequential numbering within each hundred allows up to 100 tasks per group. Defer renaming until workflow proves stable.
 
