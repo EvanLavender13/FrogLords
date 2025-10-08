@@ -22,7 +22,7 @@ Cross-reference the completed step against planning documents and project princi
 -   **System Ownership Check:** If step adds or modifies a system (e.g., locomotion, skeleton):
     -   Is this the only instance of the system, or are there duplicates elsewhere?
     -   If a system was moved, were all references updated (debug_draw, GUI, rendering)?
-    -   Do a quick `grep_search` for the system name to verify no orphaned references
+    -   Search for the system name to verify no orphaned references
 -   **Code Standards:** Does code adhere to naming conventions (snake_case), formatting (4-space indent, braces on same line), and file organization (Foundation → Character → Rendering → App)?
 -   **Gameplay-First Principles:** Does implementation respect core tenets?
     -   Input maps to acceleration; animation never steals control

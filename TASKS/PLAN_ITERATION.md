@@ -31,7 +31,7 @@ Receive a high-level feature description from the user or read from `PLANS/featu
 
 1.  **Identify Key Systems:** Based on the feature description, list the 2-4 primary systems that will be involved (e.g., locomotion, animation, skeleton, camera)
 
-2.  **Quick Ownership Check:** For each system, do a fast `grep_search` to find:
+2.  **Quick Ownership Check:** For each system, search the codebase to find:
     -   Where is this system currently instantiated? (controller, game_world, etc.)
     -   Is there more than one instance? (flag for potential conflict)
     -   Where is it updated?

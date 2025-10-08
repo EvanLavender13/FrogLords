@@ -101,6 +101,10 @@ graph TD
 - **COMMIT**: Format and create git commits following project conventions
 - **MERGE**: Merge feature branch to main using fast-forward only
 
+### Maintenance Tasks
+- **REVIEW_CODEBASE**: Random walk through src/ to identify code smells, principle violations, and cleanup opportunities; populate MAINTENANCE_BACKLOG.md
+- **IDENTIFY_REFACTORS**: Deep system analysis to find pattern extraction, simplification, and architectural improvement opportunities; populate REFACTOR_BACKLOG.md
+
 ## Potential Future Tasks
 
 - **BUILD_TEST**: Formalized quality gate execution (build, lint, format, smoke test)

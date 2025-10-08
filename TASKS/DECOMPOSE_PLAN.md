@@ -27,7 +27,7 @@ Extract the feature name from the current git branch name (format: `iteration/<f
         -   Where is the system instantiated? (game_world, controller, etc.)
         -   Where is the system updated?
         -   Where is the system referenced for rendering/debug/GUI?
-    -   Use `grep_search` to find all references to key system types (e.g., `locomotion_system`, `skeleton`)
+    -   Search for all references to key system types (e.g., `locomotion_system`, `skeleton`)
     
 3.  **Document Current State:**
     -   List all files that currently own or reference each system
