@@ -8,6 +8,17 @@
 
 ## Animation & Feel
 
+### Debug Visualization
+
+- **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
+  - *Prerequisite:* Debug Draw System ✅
+  - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact
+  - *Rationale:* Eliminates confusion about parent-space vs bone-local rotations when tuning joint angles. Visible reference frame makes it immediately obvious which axis does what (e.g., "Y-axis points up, so rotation around Y is horizontal swing"). Critical for manual pose authoring and validating rotation behavior.
+  - *Scope:* Draw 3 colored lines from character root: Red=+X (right), Green=+Y (up), Blue=+Z (forward). Add optional text labels "X", "Y", "Z" at line endpoints. Toggle via GUI checkbox (default: off).
+  - *Implementation:* Use existing `debug_draw::line()` API; attach to skeleton root joint global position; scale lines to ~0.3-0.5m length (visible but not obtrusive).
+  - *Success Criteria:* Axes visible in all camera angles; colors/labels clearly readable; rotation behavior immediately understandable when watching joint angle sliders move character
+  - *Origin:* Identified 2025-10-08 during Static Keyframe Preview iteration when rotation axis confusion required deep investigation of parent-space transforms
+
 ### Skeletal Animation (Keyframe Foundation)
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
   - *Prerequisite:* Static Keyframe Preview validated (8-joint minimum working)
@@ -148,11 +159,16 @@
 ## Camera & Controls
 
 ### Camera Enhancements (Low Priority)
+- **Mouse Wheel Camera Zoom:**
+  - *Description:* The user can zoom the camera in and out using the mouse scroll wheel. The zoom will have reasonable upper and lower limits.
+  - *Problem/Goal:* To provide the player with direct and intuitive control over the camera's distance from the character, allowing them to customize their view of the game world.
+  - *Hypothesis:* This will improve the game's feel and allow players to get a better view of the action or the environment, depending on their needs.
+  - *Certainty:* 95% - This is a standard feature with a well-understood implementation. The only minor uncertainty is what the "reasonable limits" will feel like in practice, which will require brief iteration.
+  - *Dependencies:* `camera`, `input`
 - **Camera collision:** Prevent clipping through walls
 - **Smart framing:** Keep character and target both visible
 - **Camera shake:** Impact feedback
 - **Follow smoothing:** Lag/lead based on velocity
-- **Zoom control:** Dynamic FOV or distance
 
 ### Input Refinements (Low Priority)
 - **Gamepad support:** Already have sokol support, just wire it

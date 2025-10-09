@@ -131,6 +131,10 @@ Naming (uniform snake_case for user code):
 class camera_system { };
 struct mesh_data { };
 
+// Enums
+enum class camera_mode { FOLLOW, ORBIT, FREE };
+enum class pose_type { T_POSE, STEP_LEFT, STEP_RIGHT };
+
 // Functions/methods
 void update_state();
 mat4 get_view_matrix();

@@ -19,7 +19,6 @@ struct game_world {
     character::tuning_params character_params;
     character::skeleton t_pose_skeleton;
     float wheel_spin_angle = 0.0f;
-    float skeleton_animation_time = 0.0f;
 
     void init();
     void update(float dt, const gui::character_panel_state& panel_state);

@@ -77,7 +77,111 @@ void draw_character_panel(character_panel_state& state, controller& character,
         if (ImGui::CollapsingHeader("Skeleton")) {
             gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
             gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
-            gui::widget::checkbox("Animate Skeleton", &state.animate_skeleton);
+
+            ImGui::Separator();
+            ImGui::Text("Pose Selection:");
+            const char* pose_names[] = {"T-Pose", "Step Left", "Neutral", "Step Right"};
+            int current_pose = static_cast<int>(state.selected_pose);
+            if (ImGui::Combo("Pose", &current_pose, pose_names, 4)) {
+                state.selected_pose = static_cast<character::pose_type>(current_pose);
+            }
+
+            ImGui::Separator();
+            gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
+
+            if (state.enable_joint_overrides && ImGui::CollapsingHeader("Joint Overrides")) {
+                ImGui::PushItemWidth(180.0f);
+                ImGui::TextWrapped("Euler angles: Pitch=X-axis, Yaw=Y-axis, Roll=Z-axis");
+                ImGui::Separator();
+
+                // Left shoulder: bone points along -X axis (parent space = character frame)
+                // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
+                if (ImGui::TreeNode("Left Shoulder")) {
+                    gui::widget::slider_float("X-axis (twist)", &state.left_shoulder_angles.x,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Y-axis (fwd/back)", &state.left_shoulder_angles.y,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Z-axis (up/down)", &state.left_shoulder_angles.z,
+                                              -180.0f, 180.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Left Elbow")) {
+                    gui::widget::slider_float("X-axis (twist)", &state.left_elbow_angles.x, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Y-axis (bend)", &state.left_elbow_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (rotate)", &state.left_elbow_angles.z,
+                                              -180.0f, 180.0f);
+                    ImGui::TreePop();
+                }
+
+                // Right shoulder: bone points along +X axis (parent space = character frame)
+                // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
+                if (ImGui::TreeNode("Right Shoulder")) {
+                    gui::widget::slider_float("X-axis (twist)", &state.right_shoulder_angles.x,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Y-axis (fwd/back)", &state.right_shoulder_angles.y,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Z-axis (up/down)", &state.right_shoulder_angles.z,
+                                              -180.0f, 180.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Right Elbow")) {
+                    gui::widget::slider_float("X-axis (twist)", &state.right_elbow_angles.x,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Y-axis (bend)", &state.right_elbow_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (rotate)", &state.right_elbow_angles.z,
+                                              -180.0f, 180.0f);
+                    ImGui::TreePop();
+                }
+
+                // Legs point along -Y axis (downward, parent space = character frame)
+                // X-axis = fwd/back swing, Y-axis = twist (invisible), Z-axis = in/out spread
+                if (ImGui::TreeNode("Left Hip")) {
+                    gui::widget::slider_float("X-axis (fwd/back)", &state.left_hip_angles.x,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Y-axis (twist)", &state.left_hip_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (in/out)", &state.left_hip_angles.z, -180.0f,
+                                              180.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Left Knee")) {
+                    gui::widget::slider_float("X-axis (bend)", &state.left_knee_angles.x, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Y-axis (twist)", &state.left_knee_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (rotate)", &state.left_knee_angles.z, -180.0f,
+                                              180.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Right Hip")) {
+                    gui::widget::slider_float("X-axis (fwd/back)", &state.right_hip_angles.x,
+                                              -180.0f, 180.0f);
+                    gui::widget::slider_float("Y-axis (twist)", &state.right_hip_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (in/out)", &state.right_hip_angles.z, -180.0f,
+                                              180.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Right Knee")) {
+                    gui::widget::slider_float("X-axis (bend)", &state.right_knee_angles.x, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Y-axis (twist)", &state.right_knee_angles.y, -180.0f,
+                                              180.0f);
+                    gui::widget::slider_float("Z-axis (rotate)", &state.right_knee_angles.z,
+                                              -180.0f, 180.0f);
+                    ImGui::TreePop();
+                }
+
+                ImGui::PopItemWidth();
+            }
         }
 
         gui::widget::text("");

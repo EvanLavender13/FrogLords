@@ -136,11 +136,6 @@ void app_runtime::render_world() {
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {
-        // Ensure transforms are up-to-date (only if not animated, as animation updates in
-        // update_simulation)
-        if (!panel_state.animate_skeleton) {
-            character::update_global_transforms(world.t_pose_skeleton);
-        }
         debug::draw_skeleton(debug_ctx, world.t_pose_skeleton, panel_state.show_joint_labels);
     }
 

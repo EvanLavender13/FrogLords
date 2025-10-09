@@ -64,7 +64,7 @@ float camera::get_yaw() const {
 }
 
 void camera::follow_update(const glm::vec3& target_position, float dt) {
-    if (mode != camera_mode::follow)
+    if (mode != camera_mode::FOLLOW)
         return;
 
     // Update center to follow target

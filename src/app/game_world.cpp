@@ -1,6 +1,7 @@
 #include "app/game_world.h"
 #include "character/t_pose.h"
 #include "character/skeleton.h"
+#include "character/keyframe.h"
 #include "rendering/wireframe.h"
 #include "gui/character_panel.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,7 +19,7 @@ void game_world::init() {
     character_params.read_from(character);
     character::sync_locomotion_targets(character, locomotion);
     cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
-    cam.set_mode(camera_mode::follow);
+    cam.set_mode(camera_mode::FOLLOW);
     scn = scene();
     setup_test_level(scn);
     create_t_pose(t_pose_skeleton);
@@ -57,17 +58,19 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         wheel_spin_angle = std::fmod(wheel_spin_angle, TWO_PI);
     }
 
-    if (cam.get_mode() == camera_mode::follow) {
+    if (cam.get_mode() == camera_mode::FOLLOW) {
         cam.follow_update(character.position, dt);
     }
 
-    if (panel_state.animate_skeleton) {
-        skeleton_animation_time += dt;
-        float angle = 0.5f * std::sin(skeleton_animation_time * 2.0f);
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        t_pose_skeleton.joints[6].local_transform =
-            rotation * glm::translate(glm::mat4(1.0f), glm::vec3(-0.15f, 0.0f, 0.0f));
-        character::update_global_transforms(t_pose_skeleton);
+    if (panel_state.enable_joint_overrides) {
+        character::apply_pose_with_overrides(
+            t_pose_skeleton, panel_state.selected_pose, panel_state.left_shoulder_angles,
+            panel_state.left_elbow_angles, panel_state.right_shoulder_angles,
+            panel_state.right_elbow_angles, panel_state.left_hip_angles,
+            panel_state.left_knee_angles, panel_state.right_hip_angles,
+            panel_state.right_knee_angles);
+    } else {
+        character::apply_pose(t_pose_skeleton, panel_state.selected_pose);
     }
 }
 
