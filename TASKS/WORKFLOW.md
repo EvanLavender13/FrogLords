@@ -1,4 +1,33 @@
-# Task Workflow
+# Task Workflows
+
+This document provides an overview of all task workflows. Each workflow has its own directory with specific task definitions.
+
+## Workflow Types
+
+### Feature Development Workflow
+**Location:** `TASKS/FEATURE/`
+**Purpose:** Full iteration workflow for implementing new features from the design backlog
+**Entry Point:** NEXT_FEATURE
+**See:** Feature Development Workflow section below for detailed diagram and paths
+
+### Maintenance Workflow
+**Location:** `TASKS/MAINTENANCE/`
+**Purpose:** Quick fixes and code quality improvements from maintenance backlog
+**Entry Point:** PICK_ITEM
+**See:** [MAINTENANCE/WORKFLOW.md](MAINTENANCE/WORKFLOW.md) for detailed diagram and paths
+
+### Shared Utility Tasks
+**Location:** `TASKS/` (root)
+- **COMMIT**: Format and create git commits following project conventions
+- **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
+- **UPDATE_BACKLOG**: Mark features complete/deferred, document learnings
+- **ARCHIVE_ITERATION**: Move planning documents to ARCHIVE with timestamp prefix
+- **REVIEW_CODEBASE**: Random walk through src/ to populate MAINTENANCE_BACKLOG.md
+- **IDENTIFY_REFACTORS**: Deep system analysis to populate REFACTOR_BACKLOG.md
+
+---
+
+# Feature Development Workflow (Detailed)
 
 This diagram shows the complete iteration workflow and task dependencies.
 
@@ -71,7 +100,7 @@ graph TD
     style MP fill:#fff3cd
 ```
 
-## Existing Tasks
+## Feature Tasks (TASKS/FEATURE/)
 
 ### Pre-Workflow
 - **REQUEST_FEATURE**: Propose a new feature for evaluation and backlog entry
@@ -93,16 +122,6 @@ graph TD
 
 ### Alternative Path
 - **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning or implementation phase
-
-### Supporting Tasks
-- **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
-- **UPDATE_BACKLOG**: Mark features complete/deferred, document learnings, update dependent items
-- **ARCHIVE_ITERATION**: Move planning documents to ARCHIVE with timestamp prefix
-- **COMMIT**: Format and create git commits following project conventions
-
-### Maintenance Tasks
-- **REVIEW_CODEBASE**: Random walk through src/ to identify code smells, principle violations, and cleanup opportunities; populate MAINTENANCE_BACKLOG.md
-- **IDENTIFY_REFACTORS**: Deep system analysis to find pattern extraction, simplification, and architectural improvement opportunities; populate REFACTOR_BACKLOG.md
 
 ## Potential Future Tasks
 
