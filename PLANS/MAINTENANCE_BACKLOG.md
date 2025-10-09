@@ -20,14 +20,6 @@
 
 (Significant code smells impacting readability or maintainability)
 
-### Duplicate Constants Across Files
-- **Files:** 
-  - `src/rendering/debug_draw.cpp:11-12`
-  - `src/app/game_world.cpp:11-12`
-- **Severity:** High
-- **Description:** `WHEEL_RADIUS` and `TWO_PI` constants are duplicated in two files with identical values. This creates maintenance burden if the value needs to change.
-- **Suggested Fix:** Extract to a shared header (e.g., `src/character/locomotion.h` as public constants) or create `src/foundation/math_constants.h` for shared math constants like `TWO_PI`.
-
 ### Redundant Include
 - **File:** `src/rendering/debug_draw.cpp:3`
 - **Severity:** High
@@ -120,3 +112,12 @@
 - **Description:** Include directive uses `#include "ImGui.h"` (PascalCase) instead of `#include "imgui.h"` (lowercase). This may cause portability issues on case-sensitive filesystems.
 - **Resolution:** Changed include directive to use lowercase `imgui.h` to match standard imgui header naming.
 - **Completed:** October 8, 2025
+
+### Duplicate Constants Across Files
+- **Files:** 
+  - `src/rendering/debug_draw.cpp:11-12`
+  - `src/app/game_world.cpp:11-12`
+- **Severity:** High
+- **Description:** `WHEEL_RADIUS` and `TWO_PI` constants are duplicated in two files with identical values. This creates maintenance burden if the value needs to change.
+- **Resolution:** Extracted constants to `src/character/locomotion.h` as public `constexpr` declarations.
+- **Completed:** October 9, 2025

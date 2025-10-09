@@ -7,11 +7,6 @@
 #include <cmath>
 #include "imgui.h"
 
-namespace {
-constexpr float WHEEL_RADIUS = 0.45f;
-constexpr float TWO_PI = 6.28318530718f;
-} // namespace
-
 namespace debug {
 
 void draw_character_state(draw_context& ctx, const controller& character,

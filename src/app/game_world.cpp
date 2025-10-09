@@ -8,11 +8,6 @@
 #include <cmath>
 #include <algorithm>
 
-namespace {
-constexpr float WHEEL_RADIUS = 0.45f;
-constexpr float TWO_PI = 6.28318530718f;
-} // namespace
-
 void game_world::init() {
     character = controller();
     locomotion = locomotion_system();
