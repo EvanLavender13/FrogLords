@@ -32,7 +32,7 @@ The **naming convention violation** has been **RESOLVED** (enum values changed t
 #### **RESOLVED: Scope Creep Beyond Validation Goal** ✅
 - **Files:** `src/character/keyframe.h`, `src/character/keyframe.cpp`, `src/gui/character_panel.h`, `src/gui/character_panel.cpp`
 - **Original Concern:** The iteration plan stated "Only add real-time tuning UI if edit-rebuild becomes intolerable" and "wait for the third use before abstracting." The implementation added the full joint override UI system in the first iteration without testing the edit-rebuild workflow first.
-- **Resolution:** Rationale documented in `PLANS/iteration_static_keyframe_preview.md` under "Scope Change Decision"
+- **Resolution:** Rationale documented in `PLANS/ARCHIVE/20251008_232831_iteration_static_keyframe_preview.md` under "Scope Change Decision"
 - **Key Justification:** 
   - Real-time joint manipulation is a **knowledge-creation tool** for building intuitive understanding of 3D rotation in hierarchical skeletons
   - Aligns with "Knowledge Creation > Implementation" principle (AGENTS.md)
@@ -95,8 +95,8 @@ The **naming convention violation** has been **RESOLVED** (enum values changed t
 
 Once the naming violation is fixed:
 
-1. **Mark Implementation Complete:** Add approval section to `PLANS/implementation_static_keyframe_preview.md`
-2. **Mark Iteration Complete:** Add approval section to `PLANS/iteration_static_keyframe_preview.md`
+1. **Mark Implementation Complete:** Add approval section to `PLANS/ARCHIVE/20251008_232831_implementation_static_keyframe_preview.md`
+2. **Mark Iteration Complete:** Add approval section to `PLANS/ARCHIVE/20251008_232831_iteration_static_keyframe_preview.md`
 3. **Update Dependency Stack:** Move "Static Keyframe Preview" to 100% certainty in `PLANS/DEPENDENCY_STACK.md`
 4. **Consider Next Feature:** Re-evaluate "Primary Skeletal Animation" (locomotion-driven playback) now that quaternion foundation is proven
 
@@ -104,7 +104,7 @@ Once the naming violation is fixed:
 
 ### 6. Testing Validation (Self-Reported)
 
-Per `PLANS/implementation_static_keyframe_preview.md` changelog:
+Per `PLANS/ARCHIVE/20251008_232831_implementation_static_keyframe_preview.md` changelog:
 - ✅ All 4 poses are selectable
 - ✅ Visual validation shows acceptable "walk" gait quality
 - ✅ No crashes, flicker, or visual artifacts

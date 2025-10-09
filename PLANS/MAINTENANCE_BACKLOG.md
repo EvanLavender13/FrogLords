@@ -29,12 +29,6 @@
 - **Suggested Fix:** Extract to a shared header (e.g., `src/character/locomotion.h` as public constants) or create `src/foundation/math_constants.h` for shared math constants like `TWO_PI`.
 
 ### Redundant Include
-- **File:** `src/gui/character_panel.cpp:3`
-- **Severity:** High
-- **Description:** `#include "character/tuning.h"` is redundant—already included via `character_panel.h:6`.
-- **Suggested Fix:** Remove redundant include from `.cpp` file.
-
-### Redundant Include
 - **File:** `src/rendering/debug_draw.cpp:3`
 - **Severity:** High
 - **Description:** `#include "character/controller.h"` is redundant—already included via `debug_draw.h:6`.
@@ -112,6 +106,13 @@
 ## Completed
 
 (Resolved items moved here for reference; prune periodically)
+
+### Redundant Include in character_panel.cpp
+- **File:** `src/gui/character_panel.cpp:3`
+- **Severity:** High
+- **Description:** `#include "character/tuning.h"` was redundant—already included via `character_panel.h:7`.
+- **Resolution:** Removed redundant include from `.cpp` file.
+- **Completed:** October 8, 2025
 
 ### Include Case Inconsistency
 - **File:** `src/gui/character_panel.cpp:5`

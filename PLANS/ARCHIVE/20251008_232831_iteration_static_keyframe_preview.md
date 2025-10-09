@@ -167,8 +167,8 @@ If this iteration fails (quaternions don't work as expected):
 
 **Status:** ✅ **APPROVED**
 
-**Implementation Plan:** See `PLANS/implementation_static_keyframe_preview.md`  
-**Code Review:** See `PLANS/code_review_static_keyframe_preview.md`
+**Implementation Plan:** See `PLANS/ARCHIVE/20251008_232831_implementation_static_keyframe_preview.md`
+**Code Review:** See `PLANS/ARCHIVE/20251008_232831_code_review_static_keyframe_preview.md`
 
 **Success Criteria Met:**
 - ✅ Quaternion keyframe architecture validated (hypothesis proven)
@@ -193,7 +193,7 @@ If this iteration fails (quaternions don't work as expected):
 
 **Final Certainty Score:** 100% (hypothesis proven, architecture validated)
 
-**Code Review:** See `PLANS/code_review_static_keyframe_preview.md`
+**Code Review:** See `PLANS/ARCHIVE/20251008_232831_code_review_static_keyframe_preview.md`
 
 **Outcome Summary:** 
 Quaternion keyframe architecture fully validated through manual pose selection implementation. All success criteria met: poses display correctly without artifacts, instant switching is stable, and code is clean/maintainable. Primary skeletal animation (locomotion-driven) now unblocked with proven quaternion foundation. Process improvements include establishing UPPER_CASE enum convention and enforcing via clang-tidy.

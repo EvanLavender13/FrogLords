@@ -335,7 +335,7 @@ Only add if the edit-rebuild loop becomes intolerable (e.g., after 5+ rebuild cy
 
 ## Changelog
 
-- **2025-10-07:** Initial implementation plan created based on `iteration_static_keyframe_preview.md` scope.
+- **2025-10-07:** Initial implementation plan created based on `ARCHIVE/20251008_232831_iteration_static_keyframe_preview.md` scope.
 - **2025-10-08:** All implementation steps completed. Manual testing and tuning completed - poses validated as acceptable "walk" gait. Feature ready for review and finalization.
 - **2025-10-08:** Decision made to retain joint override debug UI as pose authoring tool for future animation work (not removing as originally planned).
 - **2025-10-08:** Code review performed. Naming convention violation fixed (enum values changed to UPPER_CASE). Tooling updated (`.clang-tidy`, `AGENTS.md`).
@@ -346,7 +346,7 @@ Only add if the edit-rebuild loop becomes intolerable (e.g., after 5+ rebuild cy
 
 **Status:** ✅ **APPROVED**
 
-**Code Review:** See `PLANS/code_review_static_keyframe_preview.md`
+**Code Review:** See `PLANS/ARCHIVE/20251008_232831_code_review_static_keyframe_preview.md`
 
 **Key Accomplishments:**
 - ✅ Quaternion keyframe architecture validated (core hypothesis proven)
@@ -373,6 +373,6 @@ Only add if the edit-rebuild loop becomes intolerable (e.g., after 5+ rebuild cy
 - ✅ Runtime validation (no crashes, visual artifacts, or instability)
 - ✅ Code standards (UPPER_CASE enums, documentation, naming conventions)
 
-**Code Review:** See `PLANS/code_review_static_keyframe_preview.md`
+**Code Review:** See `PLANS/ARCHIVE/20251008_232831_code_review_static_keyframe_preview.md`
 
 **Final Status:** Feature complete and ready for merge. Primary skeletal animation (locomotion-driven) now unblocked.

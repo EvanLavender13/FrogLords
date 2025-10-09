@@ -1,6 +1,5 @@
 #include "gui/character_panel.h"
 #include "gui/gui.h"
-#include "character/tuning.h"
 #include "sokol_app.h"
 #include "imgui.h"
 
