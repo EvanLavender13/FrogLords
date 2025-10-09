@@ -2,7 +2,7 @@
 #include "gui/gui.h"
 #include "character/tuning.h"
 #include "sokol_app.h"
-#include "ImGui.h"
+#include "imgui.h"
 
 namespace gui {
 

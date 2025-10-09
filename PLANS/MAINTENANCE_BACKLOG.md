@@ -28,12 +28,6 @@
 - **Description:** `WHEEL_RADIUS` and `TWO_PI` constants are duplicated in two files with identical values. This creates maintenance burden if the value needs to change.
 - **Suggested Fix:** Extract to a shared header (e.g., `src/character/locomotion.h` as public constants) or create `src/foundation/math_constants.h` for shared math constants like `TWO_PI`.
 
-### Include Case Inconsistency
-- **File:** `src/gui/character_panel.cpp:5`
-- **Severity:** High
-- **Description:** Include directive uses `#include "ImGui.h"` (PascalCase) instead of `#include "imgui.h"` (lowercase). This may cause portability issues on case-sensitive filesystems.
-- **Suggested Fix:** Change to `#include "imgui.h"` to match standard imgui header naming.
-
 ### Redundant Include
 - **File:** `src/gui/character_panel.cpp:3`
 - **Severity:** High
@@ -119,4 +113,9 @@
 
 (Resolved items moved here for reference; prune periodically)
 
-*No items yet.*
+### Include Case Inconsistency
+- **File:** `src/gui/character_panel.cpp:5`
+- **Severity:** High
+- **Description:** Include directive uses `#include "ImGui.h"` (PascalCase) instead of `#include "imgui.h"` (lowercase). This may cause portability issues on case-sensitive filesystems.
+- **Resolution:** Changed include directive to use lowercase `imgui.h` to match standard imgui header naming.
+- **Completed:** October 8, 2025
