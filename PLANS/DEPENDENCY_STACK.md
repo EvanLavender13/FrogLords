@@ -12,6 +12,8 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)
 ├─────────────────────────────────────┤
+│  Static Keyframe Preview (100%) ✅  │  ← Quaternion keyframes validated  ← YOU ARE HERE
+├─────────────────────────────────────┤
 │  Attach Skeleton to Body (100%) ✅  │  ← Skeleton follows character transform
 ├─────────────────────────────────────┤
 │  Skeleton Debug System (100%) ✅     │  ← Hierarchical joints + visualizer
@@ -87,6 +89,27 @@
 
 **Dependencies:** Requires rendering + runtime scaffolding; now unblocks secondary motion, IK, and pose tooling work.
 
+### Static Keyframe Preview (Implemented, 100% certain) ✅
+
+**Status:** Quaternion keyframe architecture validated and proven
+
+- `character::keyframe` module with quaternion-based pose storage
+- 8-joint minimum set (shoulders, elbows, hips, knees) sufficient for validation
+- 4 hardcoded poses (T_POSE, STEP_LEFT, NEUTRAL, STEP_RIGHT) visually distinct
+- Manual GUI selection with instant pose switching (no blending)
+- No visual artifacts, crashes, or stability issues
+
+**Certainty:** 100% — core hypothesis proven through implementation and testing.
+
+**Key Learning:** Quaternion composition with T-pose baseline (`local_transform = translate(t_pose_pos) * mat4_cast(pose_quat)`) works correctly. Ready for locomotion-driven animation.
+
+**Dependencies:** Built on Skeleton Debug System and Attach Skeleton to Body. Unblocks primary skeletal animation (locomotion-driven) for next iteration.
+
+**Code Standards Improvements:**
+- Established UPPER_CASE convention for enum constants in `AGENTS.md`
+- Updated `.clang-tidy` to enforce `EnumConstantCase: UPPER_CASE`
+- Pattern validated and ready for reuse
+
 ### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
 **Status:** Architecture proven, tuning UI complete, ready for iteration
@@ -137,7 +160,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Refactor of game world complete. Ready to pull next feature from backlog.
+**Current Focus:** Static Keyframe Preview complete. Quaternion keyframe architecture validated. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -147,12 +170,14 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 5. ✅ Animation tuning UI (comprehensive parameter exposure)
 6. ✅ Skeleton debug system (hierarchical joints + T-pose visualizer)
 7. ✅ Refactor: Game World Separation
-8. ⏸️ Pull next item from backlog based on playtest discoveries ← **YOU ARE HERE**
+8. ✅ Static Keyframe Preview (quaternion keyframes validated)
+9. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
 - Core gameplay: Weeks (testing/tuning, but proven)
 - Reactive systems: Short iterations (2-4 hours per feature, proven pattern)
+- Keyframe systems: 1 day iterations (proven with Static Keyframe Preview)
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**
@@ -160,6 +185,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 - Core gameplay: ~95% certain (proven through testing)
 - Skeleton debug: 100% certain (meets plan; minimal risk)
 - Reactive animation: ~90% certain (architecture validated)
+- Static Keyframe Preview: 100% certain (hypothesis proven, ready for locomotion integration)
 - Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 

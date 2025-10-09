@@ -20,40 +20,59 @@
   - *Origin:* Identified 2025-10-08 during Static Keyframe Preview iteration when rotation axis confusion required deep investigation of parent-space transforms
 
 ### Skeletal Animation (Keyframe Foundation)
+
+- **Static Keyframe Preview:** Manual GUI selection between hardcoded skeletal poses (validates quaternion-based keyframes before adding locomotion) ✅ **COMPLETE**
+  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
+  - *Certainty:* 100%
+  - *Learning:* Quaternion keyframe architecture fully validated. Key findings:
+    - Quaternion composition formula works: `local_transform = translate(t_pose_pos) * mat4_cast(pose_quat)`
+    - 8-joint minimum set (shoulders, elbows, hips, knees) sufficient for walk validation
+    - Manual pose selection proves data structure before adding locomotion complexity
+    - T-pose baseline uses identity rotations (translation-only), simplifying composition
+    - Instant pose switching stable with no visual artifacts or crashes
+    - Clean separation of keyframe data from application logic enables future extensions
+    - UPPER_CASE enum convention established and enforced via clang-tidy
+  - *Next Step:* Primary skeletal animation (locomotion-driven) now unblocked with proven quaternion foundation
+  - *Completion Date:* October 8, 2025
+  - *Implementation:* See `PLANS/implementation_static_keyframe_preview.md` and `PLANS/code_review_static_keyframe_preview.md`
+
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
   - *Prerequisite:* Static Keyframe Preview validated (8-joint minimum working)
   - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
   - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for validating quaternion architecture
+  - *Status:* Now unblocked - Static Keyframe Preview validated 8-joint minimum successfully
   - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
   - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
 
-- **Static Keyframe Preview:** Manual GUI selection between hardcoded skeletal poses (validates quaternion-based keyframes before adding locomotion)
-  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
-  - *Certainty:* Medium-High (~70%) - reduced scope from failed primary skeletal animation attempt
-  - *Rationale:* Validates fundamental keyframe data structure (quaternion-based joint rotations) works correctly before attempting locomotion-driven animation. Separates keyframe authoring from animation playback per failed implementation learnings.
+- **Running gait keyframes:** Add RUN_STEP_LEFT, RUN_NEUTRAL, RUN_STEP_RIGHT poses to keyframe library
+  - *Prerequisite:* Static Keyframe Preview ✅ (quaternion architecture proven)
+  - *Certainty:* High (~85%) - direct extension of proven pattern
+  - *Rationale:* Walking gait keyframes validated in Static Keyframe Preview. Running gait differs in limb extension/timing but uses same quaternion architecture. Extends pose library before locomotion-driven animation integration.
   - *Scope:*
-    1. Upgrade keyframe struct to quaternions (or Euler angles minimum): `struct keyframe { glm::quat left_shoulder; glm::quat right_shoulder; ... }`
-    2. Store 4 hardcoded poses (REACH-RIGHT, PASS-LEFT, REACH-LEFT, PASS-RIGHT) derived from original feature brief
-    3. GUI dropdown/buttons for manual pose selection only (no locomotion phase integration)
-    4. Apply selected pose to skeleton each frame (validates quaternion storage/application/composition)
-  - *Success Criteria:* Selected pose displays correctly on skeleton without visual artifacts; quaternion composition with T-pose baselines produces expected limb positions; GUI switching between poses is instant and stable
-  - *Excludes:* Locomotion phase computation, distance-based triggering, animation blending, authoring UI for pose editing (hardcoded values only)
-  - *Next Step After Validation:* Re-approach locomotion-driven primary skeletal animation with proven quaternion keyframe foundation
-  - *Origin:* Reduced-scope feature identified during Primary Skeletal Animation deferral (2025-10-07). See `PLANS/DEFERRAL_LOG.md` for architectural issues that necessitated this simpler validation step.
+    - Add 3 new `pose_type` enum values: `RUN_STEP_LEFT`, `RUN_NEUTRAL`, `RUN_STEP_RIGHT`
+    - Author 3 hardcoded run poses (greater limb extension, higher arm swing than walk)
+    - Extend GUI dropdown to include run poses for manual selection
+    - Reuse existing `apply_pose()` logic (no architecture changes)
+  - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
+  - *Excludes:* Locomotion-driven triggering (still manual selection); speed-based walk/run blending (deferred to primary skeletal animation)
+  - *Next Step:* Provides complete pose library (walk + run) for primary skeletal animation to blend between
+  - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) to minimize initial validation scope
 
 - **Primary skeletal animation (locomotion-driven):** Distance-phased limb animation synchronized to movement (walk/run arm swing cycles)
-  - *Status:* **DEFERRED** (2025-10-07) - Fundamental data structure limitation discovered during implementation
-  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
-  - *Certainty:* Very Low (~10%) - original approach architecturally flawed; needs complete redesign
-  - *Reason:* Original keyframe data structure used single float per joint (e.g., `float left_shoulder`), which is insufficient for 3D rotation. Real skeletal animation requires 3+ degrees of freedom per joint (quaternions or Euler angles). Multiple implementation attempts failed due to inability to represent arbitrary 3D rotations with single-value storage.
-  - *Missing Prerequisites:*
-    - Quaternion-based (or Euler-angle-based) keyframe data structure
-    - Clear separation of keyframe authoring from animation playback
-    - Understanding of per-joint rotation axes and composition rules
-  - *Reconsideration:* After implementing reduced-scope **Static Keyframe Preview** feature to validate quaternion storage/application with hardcoded poses (no locomotion phase, no authoring UI)
-  - *Next Steps:* Implement minimal feature first: quaternion keyframes + manual GUI selection + hardcoded poses (validates data structure before adding locomotion integration)
-  - *Note:* Steps 1-4 of original plan completed but non-functional. Code preserved on branch for reference. See `PLANS/implementation_primary_skeletal_animation.md` for detailed technical analysis of failed approaches.
-  - *Review:* Architectural issue discovered during Step 4 GUI implementation review, not during principle review
+  - *Status:* **NOW UNBLOCKED** - Quaternion keyframe architecture validated via Static Keyframe Preview ✅
+  - *Prerequisite:* Static Keyframe Preview ✅ (quaternion data structure proven)
+  - *Certainty:* Medium (~60%) - increased from 10% now that keyframe foundation is solid
+  - *Previous Blocker (RESOLVED):* Original approach used single float per joint (insufficient for 3D rotation). Now have proven quaternion-based keyframe system.
+  - *Remaining Risk:* Locomotion integration complexity (distance-phased triggering, blending between poses, synchronization with surveyor wheel)
+  - *Scope:*
+    - Reuse proven `character::keyframe` structure from Static Keyframe Preview
+    - Add locomotion phase computation (based on distance traveled)
+    - Implement pose blending (lerp/slerp between STEP_LEFT ↔ NEUTRAL ↔ STEP_RIGHT)
+    - Synchronize with existing surveyor wheel animation system
+    - Remove manual GUI selection (automated by locomotion)
+  - *Success Criteria:* Limb animation plays smoothly during walk/run; arm swing counter-rotates with legs; no pops or glitches during pose transitions
+  - *Next Steps:* Can now proceed with full implementation using validated quaternion foundation
+  - *Note:* Original deferred implementation preserved on branch for reference. See `PLANS/DEFERRAL_LOG.md` for historical context.
 
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
   - *Status:* **DEFERRED** (2025-10-06) - Missing critical prerequisite: primary skeletal animation system
