@@ -20,11 +20,7 @@
 
 (Significant code smells impacting readability or maintainability)
 
-### Redundant Include
-- **File:** `src/rendering/debug_draw.cpp:3`
-- **Severity:** High
-- **Description:** `#include "character/controller.h"` is redundant—already included via `debug_draw.h:6`.
-- **Suggested Fix:** Remove redundant include from `.cpp` file.
+*No items currently tracked.*
 
 ---
 
@@ -120,4 +116,11 @@
 - **Severity:** High
 - **Description:** `WHEEL_RADIUS` and `TWO_PI` constants are duplicated in two files with identical values. This creates maintenance burden if the value needs to change.
 - **Resolution:** Extracted constants to `src/character/locomotion.h` as public `constexpr` declarations.
+- **Completed:** October 9, 2025
+
+### Redundant Include
+- **Files:** `src/rendering/debug_draw.cpp:3`
+- **Severity:** High
+- **Description:** `#include "character/controller.h"` is redundant—already included via `debug_draw.h:6`.
+- **Resolution:** Removed redundant #include "character/controller.h" from debug_draw.cpp.
 - **Completed:** October 9, 2025

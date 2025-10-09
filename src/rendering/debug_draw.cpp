@@ -1,6 +1,5 @@
 #include "rendering/debug_draw.h"
 #include "rendering/scene.h"
-#include "character/controller.h"
 #include "character/skeleton.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
