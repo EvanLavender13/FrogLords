@@ -24,7 +24,7 @@ struct animation_state {
     float landing_impulse_scale = 0.5f;
 
     // Distance-phased skeletal animation
-    float cycle_length = 1.0f; // One full stride per meter
+    float cycle_length = 2.0f;
     pose_type current_automatic_pose = pose_type::NEUTRAL;
 
     animation_state();

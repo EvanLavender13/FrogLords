@@ -12,9 +12,9 @@
 ///
 /// Effect per joint type:
 /// - Arms (bones along ±X axis):
-///   * Pitch (X-axis): raise/lower arm (up/down motion)
+///   * Pitch (X-axis): twist along bone length (invisible on cylindrical debug geo)
 ///   * Yaw (Y-axis):   swing arm forward/backward
-///   * Roll (Z-axis):  twist along bone length (invisible on cylindrical debug geo)
+///   * Roll (Z-axis):  raise/lower arm (up/down motion)
 /// - Legs (bones along -Y axis):
 ///   * Pitch (X-axis): swing leg forward/backward
 ///   * Yaw (Y-axis):   twist along bone length
