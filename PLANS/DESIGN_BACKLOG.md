@@ -10,6 +10,22 @@
 
 ### Debug Visualization
 
+- **Debug Visual Overhaul:** Audit and fix all debug visualization scale/color inconsistencies
+  - *Prerequisite:* None (cleanup task)
+  - *Certainty:* Medium (~50%) - polish, not critical functionality
+  - *Rationale:* Current debug visuals have scaling/accuracy issues. Examples: red speed circle doesn't match actual velocity (shows brief overshoot before cap), velocity sphere visual may not reflect true speed, threshold circles may not align with actual speed values. Visual debugging is core to rapid iteration—mismatched visuals create false signals during tuning.
+  - *Scope:*
+    - Audit all speed/velocity visualizations (red circle, velocity sphere, walk/run threshold circles)
+    - Verify circle radii match actual speed values (not pre-cap or post-friction)
+    - Consider showing "target speed" vs "current speed" with different visual styles
+    - Add visual legend/labels to clarify what each circle represents
+    - Standardize color scheme (current: green=walk, yellow=run, red=current—confirm consistency)
+    - Check if velocity sphere position matches velocity vector direction/magnitude
+  - *Success Criteria:* When holding SHIFT, red circle aligns exactly with green circle at 2.0 m/s; visual debugging provides accurate feedback for tuning; no confusion about what each circle represents
+  - *Nice-to-Have:* Toggle modes (speed rings only, velocity vectors only, full debug suite, minimal)
+  - *Implementation Risk:* Low—isolated to debug_draw.cpp, no gameplay impact
+  - *Origin:* Identified 2025-10-09 during Primary Skeletal Animation iteration when SHIFT key walk lock revealed red circle larger than green despite speed cap at 2.0 m/s
+
 - **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
   - *Prerequisite:* Debug Draw System ✅
   - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact
@@ -58,29 +74,29 @@
   - *Next Step:* Provides complete pose library (walk + run) for primary skeletal animation to blend between
   - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) to minimize initial validation scope
 
-- **Primary skeletal animation (locomotion-driven):** Distance-phased limb animation synchronized to movement (walk/run arm swing cycles)
-  - *Status:* **NOW UNBLOCKED** - Quaternion keyframe architecture validated via Static Keyframe Preview ✅
-  - *Prerequisite:* Static Keyframe Preview ✅ (quaternion data structure proven)
-  - *Certainty:* Medium (~60%) - increased from 10% now that keyframe foundation is solid
-  - *Previous Blocker (RESOLVED):* Original approach used single float per joint (insufficient for 3D rotation). Now have proven quaternion-based keyframe system.
-  - *Remaining Risk:* Locomotion integration complexity (distance-phased triggering, blending between poses, synchronization with surveyor wheel)
-  - *Scope:*
-    - Reuse proven `character::keyframe` structure from Static Keyframe Preview
-    - Add locomotion phase computation (based on distance traveled)
-    - Implement pose blending (lerp/slerp between STEP_LEFT ↔ NEUTRAL ↔ STEP_RIGHT)
-    - Synchronize with existing surveyor wheel animation system
-    - Remove manual GUI selection (automated by locomotion)
-  - *Success Criteria:* Limb animation plays smoothly during walk/run; arm swing counter-rotates with legs; no pops or glitches during pose transitions
-  - *Next Steps:* Can now proceed with full implementation using validated quaternion foundation
-  - *Note:* Original deferred implementation preserved on branch for reference. See `PLANS/DEFERRAL_LOG.md` for historical context.
+- **Primary skeletal animation (locomotion-driven):** Distance-phased limb animation synchronized to movement (walk/run arm swing cycles) ✅ **COMPLETE**
+  - *Prerequisite:* Static Keyframe Preview ✅
+  - *Certainty:* 100%
+  - *Learning:* Distance-phased pose switching validated with threshold-based selection. Key findings:
+    - Surveyor-wheel pattern extends naturally to skeletal animation (`phase = fmod(distance_traveled, cycle_length) / cycle_length`)
+    - Threshold-based pose selection (0.25/0.5/0.75 splits) sufficient for graybox validation before adding interpolation
+    - Cumulative distance tracking provides stable, speed-independent cycling
+    - Stop behavior correct by design (pose freezes when distance stops, no special handling needed)
+    - Manual override parameter preserves debug UI functionality alongside automatic animation
+    - Walk speed lock (SHIFT key) critical for precise tuning observation
+    - Distance accumulation fix critical: changed from `distance = phase * stride` (wrapped) to `distance += speed * dt` (cumulative)
+  - *Next Step:* Pose blending (lerp/slerp) now unblocked to smooth transitions between discrete poses
+  - *Completion Date:* October 9, 2025
+  - *Implementation:* See [implementation_primary_skeletal_animation.md](PLANS/implementation_primary_skeletal_animation.md) and [code_review_primary_skeletal_animation.md](PLANS/code_review_primary_skeletal_animation.md)
 
 - **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
-  - *Status:* **DEFERRED** (2025-10-06) - Missing critical prerequisite: primary skeletal animation system
-  - *Prerequisite:* Locomotion-driven skeletal animation (walk/run arm swing cycles) - **NOT YET IMPLEMENTED**
-  - *Certainty:* Very Low (~15%) - reactive layer requires base animation to react to; static T-pose has no motion to add wobble on top of
-  - *Reason:* Implementation attempts revealed architectural blocker. Secondary motion is a reactive animation layer that needs a stable primary animation layer beneath it (per procedural animation principles). Current static T-pose provides no parent motion for joints to lag behind.
-  - *Reconsideration:* After implementing distance-phased primary limb animation synchronized to locomotion
-  - *Note:* Two implementation approaches attempted (parent rotation lag, acceleration-driven wobble) - both failed due to missing prerequisite, not implementation bugs. See archived implementation plan for details.
+  - *Status:* **NOW UNBLOCKED** - Primary skeletal animation complete ✅
+  - *Prerequisite:* Primary Skeletal Animation ✅ (locomotion-driven pose cycling implemented)
+  - *Certainty:* Medium (~60%) - prerequisite now satisfied, reactive layer architecture proven with acceleration tilt and landing spring
+  - *Previous Blocker (RESOLVED):* Static T-pose provided no parent motion to lag behind. Now have distance-phased pose cycling with limb movement.
+  - *Scope:* Spring-damper lag on elbow/knee joints following shoulder/hip parent rotations; per-bone softness parameters (stiffness, damping)
+  - *Success Criteria:* Natural follow-through motion on limbs; wobble visible during pose transitions; minimal performance cost
+  - *Note:* Deferred 2025-10-06, now ready for implementation with validated prerequisite
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅
@@ -114,6 +130,22 @@
   - *Prerequisite:* Determine if iteration workflow needs it
   - *Certainty:* Medium (~50%) - useful but not urgent
   - *Note:* Would require config file system (JSON/TOML)
+
+### Input & Control Feel
+
+- **Walk Speed Lock Refactor:** Investigate acceleration-based walk speed limiting instead of hard velocity cap
+  - *Prerequisite:* Primary Skeletal Animation validated ✅
+  - *Certainty:* Low (~30%) - current implementation works for tuning/debug purposes
+  - *Current Implementation:* SHIFT key hard-caps velocity at 2.0 m/s (controller.cpp:92-99), overriding momentum
+  - *Rationale:* Current approach violates "input maps to acceleration" principle (AGENTS.md Procedural Animation). Hard velocity cap creates brief overshoot before clamping, breaking physics-first feel. Production version should adjust acceleration or max_speed target instead.
+  - *Scope:*
+    - Option A: Modulate `max_speed` target directly (changes cap without velocity clamp)
+    - Option B: Scale `ground_accel` to limit acceleration into walk speeds (preserves momentum decay)
+    - Option C: Keep hard cap but add hysteresis/smoothing to prevent visual jitter
+  - *Success Criteria:* SHIFT key limits speed without breaking momentum/physics feel; no visible velocity overshoot; transitions smooth
+  - *Risk:* May feel less responsive than current implementation; tuning required
+  - *Note:* Current hard cap approach is acceptable for debug/tuning feature (quick addition during Primary Skeletal Animation iteration 2025-10-09). Only refactor if feature graduates to production or feel issues emerge during playtesting.
+  - *Origin:* Identified in code review 2025-10-09 as misalignment with gameplay-first principles
 
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run

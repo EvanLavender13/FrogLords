@@ -62,15 +62,24 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         cam.follow_update(character.position, dt);
     }
 
+    // Update skeletal animation (automatic distance-phased or manual pose selection)
+    character.animation.update_skeletal_animation(t_pose_skeleton, locomotion.distance_traveled,
+                                                  panel_state.selected_pose,
+                                                  panel_state.use_manual_pose_selection);
+
+    // Apply joint overrides if enabled (debug feature)
+    // Use the currently active pose (automatic or manual) as the base
     if (panel_state.enable_joint_overrides) {
+        character::pose_type current_pose = panel_state.use_manual_pose_selection
+                                                ? panel_state.selected_pose
+                                                : character.animation.current_automatic_pose;
+
         character::apply_pose_with_overrides(
-            t_pose_skeleton, panel_state.selected_pose, panel_state.left_shoulder_angles,
+            t_pose_skeleton, current_pose, panel_state.left_shoulder_angles,
             panel_state.left_elbow_angles, panel_state.right_shoulder_angles,
             panel_state.right_elbow_angles, panel_state.left_hip_angles,
             panel_state.left_knee_angles, panel_state.right_hip_angles,
             panel_state.right_knee_angles);
-    } else {
-        character::apply_pose(t_pose_skeleton, panel_state.selected_pose);
     }
 }
 

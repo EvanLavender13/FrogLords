@@ -10,9 +10,11 @@
 
 ```
 ┌─────────────────────────────────────┐
-│         DESIGN BACKLOG              │  ← Everything else (liquid)
+│         DESIGN BACKLOG              │  ← Everything else (liquid)  ← YOU ARE HERE
 ├─────────────────────────────────────┤
-│  Static Keyframe Preview (100%) ✅  │  ← Quaternion keyframes validated  ← YOU ARE HERE
+│ Primary Skeletal Animation (100%) ✅│  ← Distance-phased pose switching
+├─────────────────────────────────────┤
+│  Static Keyframe Preview (100%) ✅  │  ← Quaternion keyframes validated
 ├─────────────────────────────────────┤
 │  Attach Skeleton to Body (100%) ✅  │  ← Skeleton follows character transform
 ├─────────────────────────────────────┤
@@ -110,6 +112,29 @@
 - Updated `.clang-tidy` to enforce `EnumConstantCase: UPPER_CASE`
 - Pattern validated and ready for reuse
 
+### Primary Skeletal Animation (Implemented, 100% certain) ✅
+
+**Status:** Distance-phased pose switching validated and proven
+
+- Distance-phase calculation: `phase = fmod(distance_traveled, cycle_length) / cycle_length`
+- Threshold-based pose selection (STEP_LEFT → NEUTRAL → STEP_RIGHT → NEUTRAL cycle)
+- Surveyor-wheel synchronization with locomotion system
+- Manual pose override mode for debugging
+- Real-time cycle length tuning via GUI slider
+- Walk speed lock (SHIFT key) for precise tuning observation
+
+**Certainty:** 100% — core hypothesis proven. Distance-phased triggering works cleanly, poses cycle correctly at all speeds, no visual artifacts or crashes.
+
+**Key Learning:** Surveyor-wheel pattern extends naturally to skeletal animation. Cumulative `distance_traveled` with modulo-based phase calculation provides stable, speed-independent cycling. Threshold-based pose selection sufficient for graybox validation before adding interpolation.
+
+**Dependencies:** Built on Static Keyframe Preview and Procedural Locomotion. Unblocks pose blending (lerp/slerp) and speed-based gait switching for next iteration.
+
+**Architecture Validated:**
+- `animation_state` pattern continues to work well (cycle_length parameter, current_automatic_pose state)
+- `update_skeletal_animation()` encapsulation clean (single call site in game loop)
+- Manual override parameter preserves debug UI functionality
+- Stop behavior correct (pose freezes when distance stops, no special handling needed)
+
 ### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
 **Status:** Architecture proven, tuning UI complete, ready for iteration
@@ -160,7 +185,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Static Keyframe Preview complete. Quaternion keyframe architecture validated. Ready to pull next feature from backlog.
+**Current Focus:** Primary Skeletal Animation complete. Distance-phased pose switching validated. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -171,13 +196,14 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 6. ✅ Skeleton debug system (hierarchical joints + T-pose visualizer)
 7. ✅ Refactor: Game World Separation
 8. ✅ Static Keyframe Preview (quaternion keyframes validated)
-9. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
+9. ✅ Primary Skeletal Animation (distance-phased pose switching)
+10. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
 - Core gameplay: Weeks (testing/tuning, but proven)
 - Reactive systems: Short iterations (2-4 hours per feature, proven pattern)
-- Keyframe systems: 1 day iterations (proven with Static Keyframe Preview)
+- Keyframe systems: 1 day iterations (proven with Static Keyframe Preview and Primary Skeletal Animation)
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**
@@ -186,6 +212,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 - Skeleton debug: 100% certain (meets plan; minimal risk)
 - Reactive animation: ~90% certain (architecture validated)
 - Static Keyframe Preview: 100% certain (hypothesis proven, ready for locomotion integration)
+- Primary Skeletal Animation: 100% certain (distance-phased triggering validated, ready for pose blending)
 - Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 

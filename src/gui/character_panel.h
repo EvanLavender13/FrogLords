@@ -15,6 +15,9 @@ struct character_panel_state {
     bool show_joint_labels = false;
     character::pose_type selected_pose = character::pose_type::T_POSE;
 
+    // Animation control
+    bool use_manual_pose_selection = false;
+
     // Real-time joint override (Euler angles in degrees)
     // vec3 format: (X-rotation, Y-rotation, Z-rotation)
     // Applied in order: Y -> X -> Z (yaw -> pitch -> roll)

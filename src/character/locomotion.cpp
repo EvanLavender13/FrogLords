@@ -38,7 +38,6 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
             easing::scalar_span{walk_state.stride_length, run_state.stride_length}, blend);
         if (blended_stride <= 0.0f) {
             phase = 0.0f;
-            distance_traveled = 0.0f;
         } else {
             float drive_speed = std::max(0.0f, current_speed);
 
@@ -49,7 +48,8 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grou
                 phase += 1.0f;
             }
 
-            distance_traveled = phase * blended_stride;
+            // Accumulate distance continuously (surveyor-wheel odometer)
+            distance_traveled += drive_speed * dt;
         }
     }
 }

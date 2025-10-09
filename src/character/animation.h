@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "foundation/spring_damper.h"
+#include "keyframe.h"
 
 namespace character {
 
@@ -22,6 +23,10 @@ struct animation_state {
     spring_damper landing_spring;
     float landing_impulse_scale = 0.5f;
 
+    // Distance-phased skeletal animation
+    float cycle_length = 1.0f; // One full stride per meter
+    pose_type current_automatic_pose = pose_type::NEUTRAL;
+
     animation_state();
 
     void update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity, float max_speed,
@@ -36,6 +41,10 @@ struct animation_state {
 
     // Legacy update method (calls update_acceleration_tilt for compatibility)
     void update(const animation_update_params& params);
+
+    // Distance-phased skeletal animation update
+    void update_skeletal_animation(skeleton& skel, float distance_traveled,
+                                   pose_type manual_override_pose, bool use_manual_override);
 };
 
 } // namespace character

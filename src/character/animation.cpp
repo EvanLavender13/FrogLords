@@ -90,4 +90,31 @@ void animation_state::update(const animation_update_params& params) {
                              params.dt);
 }
 
+void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
+                                                pose_type manual_override_pose,
+                                                bool use_manual_override) {
+    if (use_manual_override) {
+        apply_pose(skel, manual_override_pose);
+        return;
+    }
+
+    // Calculate phase (0.0-1.0) from distance traveled
+    float phase = std::fmod(distance_traveled, cycle_length) / cycle_length;
+
+    // Threshold-based pose selection (STEP_LEFT → NEUTRAL → STEP_RIGHT → NEUTRAL)
+    // Two NEUTRAL ranges (0.25-0.5, 0.75-1.0) frame steps symmetrically
+    if (phase < 0.25f) {
+        current_automatic_pose = pose_type::STEP_LEFT;
+    } else if (phase < 0.5f) { // NOLINT(bugprone-branch-clone)
+        current_automatic_pose = pose_type::NEUTRAL;
+    } else if (phase < 0.75f) {
+        current_automatic_pose = pose_type::STEP_RIGHT;
+    } else {
+        current_automatic_pose = pose_type::NEUTRAL;
+    }
+
+    // Apply selected pose
+    apply_pose(skel, current_automatic_pose);
+}
+
 } // namespace character

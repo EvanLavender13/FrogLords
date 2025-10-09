@@ -81,6 +81,7 @@
     *   **Acceleration tilt:** Independent reactive layer—tilt applies after pose selection, no conflicts
     *   **Landing spring:** Independent reactive layer—crouch applies after pose selection, no conflicts
     *   **Static keyframe preview:** Manual pose selection becomes secondary (override mode for debugging)
+    *   **Walk speed lock (SHIFT key):** Quick addition—holding SHIFT caps max_speed to walk_speed (2.0 m/s) for easier tuning observation. Enables precise control when adjusting cycle_length slider.
     *   **Emergence potential:** Distance-phased triggering pattern could extend to other cyclic behaviors (tail swing, ear flaps, breathing)
 *   **Interface & Feedback:**
     *   **Player understanding:** Passive—player doesn't control this directly. Visual metaphor: "character walks like a character" (legs alternate, arms swing)
@@ -111,3 +112,22 @@
     *   **Running gait keyframes:** Add RUN_STEP_LEFT/NEUTRAL/RIGHT poses, blend based on `locomotion.walk_factor`. Already in backlog—this iteration validates triggering for walk poses.
     *   **Backward walking:** Out of scope (character can't walk backwards currently). Add if locomotion system supports reverse movement.
     *   **Animation state machine:** If pose selection logic grows complex, extract to dedicated state machine. Defer until third use case appears (avoid premature abstraction).
+
+---
+
+## Approval
+
+- **Status:** Approved
+- **Reviewer:** Claude (FrogLords Code Review Agent)
+- **Date:** 2025-10-09
+- **Review Document:** [code_review_primary_skeletal_animation.md](code_review_primary_skeletal_animation.md)
+- **Summary:** Distance-phased skeletal animation successfully implemented and validated. All success metrics met, no gameplay-first principles violated. Minor suggestions for future refactoring documented in review.
+
+---
+
+## Completion
+
+- **Date Completed:** October 9, 2025
+- **Final Certainty Score:** 100%
+- **Code Review:** [code_review_primary_skeletal_animation.md](code_review_primary_skeletal_animation.md)
+- **Outcome:** Distance-phased pose switching validated successfully. Surveyor-wheel pattern extends cleanly to skeletal animation, threshold-based pose selection sufficient for graybox validation. Walk speed lock feature added for precise tuning observation. All success metrics met with no gameplay-first principle violations.

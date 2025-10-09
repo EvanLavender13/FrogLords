@@ -71,6 +71,31 @@ void draw_character_panel(character_panel_state& state, controller& character,
             gui::widget::text("Current Speed: %.2f m/s", locomotion.current_speed);
             gui::widget::text("Smoothed Speed: %.2f m/s", locomotion.smoothed_speed);
             gui::widget::text("Animation Phase: %.2f", locomotion.phase);
+
+            ImGui::Separator();
+            gui::widget::slider_float("Cycle Length (m)", &character.animation.cycle_length, 0.5f,
+                                      3.0f);
+
+            // Current automatic pose display
+            const char* pose_name;
+            switch (character.animation.current_automatic_pose) {
+            case character::pose_type::T_POSE:
+                pose_name = "T-Pose";
+                break;
+            case character::pose_type::STEP_LEFT:
+                pose_name = "Step Left";
+                break;
+            case character::pose_type::NEUTRAL:
+                pose_name = "Neutral";
+                break;
+            case character::pose_type::STEP_RIGHT:
+                pose_name = "Step Right";
+                break;
+            default:
+                pose_name = "Unknown";
+                break;
+            }
+            gui::widget::text("Current Pose: %s", pose_name);
         }
 
         if (ImGui::CollapsingHeader("Skeleton")) {
@@ -78,18 +103,25 @@ void draw_character_panel(character_panel_state& state, controller& character,
             gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
 
             ImGui::Separator();
-            ImGui::Text("Pose Selection:");
-            const char* pose_names[] = {"T-Pose", "Step Left", "Neutral", "Step Right"};
-            int current_pose = static_cast<int>(state.selected_pose);
-            if (ImGui::Combo("Pose", &current_pose, pose_names, 4)) {
-                state.selected_pose = static_cast<character::pose_type>(current_pose);
+            gui::widget::checkbox("Manual Pose Selection", &state.use_manual_pose_selection);
+
+            if (state.use_manual_pose_selection) {
+                ImGui::Separator();
+                ImGui::Text("Pose Selection:");
+                const char* pose_names[] = {"T-Pose", "Step Left", "Neutral", "Step Right"};
+                int current_pose = static_cast<int>(state.selected_pose);
+                if (ImGui::Combo("Pose", &current_pose, pose_names, 4)) {
+                    state.selected_pose = static_cast<character::pose_type>(current_pose);
+                }
+
+                ImGui::Separator();
+                gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
             }
 
-            ImGui::Separator();
-            gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
-
-            if (state.enable_joint_overrides && ImGui::CollapsingHeader("Joint Overrides")) {
+            if (state.enable_joint_overrides && state.use_manual_pose_selection &&
+                ImGui::CollapsingHeader("Joint Overrides")) {
                 ImGui::PushItemWidth(180.0f);
+                ImGui::TextWrapped("Joint Override Offsets (applied on top of selected pose)");
                 ImGui::TextWrapped("Euler angles: Pitch=X-axis, Yaw=Y-axis, Roll=Z-axis");
                 ImGui::Separator();
 

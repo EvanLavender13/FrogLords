@@ -216,28 +216,60 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
 
+    // Get base pose keyframe
+    keyframe base_kf;
+    switch (pose) {
+    case pose_type::T_POSE:
+        base_kf = create_identity_pose();
+        break;
+    case pose_type::STEP_LEFT:
+        base_kf = create_step_left_pose();
+        break;
+    case pose_type::NEUTRAL:
+        base_kf = create_neutral_pose();
+        break;
+    case pose_type::STEP_RIGHT:
+        base_kf = create_step_right_pose();
+        break;
+    default:
+        base_kf = create_identity_pose();
+        break;
+    }
+
     // Convert Euler angles (degrees) to quaternions
-    // Uses GLM's built-in Euler angle conversion (same as hardcoded poses)
     auto to_quat = [](const glm::vec3& euler_degrees) {
         return glm::quat(glm::radians(euler_degrees));
     };
 
-    // Helper lambda to apply quaternion to joint
+    // Compose base pose rotation with override rotation (multiplicative)
+    auto compose_rotation = [](const glm::quat& base, const glm::quat& override_rot) {
+        return override_rot * base;
+    };
+
+    // Helper lambda to apply composed quaternion to joint
     auto apply_joint = [&](int joint_idx, const glm::quat& rotation) {
         glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3]);
         skel.joints[joint_idx].local_transform =
             glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
     };
 
-    // Apply custom quaternions to all joints using named indices
-    apply_joint(joint_index::LEFT_SHOULDER, to_quat(left_shoulder_angles));
-    apply_joint(joint_index::LEFT_ELBOW, to_quat(left_elbow_angles));
-    apply_joint(joint_index::RIGHT_SHOULDER, to_quat(right_shoulder_angles));
-    apply_joint(joint_index::RIGHT_ELBOW, to_quat(right_elbow_angles));
-    apply_joint(joint_index::LEFT_HIP, to_quat(left_hip_angles));
-    apply_joint(joint_index::LEFT_KNEE, to_quat(left_knee_angles));
-    apply_joint(joint_index::RIGHT_HIP, to_quat(right_hip_angles));
-    apply_joint(joint_index::RIGHT_KNEE, to_quat(right_knee_angles));
+    // Apply composed rotations (base pose + user overrides) to all joints
+    apply_joint(joint_index::LEFT_SHOULDER,
+                compose_rotation(base_kf.left_shoulder, to_quat(left_shoulder_angles)));
+    apply_joint(joint_index::LEFT_ELBOW,
+                compose_rotation(base_kf.left_elbow, to_quat(left_elbow_angles)));
+    apply_joint(joint_index::RIGHT_SHOULDER,
+                compose_rotation(base_kf.right_shoulder, to_quat(right_shoulder_angles)));
+    apply_joint(joint_index::RIGHT_ELBOW,
+                compose_rotation(base_kf.right_elbow, to_quat(right_elbow_angles)));
+    apply_joint(joint_index::LEFT_HIP,
+                compose_rotation(base_kf.left_hip, to_quat(left_hip_angles)));
+    apply_joint(joint_index::LEFT_KNEE,
+                compose_rotation(base_kf.left_knee, to_quat(left_knee_angles)));
+    apply_joint(joint_index::RIGHT_HIP,
+                compose_rotation(base_kf.right_hip, to_quat(right_hip_angles)));
+    apply_joint(joint_index::RIGHT_KNEE,
+                compose_rotation(base_kf.right_knee, to_quat(right_knee_angles)));
 
     // Propagate transforms through hierarchy
     update_global_transforms(skel);

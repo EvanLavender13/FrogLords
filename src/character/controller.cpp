@@ -51,6 +51,10 @@ void controller::apply_input(const camera& cam, float dt) {
 
     input_direction = forward * move_direction.y + right * move_direction.x;
 
+    // Walk speed lock (shift key)
+    is_walking =
+        input::is_key_down(SAPP_KEYCODE_LEFT_SHIFT) || input::is_key_down(SAPP_KEYCODE_RIGHT_SHIFT);
+
     // Direct acceleration (instant response)
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
     acceleration = input_direction * accel_magnitude;
@@ -84,11 +88,12 @@ void controller::update(const scene* scn, float dt) {
         }
     }
 
-    // Apply max speed cap
+    // Apply max speed cap (walk speed if shift held)
+    float effective_max_speed = is_walking ? walk_speed : max_speed;
     glm::vec3 horizontal_velocity = glm::vec3(velocity.x, 0, velocity.z);
     float speed = glm::length(horizontal_velocity);
-    if (speed > max_speed) {
-        horizontal_velocity = horizontal_velocity * (max_speed / speed);
+    if (speed > effective_max_speed) {
+        horizontal_velocity = horizontal_velocity * (effective_max_speed / speed);
         velocity.x = horizontal_velocity.x;
         velocity.z = horizontal_velocity.z;
     }

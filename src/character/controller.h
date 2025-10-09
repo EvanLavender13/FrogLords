@@ -45,9 +45,13 @@ struct controller {
     float ground_accel = 20.0f;    // m/s^2
     float air_accel = 10.0f;       // m/s^2
     float max_speed = 8.0f;        // m/s
+    float walk_speed = 2.0f;       // m/s (shift key speed limit)
     float gravity = -9.8f;         // m/s^2
     float max_slope_angle = 45.0f; // degrees
     float jump_velocity = 5.0f;    // m/s
+
+    // Input modifiers
+    bool is_walking = false; // True when shift key held
 
     // Reactive animation layer
     character::animation_state animation;
