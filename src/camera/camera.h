@@ -4,8 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 enum class camera_mode {
-    ORBIT,  // Rotate around fixed center
-    FOLLOW  // Follow character with free rotation
+    ORBIT, // Rotate around fixed center
+    FOLLOW // Follow character with free rotation
 };
 
 struct orbit_config {

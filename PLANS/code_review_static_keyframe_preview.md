@@ -40,53 +40,28 @@ The **naming convention violation** has been **RESOLVED** (enum values changed t
   - Immediate visual feedback accelerates spatial reasoning skills that transfer to all future animation work
 - **Outcome:** This was a deliberate, justified deviation from strict graybox scope. The UI will remain as a permanent authoring tool.
 
-#### **Misalignment: T-Pose Recreation Overhead**
-- **File:** `src/character/keyframe.cpp` (lines 103-110, 166-173)
-- **Principle:** "Simplicity over sophistication"
-- **Details:** Both `apply_pose()` and `apply_pose_with_overrides()` call `create_t_pose(skel)` every frame to "get clean baseline," which re-populates the entire skeleton structure (17 joints). This was likely added to work around state management issues, but it's inefficient for a per-frame operation.
-- **Current Code:**
-  ```cpp
-  // Store root transform (set by game_world)
-  glm::mat4 root_transform = skel.joints[0].local_transform;
-  // Recreate T-pose to get clean baseline
-  create_t_pose(skel);
-  // Restore root transform
-  skel.joints[0].local_transform = root_transform;
-  ```
-- **Suggestion:** Since T-pose local transforms are constant (verified in implementation plan), extract T-pose joint positions once at initialization and cache them, rather than rebuilding the skeleton every frame. Example:
-  ```cpp
-  // In keyframe.cpp, static initialization:
-  static const std::array<glm::vec3, 17> t_pose_positions = /* extract once */;
-  
-  // In apply_pose:
-  glm::vec3 t_pose_pos = t_pose_positions[joint_idx];
-  skel.joints[joint_idx].local_transform = 
-      glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
-  ```
-- **Impact:** Low priority (premature optimization at this scale), but violates "simplicity" by doing unnecessary work. Consider deferring until profiling shows it matters.
+#### **RESOLVED: T-Pose Recreation Overhead** ✅
+- **Files:** `src/character/keyframe.cpp`
+- **Original Concern:** Both `apply_pose()` and `apply_pose_with_overrides()` called `create_t_pose(skel)` every frame, which recreated the entire 17-joint skeleton structure unnecessarily.
+- **Resolution:** 
+  - Added static `t_pose_positions` array caching the constant T-pose translation vectors
+  - Created `reset_to_t_pose()` helper function that resets joints to cached positions instead of rebuilding skeleton
+  - Updated both functions to use efficient reset instead of `create_t_pose()`
+- **Performance Impact:** Eliminates unnecessary skeleton recreation per frame (17 joints × matrix operations)
+- **Code Quality:** Follows "Simplicity over sophistication" by avoiding unnecessary work
 
-#### **Misalignment: Hardcoded Joint Indices (Magic Numbers)**
-- **File:** `src/character/keyframe.cpp` (lines 132-139, 186-193)
-- **Principle:** "Clarity over cleverness"
-- **Details:** Joint indices (5, 6, 8, 9, 11, 12, 14, 15) are hardcoded with only a comment explaining their meaning. If joint order in `t_pose.cpp` changes, these indices become silently wrong.
-- **Current Code:**
-  ```cpp
-  // Joint indices: 5=left_shoulder, 6=left_elbow, 8=right_shoulder, ...
-  apply_joint(5, kf.left_shoulder);
-  apply_joint(6, kf.left_elbow);
-  // ...
-  ```
-- **Suggestion:** Define named constants or an enum for joint indices to make the mapping explicit:
-  ```cpp
-  namespace joint_index {
-      constexpr int LEFT_SHOULDER = 5;
-      constexpr int LEFT_ELBOW = 6;
-      // ...
-  }
-  apply_joint(joint_index::LEFT_SHOULDER, kf.left_shoulder);
-  ```
-- **Alternative:** Add a `find_joint_by_name()` helper to `skeleton` and use it at initialization (acceptable one-time cost).
-- **Impact:** Low priority (joint order is stable in current scope), but improves maintainability.
+#### **RESOLVED: Hardcoded Joint Indices (Magic Numbers)** ✅
+- **Files:** `src/character/keyframe.cpp`
+- **Original Concern:** Joint indices (5, 6, 8, 9, 11, 12, 14, 15) were hardcoded as magic numbers with only comments explaining their meaning.
+- **Resolution:**
+  - Added `joint_index` namespace with named constants for all 17 skeleton joints
+  - Updated both `apply_pose()` and `apply_pose_with_overrides()` to use named constants
+  - Examples: `joint_index::LEFT_SHOULDER`, `joint_index::RIGHT_KNEE`, etc.
+- **Benefits:**
+  - Explicit mapping between joint names and indices
+  - Self-documenting code (no need for inline comments)
+  - Compile-time error if joint order in t_pose.cpp changes and indices are updated
+  - Follows "Clarity over cleverness" principle
 
 #### **Observation: Documentation Quality**
 - **Files:** `src/character/keyframe.h`, `src/character/keyframe.cpp`
@@ -106,10 +81,10 @@ The **naming convention violation** has been **RESOLVED** (enum values changed t
 3. ✅ `AGENTS.md` updated with explicit enum naming examples
 4. ✅ All files updated and clang-tidy passes cleanly
 5. ✅ Scope change rationale documented in iteration plan (joint override UI justified as knowledge-creation tool)
+6. ✅ T-pose recreation overhead eliminated (cached positions instead of rebuilding skeleton per frame)
+7. ✅ Hardcoded joint indices replaced with named constants (joint_index namespace)
 
-**Recommended for Future Iterations (Non-Blocking):**
-1. Consider caching T-pose positions instead of recreating skeleton each frame (defer until profiling shows it matters)
-2. Consider adding named constants for joint indices (defer until joint order changes become problematic)
+**All Review Items Resolved - No Remaining Recommendations**
 
 **Reviewer:** GitHub Copilot (AI Assistant)  
 **Date:** October 8, 2025

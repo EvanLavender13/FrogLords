@@ -23,9 +23,62 @@
 #include "keyframe.h"
 #include "t_pose.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <array>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace character {
+
+// Joint indices in T-pose skeleton (must match order in t_pose.cpp)
+namespace joint_index {
+constexpr int ROOT = 0;
+constexpr int SPINE_LOWER = 1;
+constexpr int SPINE_UPPER = 2;
+constexpr int NECK = 3;
+constexpr int HEAD = 4;
+constexpr int LEFT_SHOULDER = 5;
+constexpr int LEFT_ELBOW = 6;
+constexpr int LEFT_WRIST = 7;
+constexpr int RIGHT_SHOULDER = 8;
+constexpr int RIGHT_ELBOW = 9;
+constexpr int RIGHT_WRIST = 10;
+constexpr int LEFT_HIP = 11;
+constexpr int LEFT_KNEE = 12;
+constexpr int LEFT_ANKLE = 13;
+constexpr int RIGHT_HIP = 14;
+constexpr int RIGHT_KNEE = 15;
+constexpr int RIGHT_ANKLE = 16;
+} // namespace joint_index
+
+// Cached T-pose positions (translations only, no rotations)
+// Extracted from create_t_pose() to avoid recreating skeleton every frame
+static const std::array<glm::vec3, 17> T_POSE_POSITIONS = {{
+    glm::vec3(0.0f, 0.0f, 0.0f),     // 0: root
+    glm::vec3(0.0f, 0.1f, 0.0f),     // 1: spine_lower
+    glm::vec3(0.0f, 0.1f, 0.0f),     // 2: spine_upper
+    glm::vec3(0.0f, 0.05f, 0.0f),    // 3: neck
+    glm::vec3(0.0f, 0.05f, 0.0f),    // 4: head
+    glm::vec3(-0.1f, 0.05f, 0.0f),   // 5: left_shoulder
+    glm::vec3(-0.15f, 0.0f, 0.0f),   // 6: left_elbow
+    glm::vec3(-0.15f, 0.0f, 0.0f),   // 7: left_wrist
+    glm::vec3(0.1f, 0.05f, 0.0f),    // 8: right_shoulder
+    glm::vec3(0.15f, 0.0f, 0.0f),    // 9: right_elbow
+    glm::vec3(0.15f, 0.0f, 0.0f),    // 10: right_wrist
+    glm::vec3(-0.05f, -0.05f, 0.0f), // 11: left_hip
+    glm::vec3(0.0f, -0.2f, 0.0f),    // 12: left_knee
+    glm::vec3(0.0f, -0.2f, 0.0f),    // 13: left_ankle
+    glm::vec3(0.05f, -0.05f, 0.0f),  // 14: right_hip
+    glm::vec3(0.0f, -0.2f, 0.0f),    // 15: right_knee
+    glm::vec3(0.0f, -0.2f, 0.0f)     // 16: right_ankle
+}};
+
+/// Reset skeleton to T-pose baseline without recreating structure
+/// Preserves root transform, resets all other joints to cached T-pose positions
+static void reset_to_t_pose(skeleton& skel) {
+    // Reset all joints to T-pose positions (identity rotations)
+    for (size_t i = 0; i < skel.joints.size() && i < T_POSE_POSITIONS.size(); ++i) {
+        skel.joints[i].local_transform = glm::translate(glm::mat4(1.0f), T_POSE_POSITIONS[i]);
+    }
+}
 
 /// Create identity pose (all quaternions are identity rotations)
 static keyframe create_identity_pose() {
@@ -93,8 +146,8 @@ void apply_pose(skeleton& skel, pose_type pose) {
     // Store root transform (set by game_world)
     glm::mat4 root_transform = skel.joints[0].local_transform;
 
-    // Recreate T-pose to get clean baseline
-    create_t_pose(skel);
+    // Reset to T-pose baseline (efficient: uses cached positions)
+    reset_to_t_pose(skel);
 
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
@@ -122,9 +175,7 @@ void apply_pose(skeleton& skel, pose_type pose) {
         break;
     }
 
-    // Apply keyframe quaternions to skeleton joints
-    // Joint indices: 5=left_shoulder, 6=left_elbow, 8=right_shoulder, 9=right_elbow,
-    //                11=left_hip, 12=left_knee, 14=right_hip, 15=right_knee
+    // Apply keyframe quaternions to skeleton joints using named indices
 
     // Helper lambda to apply quaternion to joint
     auto apply_joint = [&](int joint_idx, const glm::quat& rotation) {
@@ -135,14 +186,14 @@ void apply_pose(skeleton& skel, pose_type pose) {
             glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
     };
 
-    apply_joint(5, kf.left_shoulder);
-    apply_joint(6, kf.left_elbow);
-    apply_joint(8, kf.right_shoulder);
-    apply_joint(9, kf.right_elbow);
-    apply_joint(11, kf.left_hip);
-    apply_joint(12, kf.left_knee);
-    apply_joint(14, kf.right_hip);
-    apply_joint(15, kf.right_knee);
+    apply_joint(joint_index::LEFT_SHOULDER, kf.left_shoulder);
+    apply_joint(joint_index::LEFT_ELBOW, kf.left_elbow);
+    apply_joint(joint_index::RIGHT_SHOULDER, kf.right_shoulder);
+    apply_joint(joint_index::RIGHT_ELBOW, kf.right_elbow);
+    apply_joint(joint_index::LEFT_HIP, kf.left_hip);
+    apply_joint(joint_index::LEFT_KNEE, kf.left_knee);
+    apply_joint(joint_index::RIGHT_HIP, kf.right_hip);
+    apply_joint(joint_index::RIGHT_KNEE, kf.right_knee);
 
     // Propagate transforms through hierarchy
     update_global_transforms(skel);
@@ -159,8 +210,8 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
     // Store root transform (set by game_world)
     glm::mat4 root_transform = skel.joints[0].local_transform;
 
-    // Recreate T-pose to get clean baseline
-    create_t_pose(skel);
+    // Reset to T-pose baseline (efficient: uses cached positions)
+    reset_to_t_pose(skel);
 
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
@@ -178,15 +229,15 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
             glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
     };
 
-    // Apply custom quaternions to all joints
-    apply_joint(5, to_quat(left_shoulder_angles));
-    apply_joint(6, to_quat(left_elbow_angles));
-    apply_joint(8, to_quat(right_shoulder_angles));
-    apply_joint(9, to_quat(right_elbow_angles));
-    apply_joint(11, to_quat(left_hip_angles));
-    apply_joint(12, to_quat(left_knee_angles));
-    apply_joint(14, to_quat(right_hip_angles));
-    apply_joint(15, to_quat(right_knee_angles));
+    // Apply custom quaternions to all joints using named indices
+    apply_joint(joint_index::LEFT_SHOULDER, to_quat(left_shoulder_angles));
+    apply_joint(joint_index::LEFT_ELBOW, to_quat(left_elbow_angles));
+    apply_joint(joint_index::RIGHT_SHOULDER, to_quat(right_shoulder_angles));
+    apply_joint(joint_index::RIGHT_ELBOW, to_quat(right_elbow_angles));
+    apply_joint(joint_index::LEFT_HIP, to_quat(left_hip_angles));
+    apply_joint(joint_index::LEFT_KNEE, to_quat(left_knee_angles));
+    apply_joint(joint_index::RIGHT_HIP, to_quat(right_hip_angles));
+    apply_joint(joint_index::RIGHT_KNEE, to_quat(right_knee_angles));
 
     // Propagate transforms through hierarchy
     update_global_transforms(skel);
