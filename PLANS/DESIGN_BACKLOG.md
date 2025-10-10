@@ -215,12 +215,19 @@
 ## Camera & Controls
 
 ### Camera Enhancements (Low Priority)
-- **Mouse Wheel Camera Zoom:**
-  - *Description:* The user can zoom the camera in and out using the mouse scroll wheel. The zoom will have reasonable upper and lower limits.
-  - *Problem/Goal:* To provide the player with direct and intuitive control over the camera's distance from the character, allowing them to customize their view of the game world.
-  - *Hypothesis:* This will improve the game's feel and allow players to get a better view of the action or the environment, depending on their needs.
-  - *Certainty:* 95% - This is a standard feature with a well-understood implementation. The only minor uncertainty is what the "reasonable limits" will feel like in practice, which will require brief iteration.
-  - *Dependencies:* `camera`, `input`
+- **Mouse Wheel Camera Zoom:** ✅ **COMPLETE**
+  - *Prerequisite:* `camera` ✅, `input` ✅
+  - *Certainty:* 100%
+  - *Learning:* Mouse wheel zoom successfully implemented for both ORBIT and FOLLOW modes with tunable distance limits. Key findings:
+    - One-frame delay bug in FOLLOW mode required immediate eye position recalculation in `zoom()` method (pattern from ORBIT mode's `update_eye_position()` call)
+    - Spherical camera orbit around `follow_height_offset` (1.5m above character) creates intentional "shift" effect during zoom - not a bug, but geometric behavior
+    - Debug UI (camera panel) proved immediately valuable for tuning height offset (0-3m) and zoom limits (1.5-15m default)
+    - GUI refactoring to unified Debug Panel with collapsing headers improves maintainability and sets pattern for future debug panels
+    - Default range (1.5-15m) appropriate for skeletal animation inspection; very close zoom (<2m) reveals graybox mesh gaps (expected, not issue)
+  - *Scope Growth:* Original estimate 15-30 lines, actual ~60 lines across 8 files. Growth justified: bug fix necessary, debug UI high ROI (saves 10+ min per future panel), GUI refactoring improves architecture
+  - *Next Step:* Camera debug panel architecture proven; pattern reusable for physics panel, audio panel, profiling panel
+  - *Completion Date:* October 10, 2025
+  - *Implementation:* See `PLANS/feature_camera_zoom.md` for detailed retrospective (includes bug fix, GUI refactoring notes)
 - **Camera collision:** Prevent clipping through walls
 - **Smart framing:** Keep character and target both visible
 - **Camera shake:** Impact feedback

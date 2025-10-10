@@ -77,6 +77,14 @@ class camera {
     /// Set follow camera parameters
     void set_follow_distance(float dist) { follow_distance = dist; }
     void set_follow_height(float height) { follow_height_offset = height; }
+    void set_follow_distance_limits(float min_dist, float max_dist) {
+        min_follow_distance = min_dist;
+        max_follow_distance = max_dist;
+    }
+
+    /// Get follow camera parameters
+    float get_follow_distance() const { return follow_distance; }
+    float get_follow_height() const { return follow_height_offset; }
 
   private:
     void update_eye_position();
@@ -105,4 +113,6 @@ class camera {
     // Follow mode state
     float follow_distance = 5.0f;
     float follow_height_offset = 1.5f;
+    float min_follow_distance = 1.5f;
+    float max_follow_distance = 15.0f;
 };

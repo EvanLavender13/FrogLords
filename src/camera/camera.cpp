@@ -41,8 +41,19 @@ void camera::orbit(float delta_x, float delta_y) {
 }
 
 void camera::zoom(float delta) {
-    distance = std::clamp(distance + delta, min_distance, max_distance);
-    update_eye_position();
+    if (mode == camera_mode::FOLLOW) {
+        follow_distance =
+            std::clamp(follow_distance + delta, min_follow_distance, max_follow_distance);
+        // Recalculate eye position immediately to avoid one-frame delay
+        float lat_rad = glm::radians(latitude);
+        float lon_rad = glm::radians(longitude);
+        eye_pos.x = center.x + follow_distance * cosf(lat_rad) * sinf(lon_rad);
+        eye_pos.y = center.y + follow_distance * sinf(lat_rad);
+        eye_pos.z = center.z + follow_distance * cosf(lat_rad) * cosf(lon_rad);
+    } else {
+        distance = std::clamp(distance + delta, min_distance, max_distance);
+        update_eye_position();
+    }
 }
 
 glm::vec3 camera::get_forward_horizontal() const {

@@ -7,6 +7,7 @@
 #include "gui/gui.h"
 #include "gui/character_panel.h"
 #include "rendering/debug_draw.h"
+#include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
 app_runtime& runtime() {
@@ -83,9 +84,26 @@ void app_runtime::frame() {
     input::update();
 
     gui::begin_frame();
-    // Updated to use character.orientation
-    gui::draw_character_panel(panel_state, world.character, world.locomotion,
-                              world.character.orientation, world.character_params);
+
+    // Create unified debug panel on left side
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(0.0f, static_cast<float>(sapp_height())), ImGuiCond_Always);
+    ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Debug Panel", nullptr, flags)) {
+        // Character tuning sections
+        gui::draw_character_panel(panel_state, world.character, world.locomotion,
+                                  world.character.orientation, world.character_params);
+
+        // Camera section
+        gui::draw_camera_panel(camera_panel_state, world.cam);
+
+        // FPS display at bottom
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Text("FPS: %.1f", 1.0f / sapp_frame_duration());
+    }
+    ImGui::End();
 
     render_world();
 }

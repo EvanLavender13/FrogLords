@@ -35,19 +35,15 @@ Read and execute `TASKS/UPDATE_BACKLOG.md` to:
 
 ### 6. Archive Planning Documents
 
-1.  Add a `## Completion` section to end of `PLANS/iteration_<feature_name>.md`:
+1.  Add a `## Completion` section to end of `PLANS/feature_<feature_name>.md`:
     -   Date completed
     -   Final certainty score
     -   Link to code review document
     -   Brief outcome summary (1-2 sentences)
-2.  Add a `## Completion` section to end of `PLANS/implementation_<feature_name>.md`:
-    -   Date completed
-    -   All checklist items confirmed complete
-    -   Link to code review document
 
 ### 6.5. Iteration Reflection (for Retrospectives)
 
-Add a `## Reflection` section to end of `PLANS/iteration_<feature_name>.md` answering:
+Add a `## Reflection` section to end of `PLANS/feature_<feature_name>.md` answering:
 
 1.  **What went well?** (1-3 bullet points)
     -   What practices, decisions, or planning approaches helped this iteration succeed?
@@ -66,7 +62,7 @@ Add a `## Reflection` section to end of `PLANS/iteration_<feature_name>.md` answ
 
 ### 6.6. Certainty Calibration (for Process Improvement)
 
-Add a `## Certainty Calibration` section to end of `PLANS/iteration_<feature_name>.md`:
+Add a `## Certainty Calibration` section to end of `PLANS/feature_<feature_name>.md`:
 
 **Predicted Certainty:** [X%] (from iteration plan Section 3)
 

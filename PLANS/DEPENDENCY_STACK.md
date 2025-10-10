@@ -35,7 +35,7 @@
 ├─────────────────────────────────────┤
 │    Character Controller (95%)       │  ← Physics, input, collision
 │    Collision Detection (95%)        │  ← Sphere-AABB resolution
-│    Camera System (90%)              │  ← Orbit camera, view matrices
+│    Camera System (95%)              │  ← Orbit/follow, zoom, debug UI
 │    Input System (95%)               │  ← WASD, mouse, keyboard
 ├─────────────────────────────────────┤
 │      Foundation Primitives          │  ← Reusable building blocks
@@ -210,7 +210,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Secondary Motion complete. Per-bone spring-damper lag validated. Ready to pull next feature from backlog.
+**Current Focus:** Camera zoom and debug panel complete. Unified Debug Panel architecture established. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -223,23 +223,27 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 8. ✅ Static Keyframe Preview (quaternion keyframes validated)
 9. ✅ Primary Skeletal Animation (distance-phased pose switching)
 10. ✅ Secondary Motion (per-bone spring-damper lag)
-11. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
+11. ✅ Camera Zoom + Debug Panel (mouse wheel zoom, unified Debug Panel GUI)
+12. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
 - Core gameplay: Weeks (testing/tuning, but proven)
 - Reactive systems: Short iterations (2-4 hours per feature, proven pattern)
 - Keyframe systems: 1 day iterations (proven with Static Keyframe Preview and Primary Skeletal Animation)
+- Debug/iteration tools: 1-2 hour iterations (simple feature workflow proven)
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**
 - Foundation layer: ~95% certain (stable, won't change)
 - Core gameplay: ~95% certain (proven through testing)
+- Camera system: ~95% certain (zoom + debug UI complete)
 - Skeleton debug: 100% certain (meets plan; minimal risk)
 - Reactive animation: ~90% certain (architecture validated)
 - Static Keyframe Preview: 100% certain (hypothesis proven, ready for locomotion integration)
 - Primary Skeletal Animation: 100% certain (distance-phased triggering validated, ready for pose blending)
 - Secondary Motion: 100% certain (spring-damper lag proven, velocity-injection approach validated)
+- Debug Panel architecture: 100% certain (unified panel with collapsing headers proven, pattern reusable)
 - Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 
