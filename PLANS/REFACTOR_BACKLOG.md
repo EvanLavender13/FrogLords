@@ -20,44 +20,13 @@
 
 (Significant improvement to clarity, maintainability, or extensibility)
 
-### Extract Yaw-to-Direction Vector Utilities
-- **Category:** Utilities
-- **Files:** `src/rendering/debug_draw.cpp:64, 111, 151-152`, `src/character/animation.cpp:25-26`
-- **Current State:** Pattern `glm::vec3(std::sin(yaw), 0, std::cos(yaw))` for forward and `glm::vec3(-std::cos(yaw), 0, std::sin(yaw))` for right appears 4+ times
-- **Proposed Change:** Extract to `src/foundation/math_utils.h`:
-  ```cpp
-  namespace math {
-  inline glm::vec3 yaw_to_forward(float yaw) {
-      return glm::vec3(std::sin(yaw), 0.0f, std::cos(yaw));
-  }
-  inline glm::vec3 yaw_to_right(float yaw) {
-      return glm::vec3(-std::cos(yaw), 0.0f, std::sin(yaw));
-  }
-  }
-  ```
-- **Rationale:** Appears 4+ times. Captures domain concept (yaw → direction). Self-documenting, eliminates mental conversion.
-- **Impact:** 2 files, 5 call sites. Primarily debug_draw.cpp.
-- **Risk:** Low — Pure trigonometry, easily verified.
-- **Certainty:** Stable. Used in visualization and character-local transforms (100% certain systems).
-
-### Consolidate Duplicate Constants (WHEEL_RADIUS, TWO_PI)
+### Consolidate Duplicate Constants (WHEEL_RADIUS, TWO_PI) ❌ INVALID
 - **Category:** Pattern Extraction
-- **Files:** `src/rendering/debug_draw.cpp:11-12`, `src/app/game_world.cpp:11-12`
-- **Current State:** Identical constants duplicated in two files
-- **Proposed Change:** Create shared constants, likely in `src/character/locomotion.h`:
-  ```cpp
-  namespace character {
-  constexpr float WHEEL_RADIUS = 0.45f;
-  }
-  namespace math {
-  constexpr float TWO_PI = 6.28318530718f;  // Or use glm::two_pi<float>()
-  }
-  ```
-  Alternative: Use `glm::two_pi<float>()` from `<glm/gtc/constants.hpp>` to eliminate custom constant entirely.
-- **Rationale:** Single source of truth. WHEEL_RADIUS is a locomotion domain constant; TWO_PI is a math constant (or use GLM's version).
-- **Impact:** 2 files. Simple replacement. Consider GLM constant for TWO_PI to reduce custom code.
-- **Risk:** Low — Constants, no behavior change.
-- **Certainty:** Locomotion system at 95%+.
+- **Files:** `src/rendering/debug_draw.cpp`, `src/app/game_world.cpp`
+- **Current State:** ~~Identical constants duplicated in two files~~ **INVALID: Constants already centralized in `src/character/locomotion.h` and properly included.**
+- **Verification:** Both `debug_draw.h` and `game_world.h` include `character/locomotion.h`, giving access to shared constants. No duplication exists.
+- **Action:** Remove from backlog. Mark completed (already done).
+- **Date Invalidated:** 2025-10-10
 
 ---
 
@@ -166,6 +135,22 @@
 ## Completed
 
 (Finished refactors moved here for reference; prune periodically)
+
+### Extract Yaw-to-Direction Vector Utilities ✅
+- **Completed:** 2025-10-10
+- **Category:** Utilities
+- **Files:** `src/foundation/math_utils.h` (added functions), `src/rendering/debug_draw.cpp` (4 call sites updated)
+- **Outcome:** Created `math::yaw_to_forward()` and `math::yaw_to_right()` inline utility functions; replaced 4 inline trigonometric calculations
+- **Learnings:**
+  - Linear approach appropriate for single-file, 4-call-site refactor (matched 2-point estimate exactly)
+  - All call sites identified during planning; no hidden dependencies discovered
+  - Inline functions provide zero-overhead abstraction while significantly improving clarity
+  - Self-documenting function names eliminated need for mental trigonometry translation
+  - Rule of three validated: 4 instances justified extraction
+  - Debug-only code made visual verification straightforward
+  - Pattern establishes foundation for future geometric utilities in math namespace
+- **Impact:** Reduced duplication from 4 inline calculations to 2 reusable utilities; improved code clarity at all call sites; documented coordinate system convention (Y-up, Z-forward)
+- **Documentation:** See `PLANS/refactor_yaw_direction_utilities.md` (complete refactor history)
 
 ### Extract Horizontal Velocity Projection Utility ✅
 - **Completed:** 2025-10-10

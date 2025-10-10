@@ -12,8 +12,10 @@ Read `AGENTS.md` to synthesize core project principles for refactor evaluation:
 
 ### 2. Gather Context
 
-1. **Read Planning Documents:**
-   - `PLANS/refactor_<refactor_name>.md` (the refactor plan)
+Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+
+1. **Read Refactor Description & Plan:**
+   - `PLANS/refactor_<refactor_name>.md` (contains both description and plan sections)
    - `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
    - `PLANS/DEPENDENCY_STACK.md` (system certainty scores)
 
@@ -157,30 +159,32 @@ Improvements that would strengthen the plan:
 - Alternative approach might be simpler
 - Additional validation step would increase confidence
 
-### 6. Generate Review Document
+### 6. Update Refactor Description with Review
 
-Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
+Append review results to the existing refactor description file at `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
-# Refactor Plan Review: [Refactor Name]
+---
+
+## Plan Review
 
 **Date:** [YYYY-MM-DD]
 **Reviewer:** Claude (AI Assistant)
 
 ---
 
-## 1. Summary
+### Summary
 
 [One paragraph: Is the plan sound? Major concerns? Recommendation to proceed/revise/defer?]
 
 ---
 
-## 2. Violations & Critical Issues
+### Violations & Critical Issues
 
 [Direct contradictions of principles or critical flaws that MUST be fixed before proceeding]
 
 - **Violation:** [Category - e.g., Rule of Three, Stability Gate]
-  - **Source:** `PLANS/refactor_<name>.md` [section]
+  - **Source:** Refactor Plan [section]
   - **Principle:** [Which principle from AGENTS.md is violated]
   - **Details:** [Specific issue description]
   - **Suggestion:** [How to fix this violation]
@@ -191,12 +195,12 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 3. Risks & Concerns
+### Risks & Concerns
 
 [Items that increase risk or could cause problems; should be addressed but may not block execution]
 
 - **Risk:** [Risk description]
-  - **Source:** `PLANS/refactor_<name>.md` [section]
+  - **Source:** Refactor Plan [section]
   - **Concern:** [Why this is risky]
   - **Mitigation:** [How to reduce this risk]
 
@@ -206,7 +210,7 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 4. Suggestions for Improvement
+### Suggestions for Improvement
 
 [Optional improvements that would strengthen the plan but aren't critical]
 
@@ -220,58 +224,58 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 5. Principle Alignment Check
+### Principle Alignment Check
 
-### Clarity Over Cleverness
+**Clarity Over Cleverness:**
 - [ ] "After" code is clearer than "before"
 - [ ] No clever abstractions that obscure intent
 - [ ] New developer could understand refactored code
 
-### Simplicity Over Sophistication
+**Simplicity Over Sophistication:**
 - [ ] Refactor genuinely reduces complexity
 - [ ] Not over-engineering the solution
 - [ ] Abstraction matches problem domain
 
-### Rule of Three
+**Rule of Three:**
 - [ ] Pattern appears 3+ times (or Critical architectural fix)
 - [ ] Not abstracting prematurely
 - [ ] Pattern instances are truly identical
 
-### Stability Requirement
+**Stability Requirement:**
 - [ ] All affected systems ≥70% certainty
 - [ ] No systems under active development
 - [ ] Safe to refactor now
 
 ---
 
-## 6. Migration Strategy Assessment
+### Migration Strategy Assessment
 
-### Stage Design
+**Stage Design:**
 - [ ] Staged approach for Medium/High risk
 - [ ] Stages logically ordered
 - [ ] Each stage independently verifiable
 
-### Coverage
+**Coverage:**
 - [ ] All call sites from Impact Analysis included
 - [ ] Indirect dependencies accounted for
 - [ ] Debug/GUI/test code included
 
-### Hidden Dependencies
+**Hidden Dependencies:**
 - [ ] Initialization order considered
 - [ ] Performance implications assessed
 - [ ] Documentation updates planned
 
 ---
 
-## 7. Safety Assessment
+### Safety Assessment
 
-### Testing Protocol
+**Testing Protocol:**
 - [ ] Behavior preservation testable
 - [ ] Test scenarios specific and measurable
 - [ ] Regression detection reliable
 - [ ] Per-stage and final validation planned
 
-### Rollback Plan
+**Rollback Plan:**
 - [ ] Rollback procedure concrete
 - [ ] Trigger conditions clear
 - [ ] Backup strategy defined
@@ -279,7 +283,7 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 8. Complexity Assessment
+### Complexity Assessment
 
 **Estimated Complexity:** [X points]
 - [ ] Total ≤8 points
@@ -287,10 +291,10 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 - [ ] No unexpected complexity revealed
 
 **Complexity Scale:**
-- **1-2 points:** Simple (single file, <5 call sites)
-- **3-5 points:** Medium (multi-file, 5-15 call sites)
-- **6-8 points:** Complex (cross-system, 15+ call sites)
-- **>8 points:** Should be split
+- 1-2 points: Simple (single file, <5 call sites)
+- 3-5 points: Medium (multi-file, 5-15 call sites)
+- 6-8 points: Complex (cross-system, 15+ call sites)
+- >8 points: Should be split
 
 **Recommendation:**
 - [ ] Proceed as planned
@@ -300,7 +304,7 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 9. Actionable Items
+### Actionable Items
 
 [Checklist of specific actions needed based on findings]
 
@@ -308,18 +312,18 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 - [ ] [Action 2 - e.g., "Add rollback procedure for Stage 2"]
 - [ ] [Action 3 - e.g., "Update validation checklist with performance check"]
 
-**If no actions needed:** Plan approved. Ready for EXECUTE_REFACTOR.
+**If no actions needed:** Plan approved. Ready for IMPLEMENT_REFACTOR.
 
 ---
 
-## 10. Final Recommendation
+### Final Recommendation
 
 **Status:** APPROVED | REVISE | DEFER
 
 **Reasoning:** [Brief justification for recommendation]
 
 **Next Steps:**
-- If APPROVED: Proceed to EXECUTE_REFACTOR
+- If APPROVED: Proceed to IMPLEMENT_REFACTOR
 - If REVISE: Address actionable items, then re-review
 - If DEFER: Update REFACTOR_BACKLOG with findings, return to SELECT_REFACTOR
 ```

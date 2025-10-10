@@ -9,7 +9,9 @@ Read `AGENTS.md` to understand knowledge capture and learning principles:
 
 ### 2. Gather Context
 
-1. **Recall Refactor:** Name and category from SELECT_REFACTOR
+Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+
+1. **Locate Refactor Document:** `PLANS/refactor_<refactor_name>.md`
 2. **Review Execution:** Read execution summary, issues encountered
 3. **Review Validation:** Read validation results from refactor plan
 
@@ -101,7 +103,31 @@ If refactor changes public APIs or system architecture:
 - System ownership moved
 - New patterns/utilities introduced for project-wide use
 
-### 6. Propose Next Steps
+### 6. Update Refactor Description with Final Status
+
+Append completion status to `PLANS/refactor_<refactor_name>.md`:
+
+```markdown
+---
+
+## Finalization
+
+**Date:** [YYYY-MM-DD]
+**Status:** COMPLETED
+
+**Final Validation Results:**
+- [List validation checklist results from plan]
+
+**Documentation Updates:**
+- [List any docs updated]
+- [Or "None required"]
+
+**Next Steps:**
+- Moved to Completed section in REFACTOR_BACKLOG.md
+- Learnings documented in backlog entry
+```
+
+### 7. Propose Next Steps
 
 Inform user that finalization is complete:
 
@@ -128,20 +154,10 @@ Inform user that finalization is complete:
 - Documented learnings and impact
 - [If applicable: Added N new refactor opportunities discovered]
 
+**Planning Document:**
+- `PLANS/refactor_<name>.md` contains complete refactor history (description → plan → review → execution → code review → finalization)
+
 ```
-
-### 7. Clean Up Planning Documents (Optional)
-
-Consider archiving planning documents:
-
-```markdown
-**Optional Cleanup:**
-- Archive `PLANS/refactor_<name>.md` to `PLANS/ARCHIVE/`
-- Archive `PLANS/refactor_review_<name>.md` to `PLANS/ARCHIVE/`
-- Keep validation results with completed item in backlog
-```
-
-**Defer cleanup:** Can batch-archive old plans periodically rather than immediately.
 
 ### Tone & Constraints
 

@@ -10,6 +10,8 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 
 ### 2. Gather Context
 
+Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+
 1. **Read Refactor Plan:** Open `PLANS/refactor_<refactor_name>.md`
 2. **Understand Migration Strategy:** Review staged/linear approach and per-stage goals
 3. **Review Call Sites:** Familiarize yourself with all locations that need updating
@@ -93,13 +95,16 @@ For simple refactors with <5 call sites:
    - [ ] Code compiles without errors/warnings
    - [ ] [All checks from validation protocol]
 
-### 5. Track Changes
+### 5. Update Refactor Description with Execution Summary
 
-After execution completes, document:
+Append execution summary to `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
+---
+
 ## Execution Summary
 
+**Date:** [YYYY-MM-DD]
 **Approach Used:** Staged | Linear
 
 **Files Modified:**

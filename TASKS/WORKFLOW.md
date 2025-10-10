@@ -159,7 +159,7 @@ These tasks support all workflows:
 - **SELECT_REFACTOR**: Choose refactor opportunity from backlog based on priority and stability
 - **PLAN_REFACTOR**: Capture impact analysis, migration strategy, and validation checklist in a single plan
 - **REVIEW_PLAN**: Verify plan against principles and stability requirements
-- **EXECUTE_REFACTOR**: Implement refactor in stages with verification
+- **IMPLEMENT_REFACTOR**: Implement refactor in stages with verification
 - **REVIEW_REFACTOR**: Comprehensive code review for correctness and principle alignment
 - **FINALIZE_REFACTOR**: Run plan's validation checklist, update backlog, document learnings, prepare commits
 

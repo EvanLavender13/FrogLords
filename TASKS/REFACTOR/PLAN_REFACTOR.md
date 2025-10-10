@@ -18,7 +18,9 @@ Create a new refactor branch using the script:
 
 ### 3. Gather Context
 
-1. **Read Refactor Description:** Open `PLANS/refactor_<refactor_name>.md`
+Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+
+1. **Read Refactor Description:** Open `PLANS/refactor_<refactor_name>.md` (created in SELECT_REFACTOR)
 2. **Read Affected Files:** Systematically read all `.h` and `.cpp` files mentioned in the description
 3. **Search for Usage:** Find every place the code is used to map dependencies
 
@@ -161,60 +163,51 @@ For each migration stage:
 
 **If total exceeds 8 points:** Recommend breaking into multiple refactors or deferring.
 
-### 10. Generate Detailed Refactor Plan
+### 10. Update Refactor Description
 
-Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the full plan:
+Append the full plan details to the existing refactor description file at `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
-# Refactor Plan: [Refactor Name]
+---
+
+## Refactor Plan
 
 **Date:** [YYYY-MM-DD]
-**Category:** Pattern Extraction | Simplification | System Design | Utilities | API Design
 **Risk Level:** Low | Medium | High
 **Estimated Complexity:** [X points]
 
 ---
 
-## 1. Overview
+### Impact Analysis
 
-**Current State:** [Brief description of the problem/pattern]
-
-**Desired State:** [What we want to achieve]
-
-**Rationale:** [Why this refactor improves the codebase; cite principles]
-
----
-
-## 2. Impact Analysis
-
-### Scope
+**Scope:**
 - **Files Affected:** [count] files
 - **Call Sites:** [count] locations
 - **Systems Involved:** [list]
 
-### Call Site Inventory
+**Call Site Inventory:**
 - `src/file1.cpp:123` - [brief description]
 - `src/file2.cpp:456` - [brief description]
 - [complete list]
 
-### Hidden Dependencies
+**Hidden Dependencies:**
 - [any non-obvious impacts]
 
-### Risk Assessment
+**Risk Assessment:**
 - **Risk Level:** Low/Medium/High
 - **Justification:** [brief explanation]
 - **Certainty Scores:** [system: score, system: score]
 
 ---
 
-## 3. Before/After Examples
+### Before/After Examples
 
-### Before
+**Before:**
 ```cpp
 // Current code showing the pattern/problem
 ```
 
-### After
+**After:**
 ```cpp
 // Refactored code showing the improvement
 ```
@@ -226,54 +219,47 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 
 ---
 
-## 4. Migration Strategy
+### Migration Strategy
 
 **Approach:** Staged | Linear
 
-### Stage 1: Prepare
-**Goal:** [What this stage accomplishes]
-**Changes:**
-- [Specific change 1]
-- [Specific change 2]
+**Stage 1: Prepare**
+- **Goal:** [What this stage accomplishes]
+- **Changes:**
+  - [Specific change 1]
+  - [Specific change 2]
+- **Verification:**
+  - [ ] Compiles without warnings
+  - [ ] [Specific check]
 
-**Verification:**
-- [ ] Compiles without warnings
-- [ ] [Specific check]
+**Stage 2: Migrate**
+- **Goal:** [What this stage accomplishes]
+- **Call Sites to Update:**
+  - [ ] `src/file1.cpp:123` - [description]
+  - [ ] `src/file2.cpp:456` - [description]
+  - [exhaustive list]
+- **Verification:**
+  - [ ] All call sites compile
+  - [ ] [Specific behavior check]
 
----
-
-### Stage 2: Migrate
-**Goal:** [What this stage accomplishes]
-**Call Sites to Update:**
-- [ ] `src/file1.cpp:123` - [description]
-- [ ] `src/file2.cpp:456` - [description]
-[exhaustive list]
-
-**Verification:**
-- [ ] All call sites compile
-- [ ] [Specific behavior check]
-
----
-
-### Stage 3: Cleanup
-**Goal:** Remove old code/APIs
-**Changes:**
-- [What gets deleted]
-
-**Verification:**
-- [ ] No references to old code remain
-- [ ] [Final behavior check]
+**Stage 3: Cleanup**
+- **Goal:** Remove old code/APIs
+- **Changes:**
+  - [What gets deleted]
+- **Verification:**
+  - [ ] No references to old code remain
+  - [ ] [Final behavior check]
 
 ---
 
-## 5. Validation Protocol
+### Validation Protocol
 
-### Per-Stage Validation
+**Per-Stage Validation:**
 - [ ] Code compiles without errors/warnings
 - [ ] [Stage-specific check 1]
 - [ ] [Stage-specific check 2]
 
-### Final Validation
+**Final Validation:**
 - [ ] **Test Scenario 1:** [Description] → Expected: [outcome]
 - [ ] **Test Scenario 2:** [Description] → Expected: [outcome]
 - [ ] **Test Scenario 3:** [Description] → Expected: [outcome]
@@ -283,7 +269,7 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 
 ---
 
-## 6. Hidden Dependencies
+### Hidden Dependencies
 
 **Debug/GUI Updates:**
 - [List of debug/GUI files that need updates]
@@ -299,7 +285,7 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 
 ---
 
-## 7. Complexity Estimate
+### Complexity Estimate
 
 - **Stage 1 (Prepare):** [X points]
 - **Stage 2 (Migrate):** [Y points]
@@ -308,10 +294,10 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 - **Total:** [X+Y+Z+W points] (max 8 points)
 
 **Complexity Scale:**
-- **1-2 points:** Simple (single file, <5 call sites)
-- **3-5 points:** Medium (multi-file, 5-15 call sites)
-- **6-8 points:** Complex (cross-system, 15+ call sites)
-- **>8 points:** Should be split
+- 1-2 points: Simple (single file, <5 call sites)
+- 3-5 points: Medium (multi-file, 5-15 call sites)
+- 6-8 points: Complex (cross-system, 15+ call sites)
+- >8 points: Should be split
 
 **Confidence:** High | Medium | Low
 ```

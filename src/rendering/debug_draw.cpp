@@ -55,7 +55,7 @@ void draw_character_state(draw_context& ctx, const controller& character,
 
     // Orientation indicator (attached to physics position)
     float yaw = orientation.get_yaw();
-    glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
+    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
     wireframe_mesh yaw_indicator = ctx.unit_sphere_4;
     yaw_indicator.position = character.position + forward_dir * 0.8f;
     yaw_indicator.scale = glm::vec3(0.1f);
@@ -102,7 +102,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
     (void) locomotion; // Phase information used for foot placement, not wheel center
 
     float yaw = orientation.get_yaw();
-    glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
+    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
     glm::vec3 up_axis(0.0f, 1.0f, 0.0f);
 
     float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
@@ -142,8 +142,8 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
                          const locomotion_system& locomotion,
                          const orientation_system& orientation) {
     float yaw = orientation.get_yaw();
-    glm::vec3 forward_dir(std::sin(yaw), 0, std::cos(yaw));
-    glm::vec3 right_dir(-std::cos(yaw), 0, std::sin(yaw));
+    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
+    glm::vec3 right_dir = math::yaw_to_right(yaw);
 
     float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
     float ground_contact_y = wheel_ground_y;

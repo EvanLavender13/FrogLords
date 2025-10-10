@@ -12,9 +12,11 @@ Read `AGENTS.md` for coding standards and quality guidelines:
 
 ### 2. Gather Context
 
-1. **Recall Refactor Plan:** Read `PLANS/refactor_<refactor_name>.md`
-2. **Review Execution Summary:** Check list of modified files from `EXECUTE_REFACTOR.md`
-3. **Review Before/After:** Understand the intended transformation
+Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+
+1. **Read Refactor Description:** `PLANS/refactor_<refactor_name>.md` (contains description, plan, and execution sections)
+2. **Review Before/After:** Understand the intended transformation from the Plan section
+3. **Review Execution Summary:** Check list of modified files from Execution Summary section
 4. **Read Modified Code:** Read all changed source files (`.h` and `.cpp`)
 
 ### 3. Verify Implementation Correctness
@@ -204,7 +206,101 @@ Provide concise analysis:
 
 ---
 
-### 8. Critical Issues (Must Fix Before Finalization)
+### 8. Update Refactor Description with Code Review
+
+Append code review results to `PLANS/refactor_<refactor_name>.md`:
+
+```markdown
+---
+
+## Code Review
+
+**Date:** [YYYY-MM-DD]
+**Reviewer:** Claude (AI Assistant)
+
+---
+
+### Goal Achievement
+
+**Transformation Match:** ✓ Matches | ⚠ Partial | ✗ Mismatch
+**All Call Sites Updated:** ✓ Complete | ⚠ Some Missed | ✗ Many Missed
+**Hidden Dependencies:** ✓ All Updated | ⚠ Some Missed | ✗ Many Missed
+**Cleanup Complete:** ✓ Done | ⚠ Partial | ✗ Not Done
+
+**Details:**
+- [Specific observation about goal achievement]
+
+---
+
+### Code Quality Standards
+
+**Naming:** ✓ Correct | ⚠ Minor Issues | ✗ Major Issues
+**Formatting:** ✓ Consistent | ⚠ Minor Issues | ✗ Major Issues
+**Organization:** ✓ Correct | ⚠ Minor Issues | ✗ Major Issues
+**Documentation:** ✓ Adequate | ⚠ Needs Improvement | ✗ Missing
+
+**Issues:**
+- [Issue 1: description, location]
+- [Issue 2: description, location]
+
+[Or "None" if all pass]
+
+---
+
+### Principle Alignment
+
+**Clarity Over Cleverness:** ✓ Improved | ≈ Neutral | ✗ Degraded
+- [Specific observation about clarity]
+
+**Simplicity Over Sophistication:** ✓ Simplified | ≈ Neutral | ✗ More Complex
+- [Specific observation about simplicity]
+
+**Pattern Extraction (if applicable):** ✓ Appropriate | ✗ Premature/Over-general
+- [Observation about abstraction quality]
+
+---
+
+### Unintended Side Effects
+
+**Correctness:** ✓ Verified | ⚠ Potential Issues | ✗ Bugs Found
+**Behavior Preservation:** ✓ Preserved | ⚠ Changes Unclear | ✗ Changed
+**Performance:** ✓ No Regression | ⚠ Needs Profiling | ✗ Obvious Regression
+
+**Issues Found:**
+- [Issue 1: description, location, severity]
+- [Issue 2: description, location, severity]
+
+[Or "None detected" if clean]
+
+---
+
+### Scope Discipline
+
+**Plan Adherence:** ✓ Exact | ⚠ Minor Deviations | ✗ Major Deviations
+**Scope Creep:** ✓ None | ⚠ Minor | ✗ Significant
+
+**Deviations:**
+- [Deviation 1: what changed from plan, why]
+
+[Or "None" if plan followed exactly]
+
+---
+
+### Risk Assessment Review
+
+**Complexity:** As Estimated | Underestimated | Overestimated
+**Call Site Count:** Accurate | Underestimated | Overestimated
+**Hidden Dependencies:** All Found | Some Missed | Many Missed
+
+**Surprises:**
+- [Unforeseen issue 1]
+- [Unforeseen issue 2]
+
+[Or "None" if everything as expected]
+
+---
+
+### Critical Issues (Must Fix Before Finalization)
 
 - [ ] [Critical Issue 1: description, file, fix needed]
 - [ ] [Critical Issue 2: description, file, fix needed]
@@ -213,7 +309,7 @@ Provide concise analysis:
 
 ---
 
-### 9. Recommendations
+### Recommendations
 
 **Status:** APPROVED | FIX ISSUES | ROLLBACK
 

@@ -2,7 +2,7 @@
 
 ### 1. Identify Target Feature
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`). This will be used to locate the relevant planning documents.
+Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
 
 ### 2. Read Guiding Principles
 

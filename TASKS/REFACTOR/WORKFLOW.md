@@ -10,7 +10,7 @@ graph TD
     D -->|Major| E[Defer to Backlog]
     D -->|Minor| F[Revise Plan]
     F --> B
-    D -->|No| G[EXECUTE_REFACTOR]
+    D -->|No| G[IMPLEMENT_REFACTOR]
     G --> H[REVIEW_REFACTOR]
     H --> I{Issues?}
     I -->|Yes| J[Fix Code]
@@ -36,18 +36,18 @@ graph TD
 ## Tasks
 
 ### Primary Workflow
-- **SELECT_REFACTOR**: Choose one opportunity from REFACTOR_BACKLOG.md based on priority, system stability (certainty ≥70%), and prerequisite completion; save description to `PLANS/refactor_<name>.md`
-- **PLAN_REFACTOR**: Create refactor branch; analyze impact (call sites, dependencies, risk); create detailed plan with before/after examples, migration strategy, and validation checklist
-- **REVIEW_PLAN**: Verify plan against principles; check for scope creep, premature abstraction, and risk vs reward; ensure testability and stability requirements met
-- **EXECUTE_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage per validation checklist
-- **REVIEW_REFACTOR**: Comprehensive code review checking correctness, principle alignment (clarity over cleverness, simplicity over sophistication), and unintended side effects
-- **FINALIZE_REFACTOR**: Run the plan's validation checklist, update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation
+- **SELECT_REFACTOR**: Choose one opportunity from REFACTOR_BACKLOG.md based on priority, system stability (certainty ≥70%), and prerequisite completion; create initial refactor description at `PLANS/refactor_<name>.md`
+- **PLAN_REFACTOR**: Create refactor branch; analyze impact (call sites, dependencies, risk); append detailed plan to `PLANS/refactor_<name>.md` with before/after examples, migration strategy, and validation checklist
+- **REVIEW_PLAN**: Verify plan against principles; check for scope creep, premature abstraction, and risk vs reward; append plan review results to `PLANS/refactor_<name>.md`
+- **IMPLEMENT_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage per validation checklist; append execution summary to `PLANS/refactor_<name>.md`
+- **REVIEW_REFACTOR**: Comprehensive code review checking correctness, principle alignment (clarity over cleverness, simplicity over sophistication), and unintended side effects; append code review results to `PLANS/refactor_<name>.md`
+- **FINALIZE_REFACTOR**: Run the plan's validation checklist, update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation; append finalization status to `PLANS/refactor_<name>.md`
 
 ## Workflow Paths
 
 ### Success Path
 1. SELECT_REFACTOR → PLAN_REFACTOR → REVIEW_PLAN (pass)
-2. EXECUTE_REFACTOR → REVIEW_REFACTOR (pass)
+2. IMPLEMENT_REFACTOR → REVIEW_REFACTOR (pass)
 3. FINALIZE_REFACTOR → SELECT_REFACTOR
 
 ### Revision Path (Planning Phase)
@@ -58,7 +58,7 @@ graph TD
 1. REVIEW_REFACTOR identifies issues → Fix Code → Re-execute
 
 ### Abort Path (Discovery Phase)
-1. During EXECUTE_REFACTOR or REVIEW_REFACTOR, discover refactor is too risky/complex
+1. During IMPLEMENT_REFACTOR or REVIEW_REFACTOR, discover refactor is too risky/complex
 2. Document learnings → Update Backlog with deferral reason → SELECT_REFACTOR
 
 ## Notes
@@ -72,7 +72,8 @@ graph TD
 - **Manual workflow**: Each task is initiated manually; you decide when to proceed to the next step
 - **Learning capture**: Document insights in Completed section (patterns that worked, anti-patterns discovered)
 - **No scope creep**: Refactor only what's in the plan; track new opportunities separately
-- **Validation integrated**: Validation protocol is part of PLAN_REFACTOR and executed during EXECUTE_REFACTOR stages
+- **Validation integrated**: Validation protocol is part of PLAN_REFACTOR and executed during IMPLEMENT_REFACTOR stages
+- **Single document**: All refactor phases append to the same `PLANS/refactor_<name>.md` document (description → plan → review → execution → code review → finalization); this creates a complete history in one place
 
 ## Complexity Comparison
 

@@ -11,8 +11,9 @@ Read `AGENTS.md` to synthesize core project principles. This is essential for en
 
 ### 2. Verify Request Scope
 
-1.  **Identify Iteration:** Determine the current feature from the git branch name (format: `iteration/<feature_name>`).
-2.  **Review Iteration Plan:** Read the current iteration plan at `PLANS/iteration_<feature_name>.md`.
+Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+
+1.  **Review Iteration Plan:** Read the current iteration plan at `PLANS/iteration_<feature_name>.md`.
 3.  **Check Backlog & Dependencies:** Review `PLANS/DESIGN_BACKLOG.md` and `PLANS/DEPENDENCY_STACK.md`.
 4.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the iteration or introduce major unforeseen dependencies. Defer large changes to a new iteration.
 
