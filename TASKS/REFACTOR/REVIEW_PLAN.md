@@ -17,7 +17,7 @@ Read `AGENTS.md` to synthesize core project principles for refactor evaluation:
    - `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
    - `PLANS/DEPENDENCY_STACK.md` (system certainty scores)
 
-2. **Read Impact Analysis:** Review findings from `ANALYZE_IMPACT.md` to understand scope
+2. **Read Impact Analysis:** Review the Impact Analysis section inside the refactor plan to understand scope
 
 ### 3. Perform Analysis
 
@@ -67,12 +67,12 @@ Cross-reference the refactor plan against principles and best practices. The goa
   - Can each stage be verified independently?
 
 - **Call Site Coverage:**
-  - Are all call sites from ANALYZE_IMPACT included in migration plan?
+  - Are all call sites documented in the plan's Impact Analysis included in the migration plan?
   - Are indirect dependencies accounted for?
   - Are debug/GUI/test code updates included?
 
 - **Hidden Dependencies:**
-  - Are all hidden dependencies from ANALYZE_IMPACT addressed?
+  - Are all hidden dependencies from the Impact Analysis addressed?
   - Initialization order changes considered?
   - Performance implications assessed?
   - Documentation updates planned?
@@ -252,7 +252,7 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 - [ ] Each stage independently verifiable
 
 ### Coverage
-- [ ] All call sites from ANALYZE_IMPACT included
+- [ ] All call sites from Impact Analysis included
 - [ ] Indirect dependencies accounted for
 - [ ] Debug/GUI/test code included
 

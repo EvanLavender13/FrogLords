@@ -204,12 +204,12 @@ Provide concise analysis:
 
 ---
 
-### 8. Critical Issues (Must Fix Before Validation)
+### 8. Critical Issues (Must Fix Before Finalization)
 
 - [ ] [Critical Issue 1: description, file, fix needed]
 - [ ] [Critical Issue 2: description, file, fix needed]
 
-[Or "None" if ready for validation]
+[Or "None" if ready for finalization]
 
 ---
 
@@ -220,7 +220,7 @@ Provide concise analysis:
 **Reasoning:** [Brief justification]
 
 **Next Steps:**
-- If APPROVED: Proceed to VALIDATE_BEHAVIOR
+- If APPROVED: Proceed to FINALIZE_REFACTOR and run the validation checklist captured in the plan
 - If FIX ISSUES: Address critical items, then re-review
 - If ROLLBACK: Execute rollback procedure from plan, update backlog, return to SELECT_REFACTOR
 
@@ -237,10 +237,10 @@ Present the review report. Summarize:
 
 ### 10. Await Guidance
 
-Do not proceed to validation. Await user decision on whether to:
+Do not proceed to finalization. Await user decision on whether to:
 - Fix identified issues
 - Accept minor deviations as acceptable
-- Proceed to `VALIDATE_BEHAVIOR.md`
+- Proceed to `FINALIZE_REFACTOR.md`
 - Rollback the refactor
 
 ### Tone & Constraints

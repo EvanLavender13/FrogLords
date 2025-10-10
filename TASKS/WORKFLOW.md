@@ -29,7 +29,7 @@ graph TB
     subgraph RefactorTasks["REFACTOR/ - Refactor Workflow"]
         IR[IDENTIFY_REFACTORS]
         SR[SELECT_REFACTOR]
-        RW[Refactor Tasks<br/>ANALYZE → PLAN → REVIEW<br/>EXECUTE → VALIDATE → FINALIZE]
+        RW[Refactor Tasks<br/>PLAN → REVIEW → EXECUTE<br/>VERIFY → FINALIZE]
     end
 
     %% Feature workflow flows
@@ -128,7 +128,7 @@ graph TB
 2. Items mature when systems reach ≥70% certainty (stability gate)
 3. Follows "rule of three" (3+ uses) before extraction
 4. SELECT_REFACTOR chooses ready items based on priority and stability
-5. Refactor flows through analysis → planning → execution → validation → finalization
+5. Refactor flows through planning → execution → review → finalization (impact analysis and validation live inside the refactor plan)
 
 **Key Tasks:**
 - IDENTIFY_REFACTORS (populate backlog)
@@ -144,7 +144,6 @@ graph TB
 These tasks support all workflows:
 
 - **COMMIT**: Format and create git commits following project conventions
-- **RETROSPECTIVE**: Periodic process review to identify patterns and improve workflow (run every 5-10 iterations)
 
 ## Workflow-Specific Tasks
 
@@ -158,13 +157,11 @@ These tasks support all workflows:
 ### Refactor Workflow (`TASKS/REFACTOR/`)
 - **IDENTIFY_REFACTORS**: Deep system analysis to populate REFACTOR_BACKLOG.md
 - **SELECT_REFACTOR**: Choose refactor opportunity from backlog based on priority and stability
-- **ANALYZE_IMPACT**: Deep dive into affected systems, call sites, and risk assessment
-- **PLAN_REFACTOR**: Create detailed refactor plan with migration strategy and rollback plan
+- **PLAN_REFACTOR**: Capture impact analysis, migration strategy, and validation checklist in a single plan
 - **REVIEW_PLAN**: Verify plan against principles and stability requirements
 - **EXECUTE_REFACTOR**: Implement refactor in stages with verification
 - **REVIEW_REFACTOR**: Comprehensive code review for correctness and principle alignment
-- **VALIDATE_BEHAVIOR**: Execute testing protocol to ensure behavior preservation
-- **FINALIZE_REFACTOR**: Update backlog, document learnings, prepare commits
+- **FINALIZE_REFACTOR**: Run plan's validation checklist, update backlog, document learnings, prepare commits
 
 ---
 

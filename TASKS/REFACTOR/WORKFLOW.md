@@ -41,7 +41,7 @@ graph TD
 - **REVIEW_PLAN**: Verify plan against principles; check for scope creep, premature abstraction, and risk vs reward; ensure testability and stability requirements met
 - **EXECUTE_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage per validation checklist
 - **REVIEW_REFACTOR**: Comprehensive code review checking correctness, principle alignment (clarity over cleverness, simplicity over sophistication), and unintended side effects
-- **FINALIZE_REFACTOR**: Update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation
+- **FINALIZE_REFACTOR**: Run the plan's validation checklist, update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation
 
 ## Workflow Paths
 
