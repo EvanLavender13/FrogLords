@@ -1,6 +1,7 @@
 #include "rendering/debug_draw.h"
 #include "rendering/scene.h"
 #include "character/skeleton.h"
+#include "foundation/math_utils.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
@@ -43,8 +44,7 @@ void draw_character_state(draw_context& ctx, const controller& character,
     ctx.renderer.draw(run_circle, ctx.cam, ctx.aspect, glm::vec4(1, 1, 0, 0.5f));
 
     // Current speed circle
-    glm::vec3 horiz_vel = character.velocity;
-    horiz_vel.y = 0.0f;
+    glm::vec3 horiz_vel = math::project_to_horizontal(character.velocity);
     float current_speed = glm::length(horiz_vel);
     if (current_speed > 0.05f) {
         wireframe_mesh speed_circle = ctx.unit_circle;

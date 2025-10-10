@@ -4,7 +4,7 @@
 
 **Status:** Living document (updated after system analysis)
 
-**Last Review:** October 7, 2025
+**Last Review:** October 10, 2025
 
 ---
 
@@ -19,28 +19,6 @@
 ## High
 
 (Significant improvement to clarity, maintainability, or extensibility)
-
-### Extract Horizontal Velocity Projection Utility
-- **Category:** Utilities
-- **Files:** `src/character/controller.cpp:73-74, 88`, `src/character/animation.cpp:18`, `src/app/game_world.cpp:34-35`, `src/rendering/debug_draw.cpp:53`
-- **Current State:** Pattern `glm::vec3 horizontal_velocity = velocity; horizontal_velocity.y = 0.0f;` or `glm::vec3(velocity.x, 0, velocity.z)` appears 5+ times across 4 files
-- **Proposed Change:** Extract to `src/foundation/math_utils.h`:
-  ```cpp
-  namespace math {
-  inline glm::vec3 project_to_horizontal(const glm::vec3& v) {
-      return glm::vec3(v.x, 0.0f, v.z);
-  }
-  }
-  ```
-- **Rationale:** Follows "abstract repeated patterns" principle; appears 5+ times (exceeds rule of three). Single source of truth for common operation.
-- **Impact:** 4 files, ~8 call sites. Low-risk mechanical replacement.
-- **Risk:** Low — Pure function, easy to verify. No state or side effects.
-- **Certainty:** System stable (90%+). Physics and animation layers are foundational.
-- **Examples:**
-  - `controller.cpp:73-74`: Used twice in velocity clamping
-  - `animation.cpp:18`: Extract horizontal for tilt calculation
-  - `game_world.cpp:34-35`: Feed to locomotion system
-  - `debug_draw.cpp:53`: Speed visualization
 
 ### Extract Yaw-to-Direction Vector Utilities
 - **Category:** Utilities
@@ -189,4 +167,10 @@
 
 (Finished refactors moved here for reference; prune periodically)
 
-*No items yet.*
+### Extract Horizontal Velocity Projection Utility ✅
+- **Completed:** 2025-10-10
+- **Category:** Utilities
+- **Outcome:** Created `src/foundation/math_utils.h` with `math::project_to_horizontal()` function
+- **Impact:** Replaced 5 call sites across 4 files (controller, animation, game_world, debug_draw)
+- **Result:** Zero regressions, all validation tests passed
+- **Documentation:** See `PLANS/refactor_horizontal_velocity_utility_COMPLETE.md`

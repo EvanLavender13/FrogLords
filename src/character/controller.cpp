@@ -1,5 +1,6 @@
 #include "character/controller.h"
 #include "foundation/collision.h"
+#include "foundation/math_utils.h"
 #include "rendering/scene.h"
 #include "camera/camera.h"
 #include "input/input.h"
@@ -74,8 +75,7 @@ void controller::update(const scene* scn, float dt) {
 
     // Apply friction (if grounded)
     if (is_grounded) {
-        glm::vec3 horizontal_velocity = velocity;
-        horizontal_velocity.y = 0.0f;
+        glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
 
         float speed = glm::length(horizontal_velocity);
         if (speed > 0.0f) {
@@ -91,7 +91,7 @@ void controller::update(const scene* scn, float dt) {
     // Apply max speed cap (walk speed if shift held)
     // Clamp walk_speed to never exceed max_speed
     float effective_max_speed = is_walking ? std::min(walk_speed, max_speed) : max_speed;
-    glm::vec3 horizontal_velocity = glm::vec3(velocity.x, 0, velocity.z);
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
     float speed = glm::length(horizontal_velocity);
     if (speed > effective_max_speed) {
         horizontal_velocity = horizontal_velocity * (effective_max_speed / speed);

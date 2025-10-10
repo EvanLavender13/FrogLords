@@ -15,17 +15,7 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 3. **Review Call Sites:** Familiarize yourself with all locations that need updating
 4. **Check Validation Protocol:** Know what to verify after each stage
 
-### 3. Create Backup (If High Risk)
-
-For high-risk refactors, create safety branch:
-
-```bash
-git checkout -b backup/refactor_<refactor_name>
-git push -u origin backup/refactor_<refactor_name>
-git checkout main  # or current working branch
-```
-
-### 4. Execute Migration Strategy
+### 3. Execute Migration Strategy
 
 Follow the approach defined in the refactor plan:
 
@@ -45,13 +35,8 @@ Execute each stage independently with verification between stages.
 3. **Verify Stage 1:**
    - [ ] Code compiles without errors/warnings
    - [ ] [Stage-specific check from plan]
-4. **Commit Stage 1:**
-   ```bash
-   git add [files]
-   git commit -m "refactor(<system>): prepare <refactor_name> - <stage goal>"
-   ```
 
-**Checkpoint:** If verification fails, debug before proceeding. If unfixable quickly, revert Stage 1 commit.
+**Checkpoint:** If verification fails, debug before proceeding.
 
 ---
 
@@ -70,11 +55,6 @@ Execute each stage independently with verification between stages.
    - [ ] All call sites updated (check against plan)
    - [ ] Code compiles without errors/warnings
    - [ ] [Stage-specific behavior check from plan]
-5. **Commit Stage 2:**
-   ```bash
-   git add [files]
-   git commit -m "refactor(<system>): migrate to <refactor_name> - <stage goal>"
-   ```
 
 **Checkpoint:** If call sites fail to compile or behavior breaks, fix immediately. If complexity exceeds estimate, consider aborting.
 
@@ -94,11 +74,6 @@ Execute each stage independently with verification between stages.
    - [ ] No references to old code
    - [ ] Code compiles without errors/warnings
    - [ ] [Final stage check from plan]
-5. **Commit Stage 3:**
-   ```bash
-   git add [files]
-   git commit -m "refactor(<system>): cleanup <refactor_name> - remove old implementation"
-   ```
 
 **Checkpoint:** If old code is still referenced, migration is incomplete. Fix before proceeding.
 
@@ -118,12 +93,6 @@ For simple refactors with <5 call sites:
    - [ ] Code compiles without errors/warnings
    - [ ] [All checks from validation protocol]
 
-3. **Commit:**
-   ```bash
-   git add [files]
-   git commit -m "refactor(<system>): <brief description of refactor>"
-   ```
-
 ### 5. Track Changes
 
 After execution completes, document:
@@ -138,11 +107,6 @@ After execution completes, document:
 - `src/file2.h` - [what changed]
 - `src/file3.cpp` - [what changed]
 [complete list]
-
-**Commits Created:**
-- [commit-hash] - Stage 1: [description]
-- [commit-hash] - Stage 2: [description]
-- [commit-hash] - Stage 3: [description]
 
 **Issues Encountered:**
 - [Issue 1 and how resolved]
@@ -170,14 +134,11 @@ If any abort condition from refactor plan is triggered:
 
 1. **Stop Execution:** Do not proceed further
 2. **Document State:** What was completed, what failed, why
-3. **Rollback Decision:**
-   - If salvageable: Fix and continue
-   - If too complex: Rollback per plan's rollback procedure
-4. **Update Backlog:**
+3. **Update Backlog:**
    - Mark refactor as deferred
    - Document why (complexity exceeded estimate, unforeseen issues, etc.)
    - Note what conditions needed for viability
-5. **Return to SELECT_REFACTOR:** Choose different refactor
+4. **Return to SELECT_REFACTOR:** Choose different refactor
 
 ### 8. Determine Next Step
 
@@ -185,7 +146,6 @@ If execution succeeded:
 - Proceed to `REVIEW_REFACTOR.md` for comprehensive code review
 
 If execution was aborted:
-- Rollback changes
 - Update `PLANS/REFACTOR_BACKLOG.md` with findings
 - Return to `SELECT_REFACTOR.md`
 

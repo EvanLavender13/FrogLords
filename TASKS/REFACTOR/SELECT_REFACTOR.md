@@ -38,7 +38,7 @@ For the candidate refactor:
 1. Read `PLANS/DEPENDENCY_STACK.md`
 2. Find certainty scores for all affected systems
 3. Verify all systems are ≥70% certainty
-4. Check if any systems are currently under active feature development (check git branch)
+4. Check if any systems are currently under active feature development
 
 **If stability gate fails:** Skip to next candidate or defer selection until systems stabilize.
 
@@ -56,22 +56,25 @@ For pattern extraction refactors:
 
 Verify the refactor is not blocked by:
 - Missing prerequisite refactors (check "Prerequisites" in backlog item)
-- Active feature work on the same systems (check current git branch and feature plans)
+- Active feature work on the same systems
 - Uncertain or evolving requirements (system may change soon)
 
-### 7. Document Selection
+### 7. Write Refactor Description
 
-State selected item clearly:
-- Item name/description
-- Priority level
-- Category (Pattern Extraction, Simplification, System Design, Utilities, API Design)
-- Affected systems and files
-- Certainty scores of affected systems (from DEPENDENCY_STACK.md)
-- Expected duration (hours to 1-2 days)
+Create a concise, actionable refactor description following this structure:
 
-### 8. Proceed to Analysis
+**[Refactor Name]**
 
-Once selected, proceed directly to `ANALYZE_IMPACT.md` to perform deep dive into affected systems.
+- **Current State:** What pattern/problem exists today? (1-2 sentences)
+- **Proposed Change:** What improvement will be made? (1-2 sentences)
+- **Affected Systems:** Which systems and files will change?
+- **Rationale:** Why does this improve the codebase? (cite principles: clarity, simplicity, etc.)
+- **Expected Duration:** Estimate in hours or days (hours to 1-2 days max)
+- **Risk Level:** Low | Medium | High (with brief justification)
+
+### 8. Save Refactor Description
+
+Save the refactor description to `PLANS/refactor_<refactor_name>.md` (use snake_case, e.g., `refactor_horizontal_velocity_utility.md`).
 
 ### Tone & Constraints
 

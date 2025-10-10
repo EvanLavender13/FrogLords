@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "foundation/math_utils.h"
 #include <cmath>
 #include <glm/gtc/quaternion.hpp>
 
@@ -31,7 +32,7 @@ void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3
                                                float dt) {
     // Extract horizontal acceleration (ignore vertical/gravity)
     glm::vec3 horizontal_accel = glm::vec3(acceleration.x, 0.0f, acceleration.z);
-    glm::vec3 horizontal_velocity = glm::vec3(velocity.x, 0.0f, velocity.z);
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
     float accel_magnitude = glm::length(horizontal_accel);
     float velocity_magnitude = glm::length(horizontal_velocity);
 

@@ -11,8 +11,7 @@ Read `AGENTS.md` to understand knowledge capture and learning principles:
 
 1. **Recall Refactor:** Name and category from SELECT_REFACTOR
 2. **Review Execution:** Read execution summary, issues encountered
-3. **Review Validation:** Read validation results, any regressions found and fixed
-4. **Check Commits:** List of commits created during execution
+3. **Review Validation:** Read validation results from refactor plan
 
 ### 3. Update Refactor Backlog
 
@@ -28,7 +27,6 @@ Open `PLANS/REFACTOR_BACKLOG.md` and perform updates:
      - *Completed:* [YYYY-MM-DD]
      - *Category:* [category]
      - *Files:* [list of modified files]
-     - *Commits:* [commit hashes]
      - *Outcome:* [Brief description of what was achieved]
      - *Learnings:* [Key insights from this refactor - see section 4 below]
      - *Impact:* [Measurable improvements: e.g., "Reduced duplication from 5→1", "Clarified API usage at 12 call sites"]
@@ -103,56 +101,7 @@ If refactor changes public APIs or system architecture:
 - System ownership moved
 - New patterns/utilities introduced for project-wide use
 
-### 6. Prepare Commit Message
-
-Draft commit message following project conventions:
-
-#### For Staged Refactors (Multiple Commits)
-Commits already created during EXECUTE_REFACTOR. No additional commit needed.
-
-**Review commit history:**
-```bash
-git log --oneline -n [number of commits]
-```
-
-Verify commit messages follow format:
-```
-refactor(<system>): <brief description>
-```
-
-#### For Linear Refactors (Single Commit)
-Commit already created during EXECUTE_REFACTOR. Verify message quality.
-
-#### Amending Commit Messages (If Needed)
-If commit messages need improvement:
-```bash
-# For last commit only
-git commit --amend -m "refactor(<system>): <improved description>"
-
-# For multiple commits (interactive rebase)
-# Only if user explicitly requests; generally avoid
-```
-
-**Generally avoid amending:** Commit messages from EXECUTE_REFACTOR should be adequate.
-
-### 7. Verify Git State
-
-Check that repository is in clean state:
-
-```bash
-git status
-```
-
-Verify:
-- [ ] No uncommitted changes
-- [ ] All refactor work is committed
-- [ ] Working directory is clean
-
-**If uncommitted changes exist:**
-- Review what's uncommitted
-- Either commit (if valid changes) or discard (if test artifacts)
-
-### 8. Propose Next Steps
+### 6. Propose Next Steps
 
 Inform user that finalization is complete:
 
@@ -168,30 +117,20 @@ Inform user that finalization is complete:
 - Updated [M] call sites
 - [Key achievement, e.g., "Reduced duplication from 5→1 instances"]
 
-### Commits
-- `[commit-hash]` - [description]
-- `[commit-hash]` - [description]
-
 ### Learnings
 - [Key insight 1]
 - [Key insight 2]
 
 ### Next Steps
-**User Actions:**
-1. Review changes: `git log` and `git diff`
-2. Create git commit (if not done yet) [or: Commits already created during execution]
-3. Optionally: Push to remote
-4. Optionally: Continue with next refactor (SELECT_REFACTOR)
 
 **Backlog Updated:**
 - Moved item to Completed section in REFACTOR_BACKLOG.md
 - Documented learnings and impact
 - [If applicable: Added N new refactor opportunities discovered]
 
-**Ready for:** SELECT_REFACTOR (to continue refactoring) or return to FEATURE/MAINTENANCE workflow
 ```
 
-### 9. Clean Up Planning Documents (Optional)
+### 7. Clean Up Planning Documents (Optional)
 
 Consider archiving planning documents:
 
@@ -220,8 +159,6 @@ Finalization complete when:
 - [ ] Refactor item moved to Completed section in backlog
 - [ ] Learnings documented comprehensively
 - [ ] Impact measured and recorded
-- [ ] Commits verified and clean
-- [ ] Git working directory clean
 - [ ] Related opportunities captured
 - [ ] Documentation updated (if applicable)
 - [ ] User informed of completion and next steps

@@ -8,13 +8,64 @@ Read `AGENTS.md` to ensure refactor aligns with core principles:
 - "Abstract repeated patterns into systems"
 - "Wait for third use" (rule of three)
 
-### 2. Gather Context
+### 2. Create Branch
 
-1. **Recall Selected Item:** Reference from `SELECT_REFACTOR.md`
-2. **Review Impact Analysis:** Read findings from `ANALYZE_IMPACT.md`
-3. **Read Affected Code:** Ensure deep understanding of current implementation
+Create a new refactor branch using the script:
 
-### 3. Define Before/After State
+```powershell
+./scripts/create_refactor_branch.ps1 <refactor_name>
+```
+
+### 3. Gather Context
+
+1. **Read Refactor Description:** Open `PLANS/refactor_<refactor_name>.md`
+2. **Read Affected Files:** Systematically read all `.h` and `.cpp` files mentioned in the description
+3. **Search for Usage:** Find every place the code is used to map dependencies
+
+### 4. Analyze Impact
+
+#### Identify All Call Sites
+
+1. **Search for Usage:** Use grep/search to find every place the code is used
+2. **Map Dependencies:** Identify which systems depend on the code being changed
+3. **Check Indirect Usage:** Look for indirect dependencies
+4. **List Exhaustively:** Document every file and function that will need updating
+
+**Output:** Comprehensive list of affected files with specific line numbers
+
+#### Assess Current State
+
+1. **Understand Current Design:** Why was it written this way originally?
+2. **Identify Patterns:** What pattern is being repeated or what complexity exists?
+3. **Find Edge Cases:** Are there subtle behaviors or edge cases to preserve?
+4. **Check Documentation:** Are there comments explaining non-obvious choices?
+
+**Output:** Clear description of current behavior and any subtle aspects to preserve
+
+#### Evaluate Risk
+
+**Risk Factors:**
+- **Number of Call Sites:** More call sites = higher risk
+- **System Criticality:** Core systems (physics, rendering) = higher risk
+- **Test Coverage:** Manual testing only = higher risk
+- **Behavioral Complexity:** Complex logic with edge cases = higher risk
+- **Certainty Score:** Lower certainty = higher risk
+
+**Risk Classification:**
+- **Low Risk:** Single file, <5 call sites, well-understood behavior, high certainty (≥90%)
+- **Medium Risk:** Multi-file, 5-15 call sites, some complexity, good certainty (70-90%)
+- **High Risk:** Cross-system, 15+ call sites, complex behavior, moderate certainty (70-80%)
+
+#### Check for Hidden Dependencies
+
+Look for non-obvious impacts:
+- **Initialization Order:** Does the refactor affect startup sequence?
+- **Memory Layout:** Could struct changes affect size or alignment?
+- **Performance:** Could the refactor change performance characteristics?
+- **Debug/GUI:** Will debug visualizations or GUI panels need updates?
+- **Serialization:** Does anything save/load this data?
+
+### 5. Define Before/After State
 
 Create clear examples showing the transformation:
 
@@ -32,7 +83,7 @@ Create clear examples showing the transformation:
 
 **Rationale:** Explain how "after" is clearer, simpler, or more maintainable than "before"
 
-### 4. Design Migration Strategy
+### 6. Design Migration Strategy
 
 Break the refactor into logical stages:
 
@@ -59,13 +110,13 @@ For low-risk refactors with <5 call sites:
 1. **Execute:** Make all changes in one pass
 2. **Verify:** Test immediately after
 
-**Choose approach based on risk level from ANALYZE_IMPACT:**
+**Choose approach based on risk level:**
 - Low Risk → Linear approach acceptable
 - Medium/High Risk → Stage-based approach required
 
-### 5. Map Call Site Updates
+### 7. Map Call Site Updates
 
-For each call site identified in ANALYZE_IMPACT:
+For each call site identified:
 
 ```markdown
 ### Call Site Migration Checklist
@@ -75,24 +126,9 @@ For each call site identified in ANALYZE_IMPACT:
 [complete exhaustive list]
 ```
 
-### 6. Define Rollback Plan
+### 8. Create Validation Checklist
 
-For each stage, define how to undo:
-
-#### Staged Refactor Rollback
-- **After Stage 1:** Revert commit for Stage 1
-- **After Stage 2:** Revert commit for Stage 2 (old code still exists)
-- **After Stage 3:** Revert all commits (or use backup branch)
-
-#### Linear Refactor Rollback
-- **Single Revert:** `git revert <commit-hash>`
-- **Backup Branch:** Create `backup/<refactor-name>` before starting
-
-**Rollback Trigger:** Define conditions that require rollback (e.g., "build breaks", "crashes on startup", "gameplay regression detected")
-
-### 7. Create Validation Checklist
-
-Based on testing strategy from ANALYZE_IMPACT:
+Define how to verify behavior preservation:
 
 ```markdown
 ### Behavior Validation Checklist
@@ -103,20 +139,11 @@ Based on testing strategy from ANALYZE_IMPACT:
 - [ ] No regressions in [system X]
 
 **Final validation:**
-- [ ] All test scenarios from ANALYZE_IMPACT pass
+- [ ] All test scenarios pass
 - [ ] Debug visualizations still work
 - [ ] Performance characteristics unchanged
 - [ ] [Any other critical checks]
 ```
-
-### 8. Check for Hidden Impacts
-
-Review hidden dependencies from ANALYZE_IMPACT and plan mitigations:
-
-- **Initialization Order Changes:** [mitigation plan]
-- **Debug/GUI Updates Needed:** [list of files to update]
-- **Documentation Updates:** [which docs need revision]
-- **Performance Considerations:** [profiling plan if needed]
 
 ### 9. Estimate Per-Stage Effort
 
@@ -128,9 +155,9 @@ For each migration stage:
 
 **If total exceeds 16 hours (2 work days):** Recommend breaking into multiple refactors or deferring.
 
-### 10. Generate Refactor Plan Document
+### 10. Generate Detailed Refactor Plan
 
-Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
+Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the full plan:
 
 ```markdown
 # Refactor Plan: [Refactor Name]
@@ -152,7 +179,29 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 
 ---
 
-## 2. Before/After Examples
+## 2. Impact Analysis
+
+### Scope
+- **Files Affected:** [count] files
+- **Call Sites:** [count] locations
+- **Systems Involved:** [list]
+
+### Call Site Inventory
+- `src/file1.cpp:123` - [brief description]
+- `src/file2.cpp:456` - [brief description]
+- [complete list]
+
+### Hidden Dependencies
+- [any non-obvious impacts]
+
+### Risk Assessment
+- **Risk Level:** Low/Medium/High
+- **Justification:** [brief explanation]
+- **Certainty Scores:** [system: score, system: score]
+
+---
+
+## 3. Before/After Examples
 
 ### Before
 ```cpp
@@ -171,7 +220,7 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 
 ---
 
-## 3. Migration Strategy
+## 4. Migration Strategy
 
 **Approach:** Staged | Linear
 
@@ -184,8 +233,6 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 **Verification:**
 - [ ] Compiles without warnings
 - [ ] [Specific check]
-
-**Rollback:** Revert Stage 1 commit
 
 ---
 
@@ -200,8 +247,6 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 - [ ] All call sites compile
 - [ ] [Specific behavior check]
 
-**Rollback:** Revert Stage 2 commit (Stage 1 remains)
-
 ---
 
 ### Stage 3: Cleanup
@@ -213,11 +258,26 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 - [ ] No references to old code remain
 - [ ] [Final behavior check]
 
-**Rollback:** Revert all commits or restore from backup branch
+---
+
+## 5. Validation Protocol
+
+### Per-Stage Validation
+- [ ] Code compiles without errors/warnings
+- [ ] [Stage-specific check 1]
+- [ ] [Stage-specific check 2]
+
+### Final Validation
+- [ ] **Test Scenario 1:** [Description] → Expected: [outcome]
+- [ ] **Test Scenario 2:** [Description] → Expected: [outcome]
+- [ ] **Test Scenario 3:** [Description] → Expected: [outcome]
+- [ ] No regressions in [affected systems]
+- [ ] Debug visualizations work correctly
+- [ ] Performance characteristics preserved
 
 ---
 
-## 4. Hidden Dependencies
+## 6. Hidden Dependencies
 
 **Debug/GUI Updates:**
 - [List of debug/GUI files that need updates]
@@ -233,56 +293,7 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 
 ---
 
-## 5. Validation Protocol
-
-### Per-Stage Validation
-- [ ] Code compiles without errors/warnings
-- [ ] [Stage-specific check 1]
-- [ ] [Stage-specific check 2]
-
-### Final Validation (VALIDATE_BEHAVIOR task)
-- [ ] **Test Scenario 1:** [Description] → Expected: [outcome]
-- [ ] **Test Scenario 2:** [Description] → Expected: [outcome]
-- [ ] **Test Scenario 3:** [Description] → Expected: [outcome]
-- [ ] No regressions in [affected systems]
-- [ ] Debug visualizations work correctly
-- [ ] Performance characteristics preserved
-
----
-
-## 6. Rollback Plan
-
-**Trigger Conditions:**
-- Build breaks and fix isn't obvious within 15 minutes
-- Crashes occur in previously stable code
-- Gameplay regression detected
-- Complexity exceeds estimate significantly
-
-**Rollback Procedure:**
-- **After Stage 1:** `git revert <stage1-commit>`
-- **After Stage 2:** `git revert <stage2-commit>`
-- **After Stage 3:** `git revert <stage3-commit> <stage2-commit> <stage1-commit>`
-- **Backup Branch:** `backup/refactor_<name>` created before starting
-
----
-
-## 7. Risk Assessment
-
-**Risk Level:** Low | Medium | High
-
-**Risk Factors:**
-- [Factor 1: e.g., "15 call sites across 8 files"]
-- [Factor 2: e.g., "Affects core physics system"]
-
-**Mitigation:**
-- [How we're reducing risk]
-
-**Abort Conditions:**
-- [Conditions that should trigger deferral]
-
----
-
-## 8. Effort Estimate
+## 7. Effort Estimate
 
 - **Stage 1 (Prepare):** [X hours]
 - **Stage 2 (Migrate):** [Y hours]
@@ -293,19 +304,10 @@ Save plan to `PLANS/refactor_<refactor_name>.md` using template below:
 **Confidence:** High | Medium | Low
 ```
 
-### 11. Propose Plan
-
-Present the saved plan to the user for review. Highlight:
-- Key improvements (clarity, simplicity, maintainability)
-- Risk level and mitigation strategy
-- Estimated duration
-- Any concerns or uncertainties
-
 ### Tone & Constraints
 
 - Clear and concrete; avoid vague descriptions
 - Show, don't tell (use code examples)
 - Realistic about risk and effort
 - Favor incremental staged approaches for medium/high risk
-- Explicitly plan for failure (rollback strategy)
 - Ensure plan respects "clarity over cleverness" and "simplicity over sophistication"

@@ -1,67 +1,54 @@
 # Refactor Workflow
 
-This diagram shows the refactoring workflow for architectural improvements and pattern extraction from REFACTOR_BACKLOG.md.
+This diagram shows the simplified refactoring workflow for architectural improvements and pattern extraction from REFACTOR_BACKLOG.md.
 
 ```mermaid
 graph TD
-    A[SELECT_REFACTOR] --> B[ANALYZE_IMPACT]
-    B --> C[PLAN_REFACTOR]
-    C --> D[REVIEW_PLAN]
-    D --> E{Issues?}
-    E -->|Major| F[Defer to Backlog]
-    E -->|Minor| G[Revise Plan]
-    G --> C
-    E -->|No| H[EXECUTE_REFACTOR]
-    H --> I[REVIEW_REFACTOR]
-    I --> J{Issues?}
-    J -->|Yes| K[Fix Code]
-    K --> H
-    J -->|No| L[VALIDATE_BEHAVIOR]
-    L --> M{Regression?}
-    M -->|Yes| N[Fix & Re-execute]
-    N --> H
-    M -->|No| O[FINALIZE_REFACTOR]
-    O --> P[Manual Git]
-    P --> A
-    F --> Q[Update Backlog]
-    Q --> A
+    A[SELECT_REFACTOR] --> B[PLAN_REFACTOR]
+    B --> C[REVIEW_PLAN]
+    C --> D{Issues?}
+    D -->|Major| E[Defer to Backlog]
+    D -->|Minor| F[Revise Plan]
+    F --> B
+    D -->|No| G[EXECUTE_REFACTOR]
+    G --> H[REVIEW_REFACTOR]
+    H --> I{Issues?}
+    I -->|Yes| J[Fix Code]
+    J --> G
+    I -->|No| K[FINALIZE_REFACTOR]
+    K --> A
+    E --> L[Update Backlog]
+    L --> A
 
     %% Abort path from any stage
-    H -.->|Too Risky| F
-    I -.->|Too Complex| F
+    G -.->|Too Risky| E
+    H -.->|Too Complex| E
 
     style A fill:#e1f5ff
     style B fill:#e1f5ff
     style C fill:#e1f5ff
-    style D fill:#e1f5ff
+    style G fill:#e1f5ff
     style H fill:#e1f5ff
-    style I fill:#e1f5ff
-    style L fill:#e1f5ff
-    style O fill:#e1f5ff
-    style F fill:#ffe1e1
+    style K fill:#e1f5ff
+    style E fill:#ffe1e1
 ```
 
 ## Tasks
 
 ### Primary Workflow
-- **SELECT_REFACTOR**: Choose one opportunity from REFACTOR_BACKLOG.md based on priority, system stability (certainty ≥70%), and prerequisite completion
-- **ANALYZE_IMPACT**: Deep dive into affected systems; identify all call sites, dependencies, and test coverage; assess risk and create safety protocol
-- **PLAN_REFACTOR**: Create detailed refactor plan with before/after examples, migration strategy, rollback plan, and validation approach
+- **SELECT_REFACTOR**: Choose one opportunity from REFACTOR_BACKLOG.md based on priority, system stability (certainty ≥70%), and prerequisite completion; save description to `PLANS/refactor_<name>.md`
+- **PLAN_REFACTOR**: Create refactor branch; analyze impact (call sites, dependencies, risk); create detailed plan with before/after examples, migration strategy, and validation checklist
 - **REVIEW_PLAN**: Verify plan against principles; check for scope creep, premature abstraction, and risk vs reward; ensure testability and stability requirements met
-- **EXECUTE_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage
+- **EXECUTE_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage per validation checklist
 - **REVIEW_REFACTOR**: Comprehensive code review checking correctness, principle alignment (clarity over cleverness, simplicity over sophistication), and unintended side effects
-- **VALIDATE_BEHAVIOR**: Execute testing protocol to ensure behavior preservation (or intended changes only); verify no regressions introduced
-- **FINALIZE_REFACTOR**: Update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, prepare commit message, update affected documentation
-
-### Supporting Tasks (Shared)
-- **COMMIT**: Format and create git commits following project conventions
+- **FINALIZE_REFACTOR**: Update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation
 
 ## Workflow Paths
 
 ### Success Path
-1. SELECT_REFACTOR → ANALYZE_IMPACT → PLAN_REFACTOR → REVIEW_PLAN (pass)
-2. EXECUTE_REFACTOR → REVIEW_REFACTOR (pass) → VALIDATE_BEHAVIOR (pass)
-3. FINALIZE_REFACTOR → Manual Git → SELECT_REFACTOR
+1. SELECT_REFACTOR → PLAN_REFACTOR → REVIEW_PLAN (pass)
+2. EXECUTE_REFACTOR → REVIEW_REFACTOR (pass)
+3. FINALIZE_REFACTOR → SELECT_REFACTOR
 
 ### Revision Path (Planning Phase)
 1. REVIEW_PLAN identifies minor issues → Revise Plan → Re-review
@@ -69,7 +56,6 @@ graph TD
 
 ### Revision Path (Execution Phase)
 1. REVIEW_REFACTOR identifies issues → Fix Code → Re-execute
-2. VALIDATE_BEHAVIOR identifies regression → Fix & Re-execute → Re-review
 
 ### Abort Path (Discovery Phase)
 1. During EXECUTE_REFACTOR or REVIEW_REFACTOR, discover refactor is too risky/complex
@@ -82,11 +68,11 @@ graph TD
 - **Rule of three**: Patterns must appear 3+ times before extraction (verify during SELECT_REFACTOR)
 - **Behavior preservation**: No new features; only simplification, clarification, or pattern extraction
 - **Always reviewed**: Unlike maintenance, all refactors get full review due to architectural impact
-- **Safety first**: Explicit rollback plan required; abort if risk exceeds reward
-- **Stage verification**: Execute refactors in logical stages with verification between each
-- **Manual git**: Tasks prepare but don't execute commits
+- **Stage verification**: Execute refactors in logical stages with validation checklist verification between each
+- **Manual workflow**: Each task is initiated manually; you decide when to proceed to the next step
 - **Learning capture**: Document insights in Completed section (patterns that worked, anti-patterns discovered)
 - **No scope creep**: Refactor only what's in the plan; track new opportunities separately
+- **Validation integrated**: Validation protocol is part of PLAN_REFACTOR and executed during EXECUTE_REFACTOR stages
 
 ## Complexity Comparison
 

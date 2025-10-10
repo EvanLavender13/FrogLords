@@ -2,6 +2,7 @@
 #include "character/t_pose.h"
 #include "character/skeleton.h"
 #include "character/keyframe.h"
+#include "foundation/math_utils.h"
 #include "rendering/wireframe.h"
 #include "gui/character_panel.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -27,8 +28,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     t_pose_skeleton.joints[0].local_transform = character.get_world_transform();
 
-    glm::vec3 horizontal_velocity = character.velocity;
-    horizontal_velocity.y = 0.0f;
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(character.velocity);
 
     glm::vec3 intended_velocity = character.input_direction * character.max_speed;
 
