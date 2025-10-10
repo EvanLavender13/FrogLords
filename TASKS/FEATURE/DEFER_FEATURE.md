@@ -84,6 +84,11 @@ If implementation was attempted before deferral:
 3.  Purpose: Build institutional memory about *why* ideas get deferred; prevents repeated investigation of same dead ends
 4.  For implementation-phase deferrals: emphasize technical blockers or architectural discoveries
 
+**NOTE FOR RETROSPECTIVES:** Categorize deferrals to help identify patterns:
+- **Deferral Phase:** Planning Phase | Implementation Phase
+- **Deferral Category:** Premature Feature | Missing Prerequisites | Principle Violation | Discovered Blocker | Better Alternative | Invalidated Assumption
+- This categorization helps RETROSPECTIVE task identify why features are being deferred and whether planning phase could catch issues earlier
+
 ### 9. Handle Code Changes (if implementation was attempted)
 
 1.  **Option A - Revert Changes:**
@@ -162,6 +167,9 @@ Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog bas
 ```markdown
 ## Speed-Based Animation Scaling (2025-10-06)
 
+**Deferral Phase:** Planning Phase
+**Deferral Category:** Premature Feature
+
 **Reason:** Premature feature without evidence of need
 
 **Key Learning:** Test-first principle applies to features, not just bugs. "May not be necessary" intuitions deserve investigation before planning entire iterations. Current system working well is evidence to preserve, not improve speculatively.
@@ -175,6 +183,9 @@ Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog bas
 
 ```markdown
 ## Secondary Motion (2025-10-06)
+
+**Deferral Phase:** Implementation Phase
+**Deferral Category:** Missing Prerequisites
 
 **Reason:** Missing critical prerequisite: primary skeletal animation system
 

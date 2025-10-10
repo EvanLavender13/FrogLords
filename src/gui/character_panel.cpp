@@ -54,6 +54,35 @@ void draw_character_panel(character_panel_state& state, controller& character,
                               character.animation.tilt_angles.x, character.animation.tilt_angles.z);
         }
 
+        // Secondary motion parameters
+        if (ImGui::CollapsingHeader("Secondary Motion")) {
+            gui::widget::checkbox("Enable Secondary Motion", &state.enable_secondary_motion);
+
+            gui::widget::slider_float("Stiffness (catch-up speed)",
+                                      &character.animation.secondary_motion.stiffness, 10.0f,
+                                      20.0f);
+            gui::widget::slider_float("Damping Ratio (bounciness)",
+                                      &character.animation.secondary_motion.damping_ratio, 0.5f,
+                                      2.0f);
+            gui::widget::slider_float("Response Scale (wobble amount)",
+                                      &character.animation.secondary_motion.response_scale, 0.0f,
+                                      0.04f);
+
+            // Read-only spring state display
+            gui::widget::text("Left Elbow: %.3f rad (vel: %.3f)",
+                              character.animation.secondary_motion.left_elbow_offset,
+                              character.animation.secondary_motion.left_elbow_velocity);
+            gui::widget::text("Right Elbow: %.3f rad (vel: %.3f)",
+                              character.animation.secondary_motion.right_elbow_offset,
+                              character.animation.secondary_motion.right_elbow_velocity);
+            gui::widget::text("Left Knee: %.3f rad (vel: %.3f)",
+                              character.animation.secondary_motion.left_knee_offset,
+                              character.animation.secondary_motion.left_knee_velocity);
+            gui::widget::text("Right Knee: %.3f rad (vel: %.3f)",
+                              character.animation.secondary_motion.right_knee_offset,
+                              character.animation.secondary_motion.right_knee_velocity);
+        }
+
         // Orientation parameters
         if (ImGui::CollapsingHeader("Orientation")) {
             gui::widget::slider_float("Yaw Smoothing", &orientation.yaw_smoothing, 1.0f, 20.0f);

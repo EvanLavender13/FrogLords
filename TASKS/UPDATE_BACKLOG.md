@@ -55,3 +55,17 @@
   - *Note:* Intended to add life and readability to character movement.
   - *Learning:* Spring-damper physics on a per-bone basis provides excellent results with minimal performance cost. Key is to expose damping/stiffness parameters for real-time tuning.
 ```
+
+### Example: Deferred Item (for Retrospectives)
+
+When marking items as deferred or cut, include categorization to help RETROSPECTIVE task identify patterns:
+
+```markdown
+- **Speed-Based Animation Scaling:** Scale tilt magnitude based on character velocity. ❌ CUT
+  - *Prerequisite:* Locomotion system (100%)
+  - *Certainty:* N/A
+  - *Deferral Phase:* Planning Phase
+  - *Deferral Category:* Premature Feature
+  - *Reason:* No evidence of need; current constant magnitude feels good. Test-first principle—wait for actual problem before building solution.
+  - *Reconsider:* After playtesting identifies specific moments where constant tilt is inadequate
+```

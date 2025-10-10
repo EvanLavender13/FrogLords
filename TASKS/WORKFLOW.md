@@ -24,6 +24,7 @@ This document provides an overview of all task workflows. Each workflow has its 
 - **ARCHIVE_ITERATION**: Move planning documents to ARCHIVE with timestamp prefix
 - **REVIEW_CODEBASE**: Random walk through src/ to populate MAINTENANCE_BACKLOG.md
 - **IDENTIFY_REFACTORS**: Deep system analysis to populate REFACTOR_BACKLOG.md
+- **RETROSPECTIVE**: Periodic process review to identify patterns and improve workflow (run every 5-10 iterations)
 
 ---
 
@@ -123,6 +124,10 @@ graph TD
 ### Alternative Path
 - **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning or implementation phase
 
+## Meta-Process Tasks
+
+- **RETROSPECTIVE**: Review last N iterations to identify workflow patterns, extract learnings, and propose process improvements (run every 5-10 iterations)
+
 ## Potential Future Tasks
 
 - **BUILD_TEST**: Formalized quality gate execution (build, lint, format, smoke test)
@@ -178,6 +183,7 @@ graph TD
 - Feature requests: REQUEST_FEATURE formalizes backlog entry with principle alignment and dependency analysis
 - Plan versioning: DECOMPOSE_PLAN and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
+- Retrospectives: Run RETROSPECTIVE every 5-10 iterations to review archived documents, identify patterns in what works/fails, and propose workflow improvements
 
 ## Proposed Numbering Scheme
 

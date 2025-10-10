@@ -59,13 +59,19 @@ Generate a new markdown document summarizing the findings.
 ### 2. Violations & Contradictions
 (A bulleted list of direct violations of principles found in the plans. For each, cite the source file, the violated principle from AGENTS.md, and the specific conflicting text.)
 
+**NOTE FOR RETROSPECTIVES:** When documenting violations, categorize them to help identify patterns:
+- **Category:** Premature Polish | Missing Prerequisites | Scope Creep | Reactive Control | System Duplication | Other
+- This categorization helps RETROSPECTIVE task identify recurring failure modes
+
 - **Violation:** (e.g., Premature Polish)
+  - **Category:** Premature Polish
   - **Source:** `PLANS/implementation_...md`
   - **Principle:** "Graybox before polish"
   - **Details:** The plan includes tasks for creating final art assets before the core mechanic has been playtested and validated.
   - **Suggestion:** Defer all art-related tasks until the graybox is proven successful according to the metrics in the iteration plan.
 
 - **Violation:** (e.g., Missing System Migration)
+  - **Category:** System Duplication
   - **Source:** `PLANS/implementation_...md`
   - **Principle:** "Bottom-up dependencies" / "Single source of truth"
   - **Details:** Plan adds `controller.locomotion` but doesn't remove existing `game_world.locomotion` or update all references (debug_draw, character_panel, etc.). This creates duplicate instances and sync issues.

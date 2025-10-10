@@ -89,7 +89,8 @@ void controller::update(const scene* scn, float dt) {
     }
 
     // Apply max speed cap (walk speed if shift held)
-    float effective_max_speed = is_walking ? walk_speed : max_speed;
+    // Clamp walk_speed to never exceed max_speed
+    float effective_max_speed = is_walking ? std::min(walk_speed, max_speed) : max_speed;
     glm::vec3 horizontal_velocity = glm::vec3(velocity.x, 0, velocity.z);
     float speed = glm::length(horizontal_velocity);
     if (speed > effective_max_speed) {

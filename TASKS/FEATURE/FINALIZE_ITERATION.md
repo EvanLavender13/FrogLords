@@ -45,6 +45,25 @@ Read and execute `TASKS/UPDATE_BACKLOG.md` to:
     -   All checklist items confirmed complete
     -   Link to code review document
 
+### 6.5. Iteration Reflection (for Retrospectives)
+
+Add a `## Reflection` section to end of `PLANS/iteration_<feature_name>.md` answering:
+
+1.  **What went well?** (1-3 bullet points)
+    -   What practices, decisions, or planning approaches helped this iteration succeed?
+    -   Were there any particularly effective moments in planning, implementation, or review?
+2.  **What caused friction?** (1-3 bullet points)
+    -   What slowed progress or required rework?
+    -   Were there planning gaps, unclear requirements, or unexpected blockers?
+    -   Did any assumptions prove incorrect?
+3.  **What would you do differently?** (1-3 bullet points)
+    -   Knowing what you know now, what would you change about the approach?
+    -   Are there signals you missed or steps you'd add to the process?
+
+**Purpose:** Capture fresh insights while context is still loaded. These reflections feed into RETROSPECTIVE task for process improvement.
+
+**NOTE:** Be specific. "Planning was good" is less useful than "Clarifying skeletal data structure before planning prevented implementation surprises."
+
 ### 7. Propose Next Steps
 
 Recommend running `TASKS/NEXT_FEATURE.md` to identify next work after user handles git operations.

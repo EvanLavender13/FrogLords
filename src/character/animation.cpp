@@ -1,7 +1,23 @@
 #include "animation.h"
 #include <cmath>
+#include <glm/gtc/quaternion.hpp>
 
 namespace character {
+
+// Joint indices (must match order in t_pose.cpp)
+namespace joint_index {
+constexpr int LEFT_SHOULDER = 5;
+constexpr int LEFT_ELBOW = 6;
+constexpr int RIGHT_SHOULDER = 8;
+constexpr int RIGHT_ELBOW = 9;
+constexpr int LEFT_HIP = 11;
+constexpr int LEFT_KNEE = 12;
+constexpr int RIGHT_HIP = 14;
+constexpr int RIGHT_KNEE = 15;
+} // namespace joint_index
+
+// Forward declaration
+static void update_secondary_motion(skeleton& skel, secondary_motion_state& state, float dt);
 
 animation_state::animation_state()
     : tilt_angles(0.0f) {
@@ -92,9 +108,13 @@ void animation_state::update(const animation_update_params& params) {
 
 void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
                                                 pose_type manual_override_pose,
-                                                bool use_manual_override) {
+                                                bool use_manual_override,
+                                                bool enable_secondary_motion, float dt) {
     if (use_manual_override) {
         apply_pose(skel, manual_override_pose);
+        if (enable_secondary_motion) {
+            update_secondary_motion(skel, secondary_motion, dt);
+        }
         return;
     }
 
@@ -115,6 +135,76 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
 
     // Apply selected pose
     apply_pose(skel, current_automatic_pose);
+
+    // Apply secondary motion (spring-based follow-through)
+    if (enable_secondary_motion) {
+        update_secondary_motion(skel, secondary_motion, dt);
+    }
+}
+
+/// Apply per-joint spring-damper lag to create natural follow-through.
+/// Child joints lag behind their parent's motion, creating visible wobble.
+static void update_secondary_motion(skeleton& skel, secondary_motion_state& state, float dt) {
+    auto update_spring = [&](int parent_idx, int joint_idx, float& offset, float& velocity,
+                             glm::quat& prev_parent_rot, const glm::vec3& rotation_axis) {
+        // Get parent's current rotation (this is what drives the motion)
+        glm::quat current_parent_rot = glm::quat_cast(skel.joints[parent_idx].local_transform);
+
+        // Detect parent rotation change (parent's motion that child should follow)
+        glm::quat delta_rot = current_parent_rot * glm::inverse(prev_parent_rot);
+        float angle = glm::angle(delta_rot);
+
+        // When parent rotates, inject that motion as velocity into child's spring
+        if (angle > 0.001f && dt > 0.0f) { // Lower threshold to catch smaller rotations
+            glm::vec3 axis = glm::axis(delta_rot);
+            // Project parent's rotation onto our tracking axis
+            float axis_component = glm::dot(axis, rotation_axis);
+
+            // Use full rotation magnitude if axis alignment is weak
+            // This captures rotation even when it's not perfectly aligned with tracking axis
+            float effective_angle =
+                std::abs(axis_component) > 0.1f
+                    ? (angle * axis_component)           // Use projected rotation if well-aligned
+                    : angle * glm::sign(axis_component); // Use full magnitude with sign
+
+            float angular_velocity_change = effective_angle / dt;
+
+            // Add parent's angular velocity to child's spring (child follows parent)
+            velocity += angular_velocity_change * state.response_scale;
+        }
+
+        // Spring toward zero offset (child catches up to parent's motion)
+        float spring_force = state.stiffness * (0.0f - offset);
+        float damping = critical_damping(state.stiffness) * state.damping_ratio;
+        float damping_force = damping * velocity;
+        float acceleration = spring_force - damping_force;
+
+        // Integrate
+        velocity += acceleration * dt;
+        offset += velocity * dt;
+
+        // Apply offset to child joint (lag behind parent's motion)
+        glm::vec3 position = glm::vec3(skel.joints[joint_idx].local_transform[3]);
+        glm::quat child_rot = glm::quat_cast(skel.joints[joint_idx].local_transform);
+        glm::quat lag_rot = glm::angleAxis(offset, rotation_axis);
+        glm::quat final_rot = lag_rot * child_rot;
+
+        skel.joints[joint_idx].local_transform =
+            glm::translate(glm::mat4(1.0f), position) * glm::mat4_cast(final_rot);
+
+        // Store parent rotation for next frame
+        prev_parent_rot = current_parent_rot;
+    };
+
+    // Child joints follow parent motion
+    update_spring(joint_index::LEFT_SHOULDER, joint_index::LEFT_ELBOW, state.left_elbow_offset,
+                  state.left_elbow_velocity, state.prev_left_shoulder, glm::vec3(0, 1, 0));
+    update_spring(joint_index::RIGHT_SHOULDER, joint_index::RIGHT_ELBOW, state.right_elbow_offset,
+                  state.right_elbow_velocity, state.prev_right_shoulder, glm::vec3(0, 1, 0));
+    update_spring(joint_index::LEFT_HIP, joint_index::LEFT_KNEE, state.left_knee_offset,
+                  state.left_knee_velocity, state.prev_left_hip, glm::vec3(1, 0, 0));
+    update_spring(joint_index::RIGHT_HIP, joint_index::RIGHT_KNEE, state.right_knee_offset,
+                  state.right_knee_velocity, state.prev_right_hip, glm::vec3(1, 0, 0));
 }
 
 } // namespace character

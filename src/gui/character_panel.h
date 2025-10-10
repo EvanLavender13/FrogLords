@@ -17,6 +17,7 @@ struct character_panel_state {
 
     // Animation control
     bool use_manual_pose_selection = false;
+    bool enable_secondary_motion = true;
 
     // Real-time joint override (Euler angles in degrees)
     // vec3 format: (X-rotation, Y-rotation, Z-rotation)

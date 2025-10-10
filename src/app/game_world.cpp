@@ -58,9 +58,9 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     }
 
     // Update skeletal animation (automatic distance-phased or manual pose selection)
-    character.animation.update_skeletal_animation(t_pose_skeleton, locomotion.distance_traveled,
-                                                  panel_state.selected_pose,
-                                                  panel_state.use_manual_pose_selection);
+    character.animation.update_skeletal_animation(
+        t_pose_skeleton, locomotion.distance_traveled, panel_state.selected_pose,
+        panel_state.use_manual_pose_selection, panel_state.enable_secondary_motion, dt);
 
     // Apply joint overrides if enabled (debug feature)
     // Use the currently active pose (automatic or manual) as the base
@@ -76,6 +76,10 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
             panel_state.left_knee_angles, panel_state.right_hip_angles,
             panel_state.right_knee_angles);
     }
+
+    // Propagate all local transform changes (pose + secondary motion + overrides) to global
+    // transforms
+    character::update_global_transforms(t_pose_skeleton);
 }
 
 void setup_test_level(scene& scn) {
