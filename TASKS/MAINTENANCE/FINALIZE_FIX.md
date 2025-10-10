@@ -64,7 +64,7 @@ Include chain now correctly flows through header.
 
 ### 7. Recommend Next Steps
 
-After user commits, suggest running `PICK_ITEM.md` to select next maintenance item, or return to feature development.
+After user commits, suggest running `SELECT_ITEM.md` to select next maintenance item, or return to feature development.
 
 ### Tone & Constraints
 

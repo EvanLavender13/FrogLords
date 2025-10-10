@@ -103,7 +103,7 @@ If implementation was attempted before deferral:
 
 ### 10. Propose Next Steps
 
-Recommend running `TASKS/NEXT_FEATURE.md` to identify next work from backlog based on current dependency stack state, highest certainty foundations, and test-driven needs (not speculation).
+Recommend running `TASKS/FEATURE/SELECT_FEATURE.md` to identify next work from backlog based on current dependency stack state, highest certainty foundations, and test-driven needs (not speculation).
 
 ### Tone & Constraints
 

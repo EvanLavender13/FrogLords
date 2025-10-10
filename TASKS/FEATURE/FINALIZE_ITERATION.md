@@ -85,7 +85,7 @@ Add a `## Certainty Calibration` section to end of `PLANS/feature_<feature_name>
 
 ### 7. Propose Next Steps
 
-Recommend running `TASKS/NEXT_FEATURE.md` to identify next work after user handles git operations.
+Recommend running `TASKS/FEATURE/SELECT_FEATURE.md` to identify next work after user handles git operations.
 
 ### Tone & Constraints
 

@@ -10,7 +10,7 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 
 ### 2. Gather Context
 
-1.  **Recall Selected Item:** Reference the item description from `PICK_ITEM.md`
+1.  **Recall Selected Item:** Reference the item description from `SELECT_ITEM.md`
 2.  **Read Affected Files:** Read all source files mentioned in the maintenance item (`.h` and `.cpp`)
 3.  **Understand Current State:** Analyze the code smell or issue being addressed
 

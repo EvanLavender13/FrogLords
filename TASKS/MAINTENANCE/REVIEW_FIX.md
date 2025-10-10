@@ -6,7 +6,7 @@ Read `AGENTS.md` for coding standards and quality guidelines to verify fix compl
 
 ### 2. Gather Context
 
-1.  **Recall Maintenance Item:** Reference the original item description from `PICK_ITEM.md`
+1.  **Recall Maintenance Item:** Reference the original item description from `SELECT_ITEM.md`
 2.  **Review Implementation:** Check list of modified files from `IMPLEMENT_FIX.md`
 3.  **Read Modified Code:** Read all changed source files (`.h` and `.cpp`)
 

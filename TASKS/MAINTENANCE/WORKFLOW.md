@@ -4,7 +4,7 @@ This diagram shows the maintenance fix workflow for items from MAINTENANCE_BACKL
 
 ```mermaid
 graph TD
-    A[PICK_ITEM] --> B{Complexity?}
+    A[SELECT_ITEM] --> B{Complexity?}
     B -->|Trivial<br/>Path A| C[IMPLEMENT_FIX]
     B -->|Standard<br/>Path B| C
     C --> D{Path?}
@@ -26,7 +26,7 @@ graph TD
 ## Tasks
 
 ### Primary Workflow
-- **PICK_ITEM**: Select one item from MAINTENANCE_BACKLOG.md based on severity and clarity; classify as Trivial (Path A) or Standard (Path B)
+- **SELECT_ITEM**: Select one item from MAINTENANCE_BACKLOG.md based on severity and clarity; classify as Trivial (Path A) or Standard (Path B)
 - **IMPLEMENT_FIX**: Execute the suggested fix from backlog; minimal changes, strict adherence to coding standards
 - **REVIEW_FIX**: (Path B only) Verify fix quality against standards; check for side effects and scope creep
 - **FINALIZE_FIX**: Update MAINTENANCE_BACKLOG.md (move to Completed section); prepare commit message
@@ -37,16 +37,16 @@ graph TD
 ## Workflow Paths
 
 ### Path A: Trivial Fix (< 5 lines, single file, mechanical)
-1. PICK_ITEM → Classify as Trivial
+1. SELECT_ITEM → Classify as Trivial
 2. IMPLEMENT_FIX → Execute fix
 3. FINALIZE_FIX → Update backlog, prepare commit
-4. Manual Git → PICK_ITEM
+4. Manual Git → SELECT_ITEM
 
 ### Path B: Standard Fix (Multi-line, behavior change, or multi-file)
-1. PICK_ITEM → Classify as Standard
+1. SELECT_ITEM → Classify as Standard
 2. IMPLEMENT_FIX → Execute fix
 3. REVIEW_FIX (pass) → FINALIZE_FIX
-4. Manual Git → PICK_ITEM
+4. Manual Git → SELECT_ITEM
 
 ### Revision Path
 1. REVIEW_FIX identifies issues → Fix Code → Re-implement
@@ -54,7 +54,7 @@ graph TD
 
 ## Notes
 
-- **Automated progression**: PICK_ITEM → IMPLEMENT_FIX → REVIEW_FIX (if needed) → FINALIZE_FIX happens automatically; user invokes once at PICK_ITEM
+- **Automated progression**: SELECT_ITEM → IMPLEMENT_FIX → REVIEW_FIX (if needed) → FINALIZE_FIX happens automatically; user invokes once at SELECT_ITEM
 - **Tight loops**: Most fixes are 1-2 complexity points
 - **Two-tier review**: Trivial fixes skip review; standard fixes get verification
 - **Severity-first**: Pick highest severity items (Critical > High > Medium > Low)
@@ -67,7 +67,7 @@ graph TD
 
 ## Usage
 
-**Entry Point:** User invokes PICK_ITEM (e.g., "pick a maintenance item", "work on maintenance")
+**Entry Point:** User invokes SELECT_ITEM (e.g., "pick a maintenance item", "work on maintenance")
 
 **Automated Flow:** Agent progresses automatically through IMPLEMENT_FIX → REVIEW_FIX (if needed) → FINALIZE_FIX
 

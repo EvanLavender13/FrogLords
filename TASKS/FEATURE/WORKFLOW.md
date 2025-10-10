@@ -8,7 +8,7 @@ This diagram shows the complete iteration workflow and task dependencies.
 
 ```mermaid
 graph TD
-    REQ[REQUEST_FEATURE] --> A[NEXT_FEATURE]
+    REQ[REQUEST_FEATURE] --> A[SELECT_FEATURE]
     A --> CLAR{Needs<br/>Clarity?}
     CLAR -->|Yes| CF[CLARIFY_FEATURE]
     CF --> B[PLAN_ITERATION]
@@ -77,7 +77,7 @@ graph TD
 - **REQUEST_FEATURE**: Propose a new feature for evaluation and backlog entry
 
 ### Primary Workflow
-- **NEXT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; write high-level feature description and save to `PLANS/feature_<feature_name>.md`
+- **SELECT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; write high-level feature description and save to `PLANS/feature_<feature_name>.md`
 - **CLARIFY_FEATURE**: (Optional) Eliminate ambiguity by asking targeted questions before planning; captures visual references and concrete requirements
 - **PLAN_ITERATION**: Create detailed iteration plan from feature description with graybox scope and testing protocol
 - **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
@@ -98,23 +98,23 @@ graph TD
 
 ### Feature Request Path
 1. REQUEST_FEATURE → Evaluate against principles & dependencies
-2. Add to backlog if viable → Eventually pulled via NEXT_FEATURE
+2. Add to backlog if viable → Eventually pulled via SELECT_FEATURE
 
 ### Success Path
-1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
+1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
 2. IMPLEMENTATION_STEP → REVIEW_STEP (loop until complete)
 3. REVIEW_IMPLEMENTATION (pass) → FINALIZE_ITERATION
-4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG → Manual Git → NEXT_FEATURE
+4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG → Manual Git → SELECT_FEATURE
 
 ### Deferral Path (Planning Phase)
-1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
+1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
 2. DEFER_FEATURE
-3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → NEXT_FEATURE
+3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → SELECT_FEATURE
 
 ### Deferral Path (Implementation Phase)
 1. During IMPLEMENTATION_STEP, REVIEW_STEP, or REVIEW_IMPLEMENTATION, discover blockers/missing prerequisites
 2. DEFER_FEATURE
-3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → NEXT_FEATURE
+3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → SELECT_FEATURE
 
 ### Revision Path
 1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review (prepends changelog to review)
@@ -136,7 +136,7 @@ graph TD
 - Deferral is cheap: celebrate avoiding expensive mistakes during planning or implementation
 - Deferral phases: planning phase (principle violations, premature features) and implementation phase (missing prerequisites, blockers discovered)
 - Bottom-up: dependency stack guides feature selection
-- **Problem evidence required:** Features with backlog warnings ("may not be necessary," "low priority") require extra scrutiny during NEXT_FEATURE selection. Document specific gameplay moments or observations that motivate the feature before planning.
+- **Problem evidence required:** Features with backlog warnings ("may not be necessary," "low priority") require extra scrutiny during SELECT_FEATURE selection. Document specific gameplay moments or observations that motivate the feature before planning.
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
 - Scope changes: ADD_SCOPE + MODIFY_PLAN + DECOMPOSE_PLAN keep plans synchronized when discovery requires mid-iteration adjustment
@@ -152,7 +152,7 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 
 ### Primary Flow (000-099)
 - **000_REQUEST_FEATURE** - Entry point: propose new feature
-- **001_NEXT_FEATURE** - Select from backlog
+- **001_SELECT_FEATURE** - Select from backlog
 - **002_CLARIFY_FEATURE** - Optional: eliminate ambiguity
 - **003_PLAN_ITERATION** - Create iteration plan
 - **004_DECOMPOSE_PLAN** - Break into atomic steps
