@@ -42,6 +42,7 @@ Avoid: manual variants, linear interpolation for organic motion, reactive layers
 - Work bottom‑up. Stabilize core gameplay (irreducible minimum) before adding layers.
 - Maintain a dependency stack with certainty tags. Expect upper layers to change.
 - Use a liquid design backlog for everything not being worked now (non‑interlocking ideas; pull later).
+- **Data Structure Validation:** When introducing novel data representations (quaternions, new state formats), validate the representation in isolation before building complex features on it. Distinguish "simple interface" from "insufficient representation" - ensure data structures have sufficient degrees of freedom for the problem domain. Example: Single-float keyframes were architecturally insufficient for 3D rotation; quaternion validation iteration (static_keyframe_preview) proved the representation before locomotion integration.
 
 ## Iteration & Planning Horizon
 - Short plans → build → test → repeat. Extend horizon only as certainty rises.

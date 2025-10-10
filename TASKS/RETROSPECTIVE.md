@@ -171,7 +171,41 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 1. **Present findings** to the user with the retrospective document
 2. **User decides** which workflow changes to implement
 3. **Update task files** based on approved changes
-4. **Archive retrospective** document for future reference
+
+---
+
+## 7. Organize Archive
+
+After completing the retrospective, group the reviewed iterations with the retrospective document:
+
+1. **Create subdirectory:** `PLANS/ARCHIVE/RETRO_<timestamp>/`
+   - Use same timestamp format as retrospective document (YYYYMMDD_HHMMSS)
+2. **Move retrospective document:** `RETROSPECTIVE_<timestamp>.md` into the new subdirectory
+3. **Move reviewed iteration artifacts:** Move all artifacts from the iterations that were reviewed into the subdirectory
+   - Include all files for each reviewed iteration (feature, iteration, implementation, review, code_review)
+   - Use `mv PLANS/ARCHIVE/<timestamp>_* PLANS/ARCHIVE/RETRO_<timestamp>/` for each iteration timestamp
+4. **Verify organization:** Confirm the subdirectory contains:
+   - The retrospective document
+   - All artifacts from reviewed iterations (grouped by iteration timestamp prefix)
+   - Nothing else remains in flat ARCHIVE that should have been included
+
+**Purpose:** Keeps ARCHIVE clean and navigable. Each RETRO_ subdirectory is a self-contained snapshot of reviewed work plus the analysis that covered it.
+
+**Example structure after organization:**
+```
+PLANS/ARCHIVE/
+├── RETRO_20251009_143000/
+│   ├── RETROSPECTIVE_20251009_143000.md
+│   ├── 20251006_120000_feature_refactor_game_world.md
+│   ├── 20251006_120000_iteration_refactor_game_world.md
+│   ├── 20251006_120000_implementation_refactor_game_world.md
+│   ├── 20251006_120000_code_review_refactor_game_world.md
+│   ├── 20251006_130000_feature_attach-skeleton-to-body.md
+│   ├── 20251006_130000_iteration_attach-skeleton-to-body.md
+│   └── ... (all other artifacts from reviewed iterations)
+├── 20251008_150000_feature_new_thing.md  ← newer iteration, not yet retrospected
+└── 20251008_150000_iteration_new_thing.md
+```
 
 ---
 
@@ -195,3 +229,4 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 - If deferral rate is high (>40%), dig deep into root causes
 - If planning issues are recurring, consider adding CLARIFY_FEATURE or REVIEW_PLAN improvements
 - Celebrate what's working; don't just focus on problems
+- Archive organization keeps PLANS/ARCHIVE/ from becoming unnavigable; RETRO_ subdirectories are chronological snapshots of process reviews

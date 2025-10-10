@@ -177,6 +177,7 @@ graph TD
 - Deferral is cheap: celebrate avoiding expensive mistakes during planning or implementation
 - Deferral phases: planning phase (principle violations, premature features) and implementation phase (missing prerequisites, blockers discovered)
 - Bottom-up: dependency stack guides feature selection
+- **Problem evidence required:** Features with backlog warnings ("may not be necessary," "low priority") require extra scrutiny during NEXT_FEATURE selection. Document specific gameplay moments or observations that motivate the feature before planning.
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
 - Scope changes: ADD_SCOPE + MODIFY_PLAN + DECOMPOSE_PLAN keep plans synchronized when discovery requires mid-iteration adjustment
@@ -184,6 +185,7 @@ graph TD
 - Plan versioning: DECOMPOSE_PLAN and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
 - Retrospectives: Run RETROSPECTIVE every 5-10 iterations to review archived documents, identify patterns in what works/fails, and propose workflow improvements
+- **Certainty calibration:** FINALIZE_ITERATION now tracks predicted vs actual certainty to improve planning accuracy over time
 
 ## Proposed Numbering Scheme
 

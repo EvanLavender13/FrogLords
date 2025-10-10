@@ -64,6 +64,29 @@ Add a `## Reflection` section to end of `PLANS/iteration_<feature_name>.md` answ
 
 **NOTE:** Be specific. "Planning was good" is less useful than "Clarifying skeletal data structure before planning prevented implementation surprises."
 
+### 6.6. Certainty Calibration (for Process Improvement)
+
+Add a `## Certainty Calibration` section to end of `PLANS/iteration_<feature_name>.md`:
+
+**Predicted Certainty:** [X%] (from iteration plan Section 3)
+
+**Actual Outcome:**
+- [ ] Completed on first attempt (no deferrals, no major rework)
+- [ ] Required iteration/rework (specify what changed)
+- [ ] Deferred (specify reason and missing prerequisites)
+
+**Variance Analysis:**
+- If predicted certainty was ≥75% and feature was deferred: What was missed in the dependency analysis?
+- If predicted certainty was ≤50% and feature completed smoothly: What made it easier than expected?
+- Did the certainty score accurately reflect implementation risk?
+
+**Calibration Adjustment:**
+- For similar features in the future, would you adjust the certainty estimate? How?
+- Example: "Reactive layer certainty should be reduced if motion source not explicitly confirmed"
+- Example: "Pattern reuse (3rd use of spring-damper) justifies +10% certainty boost"
+
+**Purpose:** Track prediction accuracy over time to improve planning. Feeds into RETROSPECTIVE task for process-wide calibration improvements.
+
 ### 7. Propose Next Steps
 
 Recommend running `TASKS/NEXT_FEATURE.md` to identify next work after user handles git operations.

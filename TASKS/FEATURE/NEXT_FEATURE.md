@@ -24,6 +24,24 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
     *   **Most Systemic:** Which feature is a reusable system or mechanic, rather than a one-off piece of content? Does it have the potential for emergent interactions?
     *   **Highest Certainty / Lowest Risk:** Which feature has the highest initial `Certainty` score in the backlog and depends on the fewest *other* uncertain systems?
 
+### 4.5. Problem Evidence Check
+
+**Before writing the feature description**, verify the feature addresses a documented problem or gap:
+
+1.  **Review backlog notes:** Check for warning flags like "may not be necessary," "low priority," or uncertainty about value
+2.  **Check for problem evidence:** Has this problem been observed during playtesting? When was it last encountered?
+3.  **Yellow flags requiring extra scrutiny:**
+    -   Backlog contains uncertainty notes about necessity
+    -   Feature is purely "nice to have" without specific gameplay moment motivating it
+    -   No documented observation of the problem this feature solves
+
+4.  **If problem evidence is unclear:**
+    -   Document the specific gameplay moment or observation that motivates this feature
+    -   Example: "During 2025-10-06 playtest, character tilt magnitude felt identical at walk vs sprint speeds, making speed changes harder to read"
+    -   If no such moment exists, consider deferring feature or running focused playtest session first
+
+**Purpose:** Prevents premature features (like speed_animation_scaling deferral - backlog warned "may not be necessary" but feature was selected anyway).
+
 ### 5. Write High-Level Feature Description
 
 Create a concise, actionable feature description following this structure:

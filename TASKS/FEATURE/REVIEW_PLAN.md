@@ -27,6 +27,22 @@ Cross-reference the feature description, iteration plan, and implementation plan
 -   **Check Consistency:** Do the feature description, iteration plan, and implementation plan align? Does the implementation actually build what the iteration plan describes? Does the iteration plan deliver the core of what the feature description promises?
 -   **Review Process:** Does the iteration plan reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
 
+#### Additional Checks for Specific Feature Types
+
+**For Reactive Animation Layers (acceleration tilt, landing spring, secondary motion, etc.):**
+-   **Motion Source Verification:** Does the prerequisite system provide **motion or state changes over time** (not just data structures)?
+    -   Example: Secondary motion requires skeletal joints that move each frame, not just a static skeleton data structure
+    -   Example: Acceleration tilt requires velocity changes, not just a velocity value
+    -   **Yellow Flag:** If dependency analysis only mentions "system X exists" without confirming "system X changes/updates each frame"
+-   **Checklist Question:** "What motion/change does this reactive layer respond to? Does that motion source exist and update regularly?"
+
+**For Novel Data Structures (quaternions, new state representations, etc.):**
+-   **Data Structure Validation Check:** Does the plan propose validating the data structure in isolation before integrating it into complex features?
+    -   Example: Single-float keyframes were architecturally insufficient for 3D rotation (primary_skeletal_animation v1 deferral)
+    -   Example: Static_keyframe_preview validated quaternion keyframes before primary_skeletal_animation attempted locomotion integration
+    -   **Recommendation:** If a feature introduces novel data representation, suggest a "validation iteration" to prove the representation works before building larger features on it
+-   **Checklist Question:** "Does this data structure have sufficient degrees of freedom for the problem domain? Should we validate it in isolation first?"
+
 ### 4. Save and Propose
 
 Generate a new markdown document summarizing the findings.
