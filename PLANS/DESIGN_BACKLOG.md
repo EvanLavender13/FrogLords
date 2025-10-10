@@ -89,14 +89,19 @@
   - *Completion Date:* October 9, 2025
   - *Implementation:* See [implementation_primary_skeletal_animation.md](PLANS/implementation_primary_skeletal_animation.md) and [code_review_primary_skeletal_animation.md](PLANS/code_review_primary_skeletal_animation.md)
 
-- **Secondary motion:** Bone "softness" parameters for wobble, follow-through on limbs
-  - *Status:* **NOW UNBLOCKED** - Primary skeletal animation complete ✅
-  - *Prerequisite:* Primary Skeletal Animation ✅ (locomotion-driven pose cycling implemented)
-  - *Certainty:* Medium (~60%) - prerequisite now satisfied, reactive layer architecture proven with acceleration tilt and landing spring
-  - *Previous Blocker (RESOLVED):* Static T-pose provided no parent motion to lag behind. Now have distance-phased pose cycling with limb movement.
-  - *Scope:* Spring-damper lag on elbow/knee joints following shoulder/hip parent rotations; per-bone softness parameters (stiffness, damping)
-  - *Success Criteria:* Natural follow-through motion on limbs; wobble visible during pose transitions; minimal performance cost
-  - *Note:* Deferred 2025-10-06, now ready for implementation with validated prerequisite
+- **Secondary motion (skeletal follow-through):** Per-bone spring-damper lag creating natural limb wobble during pose transitions ✅ **COMPLETE**
+  - *Prerequisite:* Primary Skeletal Animation ✅
+  - *Certainty:* 100%
+  - *Learning:* Spring-damper lag successfully scaled from root transform to individual skeletal joints. Key findings:
+    - Velocity-injection approach (discovered during iteration) superior to direct offset manipulation for preventing overshoot artifacts
+    - 4 spring states (left_elbow, right_elbow, left_knee, right_knee) sufficient for natural follow-through
+    - Final parameters: stiffness=15.0 Hz, damping_ratio=1.0, response_scale=0.02
+    - Axis-specific lag (elbows Y-axis, knees X-axis) provides natural swing motion
+    - Pure reactive layer maintains "do no harm" principle (zero gameplay impact)
+    - Pattern proven for expansion to additional joints (head, spine) or cloth/appendage physics
+  - *Next Step:* Secondary motion architecture validated; ready for advanced skeletal reactivity (head bobble, spine flex) when needed
+  - *Completion Date:* October 9, 2025
+  - *Implementation:* See [implementation_secondary_motion.md](PLANS/implementation_secondary_motion.md) and [code_review_secondary_motion.md](PLANS/code_review_secondary_motion.md)
   
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅

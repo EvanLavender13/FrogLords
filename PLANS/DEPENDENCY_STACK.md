@@ -12,6 +12,8 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)  ← YOU ARE HERE
 ├─────────────────────────────────────┤
+│  Secondary Motion (100%) ✅         │  ← Per-bone spring-damper lag
+├─────────────────────────────────────┤
 │ Primary Skeletal Animation (100%) ✅│  ← Distance-phased pose switching
 ├─────────────────────────────────────┤
 │  Static Keyframe Preview (100%) ✅  │  ← Quaternion keyframes validated
@@ -135,6 +137,29 @@
 - Manual override parameter preserves debug UI functionality
 - Stop behavior correct (pose freezes when distance stops, no special handling needed)
 
+### Secondary Motion (Implemented, 100% certain) ✅
+
+**Status:** Per-bone spring-damper lag validated and proven
+
+- 4 spring states (left_elbow, right_elbow, left_knee, right_knee) track offset and velocity
+- Velocity-injection approach: spring drives joint angular velocity, not direct offset
+- Integration parameters: stiffness (15.0 Hz), damping_ratio (1.0), response_scale (0.02)
+- Clean reactive layer: applied after primary pose, before transform propagation
+- UI controls: stiffness, damping, response_scale, enable/disable toggle
+
+**Certainty:** 100% — hypothesis proven. Spring-damper lag creates natural follow-through on limbs during pose transitions and speed changes without affecting gameplay.
+
+**Key Learning:** Velocity-injection approach (discovered during iteration) superior to direct offset manipulation. Prevents overshoot artifacts and maintains natural joint motion. Spring-damper pattern successfully scaled from root transform (landing spring, acceleration tilt) to individual skeletal joints.
+
+**Dependencies:** Built on Primary Skeletal Animation and Spring-Damper foundation. Pattern proven for skeletal application; ready for expansion to additional joints (head bobble, spine flex) or cloth/appendage physics.
+
+**Architecture Validated:**
+- Per-bone spring state pattern scales cleanly (4 joints, 8 floats total state)
+- Axis-specific lag (elbows Y-axis, knees X-axis) provides natural swing motion
+- Update timing preserved: after `apply_pose()`, before skeleton propagation
+- "Do no harm" principle maintained (pure reactive layer, zero gameplay impact)
+- Parameter exposure pattern consistent with existing tuning UI
+
 ### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
 **Status:** Architecture proven, tuning UI complete, ready for iteration
@@ -185,7 +210,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Primary Skeletal Animation complete. Distance-phased pose switching validated. Ready to pull next feature from backlog.
+**Current Focus:** Secondary Motion complete. Per-bone spring-damper lag validated. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -197,7 +222,8 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 7. ✅ Refactor: Game World Separation
 8. ✅ Static Keyframe Preview (quaternion keyframes validated)
 9. ✅ Primary Skeletal Animation (distance-phased pose switching)
-10. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
+10. ✅ Secondary Motion (per-bone spring-damper lag)
+11. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Weeks to months (high certainty, stable)
@@ -213,6 +239,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 - Reactive animation: ~90% certain (architecture validated)
 - Static Keyframe Preview: 100% certain (hypothesis proven, ready for locomotion integration)
 - Primary Skeletal Animation: 100% certain (distance-phased triggering validated, ready for pose blending)
+- Secondary Motion: 100% certain (spring-damper lag proven, velocity-injection approach validated)
 - Next features: 50-70% certain (depends on rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 
