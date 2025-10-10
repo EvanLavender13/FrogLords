@@ -18,7 +18,6 @@ graph TB
         FW[Feature Tasks<br/>PLAN → DECOMPOSE → REVIEW<br/>IMPLEMENT → FINALIZE]
         UB[UPDATE_BACKLOG]
         UD[UPDATE_DEPENDENCIES]
-        AI[ARCHIVE_ITERATION]
     end
 
     subgraph MaintenanceTasks["MAINTENANCE/ - Maintenance Workflow"]
@@ -38,7 +37,6 @@ graph TB
     NF --> FW
     FW --> UB
     FW --> UD
-    FW --> AI
     UB -->|update status| DB
 
     %% Maintenance workflow flows
@@ -148,7 +146,6 @@ These tasks support all workflows:
 ### Feature Workflow (`TASKS/FEATURE/`)
 - **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
 - **UPDATE_BACKLOG**: Mark features complete/deferred in DESIGN_BACKLOG, document learnings
-- **ARCHIVE_ITERATION**: Move planning documents to ARCHIVE with timestamp prefix
 
 ### Maintenance Workflow (`TASKS/MAINTENANCE/`)
 - **REVIEW_CODEBASE**: Random walk through src/ to populate MAINTENANCE_BACKLOG.md

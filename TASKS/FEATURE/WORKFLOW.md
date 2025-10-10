@@ -33,17 +33,13 @@ graph TD
     K -->|No| M[FINALIZE_ITERATION]
     M --> N[UPDATE_DEPENDENCIES]
     M --> O[UPDATE_BACKLOG]
-    M --> P[ARCHIVE_ITERATION]
     N --> Q[Manual Git]
     O --> Q
-    P --> Q
     Q --> A
     F --> R[UPDATE_BACKLOG]
     F --> S[UPDATE_DEPENDENCIES]
-    F --> T[ARCHIVE_ITERATION]
     R --> U[Manual Git]
     S --> U
-    T --> U
     U --> A
 
     %% Mid-iteration scope changes
@@ -108,17 +104,17 @@ graph TD
 1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
 2. IMPLEMENTATION_STEP → REVIEW_STEP (loop until complete)
 3. REVIEW_IMPLEMENTATION (pass) → FINALIZE_ITERATION
-4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
+4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG → Manual Git → NEXT_FEATURE
 
 ### Deferral Path (Planning Phase)
 1. NEXT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
 2. DEFER_FEATURE
-3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
+3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → NEXT_FEATURE
 
 ### Deferral Path (Implementation Phase)
 1. During IMPLEMENTATION_STEP, REVIEW_STEP, or REVIEW_IMPLEMENTATION, discover blockers/missing prerequisites
 2. DEFER_FEATURE
-3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES + ARCHIVE_ITERATION → Manual Git → NEXT_FEATURE
+3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → NEXT_FEATURE
 
 ### Revision Path
 1. REVIEW_PLAN identifies minor issues → Revise Plans → Re-review (prepends changelog to review)
@@ -176,7 +172,6 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 ### Finalization Tasks (300-399)
 - **300_UPDATE_DEPENDENCIES** - Update DEPENDENCY_STACK.md
 - **301_UPDATE_BACKLOG** - Mark complete/deferred, document learnings
-- **302_ARCHIVE_ITERATION** - Move plans to ARCHIVE
 
 ### Version Control (400-499)
 - **400_COMMIT** - Format and create git commits

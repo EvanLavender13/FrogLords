@@ -75,7 +75,7 @@ If implementation was attempted before deferral:
 1.  Add `## Deferral` section to end of `PLANS/feature_<feature_name>.md`
 2.  Include: date, reason (1-2 sentences), evidence gap, reconsideration criteria, discovered prerequisites (if any), link to review document (if exists)
 3.  For implementation-phase deferrals: add `### Implementation Attempts` subsection documenting each approach tried, what failed, and key technical insights
-4.  Run `TASKS/ARCHIVE_ITERATION.md` to move planning documents to `PLANS/ARCHIVE/` with timestamp prefix
+4.  Use the archive script to move planning documents to `PLANS/ARCHIVE/` with timestamp prefix
 
 ### 8. Capture Learnings
 
