@@ -36,12 +36,12 @@ graph TD
 ## Tasks
 
 ### Primary Workflow
-- **SELECT_REFACTOR**: Choose one opportunity from REFACTOR_BACKLOG.md based on priority, system stability (certainty ≥70%), and prerequisite completion; create initial refactor description at `PLANS/refactor_<name>.md`
-- **PLAN_REFACTOR**: Create refactor branch; analyze impact (call sites, dependencies, risk); append detailed plan to `PLANS/refactor_<name>.md` with before/after examples, migration strategy, and validation checklist
-- **REVIEW_PLAN**: Verify plan against principles; check for scope creep, premature abstraction, and risk vs reward; append plan review results to `PLANS/refactor_<name>.md`
-- **IMPLEMENT_REFACTOR**: Implement the refactor in logical stages (prepare → migrate → cleanup); verify correctness at each stage per validation checklist; append execution summary to `PLANS/refactor_<name>.md`
-- **REVIEW_REFACTOR**: Comprehensive code review checking correctness, principle alignment (clarity over cleverness, simplicity over sophistication), and unintended side effects; append code review results to `PLANS/refactor_<name>.md`
-- **FINALIZE_REFACTOR**: Run the plan's validation checklist, update REFACTOR_BACKLOG (move to Completed), document patterns/learnings, update affected documentation; append finalization status to `PLANS/refactor_<name>.md`
+- **SELECT_REFACTOR**: Choose opportunity from backlog based on priority and stability; create initial description
+- **PLAN_REFACTOR**: Create refactor branch; analyze impact and risk; write detailed plan with validation checklist
+- **REVIEW_PLAN**: Verify plan against principles; check for scope creep and risk vs reward
+- **IMPLEMENT_REFACTOR**: Execute refactor in logical stages; verify correctness at each stage
+- **REVIEW_REFACTOR**: Comprehensive code review for correctness, principle alignment, and side effects
+- **FINALIZE_REFACTOR**: Run validation checklist, update backlog, document learnings
 
 ## Workflow Paths
 

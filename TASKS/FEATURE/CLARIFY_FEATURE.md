@@ -1,153 +1,132 @@
 # Clarify Feature Requirements
 
-Use this task **after receiving a feature description** and **before creating an iteration plan**. The goal is to eliminate ambiguity by asking targeted questions that expose gaps, assumptions, or missing visual references. This prevents building the wrong thing and wasting iteration loops.
+Use **after receiving a feature description** and **before creating an iteration plan**. Goal: eliminate ambiguity via targeted questions that expose gaps, assumptions, or missing visual references.
 
-**Use this task when:**
-- A feature description feels vague or open to interpretation.
-- You suspect the user has a specific visual or behavioral reference in mind that hasn't been shared.
-- The feature involves animation, poses, or visual behavior that could be implemented multiple ways.
-- The description uses abstract terms ("natural," "smooth," "dynamic") without concrete examples.
-- You're uncertain about the exact end state or success criteria.
-
----
+**Use when:**
+- Description feels vague or open to interpretation
+- User has specific visual/behavioral reference not shared
+- Feature involves animation/poses implementable multiple ways
+- Abstract terms ("natural," "smooth," "dynamic") without concrete examples
+- Uncertain about exact end state or success criteria
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to synthesize core project principles. This clarification process aligns with:
-- **Iteration over planning:** Short loops require clear targets; ambiguity kills speed.
-- **Paradox of quality:** Clarity upfront maximizes iteration count; confusion compounds with each loop.
-- **Knowledge creation > implementation:** Asking the right questions is a form of knowledge creation.
-- **Testing protocol:** You can't test if you don't know what "correct" looks like.
-
----
+Read `AGENTS.md` to synthesize core principles:
+- **Iteration over planning:** Short loops need clear targets; ambiguity kills speed
+- **Paradox of quality:** Clarity upfront maximizes iteration count
+- **Knowledge creation:** Asking right questions is knowledge creation
+- **Testing:** Can't test without knowing what "correct" looks like
 
 ### 2. Identify Ambiguities
 
-Analyze the feature description and flag potential sources of confusion:
+**Visual/Behavioral:**
+- Multiple ways to interpret motion/appearance?
+- User has reference image/animation/video?
+- Abstract terms ("natural," "smooth") without examples?
+- Different visual styles all match description?
 
-**Visual/Behavioral Ambiguities:**
-- Are there multiple ways to interpret the described motion or appearance?
-- Does the user have a reference image, animation, or video in mind?
-- Are terms like "natural," "smooth," "believable," or "dynamic" used without concrete examples?
-- Could the feature be implemented with different visual styles that all technically match the description?
+**Mechanical:**
+- Exact input→output mapping? (e.g., "swing arm" = which joint, which axis?)
+- Multiple joints/systems could satisfy description?
+- Relationship between user input and animation/behavior?
+- Time-based, distance-based, or event-based?
 
-**Mechanical Ambiguities:**
-- What is the exact input→output mapping? (e.g., "swing arm" = rotate which joint, around which axis?)
-- Are there multiple joints/systems that could satisfy the description?
-- What is the relationship between user input and the animation/behavior?
-- Is the feature time-based, distance-based, or event-based?
+**Scope:**
+- Minimum viable vs. full vision?
+- Graybox-acceptable roughness vs. must-be-correct-now?
+- Unstated dependencies?
+- What does "done" look like?
 
-**Scope Ambiguities:**
-- What is the minimum viable implementation vs. full vision?
-- Which parts are graybox-acceptable roughness vs. must-be-correct-now?
-- What dependencies exist that aren't explicitly stated?
-- What does "done" look like for this iteration?
-
-**Success Criteria Ambiguities:**
-- How will you know if the implementation is correct?
-- What visual/behavioral test can verify correctness?
-- Are there specific keyframes, poses, or moments that must match a reference?
-- What would make the user say "yes, that's it" vs. "no, not quite"?
-
----
+**Success Criteria:**
+- How to verify correctness?
+- Visual/behavioral test for verification?
+- Specific keyframes/poses/moments matching reference?
+- What makes user say "yes, that's it" vs. "no, not quite"?
 
 ### 3. Ask Targeted Questions
 
-Formulate questions that **reduce uncertainty** and **expose hidden assumptions**. Prefer questions that:
-- Request concrete examples over abstract descriptions.
-- Ask for visual references (images, videos, animations) when describing motion or appearance.
-- Clarify the relationship between systems (e.g., "should arms move with legs or independently?").
-- Identify the most critical visual/behavioral element to get right first.
-- Reveal the user's mental model of how the feature should work.
-
-**Question Categories:**
+Formulate questions that **reduce uncertainty** and **expose hidden assumptions**:
+- Request concrete examples over abstract descriptions
+- Ask for visual references (images, videos, animations)
+- Clarify relationships between systems
+- Identify most critical element to get right first
+- Reveal user's mental model
 
 **Visual References:**
-- "Do you have a reference image or video showing the desired result?"
-- "Can you describe the specific pose/keyframe that defines this feature?" (e.g., "both arms down" vs. "one arm forward, one back")
+- "Reference image/video showing desired result?"
+- "Specific pose/keyframe defining this?" (e.g., "both arms down" vs. "one forward, one back")
 - "What existing game/animation does this resemble?"
 
 **Mechanical Clarity:**
-- "Should this be driven by time, distance traveled, or user input?"
-- "Which joints/bones need to move to achieve this?" (list specific joint names)
-- "Should this animation loop, blend, or switch between discrete states?"
-- "What axes of rotation are involved?" (pitch/yaw/roll, X/Y/Z)
+- "Driven by time, distance, or user input?"
+- "Which joints/bones move?" (list specific names)
+- "Loop, blend, or discrete states?"
+- "Rotation axes involved?" (pitch/yaw/roll, X/Y/Z)
 
 **Scope Boundaries:**
-- "For the graybox, what's the minimum that proves the concept works?"
-- "Which parts can look rough vs. which parts must be accurate now?"
-- "Are there edge cases we can ignore in this iteration?"
+- "Minimum graybox proving concept?"
+- "What can look rough vs. must be accurate now?"
+- "Edge cases to ignore this iteration?"
 
 **Success Criteria:**
-- "How will we know if this is correct? What visual test confirms it?"
-- "What would make you say 'yes, that's exactly right'?"
-- "If I show you two implementations, what detail would help you pick the correct one?"
-
----
+- "How to verify correctness? Visual test?"
+- "What makes you say 'yes, exactly right'?"
+- "Detail distinguishing correct from incorrect implementation?"
 
 ### 4. Synthesize Understanding
 
-After receiving answers, summarize your understanding of:
-- **Exact visual/behavioral target:** What does the final result look like/feel like?
-- **Reference materials:** What images/videos define correctness?
-- **Mechanical approach:** What systems/joints are involved and how do they interact?
-- **Minimum viable implementation:** What's the simplest graybox that proves the concept?
-- **Test criteria:** How will you verify correctness without user feedback?
+After receiving answers, summarize:
+- **Visual/behavioral target:** Final result look/feel?
+- **Reference materials:** Images/videos defining correctness?
+- **Mechanical approach:** Systems/joints involved and interactions?
+- **Minimum viable:** Simplest graybox proving concept?
+- **Test criteria:** How to verify without user feedback?
 
-State this synthesis back to the user for confirmation: **"My understanding is..."**
-
----
+State synthesis for confirmation: **"My understanding is..."**
 
 ### 5. Document Clarifications
 
-**CRITICAL:** Add a clearly labeled `## CLARIFICATION QUESTIONS (Pending)` section to the feature description document (`PLANS/feature_<name>.md`) containing:
+Add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/feature_<name>.md`:
+- All identified ambiguities by category
+- Specific questions needing answers
+- Priority indicators for critical info
+- Examples/options illustrating interpretations
 
-- **All identified ambiguities** organized by category (Visual/Behavioral, Mechanical, Scope, Success Criteria)
-- **Specific questions** that need answers before proceeding
-- **Priority indicators** highlighting the most critical missing information
-- **Examples/options** where helpful to illustrate different interpretations
+Once answered, update document:
+- Move items from "Pending" to "Resolved" (or remove section)
+- Add concrete visual references (images, video links)
+- Add specific joint/system names and rotation axes
+- Add exact keyframe descriptions/pose breakdowns
+- Add clear success criteria (e.g., "arms alternate 180° out of phase, pointing down at rest")
 
-Once answers are received, update the same document by:
-- Moving resolved items from "Pending" to "Resolved" (or removing the questions section)
-- Adding concrete visual references (attach images, link videos)
-- Adding specific joint/system names and rotation axes
-- Adding exact keyframe descriptions or pose breakdowns
-- Adding clear success criteria (e.g., "arms must alternate 180° out of phase, pointing down at rest")
+This becomes **authoritative reference** for iteration plan and implementation.
 
-This becomes the **authoritative reference** for the iteration plan and implementation.
+### 6. Consolidate Feature Description
 
----
+Once clarifications resolved, perform consistency and redundancy pass:
 
-### 6. Consolidate Feature Description (Final Pass)
-
-**CRITICAL:** Once all clarifications are resolved, perform a consistency and redundancy pass:
-
-**Consistency Check:**
-- **Ordering:** Ensure lists/sequences maintain identical structure throughout (e.g., if keyframes list properties in a specific order, all keyframes use that order; if parameters are listed in one section, other sections use the same sequence).
-- **Terminology:** Verify the same terms are used consistently throughout (e.g., "forward" always means the same direction, technical terms don't shift meaning).
-- **Value precision:** Remove contradictions like "~90°" (approximate) vs "locked at 90°" (exact) — pick one and be consistent.
-- **Cross-references:** Ensure sections reference each other correctly and the referenced content actually exists.
+**Consistency:**
+- **Ordering:** Lists/sequences maintain identical structure throughout
+- **Terminology:** Same terms used consistently (e.g., "forward" always same direction)
+- **Value precision:** Remove contradictions ("~90°" vs "locked at 90°" — pick one)
+- **Cross-references:** Sections reference correctly, content exists
 
 **Redundancy Elimination:**
-- **Single source of truth:** Each fact should appear exactly once. Define concepts in one place, reference them elsewhere.
-- **Remove verbose padding:** Strip phrases that add no information ("for isolated tuning", "in real-time", "next to live", etc.).
-- **Consolidate repeated concepts:** If the same information is mentioned multiple times, consolidate into one clear statement.
-- **Collapse redundant sections:** Merge overlapping sections that describe the same thing from different angles.
+- **Single source of truth:** Each fact appears exactly once
+- **Remove padding:** Strip phrases adding no information
+- **Consolidate:** Merge repeated concepts into one statement
+- **Collapse sections:** Merge overlapping sections
 
-**Clarity Enhancement:**
-- **Remove ambiguous qualifiers:** Replace "approximately", "should", "may" with concrete values or decisions.
-- **Consolidate scope markers:** Clearly separate active implementation vs deferred features (avoid mixing throughout document).
-- **Streamline language:** Follow AGENTS.md communication principle: "Concise and direct. No preamble/postamble."
+**Clarity:**
+- **Remove ambiguous qualifiers:** Replace "approximately", "should", "may" with concrete values
+- **Separate scope:** Active implementation vs. deferred features clearly separated
+- **Streamline:** Follow AGENTS.md: "Concise and direct. No preamble/postamble."
 
-**Output:** A terse, zero-redundancy, internally consistent feature description ready for implementation planning.
-
----
+**Output:** Terse, zero-redundancy, internally consistent description ready for planning.
 
 ### 7. Proceed to Planning
 
-Once clarity is achieved, documented, and consolidated, proceed to `PLAN_ITERATION.md`. The iteration plan should reference the clarified requirements explicitly and include the visual references as validation checkpoints.
-
----
+Once clarity achieved, documented, and consolidated, proceed to PLAN_ITERATION. Reference clarified requirements and visual references as validation checkpoints.
 
 ## Example Clarification Flow
 
@@ -189,23 +168,19 @@ Once clarity is achieved, documented, and consolidated, proceed to `PLAN_ITERATI
 
 ## Tone & Constraints
 
-- **Direct and specific:** Ask concrete questions, avoid philosophical debates.
-- **Visual-first:** Prioritize images/videos over verbal descriptions of motion.
-- **Challenge assumptions:** If something sounds vague, it probably is — push for clarity.
-- **Respect iteration speed:** Ambiguity costs time; clarification upfront is an investment.
-- **Document everything:** Clarity discovered in conversation must be written down.
+- Direct and specific: concrete questions, no philosophical debates
+- Visual-first: prioritize images/videos over verbal descriptions
+- Challenge assumptions: if vague, push for clarity
+- Respect iteration speed: ambiguity costs time; clarification is investment
+- Document everything: clarity from conversation must be written
 
----
+## When to Skip
 
-## When to Skip This Task
+- Description includes concrete visual references and specific details
+- Pure refactor or bug fix with objective criteria
+- Simple parameter tweak with no new behavior
 
-- Feature description already includes concrete visual references and specific implementation details.
-- Feature is a pure refactor or bug fix with objective correctness criteria.
-- Feature is a simple parameter tweak with no new behavior.
-
----
-
-**Next Steps After Clarification:**
-1. Update feature description document with clarifications.
-2. Proceed to `PLAN_ITERATION.md` with clear requirements.
-3. Reference visual materials throughout implementation as validation checkpoints.
+**Next Steps:**
+1. Update feature description with clarifications
+2. Proceed to PLAN_ITERATION with clear requirements
+3. Reference visual materials as validation checkpoints

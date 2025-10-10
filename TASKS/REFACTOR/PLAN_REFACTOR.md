@@ -2,170 +2,145 @@
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to ensure refactor aligns with core principles:
+Read `AGENTS.md` to ensure alignment with:
 - "Clarity over cleverness"
 - "Simplicity over sophistication"
-- "Abstract repeated patterns into systems"
 - "Wait for third use" (rule of three)
 
 ### 2. Create Branch
 
-Create a new refactor branch using the script:
-
+Create refactor branch:
 ```powershell
 ./scripts/create_refactor_branch.ps1 <refactor_name>
 ```
 
 ### 3. Gather Context
 
-Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. **Read Refactor Description:** Open `PLANS/refactor_<refactor_name>.md` (created in SELECT_REFACTOR)
-2. **Read Affected Files:** Systematically read all `.h` and `.cpp` files mentioned in the description
-3. **Search for Usage:** Find every place the code is used to map dependencies
+1. Read `PLANS/refactor_<refactor_name>.md` (from SELECT_REFACTOR)
+2. Read all affected `.h` and `.cpp` files
+3. Search for all usage locations to map dependencies
 
 ### 4. Analyze Impact
 
-#### Identify All Call Sites
+**Identify Call Sites:**
+- Search for all usage locations
+- Map which systems depend on the code
+- Check for indirect dependencies
+- Document every affected file with line numbers
 
-1. **Search for Usage:** Use grep/search to find every place the code is used
-2. **Map Dependencies:** Identify which systems depend on the code being changed
-3. **Check Indirect Usage:** Look for indirect dependencies
-4. **List Exhaustively:** Document every file and function that will need updating
+**Assess Current State:**
+- Understand original design rationale
+- Identify repeated patterns or complexity
+- Find edge cases to preserve
+- Check for explanatory comments
 
-**Output:** Comprehensive list of affected files with specific line numbers
+**Evaluate Risk:**
 
-#### Assess Current State
+Risk factors:
+- Number of call sites (more = higher risk)
+- System criticality (core systems = higher risk)
+- Behavioral complexity (edge cases = higher risk)
+- Certainty score (lower = higher risk)
 
-1. **Understand Current Design:** Why was it written this way originally?
-2. **Identify Patterns:** What pattern is being repeated or what complexity exists?
-3. **Find Edge Cases:** Are there subtle behaviors or edge cases to preserve?
-4. **Check Documentation:** Are there comments explaining non-obvious choices?
+Risk classification:
+- **Low:** Single file, <5 call sites, high certainty (≥90%)
+- **Medium:** Multi-file, 5-15 call sites, good certainty (70-90%)
+- **High:** Cross-system, 15+ call sites, moderate certainty (70-80%)
 
-**Output:** Clear description of current behavior and any subtle aspects to preserve
-
-#### Evaluate Risk
-
-**Risk Factors:**
-- **Number of Call Sites:** More call sites = higher risk
-- **System Criticality:** Core systems (physics, rendering) = higher risk
-- **Test Coverage:** Manual testing only = higher risk
-- **Behavioral Complexity:** Complex logic with edge cases = higher risk
-- **Certainty Score:** Lower certainty = higher risk
-
-**Risk Classification:**
-- **Low Risk:** Single file, <5 call sites, well-understood behavior, high certainty (≥90%)
-- **Medium Risk:** Multi-file, 5-15 call sites, some complexity, good certainty (70-90%)
-- **High Risk:** Cross-system, 15+ call sites, complex behavior, moderate certainty (70-80%)
-
-#### Check for Hidden Dependencies
-
-Look for non-obvious impacts:
-- **Initialization Order:** Does the refactor affect startup sequence?
-- **Memory Layout:** Could struct changes affect size or alignment?
-- **Performance:** Could the refactor change performance characteristics?
-- **Debug/GUI:** Will debug visualizations or GUI panels need updates?
-- **Serialization:** Does anything save/load this data?
+**Check Hidden Dependencies:**
+- Initialization order impacts?
+- Memory layout changes (struct size/alignment)?
+- Performance characteristic changes?
+- Debug/GUI updates needed?
+- Serialization impacts?
 
 ### 5. Define Before/After State
 
-Create clear examples showing the transformation:
+Show concrete examples:
 
-#### Before Example
+**Before:**
 ```cpp
-// Current code pattern (show representative example)
-// Include enough context to understand the problem
+// Current code pattern (representative example with context)
 ```
 
-#### After Example
+**After:**
 ```cpp
-// Refactored code (show target state)
-// Include enough context to understand the improvement
+// Refactored code (target state with context)
 ```
 
-**Rationale:** Explain how "after" is clearer, simpler, or more maintainable than "before"
+**Rationale:** Explain how "after" is clearer, simpler, or more maintainable.
 
 ### 6. Design Migration Strategy
 
-Break the refactor into logical stages:
+Choose approach based on risk:
 
-#### Stage-Based Approach (Recommended)
+**Staged Approach (Medium/High Risk):**
 
-**Pattern Extraction Example:**
-1. **Prepare:** Create new abstraction (function/class) without removing old code
-2. **Migrate:** Convert call sites one-by-one to use new abstraction
-3. **Cleanup:** Remove old code once all call sites migrated
+*Pattern Extraction:*
+1. **Prepare:** Create new abstraction without removing old code
+2. **Migrate:** Convert call sites one-by-one
+3. **Cleanup:** Remove old code
 
-**Simplification Example:**
+*Simplification:*
 1. **Prepare:** Add new simplified implementation alongside old
-2. **Switch:** Update call sites to use new implementation
-3. **Cleanup:** Remove old complex implementation
+2. **Switch:** Update call sites
+3. **Cleanup:** Remove old implementation
 
-**API Design Example:**
+*API Design:*
 1. **Prepare:** Add new API with improved interface
-2. **Deprecate:** Mark old API as deprecated, forward to new API
-3. **Migrate:** Update call sites to new API
-4. **Cleanup:** Remove deprecated old API
+2. **Deprecate:** Mark old API deprecated, forward to new
+3. **Migrate:** Update call sites
+4. **Cleanup:** Remove deprecated API
 
-#### Linear Approach (Simple Refactors)
-For low-risk refactors with <5 call sites:
-1. **Execute:** Make all changes in one pass
-2. **Verify:** Test immediately after
+**Linear Approach (Low Risk):**
+- Make all changes in one pass (<5 call sites)
+- Test immediately after
 
-**Choose approach based on risk level:**
-- Low Risk → Linear approach acceptable
-- Medium/High Risk → Stage-based approach required
-
-### 7. Map Call Site Updates
-
-For each call site identified:
+### 7. Create Call Site Checklist
 
 ```markdown
-### Call Site Migration Checklist
-- [ ] `src/file1.cpp:123` - [what changes here]
-- [ ] `src/file2.cpp:456` - [what changes here]
-- [ ] `src/file3.h:78` - [what changes here]
-[complete exhaustive list]
+### Call Site Migration
+- [ ] `src/file1.cpp:123` - [what changes]
+- [ ] `src/file2.cpp:456` - [what changes]
+- [ ] `src/file3.h:78` - [what changes]
 ```
 
 ### 8. Create Validation Checklist
 
-Define how to verify behavior preservation:
-
 ```markdown
-### Behavior Validation Checklist
-**Must verify after each stage:**
-- [ ] Code compiles without errors/warnings
-- [ ] [Specific behavior 1] works as expected
-- [ ] [Specific behavior 2] works as expected
+### Validation Protocol
+
+**Per-Stage:**
+- [ ] Compiles without errors/warnings
+- [ ] [Specific behavior 1] works
+- [ ] [Specific behavior 2] works
 - [ ] No regressions in [system X]
 
-**Final validation:**
+**Final:**
 - [ ] All test scenarios pass
-- [ ] Debug visualizations still work
-- [ ] Performance characteristics unchanged
-- [ ] [Any other critical checks]
+- [ ] Debug visualizations work
+- [ ] Performance characteristics preserved
 ```
 
-### 9. Estimate Per-Stage Complexity
+### 9. Estimate Complexity
 
-For each migration stage:
-- **Stage 1:** [X points] - [brief description]
-- **Stage 2:** [Y points] - [brief description]
-- **Stage 3:** [Z points] - [brief description]
-- **Total:** [X+Y+Z points] (must be ≤8 points total)
+**Per-Stage Estimate:**
+- Stage 1: [X points] - [description]
+- Stage 2: [Y points] - [description]
+- Stage 3: [Z points] - [description]
+- **Total:** [X+Y+Z] (max 8 points)
 
-**Complexity Scale:**
-- **1-2 points:** Simple (single file, <5 call sites)
-- **3-5 points:** Medium (multi-file, 5-15 call sites)
-- **6-8 points:** Complex (cross-system, 15+ call sites)
-- **>8 points:** Should be split
+**Scale:**
+- 1-2: Simple (single file, <5 call sites)
+- 3-5: Medium (multi-file, 5-15 call sites)
+- 6-8: Complex (cross-system, 15+ call sites)
+- >8: Should be split or deferred
 
-**If total exceeds 8 points:** Recommend breaking into multiple refactors or deferring.
+### 10. Append Plan to Refactor Document
 
-### 10. Update Refactor Description
-
-Append the full plan details to the existing refactor description file at `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
 ---
@@ -176,136 +151,98 @@ Append the full plan details to the existing refactor description file at `PLANS
 **Risk Level:** Low | Medium | High
 **Estimated Complexity:** [X points]
 
----
-
 ### Impact Analysis
 
 **Scope:**
-- **Files Affected:** [count] files
-- **Call Sites:** [count] locations
+- **Files Affected:** [count]
+- **Call Sites:** [count]
 - **Systems Involved:** [list]
 
 **Call Site Inventory:**
-- `src/file1.cpp:123` - [brief description]
-- `src/file2.cpp:456` - [brief description]
-- [complete list]
-
-**Hidden Dependencies:**
-- [any non-obvious impacts]
+- `src/file1.cpp:123` - [description]
+- `src/file2.cpp:456` - [description]
 
 **Risk Assessment:**
-- **Risk Level:** Low/Medium/High
+- **Level:** Low/Medium/High
 - **Justification:** [brief explanation]
-- **Certainty Scores:** [system: score, system: score]
-
----
+- **Certainty Scores:** [system: score]
 
 ### Before/After Examples
 
 **Before:**
 ```cpp
-// Current code showing the pattern/problem
+// Current code
 ```
 
 **After:**
 ```cpp
-// Refactored code showing the improvement
+// Refactored code
 ```
 
 **Key Improvements:**
-- [Improvement 1: e.g., "Reduces duplication from 5 instances to 1"]
-- [Improvement 2: e.g., "Clarifies intent with descriptive function name"]
-- [Improvement 3: e.g., "Eliminates error-prone manual calculations"]
-
----
+- [Improvement 1]
+- [Improvement 2]
 
 ### Migration Strategy
 
 **Approach:** Staged | Linear
 
 **Stage 1: Prepare**
-- **Goal:** [What this stage accomplishes]
-- **Changes:**
-  - [Specific change 1]
-  - [Specific change 2]
+- **Goal:** [What this accomplishes]
+- **Changes:** [Specific changes]
 - **Verification:**
   - [ ] Compiles without warnings
   - [ ] [Specific check]
 
 **Stage 2: Migrate**
-- **Goal:** [What this stage accomplishes]
-- **Call Sites to Update:**
-  - [ ] `src/file1.cpp:123` - [description]
-  - [ ] `src/file2.cpp:456` - [description]
-  - [exhaustive list]
+- **Goal:** [What this accomplishes]
+- **Call Sites:**
+  - [ ] `src/file1.cpp:123`
+  - [ ] `src/file2.cpp:456`
 - **Verification:**
   - [ ] All call sites compile
-  - [ ] [Specific behavior check]
+  - [ ] [Behavior check]
 
 **Stage 3: Cleanup**
-- **Goal:** Remove old code/APIs
-- **Changes:**
-  - [What gets deleted]
+- **Goal:** Remove old code
+- **Changes:** [What gets deleted]
 - **Verification:**
-  - [ ] No references to old code remain
-  - [ ] [Final behavior check]
-
----
+  - [ ] No references remain
+  - [ ] [Final check]
 
 ### Validation Protocol
 
-**Per-Stage Validation:**
-- [ ] Code compiles without errors/warnings
+**Per-Stage:**
+- [ ] Compiles without errors/warnings
 - [ ] [Stage-specific check 1]
 - [ ] [Stage-specific check 2]
 
-**Final Validation:**
-- [ ] **Test Scenario 1:** [Description] → Expected: [outcome]
-- [ ] **Test Scenario 2:** [Description] → Expected: [outcome]
-- [ ] **Test Scenario 3:** [Description] → Expected: [outcome]
-- [ ] No regressions in [affected systems]
-- [ ] Debug visualizations work correctly
-- [ ] Performance characteristics preserved
-
----
+**Final:**
+- [ ] **Scenario 1:** [Description] → [Expected outcome]
+- [ ] **Scenario 2:** [Description] → [Expected outcome]
+- [ ] No regressions in [systems]
+- [ ] Debug visualizations work
+- [ ] Performance preserved
 
 ### Hidden Dependencies
 
-**Debug/GUI Updates:**
-- [List of debug/GUI files that need updates]
+- **Debug/GUI:** [Files needing updates]
+- **Documentation:** [Docs needing revision]
+- **Performance:** [Profiling/checks needed]
 
-**Documentation:**
-- [Which docs need revision]
+### Complexity Breakdown
 
-**Performance:**
-- [Any profiling or performance checks needed]
-
-**Other:**
-- [Any other non-obvious impacts]
-
----
-
-### Complexity Estimate
-
-- **Stage 1 (Prepare):** [X points]
-- **Stage 2 (Migrate):** [Y points]
-- **Stage 3 (Cleanup):** [Z points]
-- **Validation:** [W points]
-- **Total:** [X+Y+Z+W points] (max 8 points)
-
-**Complexity Scale:**
-- 1-2 points: Simple (single file, <5 call sites)
-- 3-5 points: Medium (multi-file, 5-15 call sites)
-- 6-8 points: Complex (cross-system, 15+ call sites)
-- >8 points: Should be split
-
-**Confidence:** High | Medium | Low
+- Stage 1: [X points]
+- Stage 2: [Y points]
+- Stage 3: [Z points]
+- Validation: [W points]
+- **Total:** [sum] (max 8)
 ```
 
 ### Tone & Constraints
 
-- Clear and concrete; avoid vague descriptions
+- Clear and concrete; avoid vagueness
 - Show, don't tell (use code examples)
 - Realistic about risk and effort
-- Favor incremental staged approaches for medium/high risk
-- Ensure plan respects "clarity over cleverness" and "simplicity over sophistication"
+- Favor staged approaches for medium/high risk
+- Respect "clarity over cleverness" and "simplicity over sophistication"

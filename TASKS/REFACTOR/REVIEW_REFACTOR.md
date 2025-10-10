@@ -6,209 +6,93 @@ Read `AGENTS.md` for coding standards and quality guidelines:
 - Naming conventions (snake_case)
 - File organization and dependency flow
 - Code formatting (4-space indent, braces on same line)
-- Documentation guidelines
 - "Clarity over cleverness"
 - "Simplicity over sophistication"
 
 ### 2. Gather Context
 
-Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. **Read Refactor Description:** `PLANS/refactor_<refactor_name>.md` (contains description, plan, and execution sections)
-2. **Review Before/After:** Understand the intended transformation from the Plan section
-3. **Review Execution Summary:** Check list of modified files from Execution Summary section
-4. **Read Modified Code:** Read all changed source files (`.h` and `.cpp`)
+1. Read `PLANS/refactor_<refactor_name>.md` (description, plan, execution sections)
+2. Review before/after examples from plan
+3. Review execution summary for modified files
+4. Read all changed source files (`.h` and `.cpp`)
 
-### 3. Verify Implementation Correctness
+### 3. Verify Implementation
 
-Cross-reference implementation against the refactor plan:
+**Goal Achievement:**
+- Transformation matches "after" example?
+- All call sites from migration checklist updated?
+- Hidden dependencies (debug/GUI/test) updated?
+- Cleanup complete (old code removed)?
 
-#### Goal Achievement
-- **Transformation Match:** Does the implementation match the "after" example from plan?
-- **All Call Sites Updated:** Were all call sites from migration checklist updated?
-- **Hidden Dependencies:** Were debug/GUI/test updates completed?
-- **Cleanup Complete:** Was old code removed (if cleanup stage planned)?
+**Code Quality:**
+- Naming: snake_case for all new symbols
+- Formatting: 4-space indent, braces on same line
+- Organization: Correct file structure, header guards, include order
+- Documentation: Public APIs have clear comments
 
-#### Code Quality Standards
-- **Naming:** snake_case for all new symbols (functions, variables, classes)
-- **Formatting:** 4-space indent, braces on same line, consistent style
-- **Organization:** Correct file structure, header guards, include order
-- **Documentation:** Public APIs have clear comments explaining purpose
-
-#### Dependency Flow
-- **Bottom-Up:** New includes respect layering (Foundation → Character → Rendering → App)
-- **No Circular Dependencies:** New code doesn't introduce cycles
-- **Single Source of Truth:** No duplicate system instances created
-
-### 4. Principle Alignment Check
-
-Verify the refactor aligns with core principles:
-
-#### Clarity Over Cleverness
-- **Readability:** Is refactored code easier to understand than original?
-- **Intent:** Do function/variable names clearly express purpose?
-- **No Clever Tricks:** Are we using straightforward approaches, not clever shortcuts?
-- **Comments:** Are complex sections explained (but simple code self-documenting)?
-
-#### Simplicity Over Sophistication
-- **Complexity Reduction:** Is refactored code genuinely simpler?
-- **No Over-Engineering:** Does abstraction level match problem complexity?
-- **YAGNI Respected:** Are we solving current problems, not imagined futures?
-- **Fewer Moving Parts:** Does refactor reduce cognitive load?
-
-#### Pattern Extraction Quality (If Applicable)
-- **Right Abstraction Level:** Is extracted function/class at appropriate granularity?
-- **Reusability:** Can abstraction be used in all identified locations?
-- **Parameters:** Are parameters clear and minimal?
-- **No Premature Generalization:** Does it solve the specific 3+ uses, not general case?
-
-### 5. Check for Unintended Side Effects
-
-Look for problems introduced by the refactor:
-
-#### Correctness Issues
-- **Logic Errors:** Did refactoring introduce bugs (off-by-one, wrong operators)?
-- **Edge Cases:** Are edge cases still handled correctly?
-- **Initialization:** Are variables initialized properly in new code?
-- **Memory Management:** If applicable, are allocations/deallocations balanced?
-
-#### Behavioral Changes
-- **Preserved Behavior:** Does refactored code behave identically to original?
-- **New Behavior:** Any unintended behavior changes?
-- **Performance:** Any obvious performance regressions (e.g., unnecessary copies)?
-- **Side Effects:** Are side effects (mutations, I/O) preserved correctly?
-
-#### Integration Issues
-- **Call Site Correctness:** Are all call sites using new API correctly?
-- **Type Safety:** Are types used correctly (no dangerous casts)?
-- **Const Correctness:** Are const qualifiers appropriate?
-- **Include Dependencies:** Are all necessary headers included?
-
-#### Compilation & Warnings
-- **Clean Build:** Code compiles without errors
-- **No Warnings:** No new compiler warnings introduced
-- **No Dead Code:** Old code removed (unless migration strategy keeps it temporarily)
-- **Complete Migration:** No half-migrated state (all call sites updated or none)
-
-### 6. Review Scope Discipline
-
-Verify refactor stayed within bounds:
-
-- **Plan Adherence:** Changes match what refactor plan specified
-- **No Scope Creep:** No unrelated changes or "while we're here" modifications
-- **Deviations Justified:** Any deviations from plan are documented and necessary
-- **New Opportunities:** New refactor opportunities tracked separately (not bundled in)
-
-### 7. Assess Risk Factors
-
-Evaluate whether risk assessment was accurate:
-
-- **Complexity Match:** Did complexity match estimate, or was it underestimated?
-- **Call Site Count:** Was call site count accurate?
-- **Hidden Dependencies:** Were all hidden dependencies found during execution?
-- **Unforeseen Issues:** Any surprises that should inform future risk assessment?
-
-### 8. Generate Review Report
-
-Provide concise analysis:
-
-```markdown
-## Refactor Review: [Refactor Name]
-
-**Date:** [YYYY-MM-DD]
-
----
-
-### 1. Implementation Summary
-
-**Files Modified:** [count] files
-**Approach Used:** Staged | Linear
-**Plan Adherence:** Exact | Minor Deviations | Major Deviations
-
----
-
-### 2. Goal Achievement
-
-- [x] Transformation matches "after" example
-- [x] All call sites from plan updated
-- [x] Hidden dependencies addressed
-- [x] Cleanup completed (old code removed)
-
-[Or list incomplete items]
-
----
-
-### 3. Code Quality Verification
-
-**Naming:** ✓ Pass | ✗ Issues found
-**Formatting:** ✓ Pass | ✗ Issues found
-**Organization:** ✓ Pass | ✗ Issues found
-**Dependency Flow:** ✓ Pass | ✗ Issues found
-
-**Issues Found:**
-- [Issue 1: file, line, description]
-- [Issue 2: file, line, description]
-
-[Or "None" if all pass]
-
----
+**Dependency Flow:**
+- Bottom-up: Includes respect layering (Foundation → Character → Rendering → App)
+- No circular dependencies introduced
+- Single source of truth maintained
 
 ### 4. Principle Alignment
 
-**Clarity Over Cleverness:** ✓ Improved | ≈ Neutral | ✗ Degraded
-- [Specific observation about clarity]
+**Clarity Over Cleverness:**
+- Is refactored code easier to understand?
+- Do names clearly express purpose?
+- Are we using straightforward approaches?
 
-**Simplicity Over Sophistication:** ✓ Simplified | ≈ Neutral | ✗ More Complex
-- [Specific observation about simplicity]
+**Simplicity Over Sophistication:**
+- Is code genuinely simpler?
+- Does abstraction level match problem complexity?
+- Are we solving current problems, not imagined futures?
 
-**Pattern Extraction (if applicable):** ✓ Appropriate | ✗ Premature/Over-general
-- [Observation about abstraction quality]
+**Pattern Extraction (if applicable):**
+- Is abstraction at appropriate granularity?
+- Can it be used in all identified locations?
+- Are parameters clear and minimal?
 
----
+### 5. Check for Side Effects
 
-### 5. Unintended Side Effects
+**Correctness:**
+- Logic errors introduced (off-by-one, wrong operators)?
+- Edge cases still handled correctly?
+- Variables initialized properly?
 
-**Correctness:** ✓ Verified | ⚠ Potential Issues | ✗ Bugs Found
-**Behavior Preservation:** ✓ Preserved | ⚠ Changes Unclear | ✗ Changed
-**Performance:** ✓ No Regression | ⚠ Needs Profiling | ✗ Obvious Regression
+**Behavior:**
+- Does code behave identically to original?
+- Any unintended behavior changes?
+- Obvious performance regressions (unnecessary copies)?
 
-**Issues Found:**
-- [Issue 1: description, location, severity]
-- [Issue 2: description, location, severity]
+**Integration:**
+- All call sites using new API correctly?
+- Types used correctly (no dangerous casts)?
+- All necessary headers included?
 
-[Or "None detected" if clean]
+**Compilation:**
+- Compiles without errors or warnings?
+- No dead code remaining?
+- No half-migrated state?
 
----
+### 6. Review Scope Discipline
 
-### 6. Scope Discipline
+- Changes match refactor plan?
+- No unrelated "while we're here" modifications?
+- Deviations documented and necessary?
+- New opportunities tracked separately (not bundled)?
 
-**Plan Adherence:** ✓ Exact | ⚠ Minor Deviations | ✗ Major Deviations
-**Scope Creep:** ✓ None | ⚠ Minor | ✗ Significant
+### 7. Assess Risk Factors
 
-**Deviations:**
-- [Deviation 1: what changed from plan, why]
+- Did complexity match estimate?
+- Was call site count accurate?
+- Were all hidden dependencies found?
+- Any surprises informing future risk assessment?
 
-[Or "None" if plan followed exactly]
+### 8. Append Code Review to Refactor Document
 
----
-
-### 7. Risk Assessment Review
-
-**Complexity:** As Estimated | Underestimated | Overestimated
-**Call Site Count:** Accurate | Underestimated | Overestimated
-**Hidden Dependencies:** All Found | Some Missed | Many Missed
-
-**Surprises:**
-- [Unforeseen issue 1]
-- [Unforeseen issue 2]
-
-[Or "None" if everything as expected]
-
----
-
-### 8. Update Refactor Description with Code Review
-
-Append code review results to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
 ---
@@ -218,8 +102,6 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Date:** [YYYY-MM-DD]
 **Reviewer:** Claude (AI Assistant)
 
----
-
 ### Goal Achievement
 
 **Transformation Match:** ✓ Matches | ⚠ Partial | ✗ Mismatch
@@ -228,9 +110,7 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Cleanup Complete:** ✓ Done | ⚠ Partial | ✗ Not Done
 
 **Details:**
-- [Specific observation about goal achievement]
-
----
+- [Specific observations]
 
 ### Code Quality Standards
 
@@ -240,25 +120,19 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Documentation:** ✓ Adequate | ⚠ Needs Improvement | ✗ Missing
 
 **Issues:**
-- [Issue 1: description, location]
-- [Issue 2: description, location]
-
-[Or "None" if all pass]
-
----
+- [Issue: description, location]
+[Or "None"]
 
 ### Principle Alignment
 
 **Clarity Over Cleverness:** ✓ Improved | ≈ Neutral | ✗ Degraded
-- [Specific observation about clarity]
+- [Observation about clarity]
 
 **Simplicity Over Sophistication:** ✓ Simplified | ≈ Neutral | ✗ More Complex
-- [Specific observation about simplicity]
+- [Observation about simplicity]
 
 **Pattern Extraction (if applicable):** ✓ Appropriate | ✗ Premature/Over-general
-- [Observation about abstraction quality]
-
----
+- [Observation about abstraction]
 
 ### Unintended Side Effects
 
@@ -266,13 +140,9 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Behavior Preservation:** ✓ Preserved | ⚠ Changes Unclear | ✗ Changed
 **Performance:** ✓ No Regression | ⚠ Needs Profiling | ✗ Obvious Regression
 
-**Issues Found:**
-- [Issue 1: description, location, severity]
-- [Issue 2: description, location, severity]
-
-[Or "None detected" if clean]
-
----
+**Issues:**
+- [Issue: description, location, severity]
+[Or "None detected"]
 
 ### Scope Discipline
 
@@ -280,11 +150,8 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Scope Creep:** ✓ None | ⚠ Minor | ✗ Significant
 
 **Deviations:**
-- [Deviation 1: what changed from plan, why]
-
-[Or "None" if plan followed exactly]
-
----
+- [What changed from plan, why]
+[Or "None"]
 
 ### Risk Assessment Review
 
@@ -293,21 +160,13 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Hidden Dependencies:** All Found | Some Missed | Many Missed
 
 **Surprises:**
-- [Unforeseen issue 1]
-- [Unforeseen issue 2]
-
-[Or "None" if everything as expected]
-
----
+- [Unforeseen issues]
+[Or "None"]
 
 ### Critical Issues (Must Fix Before Finalization)
 
-- [ ] [Critical Issue 1: description, file, fix needed]
-- [ ] [Critical Issue 2: description, file, fix needed]
-
-[Or "None" if ready for finalization]
-
----
+- [ ] [Critical issue: description, file, fix needed]
+[Or "None"]
 
 ### Recommendations
 
@@ -316,16 +175,16 @@ Append code review results to `PLANS/refactor_<refactor_name>.md`:
 **Reasoning:** [Brief justification]
 
 **Next Steps:**
-- If APPROVED: Proceed to FINALIZE_REFACTOR and run the validation checklist captured in the plan
-- If FIX ISSUES: Address critical items, then re-review
-- If ROLLBACK: Execute rollback procedure from plan, update backlog, return to SELECT_REFACTOR
+- If APPROVED: Proceed to FINALIZE_REFACTOR and run validation checklist
+- If FIX ISSUES: Address critical items, re-review
+- If ROLLBACK: Execute rollback, update backlog, return to SELECT_REFACTOR
 
 **Confidence Level:** High | Medium | Low
 ```
 
 ### 9. Propose Review
 
-Present the review report. Summarize:
+Present review report. Summarize:
 - Overall quality assessment
 - Critical issues that must be fixed
 - Principle alignment (clarity, simplicity)
@@ -333,18 +192,18 @@ Present the review report. Summarize:
 
 ### 10. Await Guidance
 
-Do not proceed to finalization. Await user decision on whether to:
+Do not proceed to finalization. Await user decision to:
 - Fix identified issues
 - Accept minor deviations as acceptable
-- Proceed to `FINALIZE_REFACTOR.md`
+- Proceed to FINALIZE_REFACTOR
 - Rollback the refactor
 
 ### Tone & Constraints
 
 - Thorough and rigorous; this is the quality gate
-- Detail scales with severity (critical issues get deep analysis)
+- Detail scales with severity
 - Cite specific file paths and line numbers
 - Distinguish critical issues from polish opportunities
-- Be honest about quality (celebrate good work, flag real problems)
+- Be honest about quality
 - Focus on objective measures: correctness, clarity, simplicity
-- Consider maintenance burden: will future developers understand this code?
+- Consider maintenance burden: will future developers understand this?

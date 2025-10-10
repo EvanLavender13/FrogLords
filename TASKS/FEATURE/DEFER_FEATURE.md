@@ -1,119 +1,119 @@
 # Defer Feature
 
-Execute when principle review reveals a feature is premature, unnecessary, or violates core principles. Cleanly back out of planned work, capture learnings, and return to stable state.
+Execute when feature is premature, unnecessary, or violates principles. Cleanly back out, capture learnings, return to stable state.
 
-**Use this task when:**
--   `REVIEW_PLAN.md` identifies violations or significant misalignments
--   Feature's value hypothesis lacks supporting evidence
--   Foundation dependency is less certain than initially assessed
--   Better alternative emerges during planning phase
--   "May not be necessary" intuition gains supporting analysis
--   **Implementation attempts reveal missing prerequisites or fundamental design flaws**
--   **Multiple implementation approaches fail to produce expected behavior**
+**Use when:**
+- REVIEW_PLAN identifies violations or misalignments
+- Value hypothesis lacks supporting evidence
+- Foundation dependency less certain than assessed
+- Better alternative emerges
+- "May not be necessary" intuition gains analysis support
+- Implementation reveals missing prerequisites or fundamental flaws
+- Multiple approaches fail to produce expected behavior
 
-**Applies to both:**
--   **Planning phase** (before implementation): Deferral prevents wasted work
--   **Implementation phase** (during development): Deferral after discovering blockers or invalidated assumptions
+**Applies to:**
+- **Planning phase:** Prevents wasted work
+- **Implementation phase:** After discovering blockers or invalidated assumptions
 
-**When code exists:** You may need to revert changes or leave stubs. Document what was attempted and why it failed.
+**When code exists:** May need to revert or leave stubs. Document attempts and failures.
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to synthesize deferral principles. Essential for:
--   Test before building—features need evidence of problems
--   Paradox of quality—maximize iteration count on valuable work
--   Liquid backlog—most ideas stay fluid until needed
--   Short planning horizon—avoid planning uncertain futures
--   Decision cost—quick deferral decisions are cheap; building wrong things is expensive
+Read `AGENTS.md` to synthesize deferral principles:
+- Test before building—features need evidence
+- Paradox of quality—maximize iteration count on valuable work
+- Liquid backlog—ideas stay fluid until needed
+- Short planning horizon—avoid planning uncertain futures
+- Decision cost—quick deferrals cheap; building wrong things expensive
 
 ### 2. Identify Target Feature
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+Extract feature name from branch (`iteration/<feature_name>`).
 
 ### 3. Verify Deferral Justification
 
-1.  Confirm `PLANS/plan_review_<feature_name>.md` exists with clear identification of violations or misalignments
-2.  Verify specific principle citations from `AGENTS.md` are included
-3.  Confirm actionable recommendations support deferral
-4.  Verify evidence gap is documented (what's missing to justify proceeding)
+1. Confirm `PLANS/plan_review_<feature_name>.md` exists with clear violations/misalignments
+2. Verify specific principle citations from AGENTS.md
+3. Confirm recommendations support deferral
+4. Verify evidence gap documented
 
-If review document doesn't exist or is incomplete, run `TASKS/REVIEW_PLAN.md` first.
+If review missing/incomplete, run REVIEW_PLAN first.
 
 ### 4. Update Design Backlog
 
-1.  Open `PLANS/DESIGN_BACKLOG.md` and locate the feature's entry
-2.  Modify the entry to include deferral status:
-    -   Add `*Status:* **DEFERRED**` with date and concise reason
-    -   Lower certainty score to reflect actual uncertainty
-    -   Document requirements to reconsider (e.g., "Needs test-first evidence" or "Blocked by unstable dependency")
-    -   Link to principle review document
+1. Open `PLANS/DESIGN_BACKLOG.md`, locate entry
+2. Modify to include deferral:
+   - Add `*Status:* **DEFERRED**` with date and reason
+   - Lower certainty score to reflect uncertainty
+   - Document reconsideration requirements
+   - Link to review document
 
 ### 5. Update Dependency Stack
 
-1.  Open `PLANS/DEPENDENCY_STACK.md` and locate the feature (if present in active stack layers)
-2.  Remove feature from active stack layers
-3.  Return feature to `DESIGN BACKLOG` (liquid) section
-4.  Update commentary if needed (e.g., remove "next candidate" language)
-5.  Do NOT mark as complete (✅) - deferral ≠ completion
+1. Open `PLANS/DEPENDENCY_STACK.md`, locate feature (if in active layers)
+2. Remove from active layers
+3. Return to `DESIGN BACKLOG` (liquid) section
+4. Update commentary if needed
+5. Do NOT mark complete (✅) - deferral ≠ completion
 
-### 6. Document Implementation Attempts (if applicable)
+### 6. Document Implementation Attempts (If Applicable)
 
-If implementation was attempted before deferral:
+If implementation attempted:
+1. Add `### Implementation Attempts` to `## Deferral` section in `PLANS/implementation_<feature_name>.md`
+2. Document each approach:
+   - Brief description
+   - What went wrong / why failed
+   - Key technical insight or blocker
+3. Include code artifacts left (stubs, partial implementations) and state
 
-1.  In `## Deferral` section of `PLANS/implementation_<feature_name>.md`, add subsection: `### Implementation Attempts`
-2.  Document each approach tried with:
-    -   Brief description of approach
-    -   What went wrong / why it failed
-    -   Key technical insight or blocker discovered
-3.  This prevents future attempts from repeating failed approaches
-4.  Include any code artifacts left in place (stubs, partial implementations) and their state
+Prevents repeating failed approaches.
 
 ### 7. Archive Planning Documents
 
-**Do NOT delete planning documents.** They contain valuable knowledge about *why* something was deferred.
+**Do NOT delete.** Contains valuable knowledge about *why* deferred.
 
-1.  Add `## Deferral` section to end of `PLANS/feature_<feature_name>.md`
-2.  Include: date, reason (1-2 sentences), evidence gap, reconsideration criteria, discovered prerequisites (if any), link to review document (if exists)
-3.  For implementation-phase deferrals: add `### Implementation Attempts` subsection documenting each approach tried, what failed, and key technical insights
-4.  Use the archive script to move planning documents to `PLANS/ARCHIVE/` with timestamp prefix
+1. Add `## Deferral` section to `PLANS/feature_<feature_name>.md`
+2. Include: date, reason, evidence gap, reconsideration criteria, prerequisites, review link
+3. For implementation-phase: add `### Implementation Attempts` subsection
+4. Use archive script to move to `PLANS/ARCHIVE/` with timestamp prefix
 
 ### 8. Capture Learnings
 
-1.  Open `PLANS/DEFERRAL_LOG.md`
-2.  Add entry for this feature with: date, reason, key learning (1-3 sentences), principle reinforced, missing prerequisites (if discovered), link to review document (if exists)
-3.  Purpose: Build institutional memory about *why* ideas get deferred; prevents repeated investigation of same dead ends
-4.  For implementation-phase deferrals: emphasize technical blockers or architectural discoveries
+1. Open `PLANS/DEFERRAL_LOG.md`
+2. Add entry: date, reason, key learning, principle reinforced, prerequisites, review link
+3. For implementation-phase: emphasize technical blockers/discoveries
 
-**NOTE FOR RETROSPECTIVES:** Categorize deferrals to help identify patterns:
-- **Deferral Phase:** Planning Phase | Implementation Phase
-- **Deferral Category:** Premature Feature | Missing Prerequisites | Principle Violation | Discovered Blocker | Better Alternative | Invalidated Assumption
-- This categorization helps RETROSPECTIVE task identify why features are being deferred and whether planning phase could catch issues earlier
+**Categorize for retrospectives:**
+- **Phase:** Planning | Implementation
+- **Category:** Premature | Missing Prerequisites | Principle Violation | Blocker | Better Alternative | Invalidated Assumption
 
-### 9. Handle Code Changes (if implementation was attempted)
+Helps identify patterns and improve planning.
 
-1.  **Option A - Revert Changes:**
-    -   If changes are unstable, incomplete, or violate principles
-    -   Revert commits or discard branch entirely
-    -   Return to clean state on main branch
-2.  **Option B - Keep Stubs/Infrastructure:**
-    -   If foundational work is sound but feature is premature
-    -   Ensure stubs are documented and non-functional code is disabled
-    -   Commit with clear message: "feat(deferred): Add infrastructure for <feature> (disabled, pending prerequisites)"
-3.  **Decision criteria:** Revert unless infrastructure has independent value or low maintenance burden
+### 9. Handle Code Changes (If Attempted)
+
+**Option A - Revert:**
+- If unstable, incomplete, or violates principles
+- Revert commits or discard branch
+- Return to clean main branch
+
+**Option B - Keep Stubs:**
+- If foundational work sound but feature premature
+- Document stubs, disable non-functional code
+- Commit: "feat(deferred): Add infrastructure for <feature> (disabled, pending prerequisites)"
+
+**Criteria:** Revert unless infrastructure has independent value or low maintenance burden.
 
 ### 10. Propose Next Steps
 
-Recommend running `TASKS/FEATURE/SELECT_FEATURE.md` to identify next work from backlog based on current dependency stack state, highest certainty foundations, and test-driven needs (not speculation).
+Recommend SELECT_FEATURE to identify next work based on dependency stack, highest certainty foundations, and test-driven needs.
 
 ### Tone & Constraints
 
--   Concise and systematic
--   Deferral is cheap; celebrate avoiding expensive mistakes
--   Preserve knowledge (don't delete documents)
--   Clean branches prevent clutter
--   Quick return to productive work on higher-value features
-
----
+- Concise and systematic
+- Deferral is cheap; celebrate avoiding expensive mistakes
+- Preserve knowledge (don't delete documents)
+- Clean branches prevent clutter
+- Quick return to productive work
 
 ### Example Deferral Section (Planning Phase, in feature_*.md)
 

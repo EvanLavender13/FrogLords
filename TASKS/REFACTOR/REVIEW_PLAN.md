@@ -2,166 +2,80 @@
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to synthesize core project principles for refactor evaluation:
+Read `AGENTS.md` to synthesize core principles:
 - "Clarity over cleverness"
 - "Simplicity over sophistication"
-- "Abstract repeated patterns into systems; prefer parameters over assets"
-- "Wait for third use" (rule of three before abstracting)
+- "Wait for third use" (rule of three)
 - Bottom-up dependency flow
 - Single source of truth
 
 ### 2. Gather Context
 
-Extract the refactor name from the current git branch name (format: `refactor/<refactor_name>`).
+Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. **Read Refactor Description & Plan:**
-   - `PLANS/refactor_<refactor_name>.md` (contains both description and plan sections)
-   - `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
-   - `PLANS/DEPENDENCY_STACK.md` (system certainty scores)
-
-2. **Read Impact Analysis:** Review the Impact Analysis section inside the refactor plan to understand scope
+1. Read `PLANS/refactor_<refactor_name>.md` (description & plan sections)
+2. Read `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
+3. Read `PLANS/DEPENDENCY_STACK.md` (system certainty scores)
 
 ### 3. Perform Analysis
 
-Cross-reference the refactor plan against principles and best practices. The goal is to identify risks, premature abstractions, or misalignments before execution.
+Cross-reference plan against principles and best practices:
 
-#### Core Principle Checks
+**Core Principle Checks:**
+- **Clarity Over Cleverness:** Does "after" genuinely improve readability? Are we introducing clever abstractions that obscure intent?
+- **Simplicity Over Sophistication:** Is refactor truly simpler, or just different complexity? Are we over-engineering?
+- **Rule of Three:** Pattern appears 3+ times (unless Critical architectural fix)? Instances truly identical?
 
-- **Clarity Over Cleverness:**
-  - Does the "after" code genuinely improve readability?
-  - Are we introducing clever abstractions that obscure intent?
-  - Can a new developer understand the refactored code easily?
+**Stability & Risk Checks:**
+- **System Stability:** All affected systems ≥70% certainty? Any under active feature development?
+- **Risk Assessment:** Is risk level accurate? Does migration strategy address it? Are abort conditions clear?
+- **Scope Discipline:** Does plan stick to goal? Any sneaky "while we're here" additions?
 
-- **Simplicity Over Sophistication:**
-  - Is the refactor truly simpler, or just different complexity?
-  - Are we over-engineering a solution for the problem?
-  - Does the abstraction match the problem domain?
+**Migration Strategy Checks:**
+- **Stage Appropriateness:** Medium/High risk uses staged approach? Stages logically ordered (prepare → migrate → cleanup)?
+- **Call Site Coverage:** All call sites from Impact Analysis included? Indirect dependencies? Debug/GUI/test code?
+- **Hidden Dependencies:** Initialization order? Performance? Documentation updates?
 
-- **Rule of Three Verification:**
-  - Does the pattern appear 3+ times (unless Critical priority architectural fix)?
-  - Are we abstracting prematurely based on speculation?
-  - Are the pattern instances truly identical, not just similar?
+**Validation & Safety Checks:**
+- **Testing Protocol:** Behavior preservation testable? Test scenarios specific? Regression detection reliable?
+- **Rollback Viability:** Rollback plan concrete (not just "revert")? Trigger conditions clear?
 
-#### Stability & Risk Checks
+**Complexity Checks:**
+- **Estimate:** Total ≤8 points? Stage estimates realistic?
+- **Red Flags:** Unexpected complexity? Too many edge cases? Should defer?
 
-- **System Stability:**
-  - Are all affected systems ≥70% certainty in DEPENDENCY_STACK.md?
-  - Is any system currently under active feature development?
-  - Should we wait for more stability before refactoring?
-
-- **Risk Assessment:**
-  - Is the risk level (Low/Medium/High) accurately assessed?
-  - Does the migration strategy appropriately address the risk?
-  - Is the rollback plan realistic and complete?
-  - Are abort conditions clearly defined?
-
-- **Scope Discipline:**
-  - Does the plan stick to the stated refactor goal?
-  - Are we sneaking in additional changes ("while we're here")?
-  - Should any scope additions be tracked separately?
-
-#### Migration Strategy Checks
-
-- **Stage Appropriateness:**
-  - For Medium/High risk: Is staged approach used?
-  - For Low risk: Is linear approach acceptable?
-  - Are stages logically ordered (prepare → migrate → cleanup)?
-  - Can each stage be verified independently?
-
-- **Call Site Coverage:**
-  - Are all call sites documented in the plan's Impact Analysis included in the migration plan?
-  - Are indirect dependencies accounted for?
-  - Are debug/GUI/test code updates included?
-
-- **Hidden Dependencies:**
-  - Are all hidden dependencies from the Impact Analysis addressed?
-  - Initialization order changes considered?
-  - Performance implications assessed?
-  - Documentation updates planned?
-
-#### Validation & Safety Checks
-
-- **Testing Protocol:**
-  - Is behavior preservation testable?
-  - Are test scenarios specific and measurable?
-  - Can we detect regressions reliably?
-  - Is validation planned per-stage and at completion?
-
-- **Rollback Viability:**
-  - Is rollback plan concrete (not just "revert")?
-  - Are rollback trigger conditions clear?
-  - Is backup branch strategy mentioned if needed?
-  - Can we recover quickly if things go wrong?
-
-#### Complexity Checks
-
-- **Complexity Estimate:**
-  - Is total complexity ≤8 points?
-  - If >8 points: Should this be split into smaller refactors?
-  - Are stage estimates realistic for scope?
-
-**Complexity Scale:**
-- **1-2 points:** Simple (single file, <5 call sites)
-- **3-5 points:** Medium (multi-file, 5-15 call sites)
-- **6-8 points:** Complex (cross-system, 15+ call sites)
-- **>8 points:** Should be split
-
-- **Complexity Red Flags:**
-  - Does the plan reveal unexpected complexity?
-  - Are there too many edge cases to handle?
-  - Should this be deferred until more clarity?
-
-#### Before/After Quality
-
-- **Code Examples:**
-  - Do before/after examples clearly show the improvement?
-  - Is the "after" code genuinely better?
-  - Are the improvements measurable (less duplication, clearer names, fewer lines)?
-
-- **Rationale Strength:**
-  - Does the rationale cite specific principles?
-  - Are the benefits concrete, not theoretical?
-  - Does the refactor solve a real problem, not an imagined one?
+**Before/After Quality:**
+- **Code Examples:** Do examples clearly show improvement? Is "after" genuinely better?
+- **Rationale:** Does rationale cite specific principles? Benefits concrete?
 
 ### 4. Check for Anti-Patterns
 
-Flag these common refactoring anti-patterns:
-
-- **Premature Abstraction:** Extracting patterns seen <3 times
-- **Over-Generalization:** Building for imagined futures, not current needs
-- **Complexity Shifting:** Moving complexity around without reducing it
-- **Scope Creep:** Bundling multiple unrelated refactors together
+Flag these refactoring anti-patterns:
+- **Premature Abstraction:** Extracting patterns <3 times
+- **Over-Generalization:** Building for imagined futures
+- **Complexity Shifting:** Moving complexity without reducing it
+- **Scope Creep:** Bundling unrelated refactors
 - **Unstable Foundation:** Refactoring systems <70% certainty
-- **Clever Code:** Refactoring toward compact/clever instead of clear/simple
-- **Missing Rollback:** No realistic plan to undo if problems arise
+- **Clever Code:** Refactoring toward compact/clever vs clear/simple
+- **Missing Rollback:** No realistic undo plan
 
 ### 5. Categorize Findings
 
-Organize findings by severity:
+**Violations (Must Fix):**
+- Direct principle contradictions or critical flaws
+- Examples: Rule of three violation, certainty <70%, no rollback plan, scope includes unrelated changes
 
-#### Violations (Must Fix)
-Direct contradictions of principles or critical flaws:
-- Pattern appears only 2 times (rule of three violation)
-- System certainty <70% (stability violation)
-- No rollback plan (safety violation)
-- Scope includes unrelated changes (scope discipline violation)
+**Risks (Should Address):**
+- Concerns that increase danger or complexity
+- Examples: Underestimated risk, missing migration steps, insufficient validation
 
-#### Risks (Should Address)
-Concerns that increase danger or complexity:
-- Risk level seems underestimated
-- Migration strategy missing key steps
-- Hidden dependencies not fully addressed
-- Validation protocol insufficient for risk level
+**Suggestions (Consider):**
+- Improvements that would strengthen plan
+- Examples: Could split smaller, alternative approach simpler, additional validation
 
-#### Suggestions (Consider)
-Improvements that would strengthen the plan:
-- Could split into smaller refactors
-- Alternative approach might be simpler
-- Additional validation step would increase confidence
+### 6. Append Review to Refactor Document
 
-### 6. Update Refactor Description with Review
-
-Append review results to the existing refactor description file at `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/refactor_<refactor_name>.md`:
 
 ```markdown
 ---
@@ -171,82 +85,64 @@ Append review results to the existing refactor description file at `PLANS/refact
 **Date:** [YYYY-MM-DD]
 **Reviewer:** Claude (AI Assistant)
 
----
-
 ### Summary
 
-[One paragraph: Is the plan sound? Major concerns? Recommendation to proceed/revise/defer?]
-
----
+[One paragraph: Is plan sound? Major concerns? Recommendation to proceed/revise/defer?]
 
 ### Violations & Critical Issues
 
-[Direct contradictions of principles or critical flaws that MUST be fixed before proceeding]
+[Direct contradictions that MUST be fixed before proceeding]
 
-- **Violation:** [Category - e.g., Rule of Three, Stability Gate]
-  - **Source:** Refactor Plan [section]
-  - **Principle:** [Which principle from AGENTS.md is violated]
-  - **Details:** [Specific issue description]
-  - **Suggestion:** [How to fix this violation]
+- **Violation:** [Category]
+  - **Source:** [Section in plan]
+  - **Principle:** [Which principle violated]
+  - **Details:** [Specific issue]
+  - **Suggestion:** [How to fix]
 
-[Repeat for each violation]
-
-**If no violations:** No critical issues found.
-
----
+**If none:** No critical issues found.
 
 ### Risks & Concerns
 
-[Items that increase risk or could cause problems; should be addressed but may not block execution]
+[Items that increase risk; should be addressed but may not block]
 
-- **Risk:** [Risk description]
-  - **Source:** Refactor Plan [section]
-  - **Concern:** [Why this is risky]
-  - **Mitigation:** [How to reduce this risk]
+- **Risk:** [Description]
+  - **Source:** [Section in plan]
+  - **Concern:** [Why risky]
+  - **Mitigation:** [How to reduce]
 
-[Repeat for each risk]
-
-**If no risks:** Risk assessment appears thorough and appropriate.
-
----
+**If none:** Risk assessment appears thorough.
 
 ### Suggestions for Improvement
 
-[Optional improvements that would strengthen the plan but aren't critical]
+[Optional improvements; not critical]
 
-- **Suggestion:** [Improvement description]
-  - **Rationale:** [Why this would help]
-  - **Impact:** [How much better would the plan be]
+- **Suggestion:** [Description]
+  - **Rationale:** [Why this helps]
+  - **Impact:** [How much better]
 
-[Repeat for each suggestion]
-
-**If no suggestions:** Plan appears comprehensive.
-
----
+**If none:** Plan appears comprehensive.
 
 ### Principle Alignment Check
 
 **Clarity Over Cleverness:**
-- [ ] "After" code is clearer than "before"
-- [ ] No clever abstractions that obscure intent
-- [ ] New developer could understand refactored code
+- [ ] "After" code clearer than "before"
+- [ ] No clever abstractions obscuring intent
+- [ ] New developer could understand
 
 **Simplicity Over Sophistication:**
-- [ ] Refactor genuinely reduces complexity
-- [ ] Not over-engineering the solution
+- [ ] Genuinely reduces complexity
+- [ ] Not over-engineering
 - [ ] Abstraction matches problem domain
 
 **Rule of Three:**
-- [ ] Pattern appears 3+ times (or Critical architectural fix)
+- [ ] Pattern appears 3+ times (or Critical fix)
 - [ ] Not abstracting prematurely
-- [ ] Pattern instances are truly identical
+- [ ] Instances truly identical
 
 **Stability Requirement:**
-- [ ] All affected systems ≥70% certainty
-- [ ] No systems under active development
+- [ ] All systems ≥70% certainty
+- [ ] No active development
 - [ ] Safe to refactor now
-
----
 
 ### Migration Strategy Assessment
 
@@ -256,7 +152,7 @@ Append review results to the existing refactor description file at `PLANS/refact
 - [ ] Each stage independently verifiable
 
 **Coverage:**
-- [ ] All call sites from Impact Analysis included
+- [ ] All call sites included
 - [ ] Indirect dependencies accounted for
 - [ ] Debug/GUI/test code included
 
@@ -265,82 +161,67 @@ Append review results to the existing refactor description file at `PLANS/refact
 - [ ] Performance implications assessed
 - [ ] Documentation updates planned
 
----
-
 ### Safety Assessment
 
 **Testing Protocol:**
 - [ ] Behavior preservation testable
-- [ ] Test scenarios specific and measurable
+- [ ] Test scenarios specific/measurable
 - [ ] Regression detection reliable
 - [ ] Per-stage and final validation planned
 
 **Rollback Plan:**
-- [ ] Rollback procedure concrete
+- [ ] Procedure concrete
 - [ ] Trigger conditions clear
 - [ ] Backup strategy defined
 - [ ] Quick recovery possible
-
----
 
 ### Complexity Assessment
 
 **Estimated Complexity:** [X points]
 - [ ] Total ≤8 points
-- [ ] Stage estimates realistic for scope
-- [ ] No unexpected complexity revealed
-
-**Complexity Scale:**
-- 1-2 points: Simple (single file, <5 call sites)
-- 3-5 points: Medium (multi-file, 5-15 call sites)
-- 6-8 points: Complex (cross-system, 15+ call sites)
-- >8 points: Should be split
+- [ ] Stage estimates realistic
+- [ ] No unexpected complexity
 
 **Recommendation:**
 - [ ] Proceed as planned
-- [ ] Revise plan (address issues above)
+- [ ] Revise plan (address issues)
 - [ ] Split into smaller refactors
 - [ ] Defer (too risky/complex)
 
----
-
 ### Actionable Items
 
-[Checklist of specific actions needed based on findings]
+[Checklist of specific actions needed]
 
-- [ ] [Action 1 - e.g., "Verify third instance of pattern in src/foo.cpp"]
-- [ ] [Action 2 - e.g., "Add rollback procedure for Stage 2"]
-- [ ] [Action 3 - e.g., "Update validation checklist with performance check"]
+- [ ] [Action 1]
+- [ ] [Action 2]
 
-**If no actions needed:** Plan approved. Ready for IMPLEMENT_REFACTOR.
-
----
+**If none:** Plan approved. Ready for IMPLEMENT_REFACTOR.
 
 ### Final Recommendation
 
 **Status:** APPROVED | REVISE | DEFER
 
-**Reasoning:** [Brief justification for recommendation]
+**Reasoning:** [Brief justification]
 
 **Next Steps:**
 - If APPROVED: Proceed to IMPLEMENT_REFACTOR
-- If REVISE: Address actionable items, then re-review
-- If DEFER: Update REFACTOR_BACKLOG with findings, return to SELECT_REFACTOR
+- If REVISE: Address actionable items, re-review
+- If DEFER: Update REFACTOR_BACKLOG with findings
 ```
 
 ### 7. Propose Review
 
-Present the review document to the user. Summarize:
+Present review to user. Summarize:
 - Overall assessment (approved/revise/defer)
 - Critical issues that must be fixed
-- Risk level and confidence in plan
+- Risk level and confidence
 - Recommended next steps
 
 ### Tone & Constraints
 
 - Concise and direct; detail scales with severity
 - Cite specific principles from AGENTS.md
-- Distinguish critical violations from suggestions
+- Distinguish violations from suggestions
 - Be honest about risk and complexity
 - Focus on actionable recommendations
 - Celebrate good plans (don't manufacture concerns)

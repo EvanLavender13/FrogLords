@@ -2,55 +2,56 @@
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to ensure backlog updates follow documentation standards and capture learnings accurately.
+Read `AGENTS.md` to ensure backlog updates follow standards and capture learnings.
 
 ### 2. Verify Completion
 
-Confirm fix is ready to finalize:
--   **Path A (Trivial):** Implementation complete
--   **Path B (Standard):** Review passed with approval
+Confirm fix is ready:
+- **Path A (Trivial):** Implementation complete
+- **Path B (Standard):** Review passed with approval
 
-If review identified issues and they haven't been resolved, stop and return to `IMPLEMENT_FIX.md`.
+If unresolved issues remain, return to IMPLEMENT_FIX.
 
 ### 3. Update Maintenance Backlog
 
-1.  Open `PLANS/MAINTENANCE_BACKLOG.md`
-2.  Locate the completed item in its severity section (Critical/High/Medium/Low)
-3.  Cut the entire item block (including description, files, suggested fix)
-4.  Paste into `## Completed` section at the bottom
-5.  Add completion metadata:
-    ```markdown
-    ### [Item Name]
-    - **Files:** [original files]
-    - **Severity:** [original severity]
-    - **Description:** [original description]
-    - **Resolution:** [brief summary of what was changed - 1 sentence]
-    - **Completed:** [current date]
-    ```
+1. Open `PLANS/MAINTENANCE_BACKLOG.md`
+2. Locate item in severity section (Critical/High/Medium/Low)
+3. Cut entire item block
+4. Paste into `## Completed` section
+5. Add completion metadata:
+
+```markdown
+### [Item Name]
+- **Files:** [files]
+- **Severity:** [severity]
+- **Description:** [description]
+- **Resolution:** [1-sentence summary]
+- **Completed:** [date]
+```
 
 ### 4. Document Learnings (Optional)
 
-If fix revealed insights about code quality or patterns:
--   Add note to completed item about what was learned
--   If pattern appears elsewhere, add new item to appropriate severity section
--   If fix suggests process improvement, note for future workflow refinement
+If fix revealed insights:
+- Add note to completed item
+- If pattern appears elsewhere, add new item to backlog
+- Note process improvements
 
 ### 5. Check for Related Items
 
-Scan backlog for similar items that could be batched:
--   If 2+ similar items exist (e.g., multiple redundant includes), note for future batch processing
--   If fix revealed additional issues, add them to appropriate severity section
+Scan for batchable items:
+- If 2+ similar items exist, note for batch processing
+- If fix revealed additional issues, add to backlog
 
 ### 6. Prepare Commit
 
-Execute `TASKS/COMMIT.md` with maintenance-specific guidance:
--   **Domain:** Use code domain (e.g., `character`, `rendering`, `gui`) or `chore` for cross-cutting cleanup
--   **Description:** Brief imperative statement (e.g., "remove redundant includes", "fix include case sensitivity")
--   **Why paragraph:** Reference maintenance item severity and impact
--   **Changes list:** Keep minimal—maintenance fixes are usually single-line items
--   **Outcome:** State what's cleaner/fixed
+Prepare commit message:
+- **Domain:** Code domain (`character`, `rendering`, `gui`) or `chore` for cross-cutting
+- **Description:** Brief imperative (e.g., "remove redundant includes")
+- **Why:** Reference severity and impact
+- **Changes:** Keep minimal (single-line items)
+- **Outcome:** State what's cleaner/fixed
 
-Example commit message:
+**Example:**
 ```
 chore: remove redundant includes from character_panel
 
@@ -64,13 +65,13 @@ Include chain now correctly flows through header.
 
 ### 7. Recommend Next Steps
 
-After user commits, suggest running `SELECT_ITEM.md` to select next maintenance item, or return to feature development.
+After commit, suggest SELECT_ITEM for next fix or return to feature development.
 
 ### Tone & Constraints
 
--   Concise and systematic
--   Ensure backlog accurately reflects completion
--   Capture learnings while knowledge is fresh
--   Recommend batching similar items if pattern emerges
--   Keep completed section pruned (archive old items periodically)
--   Do not push to repository—user handles git operations
+- Concise and systematic
+- Ensure backlog reflects completion
+- Capture learnings while fresh
+- Recommend batching if pattern emerges
+- Prune completed section periodically
+- User handles git operations
