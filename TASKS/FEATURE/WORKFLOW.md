@@ -130,7 +130,7 @@ graph TD
 
 ## Notes
 
-- Short loops: implementation should be tight (hours to days)
+- Short loops: implementation should be tight (1-3 complexity points)
 - Interruptibility: revision loops at multiple decision points
 - Clarification upfront: use CLARIFY_FEATURE when ambiguity exists; visual references prevent wasted iteration loops
 - Deferral is cheap: celebrate avoiding expensive mistakes during planning or implementation

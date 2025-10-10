@@ -175,20 +175,20 @@ These tasks support all workflows:
 ## Workflow Complexity Comparison
 
 ### MAINTENANCE (Low Complexity)
-- **Duration:** Minutes to hours
+- **Complexity:** 1-2 points
 - **Scope:** Single-file or small multi-file changes
 - **Review:** Two-tier (trivial skip review, standard get review)
 - **Purpose:** Quick fixes and code quality improvements
 
 ### REFACTOR (Medium Complexity)
-- **Duration:** Hours to 1-2 days
+- **Complexity:** 3-8 points
 - **Scope:** Multi-file, cross-system changes
 - **Review:** Always reviewed and validated
 - **Purpose:** Architectural improvements and pattern extraction
 - **Gates:** Stability requirement (≥70% certainty), rule of three verification
 
 ### FEATURE (High Complexity)
-- **Duration:** Days to weeks
+- **Complexity:** 8+ points (or split into smaller iterations)
 - **Scope:** Full system implementation
 - **Review:** Multi-stage (plan, step, implementation)
 - **Purpose:** New mechanics and behaviors

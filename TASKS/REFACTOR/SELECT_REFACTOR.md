@@ -69,7 +69,7 @@ Create a concise, actionable refactor description following this structure:
 - **Proposed Change:** What improvement will be made? (1-2 sentences)
 - **Affected Systems:** Which systems and files will change?
 - **Rationale:** Why does this improve the codebase? (cite principles: clarity, simplicity, etc.)
-- **Expected Duration:** Estimate in hours or days (hours to 1-2 days max)
+- **Estimated Complexity:** [X points] (1-2: Simple, 3-5: Medium, 6-8: Complex, max 8 points)
 - **Risk Level:** Low | Medium | High (with brief justification)
 
 ### 8. Save Refactor Description

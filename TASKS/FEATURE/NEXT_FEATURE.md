@@ -20,7 +20,7 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 ### 4. Select the "Purest" Feature
 1.  From your list of candidates, select the **single best feature** to implement next based on the following criteria, in order of importance:
     *   **Core Loop Alignment:** Which feature most directly enhances the current core gameplay loop of movement, physics, and feel?
-    *   **Smallest Scope:** Which feature is the smallest, most self-contained "stupid simple core" that can be grayboxed and tested in a short iteration loop (hours or a few days)?
+    *   **Smallest Scope:** Which feature is the smallest, most self-contained "stupid simple core" that can be grayboxed and tested in a short iteration loop (1-3 complexity points)?
     *   **Most Systemic:** Which feature is a reusable system or mechanic, rather than a one-off piece of content? Does it have the potential for emergent interactions?
     *   **Highest Certainty / Lowest Risk:** Which feature has the highest initial `Certainty` score in the backlog and depends on the fewest *other* uncertain systems?
 

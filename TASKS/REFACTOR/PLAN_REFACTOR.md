@@ -145,15 +145,21 @@ Define how to verify behavior preservation:
 - [ ] [Any other critical checks]
 ```
 
-### 9. Estimate Per-Stage Effort
+### 9. Estimate Per-Stage Complexity
 
 For each migration stage:
-- **Stage 1:** [X hours] - [brief description]
-- **Stage 2:** [Y hours] - [brief description]
-- **Stage 3:** [Z hours] - [brief description]
-- **Total:** [X+Y+Z hours] (must be ≤16 hours total)
+- **Stage 1:** [X points] - [brief description]
+- **Stage 2:** [Y points] - [brief description]
+- **Stage 3:** [Z points] - [brief description]
+- **Total:** [X+Y+Z points] (must be ≤8 points total)
 
-**If total exceeds 16 hours (2 work days):** Recommend breaking into multiple refactors or deferring.
+**Complexity Scale:**
+- **1-2 points:** Simple (single file, <5 call sites)
+- **3-5 points:** Medium (multi-file, 5-15 call sites)
+- **6-8 points:** Complex (cross-system, 15+ call sites)
+- **>8 points:** Should be split
+
+**If total exceeds 8 points:** Recommend breaking into multiple refactors or deferring.
 
 ### 10. Generate Detailed Refactor Plan
 
@@ -165,7 +171,7 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 **Date:** [YYYY-MM-DD]
 **Category:** Pattern Extraction | Simplification | System Design | Utilities | API Design
 **Risk Level:** Low | Medium | High
-**Estimated Duration:** [X hours/days]
+**Estimated Complexity:** [X points]
 
 ---
 
@@ -293,13 +299,19 @@ Update the refactor plan file at `PLANS/refactor_<refactor_name>.md` with the fu
 
 ---
 
-## 7. Effort Estimate
+## 7. Complexity Estimate
 
-- **Stage 1 (Prepare):** [X hours]
-- **Stage 2 (Migrate):** [Y hours]
-- **Stage 3 (Cleanup):** [Z hours]
-- **Validation:** [W hours]
-- **Total:** [X+Y+Z+W hours]
+- **Stage 1 (Prepare):** [X points]
+- **Stage 2 (Migrate):** [Y points]
+- **Stage 3 (Cleanup):** [Z points]
+- **Validation:** [W points]
+- **Total:** [X+Y+Z+W points] (max 8 points)
+
+**Complexity Scale:**
+- **1-2 points:** Simple (single file, <5 call sites)
+- **3-5 points:** Medium (multi-file, 5-15 call sites)
+- **6-8 points:** Complex (cross-system, 15+ call sites)
+- **>8 points:** Should be split
 
 **Confidence:** High | Medium | Low
 ```

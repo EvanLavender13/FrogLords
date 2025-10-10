@@ -91,12 +91,18 @@ Cross-reference the refactor plan against principles and best practices. The goa
   - Is backup branch strategy mentioned if needed?
   - Can we recover quickly if things go wrong?
 
-#### Effort & Complexity Checks
+#### Complexity Checks
 
-- **Duration Estimate:**
-  - Is total effort ≤16 hours (2 work days)?
-  - If >16 hours: Should this be split into smaller refactors?
-  - Are stage estimates realistic?
+- **Complexity Estimate:**
+  - Is total complexity ≤8 points?
+  - If >8 points: Should this be split into smaller refactors?
+  - Are stage estimates realistic for scope?
+
+**Complexity Scale:**
+- **1-2 points:** Simple (single file, <5 call sites)
+- **3-5 points:** Medium (multi-file, 5-15 call sites)
+- **6-8 points:** Complex (cross-system, 15+ call sites)
+- **>8 points:** Should be split
 
 - **Complexity Red Flags:**
   - Does the plan reveal unexpected complexity?
@@ -273,12 +279,18 @@ Save review to `PLANS/refactor_review_<refactor_name>.md` using template below:
 
 ---
 
-## 8. Effort & Complexity Assessment
+## 8. Complexity Assessment
 
-**Estimated Duration:** [X hours/days]
-- [ ] Total ≤16 hours
-- [ ] Stage estimates realistic
+**Estimated Complexity:** [X points]
+- [ ] Total ≤8 points
+- [ ] Stage estimates realistic for scope
 - [ ] No unexpected complexity revealed
+
+**Complexity Scale:**
+- **1-2 points:** Simple (single file, <5 call sites)
+- **3-5 points:** Medium (multi-file, 5-15 call sites)
+- **6-8 points:** Complex (cross-system, 15+ call sites)
+- **>8 points:** Should be split
 
 **Recommendation:**
 - [ ] Proceed as planned

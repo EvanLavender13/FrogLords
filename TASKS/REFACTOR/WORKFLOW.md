@@ -63,7 +63,7 @@ graph TD
 
 ## Notes
 
-- **Medium complexity**: Hours to 1-2 days per refactor (between maintenance and feature workflows)
+- **Medium complexity**: 3-8 complexity points per refactor (between maintenance and feature workflows)
 - **Stability requirement**: Only refactor systems at ≥70% certainty (check DEPENDENCY_STACK.md)
 - **Rule of three**: Patterns must appear 3+ times before extraction (verify during SELECT_REFACTOR)
 - **Behavior preservation**: No new features; only simplification, clarification, or pattern extraction
@@ -76,17 +76,17 @@ graph TD
 
 ## Complexity Comparison
 
-**MAINTENANCE** (minutes to hours):
+**MAINTENANCE** (1-2 points):
 - Single-file or small multi-file changes
 - Code quality improvements
 - Trivial fixes skip review
 
-**REFACTOR** (hours to 1-2 days):
+**REFACTOR** (3-8 points):
 - Multi-file, cross-system changes
 - Architectural improvements
 - Always reviewed, always validated
 
-**FEATURE** (days to weeks):
+**FEATURE** (8+ points):
 - Full system implementation
 - New mechanics and behaviors
 - Multi-stage review process

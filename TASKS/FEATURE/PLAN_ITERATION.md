@@ -113,7 +113,7 @@ Save the generated plan to a new file in `PLANS/` directory, then propose for re
 *   **Success Metrics (Definition of "Proven"):**
     *   (How do we know when the graybox is successful? e.g., "Survives 6+ playtests without major negative feedback," "Players intuitively understand the mechanic," "No content restrictions introduced.")
 *   **Iteration Cadence & Horizon:**
-    *   (Hours/days to next loop; criteria for shortening/lengthening.)
+    *   (Complexity estimate for next loop; criteria for shortening/lengthening.)
 
 ### 5. System Integration
 

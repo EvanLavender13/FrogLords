@@ -227,11 +227,11 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 12. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
-- Foundation: Weeks to months (high certainty, stable)
-- Core gameplay: Weeks (testing/tuning, but proven)
-- Reactive systems: Short iterations (2-4 hours per feature, proven pattern)
-- Keyframe systems: 1 day iterations (proven with Static Keyframe Preview and Primary Skeletal Animation)
-- Debug/iteration tools: 1-2 hour iterations (simple feature workflow proven)
+- Foundation: Large chunks (high certainty, stable)
+- Core gameplay: Moderate chunks (testing/tuning, but proven)
+- Reactive systems: Short iterations (1-2 complexity points per feature, proven pattern)
+- Keyframe systems: Short iterations (1-2 points, proven with Static Keyframe Preview and Primary Skeletal Animation)
+- Debug/iteration tools: Very short iterations (1 point, simple feature workflow proven)
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**

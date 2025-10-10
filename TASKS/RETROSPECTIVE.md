@@ -80,7 +80,7 @@ Practices that caused problems or friction:
 
 ### 🆕 Start Doing
 New practices to try based on observed patterns:
-- Example: "Add explicit 'time estimate' to iteration plans to catch over-scoped plans early"
+- Example: "Add explicit 'complexity estimate' to iteration plans to catch over-scoped plans early"
 - Example: "Run REVIEW_CODEBASE before planning major refactors to surface hidden coupling"
 
 ---

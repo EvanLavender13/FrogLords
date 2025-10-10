@@ -59,9 +59,9 @@ Capture insights while fresh. Add to the completed item's "Learnings" field:
 - **Reusability achieved?** "Abstraction worked for all 5 call sites without special cases"
 
 #### Process Learnings
-- **Estimate accuracy?** "Estimated 6 hours, actual 8 hours due to hidden GUI dependencies"
+- **Estimate accuracy?** "Estimated 3 points, actual 4 points due to hidden GUI dependencies"
 - **Risk assessment?** "Medium risk was accurate; staged approach prevented issues"
-- **Plan effectiveness?** "Stage 2 migration took longer than expected; future plans should buffer call site updates"
+- **Plan effectiveness?** "Stage 2 migration was more complex than expected; future plans should buffer call site updates"
 
 #### Technical Learnings
 - **Hidden dependencies?** "Debug visualizations always need updating for state changes"
@@ -79,7 +79,7 @@ Capture insights while fresh. Add to the completed item's "Learnings" field:
 - Staged approach essential for 15+ call sites; enabled catching migration bugs early
 - Hidden dependency in character_panel required updating; add GUI check to future impact analysis
 - "Rule of three" validated: pattern appeared exactly 5 times, abstraction eliminated all
-- Estimated 6h, actual 4h; low risk refactors can be faster than expected when well-planned
+- Estimated 3 points, actual 2 points; well-scoped refactors can be less complex than expected when well-planned
 ```
 
 ### 5. Update Documentation (If Applicable)

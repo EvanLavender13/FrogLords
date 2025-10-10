@@ -55,7 +55,7 @@ graph TD
 ## Notes
 
 - **Automated progression**: PICK_ITEM → IMPLEMENT_FIX → REVIEW_FIX (if needed) → FINALIZE_FIX happens automatically; user invokes once at PICK_ITEM
-- **Tight loops**: Most fixes are minutes to hours
+- **Tight loops**: Most fixes are 1-2 complexity points
 - **Two-tier review**: Trivial fixes skip review; standard fixes get verification
 - **Severity-first**: Pick highest severity items (Critical > High > Medium > Low)
 - **No scope creep**: Fix only what's described; track new issues separately

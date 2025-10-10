@@ -48,8 +48,8 @@ Avoid: manual variants, linear interpolation for organic motion, reactive layers
 - Short plans → build → test → repeat. Extend horizon only as certainty rises.
 - Paradox of quality: accept temporary roughness early to maximize iteration count; the final quality comes from loops, not perfect first passes.
 - Planning horizon guidance:
-  - Original/uncertain → plan days (or hours) ahead.
-  - Derivative/certain → plan weeks/months.
+  - Original/uncertain → plan 1-3 complexity points ahead.
+  - Derivative/certain → plan larger chunks (3-8 points).
   - Lower test cost → shorter horizon. Make tools to shorten loops.
 - Big leaps are allowed (to escape local maxima); do them intentionally and then return to tight loops.
 
