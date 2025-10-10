@@ -28,7 +28,8 @@ graph TB
 
     subgraph RefactorTasks["REFACTOR/ - Refactor Workflow"]
         IR[IDENTIFY_REFACTORS]
-        RW[Refactor Tasks<br/>TBD]
+        SR[SELECT_REFACTOR]
+        RW[Refactor Tasks<br/>ANALYZE → PLAN → REVIEW<br/>EXECUTE → VALIDATE → FINALIZE]
     end
 
     %% Feature workflow flows
@@ -47,18 +48,20 @@ graph TB
 
     %% Refactor workflow flows
     IR -->|populate opportunities| RB
-    RB -.->|ad-hoc selection| RW
-    RW -.->|update status| RB
+    RB -->|select refactor| SR
+    SR --> RW
+    RW -->|update status| RB
 
     style DB fill:#e1f5ff
     style MB fill:#fff3cd
     style RB fill:#ffe1e1
     style FW fill:#d4edda
     style MW fill:#d4edda
-    style RW fill:#f0f0f0
+    style RW fill:#d4edda
     style NF fill:#b8e6b8
     style PI fill:#b8e6b8
     style IR fill:#b8e6b8
+    style SR fill:#b8e6b8
     style RF fill:#e1f5ff
     style RC fill:#fff3cd
     style UB fill:#e1f5ff
@@ -81,9 +84,9 @@ graph TB
 ### Refactor Workflow
 - **Location:** `TASKS/REFACTOR/`
 - **Purpose:** Architectural improvements and pattern extraction
-- **Entry Point:** IDENTIFY_REFACTORS
+- **Entry Point:** SELECT_REFACTOR
 - **Input Backlog:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
-- **Status:** Backlog and entry task exist, full workflow not yet formalized
+- **Details:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
 
 ---
 
@@ -119,16 +122,18 @@ graph TB
 
 ### Refactor Backlog → Refactor Workflow
 **Source:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
-**Workflow:** Not yet formalized (entry task exists)
+**Workflow:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
 **Process:**
 1. IDENTIFY_REFACTORS populates REFACTOR_BACKLOG with pattern extraction opportunities
-2. Items mature when systems reach 90%+ stability
+2. Items mature when systems reach ≥70% certainty (stability gate)
 3. Follows "rule of three" (3+ uses) before extraction
-4. Currently handled ad-hoc or during maintenance windows
+4. SELECT_REFACTOR chooses ready items based on priority and stability
+5. Refactor flows through analysis → planning → execution → validation → finalization
 
 **Key Tasks:**
 - IDENTIFY_REFACTORS (populate backlog)
-- (Future: formalized refactor workflow tasks)
+- SELECT_REFACTOR (select from backlog)
+- Refactor workflow tasks (see REFACTOR/WORKFLOW.md)
 
 ---
 
@@ -152,6 +157,14 @@ These tasks support all workflows:
 
 ### Refactor Workflow (`TASKS/REFACTOR/`)
 - **IDENTIFY_REFACTORS**: Deep system analysis to populate REFACTOR_BACKLOG.md
+- **SELECT_REFACTOR**: Choose refactor opportunity from backlog based on priority and stability
+- **ANALYZE_IMPACT**: Deep dive into affected systems, call sites, and risk assessment
+- **PLAN_REFACTOR**: Create detailed refactor plan with migration strategy and rollback plan
+- **REVIEW_PLAN**: Verify plan against principles and stability requirements
+- **EXECUTE_REFACTOR**: Implement refactor in stages with verification
+- **REVIEW_REFACTOR**: Comprehensive code review for correctness and principle alignment
+- **VALIDATE_BEHAVIOR**: Execute testing protocol to ensure behavior preservation
+- **FINALIZE_REFACTOR**: Update backlog, document learnings, prepare commits
 
 ---
 
@@ -159,10 +172,32 @@ These tasks support all workflows:
 
 - **RETROSPECTIVE**: Review last N iterations to identify workflow patterns, extract learnings, and propose process improvements (run every 5-10 iterations)
 
+## Workflow Complexity Comparison
+
+### MAINTENANCE (Low Complexity)
+- **Duration:** Minutes to hours
+- **Scope:** Single-file or small multi-file changes
+- **Review:** Two-tier (trivial skip review, standard get review)
+- **Purpose:** Quick fixes and code quality improvements
+
+### REFACTOR (Medium Complexity)
+- **Duration:** Hours to 1-2 days
+- **Scope:** Multi-file, cross-system changes
+- **Review:** Always reviewed and validated
+- **Purpose:** Architectural improvements and pattern extraction
+- **Gates:** Stability requirement (≥70% certainty), rule of three verification
+
+### FEATURE (High Complexity)
+- **Duration:** Days to weeks
+- **Scope:** Full system implementation
+- **Review:** Multi-stage (plan, step, implementation)
+- **Purpose:** New mechanics and behaviors
+
+---
+
 ## Potential Future Tasks
 
 - **BUILD_TEST**: Formalized quality gate execution (build, lint, format, smoke test)
 - **PLAYTEST_GRAYBOX**: Execute testing protocol with target sample size and metrics
-- **REFACTOR**: Extract repeated patterns into systems; clean up proven code
 - **TUNE_PARAMETERS**: Real-time parameter tuning session to achieve desired feel
 
