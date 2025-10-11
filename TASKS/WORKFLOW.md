@@ -168,6 +168,7 @@ These tasks support all workflows:
 ## Meta-Process Tasks
 
 - **RETROSPECTIVE**: Review last N iterations to identify workflow patterns, extract learnings, and propose process improvements (run every 5-10 iterations)
+- **UNDERSTAND_CONCEPT**: Build conceptual knowledge through discussion, research, and documentation. Create intellectual capital that informs future problem-solving (run anytime to eliminate uncertainty)
 
 ## Workflow Complexity Comparison
 

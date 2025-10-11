@@ -118,7 +118,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
     wheel_center.y = wheel_ground_y + WHEEL_RADIUS;
 
     const int RIM_SEGMENTS = 24;
-    const int SPOKE_COUNT = 6;
+    const int SPOKE_COUNT = 4;
 
     wireframe_mesh wheel_mesh;
     wheel_mesh.vertices.reserve(RIM_SEGMENTS + 1);
