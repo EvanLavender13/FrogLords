@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Archives iteration artifacts with timestamp prefix and updates internal references.
+    Archives feature artifacts with timestamp prefix and updates internal references.
 
 .DESCRIPTION
     Moves feature-related markdown files from PLANS/ to PLANS/ARCHIVE/ with a timestamp
@@ -9,14 +9,14 @@
 
 .PARAMETER FeatureName
     The name of the feature to archive (e.g., "static_keyframe_preview")
-    If not provided, will attempt to extract from current git branch (iteration/<feature>)
+    If not provided, will attempt to extract from current git branch (feature/<feature>)
 
 .EXAMPLE
-    .\archive-iteration.ps1 static_keyframe_preview
+    .\archive-feature.ps1 static_keyframe_preview
 
 .EXAMPLE
-    .\archive-iteration.ps1
-    # Uses current branch name if on iteration/<feature> branch
+    .\archive-feature.ps1
+    # Uses current branch name if on feature/<feature> branch
 #>
 
 param(
@@ -27,13 +27,13 @@ param(
 # If no feature name provided, try to extract from git branch
 if (-not $FeatureName) {
     $currentBranch = git branch --show-current
-    if ($currentBranch -match '^iteration/(.+)$') {
+    if ($currentBranch -match '^feature/(.+)$') {
         $FeatureName = $Matches[1]
         Write-Host "Detected feature name from branch: $FeatureName" -ForegroundColor Cyan
     } else {
-        Write-Host "Error: No feature name provided and not on an iteration/* branch" -ForegroundColor Red
-        Write-Host "Usage: .\archive-iteration.ps1 <feature_name>" -ForegroundColor Yellow
-        Write-Host "   or: Run from an iteration/<feature> branch" -ForegroundColor Yellow
+        Write-Host "Error: No feature name provided and not on a feature/* branch" -ForegroundColor Red
+        Write-Host "Usage: .\archive-feature.ps1 <feature_name>" -ForegroundColor Yellow
+        Write-Host "   or: Run from a feature/<feature> branch" -ForegroundColor Yellow
         exit 1
     }
 }
@@ -45,9 +45,7 @@ Write-Host "`nTimestamp: $timestamp" -ForegroundColor Green
 # Define artifact patterns
 $artifactPatterns = @(
     "feature_$FeatureName.md",
-    "iteration_$FeatureName.md",
     "implementation_$FeatureName.md",
-    "review_$FeatureName.md",
     "code_review_$FeatureName.md",
     "plan_review_$FeatureName.md"
 )
@@ -153,4 +151,4 @@ Write-Host "Timestamp: $timestamp" -ForegroundColor Cyan
 Write-Host "Archived $($archivedFiles.Count) file(s) to $archiveDir" -ForegroundColor Cyan
 Write-Host "`nNext steps:" -ForegroundColor Yellow
 Write-Host "  1. Review the changes: git status" -ForegroundColor Gray
-Write-Host "  2. Commit the archive: git add . && git commit -m 'archive: $FeatureName iteration artifacts'" -ForegroundColor Gray
+Write-Host "  2. Commit the archive: git add . && git commit -m 'archive: $FeatureName feature artifacts'" -ForegroundColor Gray

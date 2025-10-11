@@ -1,8 +1,8 @@
-# Finalize Iteration
+# Finalize Feature
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to synthesize principles for finalizing iterations. Essential for:
+Read `AGENTS.md` to synthesize principles for finalizing features. Essential for:
 -   Accurate certainty scoring based on testing outcomes
 -   Capturing learnings that inform future design decisions
 -   Understanding dependency impacts and cascade effects
@@ -10,13 +10,12 @@ Read `AGENTS.md` to synthesize principles for finalizing iterations. Essential f
 
 ### 2. Identify Target Feature
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
 
 ### 3. Verify Approval
 
 1.  Confirm `PLANS/implementation_<feature_name>.md` has an `## Approval` section with reviewer signature and timestamp
-2.  Confirm `PLANS/iteration_<feature_name>.md` has an `## Approval` section with reviewer signature and timestamp
-3.  If either approval is missing, stop and request completion of `TASKS/REVIEW_IMPLEMENTATION.md` first
+2.  If approval is missing, stop and request completion of `REVIEW_IMPLEMENTATION` task first
 
 ### 4. Update Dependency Stack
 
@@ -41,12 +40,12 @@ Read and execute `TASKS/FEATURE/UPDATE_BACKLOG.md` to:
     -   Link to code review document
     -   Brief outcome summary (1-2 sentences)
 
-### 6.5. Iteration Reflection (for Retrospectives)
+### 6.5. Feature Reflection (for Retrospectives)
 
 Add a `## Reflection` section to end of `PLANS/feature_<feature_name>.md` answering:
 
 1.  **What went well?** (1-3 bullet points)
-    -   What practices, decisions, or planning approaches helped this iteration succeed?
+    -   What practices, decisions, or planning approaches helped this feature succeed?
     -   Were there any particularly effective moments in planning, implementation, or review?
 2.  **What caused friction?** (1-3 bullet points)
     -   What slowed progress or required rework?
@@ -64,11 +63,11 @@ Add a `## Reflection` section to end of `PLANS/feature_<feature_name>.md` answer
 
 Add a `## Certainty Calibration` section to end of `PLANS/feature_<feature_name>.md`:
 
-**Predicted Certainty:** [X%] (from iteration plan Section 3)
+**Predicted Certainty:** [X%] (from feature plan Section 3)
 
 **Actual Outcome:**
 - [ ] Completed on first attempt (no deferrals, no major rework)
-- [ ] Required iteration/rework (specify what changed)
+- [ ] Required feature/rework (specify what changed)
 - [ ] Deferred (specify reason and missing prerequisites)
 
 **Variance Analysis:**

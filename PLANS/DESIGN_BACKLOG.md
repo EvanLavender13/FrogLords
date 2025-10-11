@@ -12,6 +12,26 @@
 
 ### Debug Visualization
 
+- **Freeze Velocity Trail on Stop:** Stop trail sampling when character velocity drops below threshold; resume when movement resumes
+  - *Prerequisite:* Debug Visual Overhaul ✅ (velocity trail system exists)
+  - *Certainty:* High (~95%) - trivial implementation, threshold may need tuning iteration
+  - *Problem:* Trail continuously updates regardless of movement, causing spheres to accumulate on stationary character. Visually confusing—trail should show "where character has been during motion," not "time passing while stationary."
+  - *Hypothesis:* Frozen trail improves visual clarity; acts as "motion breadcrumb" showing last path taken. Better understanding of past trajectory during playtesting.
+  - *Rationale:* Aligns with "reactive systems interpret state" principle. Trail should respond to velocity (motion source), not just time. Improves debug tool usefulness for analyzing movement patterns.
+  - *Scope:*
+    - Add velocity magnitude check before trail sampling ([game_world.cpp:29-45](src/app/game_world.cpp#L29-L45))
+    - Only sample when `glm::length(character.velocity) > velocity_threshold`
+    - Threshold likely ~0.05-0.1 m/s (tune to feel—standing still vs. very slow walk)
+    - Optional: Add threshold parameter to `velocity_trail_state` for runtime tuning
+  - *Implementation:* ~5 lines of code (single conditional check). Zero architectural changes.
+  - *Success Criteria:*
+    - Trail stops updating when character stands still
+    - Trail resumes immediately when movement starts
+    - No visual artifacts (positions remain stable while frozen)
+    - Threshold feels natural (doesn't freeze during slow intentional movement)
+  - *Risk:* Low. Debug-only feature; worst case revert takes 30 seconds.
+  - *Origin:* User request 2025-10-11; improves existing trail system from Debug Visual Overhaul iteration
+
 - **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
   - *Prerequisite:* Debug Draw System ✅
   - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact

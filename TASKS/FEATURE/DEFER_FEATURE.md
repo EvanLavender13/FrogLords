@@ -28,7 +28,7 @@ Read `AGENTS.md` to synthesize deferral principles:
 
 ### 2. Identify Target Feature
 
-Extract feature name from branch (`iteration/<feature_name>`).
+Extract feature name from branch (`feature/<feature_name>`).
 
 ### 3. Verify Deferral Justification
 

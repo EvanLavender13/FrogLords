@@ -1,4 +1,4 @@
-# Add Scope to Iteration Plan
+# Add Scope to Feature Description
 
 ### 1. Review Development Principles
 
@@ -11,22 +11,22 @@ Read `AGENTS.md` to synthesize core project principles. This is essential for en
 
 ### 2. Verify Request Scope
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
 
-1.  **Review Iteration Plan:** Read the current iteration plan at `PLANS/iteration_<feature_name>.md`.
-3.  **Check Backlog & Dependencies:** Review `PLANS/DESIGN_BACKLOG.md` and `PLANS/DEPENDENCY_STACK.md`.
-4.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the iteration or introduce major unforeseen dependencies. Defer large changes to a new iteration.
+1.  **Review Feature Description:** Read the current feature description at `PLANS/feature_<feature_name>.md`.
+2.  **Check Backlog & Dependencies:** Review `PLANS/DESIGN_BACKLOG.md` and `PLANS/DEPENDENCY_STACK.md`.
+3.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the feature or introduce major unforeseen dependencies. Defer large changes to a new iteration.
 
-### 3. Modify Iteration Plan
+### 3. Modify Feature Description
 
 If the scope addition is acceptable:
 
-1.  **Update Graybox Scope:** Modify the "Graybox Scope" section of `PLANS/iteration_<feature_name>.md` to include the new requirements.
-2.  **Log the Change:** Add a note to the plan's "Changelog" or "Notes" section detailing the added scope, the rationale, and the date.
+1.  **Update Graybox Scope:** Modify the "Graybox Scope" section of `PLANS/feature_<feature_name>.md` to include the new requirements.
+2.  **Log the Change:** Add a changelog entry at the top or in a dedicated "Changelog" section detailing the added scope, the rationale, and the date.
 
 ### 4. Propose Next Steps
 
-The iteration plan has changed. The implementation plan is now out of date. Propose to the user that a `PLAN_IMPLEMENTATION` task must be performed again to synchronize the implementation plan with the new iteration scope.
+The feature description has changed. The implementation plan is now out of date. Propose to the user that a `MODIFY_PLAN` task must be performed to synchronize the implementation plan with the new feature scope.
 
 ### 5. Quality Gates
 

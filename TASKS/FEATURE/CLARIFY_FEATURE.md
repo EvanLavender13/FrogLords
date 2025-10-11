@@ -1,6 +1,6 @@
 # Clarify Feature Requirements
 
-Use **after receiving a feature description** and **before creating an iteration plan**. Goal: eliminate ambiguity via targeted questions that expose gaps, assumptions, or missing visual references.
+Use **after receiving a feature description** and **before implementation planning**. Goal: eliminate ambiguity via targeted questions that expose gaps, assumptions, or missing visual references.
 
 **Use when:**
 - Description feels vague or open to interpretation
@@ -99,7 +99,7 @@ Once answered, update document:
 - Add exact keyframe descriptions/pose breakdowns
 - Add clear success criteria (e.g., "arms alternate 180° out of phase, pointing down at rest")
 
-This becomes **authoritative reference** for iteration plan and implementation.
+This becomes **authoritative reference** for implementation planning.
 
 ### 6. Consolidate Feature Description
 
@@ -124,9 +124,9 @@ Once clarifications resolved, perform consistency and redundancy pass:
 
 **Output:** Terse, zero-redundancy, internally consistent description ready for planning.
 
-### 7. Proceed to Planning
+### 7. Proceed to Implementation Planning
 
-Once clarity achieved, documented, and consolidated, proceed to PLAN_ITERATION. Reference clarified requirements and visual references as validation checkpoints.
+Once clarity achieved, documented, and consolidated, proceed to PLAN_IMPLEMENTATION. Reference clarified requirements and visual references as validation checkpoints.
 
 ## Example Clarification Flow
 
@@ -162,7 +162,7 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN_ITERATION. 
 
 **User Confirms:** ✅
 
-**Result:** Clear, unambiguous feature description ready for iteration planning.
+**Result:** Clear, unambiguous feature description ready for implementation planning.
 
 ---
 
@@ -182,5 +182,5 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN_ITERATION. 
 
 **Next Steps:**
 1. Update feature description with clarifications
-2. Proceed to PLAN_ITERATION with clear requirements
+2. Proceed to PLAN_IMPLEMENTATION with clear requirements
 3. Reference visual materials as validation checkpoints

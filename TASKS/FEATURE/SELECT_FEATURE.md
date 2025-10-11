@@ -1,4 +1,4 @@
-# Identify Next Feature
+# Select and Initialize Next Feature
 
 ### 1. Review Development Principles
 
@@ -7,6 +7,8 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 -   Systemic design and emergence over content
 -   Smallest scope and tight iteration loops
 -   Avoiding content restrictions
+-   Gameplay-first control (input→acceleration, interruptibility)
+-   Procedural foundation and animation principles
 
 ### 2. Identify the Frontier
 1.  Open `PLANS/DEPENDENCY_STACK.md`.
@@ -42,26 +44,43 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 
 **Purpose:** Prevents premature features (like speed_animation_scaling deferral - backlog warned "may not be necessary" but feature was selected anyway).
 
-### 5. Write High-Level Feature Description
+### 5. Create Feature Branch
 
-Create a concise, actionable feature description following this structure:
+Run the script to create and switch to a new feature branch:
+
+```powershell
+./scripts/create_feature_branch.ps1 <feature_name>
+```
+
+This establishes the workspace before documenting the feature.
+
+### 6. Write Feature Description
+
+Create a comprehensive feature description following this structure:
 
 **[Feature Name]**
 
 -   **Core Mechanic:** What is the essential mechanic? (1-2 sentences)
 -   **Pattern Reuse:** What proven patterns/systems does this extend or build upon?
--   **Graybox Scope:** 
+-   **Graybox Scope:**
     -   Minimum testable implementation
     -   Key parameters to expose for tuning
     -   Estimated line count
--   **Minimal Implementation:** Where does it hook into existing code? (e.g., update order, files affected)
--   **Unlocks:** What future features does this enable? What backlog items does it unblock?
--   **Test Loop:** How to verify success? What to test first? Expected iteration time?
+-   **Minimal Implementation:** Where does it hook into existing code? (e.g., update order, files affected, implementation approach options)
+-   **Problem Evidence:** What documented observation or gameplay moment motivates this feature? When was the problem last encountered?
+-   **Unlocks:**
+    -   Immediate: What does this complete or validate?
+    -   Future: What features does this enable? What backlog items does it unblock?
+-   **Test Loop:**
+    -   How to verify success? What to test first?
+    -   Expected iteration time and self-test loop characteristics
 -   **Certainty:** Percentage + justification (reference dependencies, novelty, risk)
 
-### 6. Save Feature Description
+### 7. Save Feature Description
 
 Save the feature description to `PLANS/feature_<feature_name>.md` (use snake_case, e.g., `feature_primary_skeletal_animation.md`).
+
+The feature description is now complete and serves as the planning artifact. Proceed directly to PLAN_IMPLEMENTATION for granular decomposition.
 
 ### Tone & Constraints
 

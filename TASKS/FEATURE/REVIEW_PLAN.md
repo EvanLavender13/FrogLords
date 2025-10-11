@@ -2,7 +2,7 @@
 
 ### 1. Identify Target Feature
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`).
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
 
 ### 2. Gather Context
 

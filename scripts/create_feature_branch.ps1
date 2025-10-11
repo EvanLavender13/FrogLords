@@ -8,7 +8,7 @@ if (-not $feature_name) {
     exit 1
 }
 
-$branch_name = "iteration/$feature_name"
+$branch_name = "feature/$feature_name"
 
 Write-Host "Creating and switching to branch: $branch_name"
 git checkout -b $branch_name

@@ -42,8 +42,9 @@ For each iteration or refactor in the sample, read through the documents and ext
 - **Clarification needs:** Did the feature require CLARIFY_FEATURE? What was unclear initially?
 
 ### Feature Iterations: Implementation Phase Analysis
-- **Step completion velocity:** How many IMPLEMENTATION_STEP → REVIEW_STEP cycles occurred?
-- **Review feedback patterns:** What types of issues appeared in REVIEW_STEP or REVIEW_IMPLEMENTATION?
+- **Step completion velocity:** How many IMPLEMENTATION_STEP cycles occurred? Were steps appropriately sized?
+- **Self-verification effectiveness:** Did self-verification catch issues before final review?
+- **Review feedback patterns:** What types of issues appeared in REVIEW_IMPLEMENTATION?
   - Code quality issues
   - Principle violations in implementation
   - Misalignment with plan

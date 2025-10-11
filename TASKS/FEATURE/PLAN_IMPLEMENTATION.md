@@ -10,11 +10,12 @@ Read `AGENTS.md` to synthesize coding standards and architectural principles. Es
 
 ### 2. Identify Target Documents
 
-Extract the feature name from the current git branch name (format: `iteration/<feature_name>`) and locate:
--   Feature description: `PLANS/feature_<feature_name>.md` (high-level goals, constraints, design philosophy)
--   Iteration plan: `PLANS/iteration_<feature_name>.md` (specific scope, implementation approach, graybox details)
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`) and locate:
+-   Feature description: `PLANS/feature_<feature_name>.md` (high-level goals, constraints, design philosophy, implementation approach)
 
 ### 3. Foundation Architecture Review (CRITICAL)
+
+**This is the first detailed system audit.** The feature description identified *what* to build; now identify *exactly where* each piece goes and what needs to move.
 
 **Before decomposing, perform a thorough architectural audit to identify existing system states and prevent duplicate/conflicting implementations:**
 
@@ -72,10 +73,9 @@ Required Migrations:
 
 ### 4. Analyze and Decompose
 
-1.  **Read Feature Description:** Read `PLANS/feature_<feature_name>.md` to understand high-level goals, design constraints, and intended player experience
-2.  **Read Iteration Plan:** Read `PLANS/iteration_<feature_name>.md` for specific graybox scope and implementation approach
-3.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
-4.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
+1.  **Read Feature Description:** Read `PLANS/feature_<feature_name>.md` to understand high-level goals, design constraints, graybox scope, and implementation approach
+2.  **Analyze Source Code:** Read identified source files (`.h` and `.cpp`) to understand current structure, data flow, and conventions
+3.  **Generate Actionable Steps:** Decompose graybox implementation into a checklist of small, atomic, ordered tasks. Each task must be a concrete action on the codebase
 
 -   **Task Specificity:** Each step must be a clear, imperative instruction referencing specific files, functions, and data structures (e.g., "In `character/controller.h`, add a `dash_speed` parameter to the `tuning` struct.").
 -   **Include Migration Steps:** If foundation audit found duplicates/conflicts, include explicit removal and reference-update steps

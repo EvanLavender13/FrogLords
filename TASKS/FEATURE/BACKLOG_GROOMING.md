@@ -65,7 +65,7 @@ If collapsing removes significant historical context that might be useful for re
 ### 6. Verify Consistency
 
 1. Cross-check that certainty scores match between DEPENDENCY_STACK and DESIGN_BACKLOG
-2. Ensure "YOU ARE HERE" marker aligns with current git branch (`iteration/<feature_name>`)
+2. Ensure "YOU ARE HERE" marker aligns with current git branch (`feature/<feature_name>`)
 3. Verify removed items aren't referenced elsewhere in active planning docs
 
 ### Tone & Constraints
