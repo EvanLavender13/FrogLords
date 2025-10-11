@@ -12,6 +12,8 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)  ← YOU ARE HERE
 ├─────────────────────────────────────┤
+│  Pose Blending (100%) ✅            │  ← Quaternion slerp between keyframes
+├─────────────────────────────────────┤
 │  Debug Visual Overhaul (100%) ✅    │  ← Velocity trail, plot functions, gradient ring
 ├─────────────────────────────────────┤
 │  Secondary Motion (100%) ✅         │  ← Per-bone spring-damper lag
@@ -85,8 +87,9 @@
 ### Completed Foundation (100%) ✅
 
 **Skeletal Animation Stack:**
-- Skeleton debug system → Static keyframe preview → Primary skeletal animation (distance-phased) → Secondary motion (spring-damper lag)
+- Skeleton debug system → Static keyframe preview → Primary skeletal animation (distance-phased) → Secondary motion (spring-damper lag) → Pose blending (quaternion slerp)
 - Quaternion keyframe architecture validated; surveyor-wheel pattern proven for animation triggering
+- Continuous quaternion interpolation eliminates pops at phase boundaries; spring behavior shifts from "compensating for discontinuities" to "natural follow-through"
 - See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) for detailed retrospectives
 
 **Reactive Animation Systems:**
@@ -123,7 +126,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 2. ✅ Core gameplay (physics controller, procedural locomotion/orientation)
 3. ✅ Reactive animation (acceleration tilt, landing spring, tuning UI)
 4. ✅ Skeleton debug + refactor (game world separation)
-5. ✅ Keyframe foundation (static preview → primary animation → secondary motion)
+5. ✅ Keyframe foundation (static preview → primary animation → secondary motion → pose blending)
 6. ✅ Debug tooling (camera zoom, unified panel, visual overhaul)
 
 **Planning Horizon:**

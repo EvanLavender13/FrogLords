@@ -42,17 +42,10 @@
   - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
   - *Next Step:* Enables speed-based gait switching (walk → run blending)
 
-- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses
+- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses ✅ COMPLETE
   - *Prerequisite:* Foundation ✅ (distance-phased triggering proven)
-  - *Certainty:* High (~85%) - natural next step after threshold-based pose switching validated
-  - *Rationale:* Current distance-phased animation uses discrete pose switching (instant transitions at thresholds). Interpolating between poses will smooth transitions and improve visual quality.
-  - *Reference:* See [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md) for detailed explanation of slerp vs lerp, 2D blend spaces, and GDC philosophy
-  - *Scope:*
-    - Implement quaternion slerp for smooth rotation interpolation between poses
-    - Calculate blend factor from phase position between thresholds
-    - Apply blending in `apply_pose()` function (blend source + target poses before applying to skeleton)
-  - *Success Criteria:* Smooth limb motion during walk cycle; no visible "pops" at pose transitions; performance acceptable (slerp per joint)
-  - *Next Step:* Speed-based gait switching (walk → run blending based on velocity)
+  - *Certainty:* 100%
+  - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walk↔run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes required—quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
 
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅

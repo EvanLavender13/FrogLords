@@ -214,12 +214,17 @@ static void update_secondary_motion(skeleton& skel, secondary_motion_state& stat
         // Get parent's current rotation (this is what drives the motion)
         glm::quat current_parent_rot = glm::quat_cast(skel.joints[parent_idx].local_transform);
 
+        // Ensure current rotation is in same hemisphere as previous (shortest path)
+        if (glm::dot(current_parent_rot, prev_parent_rot) < 0.0f) {
+            current_parent_rot = -current_parent_rot;
+        }
+
         // Detect parent rotation change (parent's motion that child should follow)
         glm::quat delta_rot = current_parent_rot * glm::inverse(prev_parent_rot);
         float angle = glm::angle(delta_rot);
 
-        // When parent rotates, inject that motion as velocity into child's spring
-        if (angle > 0.001f && dt > 0.0f) { // Lower threshold to catch smaller rotations
+        // Inject parent's rotational motion as velocity into child's spring
+        if (angle > 0.001f && dt > 0.0f) {
             glm::vec3 axis = glm::axis(delta_rot);
             // Project parent's rotation onto our tracking axis
             float axis_component = glm::dot(axis, rotation_axis);

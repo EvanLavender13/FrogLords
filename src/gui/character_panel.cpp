@@ -78,8 +78,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::slider_float("Damping Ratio (bounciness)",
                                   &character.animation.secondary_motion.damping_ratio, 0.5f, 2.0f);
         gui::widget::slider_float("Response Scale (wobble amount)",
-                                  &character.animation.secondary_motion.response_scale, 0.0f,
-                                  0.04f);
+                                  &character.animation.secondary_motion.response_scale, 0.0f, 0.1f);
 
         // Read-only spring state display
         gui::widget::text("Left Elbow: %.3f rad (vel: %.3f)",
