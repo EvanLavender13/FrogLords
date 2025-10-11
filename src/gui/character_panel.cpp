@@ -3,6 +3,21 @@
 #include "sokol_app.h"
 #include "imgui.h"
 
+namespace {
+
+/// Helper to draw joint angle controls with three sliders (X/Y/Z Euler angles)
+void draw_joint_angles_widget(const char* label, glm::vec3& angles, const char* x_label,
+                              const char* y_label, const char* z_label) {
+    if (ImGui::TreeNode(label)) {
+        gui::widget::slider_float(x_label, &angles.x, -180.0f, 180.0f);
+        gui::widget::slider_float(y_label, &angles.y, -180.0f, 180.0f);
+        gui::widget::slider_float(z_label, &angles.z, -180.0f, 180.0f);
+        ImGui::TreePop();
+    }
+}
+
+} // namespace
+
 namespace gui {
 
 void draw_character_panel(character_panel_state& state, controller& character,
@@ -154,89 +169,33 @@ void draw_character_panel(character_panel_state& state, controller& character,
 
             // Left shoulder: bone points along -X axis (parent space = character frame)
             // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
-            if (ImGui::TreeNode("Left Shoulder")) {
-                gui::widget::slider_float("X-axis (twist)", &state.left_shoulder_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (fwd/back)", &state.left_shoulder_angles.y,
-                                          -180.0f, 180.0f);
-                gui::widget::slider_float("Z-axis (up/down)", &state.left_shoulder_angles.z,
-                                          -180.0f, 180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Left Shoulder", state.left_shoulder_angles, "X-axis (twist)",
+                                     "Y-axis (fwd/back)", "Z-axis (up/down)");
 
-            if (ImGui::TreeNode("Left Elbow")) {
-                gui::widget::slider_float("X-axis (twist)", &state.left_elbow_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (bend)", &state.left_elbow_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (rotate)", &state.left_elbow_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Left Elbow", state.left_elbow_angles, "X-axis (twist)",
+                                     "Y-axis (bend)", "Z-axis (rotate)");
 
             // Right shoulder: bone points along +X axis (parent space = character frame)
             // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
-            if (ImGui::TreeNode("Right Shoulder")) {
-                gui::widget::slider_float("X-axis (twist)", &state.right_shoulder_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (fwd/back)", &state.right_shoulder_angles.y,
-                                          -180.0f, 180.0f);
-                gui::widget::slider_float("Z-axis (up/down)", &state.right_shoulder_angles.z,
-                                          -180.0f, 180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Right Shoulder", state.right_shoulder_angles,
+                                     "X-axis (twist)", "Y-axis (fwd/back)", "Z-axis (up/down)");
 
-            if (ImGui::TreeNode("Right Elbow")) {
-                gui::widget::slider_float("X-axis (twist)", &state.right_elbow_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (bend)", &state.right_elbow_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (rotate)", &state.right_elbow_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Right Elbow", state.right_elbow_angles, "X-axis (twist)",
+                                     "Y-axis (bend)", "Z-axis (rotate)");
 
             // Legs point along -Y axis (downward, parent space = character frame)
             // X-axis = fwd/back swing, Y-axis = twist (invisible), Z-axis = in/out spread
-            if (ImGui::TreeNode("Left Hip")) {
-                gui::widget::slider_float("X-axis (fwd/back)", &state.left_hip_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (twist)", &state.left_hip_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (in/out)", &state.left_hip_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Left Hip", state.left_hip_angles, "X-axis (fwd/back)",
+                                     "Y-axis (twist)", "Z-axis (in/out)");
 
-            if (ImGui::TreeNode("Left Knee")) {
-                gui::widget::slider_float("X-axis (bend)", &state.left_knee_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (twist)", &state.left_knee_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (rotate)", &state.left_knee_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Left Knee", state.left_knee_angles, "X-axis (bend)",
+                                     "Y-axis (twist)", "Z-axis (rotate)");
 
-            if (ImGui::TreeNode("Right Hip")) {
-                gui::widget::slider_float("X-axis (fwd/back)", &state.right_hip_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (twist)", &state.right_hip_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (in/out)", &state.right_hip_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Right Hip", state.right_hip_angles, "X-axis (fwd/back)",
+                                     "Y-axis (twist)", "Z-axis (in/out)");
 
-            if (ImGui::TreeNode("Right Knee")) {
-                gui::widget::slider_float("X-axis (bend)", &state.right_knee_angles.x, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Y-axis (twist)", &state.right_knee_angles.y, -180.0f,
-                                          180.0f);
-                gui::widget::slider_float("Z-axis (rotate)", &state.right_knee_angles.z, -180.0f,
-                                          180.0f);
-                ImGui::TreePop();
-            }
+            draw_joint_angles_widget("Right Knee", state.right_knee_angles, "X-axis (bend)",
+                                     "Y-axis (twist)", "Z-axis (rotate)");
 
             ImGui::PopItemWidth();
         }
