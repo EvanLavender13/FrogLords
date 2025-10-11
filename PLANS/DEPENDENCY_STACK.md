@@ -82,149 +82,29 @@
 
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
-### Skeleton Debug Layer (Implemented, 100% certain)
+### Completed Foundation (100%) ✅
 
-**Status:** Minimum skeleton system delivered and integrated
+**Skeletal Animation Stack:**
+- Skeleton debug system → Static keyframe preview → Primary skeletal animation (distance-phased) → Secondary motion (spring-damper lag)
+- Quaternion keyframe architecture validated; surveyor-wheel pattern proven for animation triggering
+- See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) for detailed retrospectives
 
-- `character::skeleton` data model with transform propagation
-- Hardcoded humanoid T-pose asset for graybox visualization
-- Debug draw support with GUI toggles and optional animation probe
-- Build + lint + runtime smoke test verified (see implementation checklist)
+**Reactive Animation Systems:**
+- Acceleration tilt, landing spring, animation tuning UI complete
+- `character::animation_state` pattern proven; transform injection pipeline stable
+- See [implementation_reactive_animation.md](implementation_reactive_animation.md) and snapshot archive
 
-**Certainty:** 100% — matches plan scope and validated in runtime.
+**Debug Tooling:**
+- Debug visual overhaul (velocity trail, plot functions, speed gradient ring)
+- Unified debug panel architecture with collapsing headers
+- Camera zoom with mouse wheel (orbit + follow modes)
+- See [implementation_debug_visual_overhaul.md](implementation_debug_visual_overhaul.md) and [feature_camera_zoom.md](feature_camera_zoom.md)
 
-**Dependencies:** Requires rendering + runtime scaffolding; now unblocks secondary motion, IK, and pose tooling work.
-
-### Static Keyframe Preview (Implemented, 100% certain) ✅
-
-**Status:** Quaternion keyframe architecture validated and proven
-
-- `character::keyframe` module with quaternion-based pose storage
-- 8-joint minimum set (shoulders, elbows, hips, knees) sufficient for validation
-- 4 hardcoded poses (T_POSE, STEP_LEFT, NEUTRAL, STEP_RIGHT) visually distinct
-- Manual GUI selection with instant pose switching (no blending)
-- No visual artifacts, crashes, or stability issues
-
-**Certainty:** 100% — core hypothesis proven through implementation and testing.
-
-**Key Learning:** Quaternion composition with T-pose baseline (`local_transform = translate(t_pose_pos) * mat4_cast(pose_quat)`) works correctly. Ready for locomotion-driven animation.
-
-**Dependencies:** Built on Skeleton Debug System and Attach Skeleton to Body. Unblocks primary skeletal animation (locomotion-driven) for next iteration.
-
-**Code Standards Improvements:**
-- Established UPPER_CASE convention for enum constants in `AGENTS.md`
-- Updated `.clang-tidy` to enforce `EnumConstantCase: UPPER_CASE`
-- Pattern validated and ready for reuse
-
-### Primary Skeletal Animation (Implemented, 100% certain) ✅
-
-**Status:** Distance-phased pose switching validated and proven
-
-- Distance-phase calculation: `phase = fmod(distance_traveled, cycle_length) / cycle_length`
-- Threshold-based pose selection (STEP_LEFT → NEUTRAL → STEP_RIGHT → NEUTRAL cycle)
-- Surveyor-wheel synchronization with locomotion system
-- Manual pose override mode for debugging
-- Real-time cycle length tuning via GUI slider
-- Walk speed lock (SHIFT key) for precise tuning observation
-
-**Certainty:** 100% — core hypothesis proven. Distance-phased triggering works cleanly, poses cycle correctly at all speeds, no visual artifacts or crashes.
-
-**Key Learning:** Surveyor-wheel pattern extends naturally to skeletal animation. Cumulative `distance_traveled` with modulo-based phase calculation provides stable, speed-independent cycling. Threshold-based pose selection sufficient for graybox validation before adding interpolation.
-
-**Dependencies:** Built on Static Keyframe Preview and Procedural Locomotion. Unblocks pose blending (lerp/slerp) and speed-based gait switching for next iteration.
-
-**Architecture Validated:**
-- `animation_state` pattern continues to work well (cycle_length parameter, current_automatic_pose state)
-- `update_skeletal_animation()` encapsulation clean (single call site in game loop)
-- Manual override parameter preserves debug UI functionality
-- Stop behavior correct (pose freezes when distance stops, no special handling needed)
-
-### Secondary Motion (Implemented, 100% certain) ✅
-
-**Status:** Per-bone spring-damper lag validated and proven
-
-- 4 spring states (left_elbow, right_elbow, left_knee, right_knee) track offset and velocity
-- Velocity-injection approach: spring drives joint angular velocity, not direct offset
-- Integration parameters: stiffness (15.0 Hz), damping_ratio (1.0), response_scale (0.02)
-- Clean reactive layer: applied after primary pose, before transform propagation
-- UI controls: stiffness, damping, response_scale, enable/disable toggle
-
-**Certainty:** 100% — hypothesis proven. Spring-damper lag creates natural follow-through on limbs during pose transitions and speed changes without affecting gameplay.
-
-**Key Learning:** Velocity-injection approach (discovered during iteration) superior to direct offset manipulation. Prevents overshoot artifacts and maintains natural joint motion. Spring-damper pattern successfully scaled from root transform (landing spring, acceleration tilt) to individual skeletal joints.
-
-**Dependencies:** Built on Primary Skeletal Animation and Spring-Damper foundation. Pattern proven for skeletal application; ready for expansion to additional joints (head bobble, spine flex) or cloth/appendage physics.
-
-**Architecture Validated:**
-- Per-bone spring state pattern scales cleanly (4 joints, 8 floats total state)
-- Axis-specific lag (elbows Y-axis, knees X-axis) provides natural swing motion
-- Update timing preserved: after `apply_pose()`, before skeleton propagation
-- "Do no harm" principle maintained (pure reactive layer, zero gameplay impact)
-- Parameter exposure pattern consistent with existing tuning UI
-
-### Debug Visual Overhaul (Implemented, 100% certain) ✅
-
-**Status:** Three focused debug visualizations validated and proven
-
-- **Velocity Decay Trail:** Time-sampled position breadcrumbs (0.1s intervals, 25 samples) with age-based size/alpha fade
-- **Plot Functions:** Reusable `plot_value()` and `plot_histogram()` with configurable time windows, value ranges, axis labels
-- **Speed Gradient Ring:** Dynamic expanding ring with blue → green → yellow → red gradient based on speed ratio
-
-**Certainty:** 100% — all visualizations rendering correctly, zero gameplay impact verified, systemic reusability achieved.
-
-**Key Learning:** 
-- Velocity trail tuning: 1.0s sampling too coarse, 0.1s provides readable turning radius visualization
-- Speed ring evolution: Fixed radius (max_speed) less intuitive than dynamic expansion (current_speed)
-- Plot functions: Generic temporal graphing unlocks future debugging (speed, blend factors, any float value)
-- Buffer management: Simple vector erase sufficient for debug use (<500 samples)
-
-**Dependencies:** Built on debug_draw and gui infrastructure. Pure additive layer, no dependencies on gameplay systems. Pattern proven for future debug visualizations (trajectory prediction, cooldown rings, temporal graphs).
-
-**Architecture Validated:**
-- State ownership pattern: `velocity_trail_state` in `game_world` (app layer), visualization in `debug_draw` (rendering layer)
-- Forward declaration pattern prevents circular dependencies (rendering → app)
-- Static map storage for plot buffers scales well (per-label isolation, automatic cleanup not required for debug)
-- Graybox discipline: white spheres, gradient colors, ImGui defaults (no premature polish)
-
-### Reactive Systems Layer (Implemented, ~100% certain) ✅
-
-**Status:** Architecture proven, tuning UI complete, ready for iteration
-
-**Completed: Acceleration Tilt ✅**
-- Character-local space transformation of world acceleration
-- Exponential smoothing for natural response
-- Pure reactive layer ("do no harm" principle verified)
-- 45 lines of code, 2 tunable parameters
-- UI controls: tilt_smoothing, tilt_magnitude with real-time pitch/roll display
-
-**Completed: Landing Spring ✅**
-- Spring-damper driven crouch/recover on landing
-- Impulse proportional to fall velocity
-- Critically damped for natural feel (no bounce)
-- Visual debug spring (collision sphere to body center)
-- UI controls: stiffness, damping, impulse_scale with spring state display
-
-**Completed: Animation Tuning UI ✅**
-- Comprehensive parameter exposure across animation/orientation/locomotion systems
-- Real-time adjustment during gameplay (zero rebuild iteration)
-- Consistent UX pattern: collapsing headers + live state feedback
-- See `animation_tuning_plan.md` for implementation details and learnings
-
-**Architecture Validated:**
-- `character::animation_state` pattern works well (proven twice)
-- Update timing: after physics, after orientation, before render
-- Transform injection: position → orient → landing offset → tilt → render
-- Parameters over assets paradigm successful
-- Flag-based event communication (just_landed) pattern works
-- Public member access for tuning (no getters/setters needed)
-- Direct UI binding to system parameters (no intermediate abstractions)
-
-**Next Candidates:**
-- Additional reactive systems as gameplay needs emerge
-
-**Certainty:** ~100% for current systems. Architecture solid, tuning enabled, ready for feel iteration.
-
-**Dependencies:** Requires stable physics core. Changes in controller would force redesign here.
+**Key Systemic Learnings:**
+- **Motion vs. Structure:** Reactive layers need motion sources (dynamic state), not just data structures
+- **Velocity-injection approach:** Superior to direct offset manipulation for spring-damper systems
+- **Distance-phased triggering:** Surveyor-wheel pattern scales from locomotion to skeletal animation
+- **Graybox discipline:** Parameters over polish; white spheres over art assets
 
 ### Polish Layer (Backlog, ~10% certain)
 
@@ -236,22 +116,15 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Debug Visual Overhaul complete. Ready to pull next feature from backlog.
+**Current Focus:** Completed foundation ready. Pull next feature from backlog based on learnings and dependencies. ← **YOU ARE HERE**
 
-**Work Order:**
-1. ✅ Foundation primitives (spring-damper, easing, collision math)
-2. ✅ Core rendering and app runtime
-3. ✅ Core gameplay (physics controller, basic animation)
-4. ✅ Reactive animation systems (acceleration tilt, landing spring)
-5. ✅ Animation tuning UI (comprehensive parameter exposure)
-6. ✅ Skeleton debug system (hierarchical joints + T-pose visualizer)
-7. ✅ Refactor: Game World Separation
-8. ✅ Static Keyframe Preview (quaternion keyframes validated)
-9. ✅ Primary Skeletal Animation (distance-phased pose switching)
-10. ✅ Secondary Motion (per-bone spring-damper lag)
-11. ✅ Camera Zoom + Debug Panel (mouse wheel zoom, unified Debug Panel GUI)
-12. ✅ Debug Visual Overhaul (velocity trail, plot functions, speed gradient ring)
-13. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
+**Work Order (Completed):**
+1. ✅ Foundation layer (primitives, rendering, runtime, input, camera)
+2. ✅ Core gameplay (physics controller, procedural locomotion/orientation)
+3. ✅ Reactive animation (acceleration tilt, landing spring, tuning UI)
+4. ✅ Skeleton debug + refactor (game world separation)
+5. ✅ Keyframe foundation (static preview → primary animation → secondary motion)
+6. ✅ Debug tooling (camera zoom, unified panel, visual overhaul)
 
 **Planning Horizon:**
 - Foundation: Large chunks (high certainty, stable)
@@ -262,16 +135,9 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 - Polish: Do not plan (pull from backlog as needed)
 
 **Certainty Analysis:**
-- Foundation layer: ~95% certain (stable, won't change)
-- Core gameplay: ~95% certain (proven through testing)
-- Camera system: ~95% certain (zoom + debug UI complete)
-- Skeleton debug: 100% certain (meets plan; minimal risk)
-- Reactive animation: ~90% certain (architecture validated)
-- Static Keyframe Preview: 100% certain (hypothesis proven, ready for locomotion integration)
-- Primary Skeletal Animation: 100% certain (distance-phased triggering validated, ready for pose blending)
-- Secondary Motion: 100% certain (spring-damper lag proven, velocity-injection approach validated)
-- Debug Panel architecture: 100% certain (unified panel with collapsing headers proven, pattern reusable)
-- Next features: 50-70% certain (depends on rendering decisions)
+- Completed foundation: 100% certain (6 validated iterations, patterns proven)
+- Core gameplay: ~95% certain (physics controller stable, procedural systems working)
+- Next features: 50-70% certain (depends on gameplay priorities and rendering decisions)
 - Higher layers: <30% certain (excessive cascading uncertainty)
 
 **Risk Management:**

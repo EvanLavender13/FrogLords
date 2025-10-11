@@ -4,25 +4,13 @@
 
 **Status:** Living document (updated continuously)
 
+**Historical Snapshots:** Completed items archived in [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md). Implementation details in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`.
+
 ---
 
 ## Animation & Feel
 
 ### Debug Visualization
-
-- **Debug Visual Overhaul:** Add focused debug visualizations (velocity trail, temporal plots, speed gradient ring) ✅ **COMPLETE**
-  - *Prerequisite:* Debug Draw System ✅, GUI System ✅
-  - *Certainty:* 100%
-  - *Learning:* Three debug visualizations validated with strong systemic reusability. Key findings:
-    - Velocity trail: 0.1s sampling (changed from 1.0s) provides readable turning radius; 25 samples = 2.5s history sufficient
-    - Speed gradient ring: Dynamic expansion (current_speed) more intuitive than fixed radius (max_speed); blue→green→yellow→red gradient clear
-    - Plot functions: Generic `plot_value()`/`plot_histogram()` unlocked temporal debugging (FPS, speed, blend factors); axis labels critical for readability
-    - Buffer management: Simple vector erase (<500 samples) sufficient for debug use; no need for circular buffer complexity
-    - State ownership pattern: `velocity_trail_state` in `game_world` (app layer), visualization in `debug_draw` (rendering layer) prevents circular dependencies
-    - Graybox discipline: White spheres, gradient colors, ImGui defaults (no premature polish)
-  - *Next Step:* Plot functions ready for reuse (speed graphs, blend factors); velocity trail pattern applicable to trajectory prediction; gradient ring pattern for cooldown/range indicators
-  - *Completion Date:* October 10, 2025
-  - *Implementation:* See `PLANS/implementation_debug_visual_overhaul.md` and `PLANS/code_review_debug_visual_overhaul.md`
 
 - **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
   - *Prerequisite:* Debug Draw System ✅
@@ -35,72 +23,37 @@
 
 ### Skeletal Animation (Keyframe Foundation)
 
-- **Static Keyframe Preview:** Manual GUI selection between hardcoded skeletal poses (validates quaternion-based keyframes before adding locomotion) ✅ **COMPLETE**
-  - *Prerequisite:* Skeleton Debug System ✅, Attach Skeleton to Body ✅
-  - *Certainty:* 100%
-  - *Learning:* Quaternion keyframe architecture fully validated. Key findings:
-    - Quaternion composition formula works: `local_transform = translate(t_pose_pos) * mat4_cast(pose_quat)`
-    - 8-joint minimum set (shoulders, elbows, hips, knees) sufficient for walk validation
-    - Manual pose selection proves data structure before adding locomotion complexity
-    - T-pose baseline uses identity rotations (translation-only), simplifying composition
-    - Instant pose switching stable with no visual artifacts or crashes
-    - Clean separation of keyframe data from application logic enables future extensions
-    - UPPER_CASE enum convention established and enforced via clang-tidy
-  - *Next Step:* Primary skeletal animation (locomotion-driven) now unblocked with proven quaternion foundation
-  - *Completion Date:* October 8, 2025
-  - *Implementation:* See `PLANS/implementation_static_keyframe_preview.md` and `PLANS/code_review_static_keyframe_preview.md`
-
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
-  - *Prerequisite:* Static Keyframe Preview validated (8-joint minimum working)
+  - *Prerequisite:* Foundation ✅ (keyframe architecture proven)
   - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
-  - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for validating quaternion architecture
-  - *Status:* Now unblocked - Static Keyframe Preview validated 8-joint minimum successfully
+  - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for current graybox iteration
   - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
   - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
 
 - **Running gait keyframes:** Add RUN_STEP_LEFT, RUN_NEUTRAL, RUN_STEP_RIGHT poses to keyframe library
-  - *Prerequisite:* Static Keyframe Preview ✅ (quaternion architecture proven)
+  - *Prerequisite:* Foundation ✅ (quaternion architecture proven)
   - *Certainty:* High (~85%) - direct extension of proven pattern
-  - *Rationale:* Walking gait keyframes validated in Static Keyframe Preview. Running gait differs in limb extension/timing but uses same quaternion architecture. Extends pose library before locomotion-driven animation integration.
+  - *Rationale:* Walking gait keyframes already validated. Running gait differs in limb extension/timing but uses same quaternion architecture. Needed before implementing speed-based gait switching.
   - *Scope:*
     - Add 3 new `pose_type` enum values: `RUN_STEP_LEFT`, `RUN_NEUTRAL`, `RUN_STEP_RIGHT`
     - Author 3 hardcoded run poses (greater limb extension, higher arm swing than walk)
     - Extend GUI dropdown to include run poses for manual selection
     - Reuse existing `apply_pose()` logic (no architecture changes)
   - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
-  - *Excludes:* Locomotion-driven triggering (still manual selection); speed-based walk/run blending (deferred to primary skeletal animation)
-  - *Next Step:* Provides complete pose library (walk + run) for primary skeletal animation to blend between
-  - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) to minimize initial validation scope
+  - *Next Step:* Enables speed-based gait switching (walk → run blending)
 
-- **Primary skeletal animation (locomotion-driven):** Distance-phased limb animation synchronized to movement (walk/run arm swing cycles) ✅ **COMPLETE**
-  - *Prerequisite:* Static Keyframe Preview ✅
-  - *Certainty:* 100%
-  - *Learning:* Distance-phased pose switching validated with threshold-based selection. Key findings:
-    - Surveyor-wheel pattern extends naturally to skeletal animation (`phase = fmod(distance_traveled, cycle_length) / cycle_length`)
-    - Threshold-based pose selection (0.25/0.5/0.75 splits) sufficient for graybox validation before adding interpolation
-    - Cumulative distance tracking provides stable, speed-independent cycling
-    - Stop behavior correct by design (pose freezes when distance stops, no special handling needed)
-    - Manual override parameter preserves debug UI functionality alongside automatic animation
-    - Walk speed lock (SHIFT key) critical for precise tuning observation
-    - Distance accumulation fix critical: changed from `distance = phase * stride` (wrapped) to `distance += speed * dt` (cumulative)
-  - *Next Step:* Pose blending (lerp/slerp) now unblocked to smooth transitions between discrete poses
-  - *Completion Date:* October 9, 2025
-  - *Implementation:* See [implementation_primary_skeletal_animation.md](PLANS/implementation_primary_skeletal_animation.md) and [code_review_primary_skeletal_animation.md](PLANS/code_review_primary_skeletal_animation.md)
+- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses
+  - *Prerequisite:* Foundation ✅ (distance-phased triggering proven)
+  - *Certainty:* High (~85%) - natural next step after threshold-based pose switching validated
+  - *Rationale:* Current distance-phased animation uses discrete pose switching (instant transitions at thresholds). Interpolating between poses will smooth transitions and improve visual quality.
+  - *Reference:* See [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md) for detailed explanation of slerp vs lerp, 2D blend spaces, and GDC philosophy
+  - *Scope:*
+    - Implement quaternion slerp for smooth rotation interpolation between poses
+    - Calculate blend factor from phase position between thresholds
+    - Apply blending in `apply_pose()` function (blend source + target poses before applying to skeleton)
+  - *Success Criteria:* Smooth limb motion during walk cycle; no visible "pops" at pose transitions; performance acceptable (slerp per joint)
+  - *Next Step:* Speed-based gait switching (walk → run blending based on velocity)
 
-- **Secondary motion (skeletal follow-through):** Per-bone spring-damper lag creating natural limb wobble during pose transitions ✅ **COMPLETE**
-  - *Prerequisite:* Primary Skeletal Animation ✅
-  - *Certainty:* 100%
-  - *Learning:* Spring-damper lag successfully scaled from root transform to individual skeletal joints. Key findings:
-    - Velocity-injection approach (discovered during iteration) superior to direct offset manipulation for preventing overshoot artifacts
-    - 4 spring states (left_elbow, right_elbow, left_knee, right_knee) sufficient for natural follow-through
-    - Final parameters: stiffness=15.0 Hz, damping_ratio=1.0, response_scale=0.02
-    - Axis-specific lag (elbows Y-axis, knees X-axis) provides natural swing motion
-    - Pure reactive layer maintains "do no harm" principle (zero gameplay impact)
-    - Pattern proven for expansion to additional joints (head, spine) or cloth/appendage physics
-  - *Next Step:* Secondary motion architecture validated; ready for advanced skeletal reactivity (head bobble, spine flex) when needed
-  - *Completion Date:* October 9, 2025
-  - *Implementation:* See [implementation_secondary_motion.md](PLANS/implementation_secondary_motion.md) and [code_review_secondary_motion.md](PLANS/code_review_secondary_motion.md)
-  
 - **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
   - *Prerequisite:* Acceleration tilt working ✅
   - *Status:* **DEFERRED** - Investigated 2025-10-06, current constant magnitude feels good
@@ -213,19 +166,6 @@
 ## Camera & Controls
 
 ### Camera Enhancements (Low Priority)
-- **Mouse Wheel Camera Zoom:** ✅ **COMPLETE**
-  - *Prerequisite:* `camera` ✅, `input` ✅
-  - *Certainty:* 100%
-  - *Learning:* Mouse wheel zoom successfully implemented for both ORBIT and FOLLOW modes with tunable distance limits. Key findings:
-    - One-frame delay bug in FOLLOW mode required immediate eye position recalculation in `zoom()` method (pattern from ORBIT mode's `update_eye_position()` call)
-    - Spherical camera orbit around `follow_height_offset` (1.5m above character) creates intentional "shift" effect during zoom - not a bug, but geometric behavior
-    - Debug UI (camera panel) proved immediately valuable for tuning height offset (0-3m) and zoom limits (1.5-15m default)
-    - GUI refactoring to unified Debug Panel with collapsing headers improves maintainability and sets pattern for future debug panels
-    - Default range (1.5-15m) appropriate for skeletal animation inspection; very close zoom (<2m) reveals graybox mesh gaps (expected, not issue)
-  - *Scope Growth:* Original estimate 15-30 lines, actual ~60 lines across 8 files. Growth justified: bug fix necessary, debug UI high ROI (saves 10+ min per future panel), GUI refactoring improves architecture
-  - *Next Step:* Camera debug panel architecture proven; pattern reusable for physics panel, audio panel, profiling panel
-  - *Completion Date:* October 10, 2025
-  - *Implementation:* See `PLANS/feature_camera_zoom.md` for detailed retrospective (includes bug fix, GUI refactoring notes)
 - **Camera collision:** Prevent clipping through walls
 - **Smart framing:** Keep character and target both visible
 - **Camera shake:** Impact feedback
