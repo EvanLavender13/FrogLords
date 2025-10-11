@@ -31,9 +31,9 @@ struct secondary_motion_state {
     glm::quat prev_right_hip = glm::quat();
 
     // Tuning parameters
-    float stiffness = 15.0f;      // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
-    float damping_ratio = 1.0f;   // Critically damped by default (range 0.5-2.0)
-    float response_scale = 0.02f; // How much to amplify rotation changes (higher = more wobble)
+    float stiffness = 15.0f;       // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
+    float damping_ratio = 1.0f;    // Critically damped by default (range 0.5-2.0)
+    float response_scale = 0.075f; // How much to amplify rotation changes (higher = more wobble)
 };
 
 struct animation_state {
@@ -71,7 +71,10 @@ struct animation_state {
     // Distance-phased skeletal animation update
     void update_skeletal_animation(skeleton& skel, float distance_traveled,
                                    pose_type manual_override_pose, bool use_manual_override,
-                                   bool enable_secondary_motion, float dt);
+                                   float dt);
+
+    // Apply secondary motion (spring-based follow-through)
+    void update_secondary_motion(skeleton& skel, float dt);
 };
 
 } // namespace character

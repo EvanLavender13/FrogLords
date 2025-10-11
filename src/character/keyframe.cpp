@@ -82,15 +82,19 @@ static void reset_to_t_pose(skeleton& skel) {
 
 /// Create identity pose (all quaternions are identity rotations)
 static keyframe create_identity_pose() {
+    // Identity quaternion = (w=1, x=0, y=0, z=0) represents no rotation
+    // NOTE: glm::quat() default constructor creates (w=1, x=0, y=0, z=0) which is correct
+    // But for clarity, we explicitly construct identity quaternions
+    glm::quat identity(1.0f, 0.0f, 0.0f, 0.0f);
     return keyframe{
-        glm::quat(), // left_shoulder
-        glm::quat(), // left_elbow
-        glm::quat(), // right_shoulder
-        glm::quat(), // right_elbow
-        glm::quat(), // left_hip
-        glm::quat(), // left_knee
-        glm::quat(), // right_hip
-        glm::quat()  // right_knee
+        identity, // left_shoulder
+        identity, // left_elbow
+        identity, // right_shoulder
+        identity, // right_elbow
+        identity, // left_hip
+        identity, // left_knee
+        identity, // right_hip
+        identity  // right_knee
     };
 }
 
@@ -167,28 +171,8 @@ void apply_pose(skeleton& skel, pose_type pose) {
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
 
-    // T-pose is the default; no modification needed
-    if (pose == pose_type::T_POSE) {
-        update_global_transforms(skel);
-        return;
-    }
-
     // Get keyframe based on pose type
-    keyframe kf;
-    switch (pose) {
-    case pose_type::STEP_LEFT:
-        kf = create_step_left_pose();
-        break;
-    case pose_type::NEUTRAL:
-        kf = create_neutral_pose();
-        break;
-    case pose_type::STEP_RIGHT:
-        kf = create_step_right_pose();
-        break;
-    default:
-        kf = create_identity_pose();
-        break;
-    }
+    keyframe kf = get_keyframe_data(pose);
 
     // Apply keyframe quaternions to skeleton joints using named indices
 
@@ -209,9 +193,6 @@ void apply_pose(skeleton& skel, pose_type pose) {
     apply_joint(joint_index::LEFT_KNEE, kf.left_knee);
     apply_joint(joint_index::RIGHT_HIP, kf.right_hip);
     apply_joint(joint_index::RIGHT_KNEE, kf.right_knee);
-
-    // Propagate transforms through hierarchy
-    update_global_transforms(skel);
 }
 
 void apply_pose_with_overrides(skeleton& skel, pose_type pose,
@@ -285,9 +266,6 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
                 compose_rotation(base_kf.right_hip, to_quat(right_hip_angles)));
     apply_joint(joint_index::RIGHT_KNEE,
                 compose_rotation(base_kf.right_knee, to_quat(right_knee_angles)));
-
-    // Propagate transforms through hierarchy
-    update_global_transforms(skel);
 }
 
 } // namespace character

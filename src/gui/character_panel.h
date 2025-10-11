@@ -31,6 +31,17 @@ struct character_panel_state {
     glm::vec3 left_knee_angles = glm::vec3(0.0f);
     glm::vec3 right_hip_angles = glm::vec3(0.0f);
     glm::vec3 right_knee_angles = glm::vec3(0.0f);
+
+    void reset_joint_overrides() {
+        left_shoulder_angles = glm::vec3(0.0f);
+        left_elbow_angles = glm::vec3(0.0f);
+        right_shoulder_angles = glm::vec3(0.0f);
+        right_elbow_angles = glm::vec3(0.0f);
+        left_hip_angles = glm::vec3(0.0f);
+        left_knee_angles = glm::vec3(0.0f);
+        right_hip_angles = glm::vec3(0.0f);
+        right_knee_angles = glm::vec3(0.0f);
+    }
 };
 
 void draw_character_panel(character_panel_state& state, controller& character,

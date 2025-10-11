@@ -149,8 +149,8 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
         gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
 
-        ImGui::Separator();
-        gui::widget::checkbox("Manual Pose Selection", &state.use_manual_pose_selection);
+        bool manual_pose_toggled =
+            gui::widget::checkbox("Manual Pose Selection", &state.use_manual_pose_selection);
 
         if (state.use_manual_pose_selection) {
             ImGui::Separator();
@@ -159,10 +159,20 @@ void draw_character_panel(character_panel_state& state, controller& character,
             int current_pose = static_cast<int>(state.selected_pose);
             if (ImGui::Combo("Pose", &current_pose, pose_names, 4)) {
                 state.selected_pose = static_cast<character::pose_type>(current_pose);
+                state.reset_joint_overrides(); // Reset on pose change
             }
 
             ImGui::Separator();
-            gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
+            bool joint_overrides_toggled =
+                gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
+
+            if (joint_overrides_toggled) {
+                state.reset_joint_overrides();
+            }
+        }
+
+        if (manual_pose_toggled) {
+            state.reset_joint_overrides();
         }
 
         if (state.enable_joint_overrides && state.use_manual_pose_selection &&

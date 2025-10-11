@@ -111,13 +111,9 @@ void animation_state::update(const animation_update_params& params) {
 
 void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
                                                 pose_type manual_override_pose,
-                                                bool use_manual_override,
-                                                bool enable_secondary_motion, float dt) {
+                                                bool use_manual_override, float dt) {
     if (use_manual_override) {
         apply_pose(skel, manual_override_pose);
-        if (enable_secondary_motion) {
-            update_secondary_motion(skel, secondary_motion, dt);
-        }
         return;
     }
 
@@ -194,21 +190,13 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
 
-    // Update global transforms after applying blended poses
-    update_global_transforms(skel);
-
     // Update GUI state to reflect target pose of current segment
     current_automatic_pose = target_pose;
-
-    // Apply secondary motion (spring-based follow-through)
-    if (enable_secondary_motion) {
-        update_secondary_motion(skel, secondary_motion, dt);
-    }
 }
 
 /// Apply per-joint spring-damper lag to create natural follow-through.
 /// Child joints lag behind their parent's motion, creating visible wobble.
-static void update_secondary_motion(skeleton& skel, secondary_motion_state& state, float dt) {
+void animation_state::update_secondary_motion(skeleton& skel, float dt) {
     auto update_spring = [&](int parent_idx, int joint_idx, float& offset, float& velocity,
                              glm::quat& prev_parent_rot, const glm::vec3& rotation_axis) {
         // Get parent's current rotation (this is what drives the motion)
@@ -239,12 +227,13 @@ static void update_secondary_motion(skeleton& skel, secondary_motion_state& stat
             float angular_velocity_change = effective_angle / dt;
 
             // Add parent's angular velocity to child's spring (child follows parent)
-            velocity += angular_velocity_change * state.response_scale;
+            velocity += angular_velocity_change * secondary_motion.response_scale;
         }
 
         // Spring toward zero offset (child catches up to parent's motion)
-        float spring_force = state.stiffness * (0.0f - offset);
-        float damping = critical_damping(state.stiffness) * state.damping_ratio;
+        float spring_force = secondary_motion.stiffness * (0.0f - offset);
+        float damping =
+            critical_damping(secondary_motion.stiffness) * secondary_motion.damping_ratio;
         float damping_force = damping * velocity;
         float acceleration = spring_force - damping_force;
 
@@ -266,14 +255,18 @@ static void update_secondary_motion(skeleton& skel, secondary_motion_state& stat
     };
 
     // Child joints follow parent motion
-    update_spring(joint_index::LEFT_SHOULDER, joint_index::LEFT_ELBOW, state.left_elbow_offset,
-                  state.left_elbow_velocity, state.prev_left_shoulder, glm::vec3(0, 1, 0));
-    update_spring(joint_index::RIGHT_SHOULDER, joint_index::RIGHT_ELBOW, state.right_elbow_offset,
-                  state.right_elbow_velocity, state.prev_right_shoulder, glm::vec3(0, 1, 0));
-    update_spring(joint_index::LEFT_HIP, joint_index::LEFT_KNEE, state.left_knee_offset,
-                  state.left_knee_velocity, state.prev_left_hip, glm::vec3(1, 0, 0));
-    update_spring(joint_index::RIGHT_HIP, joint_index::RIGHT_KNEE, state.right_knee_offset,
-                  state.right_knee_velocity, state.prev_right_hip, glm::vec3(1, 0, 0));
+    update_spring(joint_index::LEFT_SHOULDER, joint_index::LEFT_ELBOW,
+                  secondary_motion.left_elbow_offset, secondary_motion.left_elbow_velocity,
+                  secondary_motion.prev_left_shoulder, glm::vec3(0, 1, 0));
+    update_spring(joint_index::RIGHT_SHOULDER, joint_index::RIGHT_ELBOW,
+                  secondary_motion.right_elbow_offset, secondary_motion.right_elbow_velocity,
+                  secondary_motion.prev_right_shoulder, glm::vec3(0, 1, 0));
+    update_spring(joint_index::LEFT_HIP, joint_index::LEFT_KNEE, secondary_motion.left_knee_offset,
+                  secondary_motion.left_knee_velocity, secondary_motion.prev_left_hip,
+                  glm::vec3(1, 0, 0));
+    update_spring(joint_index::RIGHT_HIP, joint_index::RIGHT_KNEE,
+                  secondary_motion.right_knee_offset, secondary_motion.right_knee_velocity,
+                  secondary_motion.prev_right_hip, glm::vec3(1, 0, 0));
 }
 
 } // namespace character
