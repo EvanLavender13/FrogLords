@@ -34,12 +34,6 @@
 - **Description:** Commented-out call to `gui::plot_value` suggests leftover debugging/experimentation code. Line reads: `// gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f);`
 - **Suggested Fix:** Remove commented-out code. If this represents a potential feature, document it in DESIGN_BACKLOG.md instead.
 
-### printf Logging in Production Code
-- **File:** `src/main.cpp:11`
-- **Severity:** Medium
-- **Description:** Printf statement `printf("sapp_sample_count = %d\n", sapp_sample_count());` logs MSAA sample count at startup. While useful for debugging, this is permanent logging in main.cpp without a debug flag.
-- **Suggested Fix:** Either remove if not needed, or wrap in a debug compile flag (`#ifdef DEBUG` or similar) if startup diagnostics are valuable.
-
 ### TODO Comments for Future Features
 - **Files:**
   - `src/input/input.h:67-75`
@@ -60,12 +54,6 @@
 - **Description:** Hardcoded max_speed value `8.0f` in legacy `update()` method should use the actual parameter or be named.
 - **Suggested Fix:** Pass max_speed as a parameter to the update method or use a named constant.
 
-### C-Style Void Parameters
-- **File:** `src/main.cpp:8, 14, 18`
-- **Severity:** Medium
-- **Description:** Functions use C-style `void` parameter lists (e.g., `static void init(void)`). This is C convention; C++ prefers empty parameter lists.
-- **Suggested Fix:** Change `func(void)` to `func()` for C++ convention consistency.
-
 ---
 
 ## Low
@@ -84,14 +72,6 @@
 - **Severity:** Low
 - **Description:** `// NOLINT(bugprone-branch-clone)` suppresses warning for intentional duplicate branch in threshold-based pose selection.
 - **Suggested Fix:** None needed—this is appropriate use of NOLINT for intentional design choice where both branches assign NEUTRAL pose.
-
-### Unused Parameter Markers
-- **File:** 
-  - `src/main.cpp:27-28`
-  - `src/rendering/debug_draw.cpp:73, 108`
-- **Severity:** Low
-- **Description:** Multiple `(void) param;` statements to suppress unused parameter warnings. While functionally correct, C++ attributes would be clearer.
-- **Suggested Fix:** Consider using `[[maybe_unused]]` attribute instead of `(void)` casts for C++17 clarity. However, this is low priority and current approach is acceptable.
 
 ### Inconsistent Constant Naming Scope
 - **File:** Various (e.g., `src/character/controller.cpp:15-16`)
@@ -113,6 +93,39 @@
 ## Completed
 
 (Resolved items moved here for reference; prune periodically)
+
+### printf Logging in Production Code
+- **Files:** src/main.cpp
+- **Severity:** Medium
+- **Description:** Printf statement `printf("sapp_sample_count = %d\n", sapp_sample_count());` logs MSAA sample count at startup. While useful for debugging, this is permanent logging in main.cpp without a debug flag.
+- **Resolution:** Removed the unconditional startup printf and dropped the unused `<cstdio>` include so release builds stay silent.
+- **Completed:** 2025-10-11
+- **Learnings:**
+  - Entry-point diagnostics should flow through the debug UI or conditional logging instead of stdout prints.
+  - Keeping trivial maintenance items batched by touch point reduces context churn.
+- **Document:** PLANS/maintenance_printf_logging_main.md
+
+### C-Style Void Parameters
+- **Files:** src/main.cpp
+- **Severity:** Medium
+- **Description:** Functions use C-style `void` parameter lists (e.g., `static void init(void)`). This is C convention; C++ prefers empty parameter lists.
+- **Resolution:** Updated the static callbacks to use empty parameter lists so the entry point adheres to C++ style guidelines.
+- **Completed:** 2025-10-11
+- **Learnings:**
+  - When wiring sokol callbacks, default to C++ signatures to avoid cleanup passes later.
+  - Worth adding a quick code review checklist note for entry-point glue.
+- **Document:** PLANS/maintenance_c_style_void_parameters.md
+
+### Unused Parameter Markers
+- **Files:** src/main.cpp, src/rendering/debug_draw.cpp
+- **Severity:** Low
+- **Description:** Multiple `(void) param;` statements to suppress unused parameter warnings. While functionally correct, C++ attributes would be clearer.
+- **Resolution:** Replaced the casts with `[[maybe_unused]]` attributes on the relevant parameters in `main.cpp` and `debug_draw.cpp`.
+- **Completed:** 2025-10-11
+- **Learnings:**
+  - Attribute-based suppression reads cleaner and keeps intent near declarations; scan other subsystems opportunistically.
+  - Path B classification was accurate; spanning two files justified the review loop.
+- **Document:** PLANS/maintenance_unused_parameter_markers.md
 
 ### Redundant Include in character_panel.cpp
 - **File:** `src/gui/character_panel.cpp:3`

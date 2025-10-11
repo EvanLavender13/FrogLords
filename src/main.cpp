@@ -1,21 +1,18 @@
 #include "sokol_app.h"
-#include <cstdio>
 #include "sokol_gfx.h"
 #include "sokol_log.h"
 #include "sokol_glue.h"
 #include "app/runtime.h"
 
-static void init(void) {
+static void init() {
     runtime().initialize();
-    // Log the sample count requested/created by sokol_app (helps verify MSAA)
-    printf("sapp_sample_count = %d\n", sapp_sample_count());
 }
 
-static void frame(void) {
+static void frame() {
     runtime().frame();
 }
 
-static void cleanup(void) {
+static void cleanup() {
     runtime().shutdown();
 }
 
@@ -23,9 +20,7 @@ static void event(const sapp_event* e) {
     runtime().handle_event(e);
 }
 
-sapp_desc sokol_main(int argc, char* argv[]) {
-    (void) argc;
-    (void) argv;
+sapp_desc sokol_main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
 
     sapp_desc desc = {};
     desc.init_cb = init;

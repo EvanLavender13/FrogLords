@@ -98,37 +98,7 @@ Append to `PLANS/maintenance_<item_name>.md`:
 - Ready for commit
 ```
 
-### 8. Prepare Commit Message
-
-Prepare commit message following project conventions:
-
-**Template:**
-```
-[domain]: [brief imperative description]
-
-[Why: 1-2 sentences explaining the reason/impact]
-
-- [Change 1]
-- [Change 2]
-
-[Outcome: 1 sentence stating what's cleaner/fixed]
-```
-
-**Domain:** Code domain (`character`, `rendering`, `gui`) or `chore` for cross-cutting
-
-**Example:**
-```
-chore: remove redundant includes from character_panel
-
-Eliminates redundant #include "character/tuning.h" already provided
-via character_panel.h, reducing compilation dependencies.
-
-- Remove duplicate include from character_panel.cpp
-
-Include chain now correctly flows through header.
-```
-
-### 9. Recommend Next Steps
+### 8. Recommend Next Steps
 
 Inform user of completion and suggest next action:
 

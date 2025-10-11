@@ -71,8 +71,7 @@ void draw_character_state(draw_context& ctx, const controller& character,
 }
 
 void draw_physics_springs(draw_context& ctx, const controller& character,
-                          const locomotion_system& locomotion) {
-    (void) locomotion;
+                          [[maybe_unused]] const locomotion_system& locomotion) {
 
     // Landing spring visualization: collision sphere bottom to character body center
     float spring_offset = character.animation.get_vertical_offset();
@@ -105,13 +104,12 @@ void draw_physics_springs(draw_context& ctx, const controller& character,
 }
 
 void draw_locomotion_wheel(draw_context& ctx, const controller& character,
-                           const locomotion_system& locomotion,
+                           [[maybe_unused]] const locomotion_system& locomotion,
                            const orientation_system& orientation, float wheel_spin_angle) {
-    (void) locomotion; // Phase information used for foot placement, not wheel center
+    // Phase information used for foot placement, not wheel center
 
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-    const glm::vec3 up_axis = math::UP;
 
     float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
     glm::vec3 wheel_center = character.position;
@@ -128,7 +126,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
     for (int i = 0; i < RIM_SEGMENTS; ++i) {
         float base_angle = static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * TWO_PI;
         float rim_angle = base_angle - wheel_spin_angle;
-        glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * up_axis;
+        glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * math::UP;
         wheel_mesh.vertices.push_back(wheel_center + offset * WHEEL_RADIUS);
     }
 
