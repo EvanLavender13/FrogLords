@@ -4,7 +4,7 @@
 
 **Status:** Living document (updated after codebase reviews)
 
-**Last Review:** October 7, 2025
+**Last Review:** October 11, 2025
 
 ---
 
@@ -20,13 +20,56 @@
 
 (Significant code smells impacting readability or maintainability)
 
-*No items currently tracked.*
+### Joint Override Angles Not Reset on Pose Change
+- **Files:** `src/gui/character_panel.h`, `src/gui/character_panel.cpp`, `src/app/game_world.cpp`
+- **Severity:** High (confusing UX behavior, functionally incorrect)
+- **Description:** When user manually overrides joint angles and then switches to a different pose (either manually or by disabling manual pose selection), the override angles persist. This causes:
+  1. Overrides applied to T-Pose don't visually affect the skeleton (appears broken)
+  2. Overrides set on one walk pose remain applied when switching to other poses
+  3. No clear way to reset overrides except manually zeroing all 24 sliders
+- **Root Cause:** `character_panel_state` stores override angles (8 `glm::vec3` members) but never resets them on pose change. The state is persistent across all pose selections.
+- **Expected Behavior:**
+  - Option A (Simple): Reset all override angles to (0,0,0) when user switches poses or toggles manual pose selection
+  - Option B (Preserve per-pose): Store separate override sets per pose_type (more complex, questionable value)
+- **Suggested Fix (Option A):**
+  1. Add reset function to `character_panel_state`:
+     ```cpp
+     void reset_joint_overrides() {
+         left_shoulder_angles = glm::vec3(0.0f);
+         left_elbow_angles = glm::vec3(0.0f);
+         // ... all 8 joints
+     }
+     ```
+  2. In `character_panel.cpp`, detect pose change and call reset:
+     ```cpp
+     static pose_type prev_selected_pose = pose_type::T_POSE;
+     if (state.selected_pose != prev_selected_pose) {
+         state.reset_joint_overrides();
+         prev_selected_pose = state.selected_pose;
+     }
+     ```
+  3. Also reset when toggling `use_manual_pose_selection` or `enable_joint_overrides`
+- **Impact:** Improves debug tool usability significantly; prevents confusing "sticky" override behavior
+- **Complexity:** 1-2 points (simple state management, straightforward logic)
+- **Discovered:** 2025-10-11 during joint slider widget refactor validation
 
 ---
 
 ## Medium
 
 (Minor inconsistencies or quality improvements)
+
+### Commented-Out Code in runtime.cpp
+- **File:** `src/app/runtime.cpp:105`
+- **Severity:** Medium
+- **Description:** Commented-out call to `gui::plot_value` suggests leftover debugging/experimentation code. Line reads: `// gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f);`
+- **Suggested Fix:** Remove commented-out code. If this represents a potential feature, document it in DESIGN_BACKLOG.md instead.
+
+### printf Logging in Production Code
+- **File:** `src/main.cpp:11`
+- **Severity:** Medium
+- **Description:** Printf statement `printf("sapp_sample_count = %d\n", sapp_sample_count());` logs MSAA sample count at startup. While useful for debugging, this is permanent logging in main.cpp without a debug flag.
+- **Suggested Fix:** Either remove if not needed, or wrap in a debug compile flag (`#ifdef DEBUG` or similar) if startup diagnostics are valuable.
 
 ### TODO Comments for Future Features
 - **Files:**
@@ -59,6 +102,19 @@
 ## Low
 
 (Nitpicks and polish items)
+
+### Magic Number for PI
+- **Files:**
+  - `src/rendering/debug_draw.cpp:129, 160, 171`
+- **Severity:** Low
+- **Description:** Uses literal `3.14159f` for PI instead of named constant. Project uses `glm::pi<float>()` elsewhere (e.g., `orientation.cpp:13`).
+- **Suggested Fix:** Replace `3.14159f` with `glm::pi<float>()` or define `TWO_PI` constant for consistency with project style. Very minor—current code is functional.
+
+### NOLINT Comment for Intentional Branch Clone
+- **File:** `src/character/animation.cpp:129`
+- **Severity:** Low
+- **Description:** `// NOLINT(bugprone-branch-clone)` suppresses warning for intentional duplicate branch in threshold-based pose selection.
+- **Suggested Fix:** None needed—this is appropriate use of NOLINT for intentional design choice where both branches assign NEUTRAL pose.
 
 ### Unused Parameter Markers
 - **File:** 

@@ -4,7 +4,7 @@
 
 **Status:** Living document (updated after system analysis)
 
-**Last Review:** October 10, 2025
+**Last Review:** October 11, 2025
 
 ---
 
@@ -33,6 +33,35 @@
 ## Medium
 
 (Nice-to-have refactors that would improve quality)
+
+### Extract Y-Axis Up Vector Constant
+- **Category:** Pattern Extraction
+- **Files:** 10 call sites across 6 files:
+  - `src/character/controller.cpp:146`
+  - `src/character/animation.cpp:202, 204`
+  - `src/foundation/collision.cpp:41`
+  - `src/rendering/debug_draw.cpp:244`
+  - `src/rendering/wireframe.cpp:20, 202, 273`
+  - `src/camera/camera.cpp:69`
+  - `src/camera/camera.h:94`
+- **Current State:** `glm::vec3(0, 1, 0)` and `glm::vec3(0.0f, 1.0f, 0.0f)` literals appear 10 times. Represents world up axis (Y-up coordinate system).
+- **Proposed Change:** Extract to `math_utils.h` as named constant:
+  ```cpp
+  namespace math {
+  constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
+  }
+  ```
+  Replace all instances with `math::UP`.
+- **Rationale:**
+  - Satisfies rule of three (10 uses across 6 files)
+  - Documents coordinate system convention (Y-up)
+  - Makes intent clearer than raw vector literal
+  - Single point of change if coordinate system ever needs adjustment
+  - Follows project principle: "Abstract repeated patterns into systems"
+- **Impact:** 6 files. Low risk—purely symbolic constant substitution.
+- **Risk:** Very Low — No behavior change, just symbolic constant.
+- **Certainty:** System is stable (coordinate convention unlikely to change).
+          widget::slider_float(y_label, &angles.y, -180.0f, 180.0f);
 
 ### Extract Character-Local Space Transform Utility
 - **Category:** Utilities
@@ -102,6 +131,26 @@
 
 (Polish items with minimal impact)
 
+### Extract Velocity Trail to Dedicated Type
+- **Category:** System Design / Simplification
+- **Files:** `src/app/game_world.h:16-21`, `src/app/game_world.cpp:29-45`
+- **Current State:** Velocity trail logic embedded directly in `game_world::update()` with manual ring buffer management. 14 lines of inline logic.
+- **Proposed Change:** Move to dedicated `velocity_trail` class with encapsulated update:
+  ```cpp
+  struct velocity_trail {
+      void update(const glm::vec3& position, float dt);
+      // existing state...
+  };
+  ```
+- **Rationale:**
+  - Single Responsibility: Trail management is distinct from world update
+  - Reduces `game_world::update()` complexity
+  - Makes trail reusable for other tracked entities
+  - Only 1 use currently (below rule of three threshold)
+- **Impact:** 2 files. Would clean up game_world but adds abstraction overhead.
+- **Risk:** Low — Isolated feature with clear boundaries.
+- **Certainty:** Deferred—wait until second entity needs trail tracking.
+
 ### Consolidate Anonymous Namespace Constants
 - **Category:** Pattern Extraction
 - **Files:** Various (e.g., `controller.cpp`, `debug_draw.cpp`, `collision.cpp`)
@@ -117,6 +166,10 @@
 ## Deferred
 
 (Opportunities that failed "wait for third use" or stability checks)
+
+### Velocity Trail Encapsulation
+- **Reason:** Only 1 use (trail tracking for character position only)
+- **Reconsider When:** Second entity needs trail tracking (e.g., projectiles, NPCs) or trail logic grows beyond 20 lines
 
 ### Character-Local Transform Utility
 - **Reason:** Only 1 use currently (`animation.cpp:25-28`)
@@ -159,3 +212,20 @@
 - **Impact:** Replaced 5 call sites across 4 files (controller, animation, game_world, debug_draw)
 - **Result:** Zero regressions, all validation tests passed
 - **Documentation:** See `PLANS/refactor_horizontal_velocity_utility_COMPLETE.md`
+
+### Extract Joint Slider Widget Pattern ✅
+- **Completed:** 2025-10-11
+- **Category:** Pattern Extraction / API Design
+- **Outcome:** Created `draw_joint_angles_widget()` helper function in `src/gui/character_panel.cpp`
+- **Impact:** Replaced 8 identical joint angle control blocks (83 lines → 40 lines, 48% reduction)
+- **Result:** Zero regressions, all GUI controls work identically, visual verification passed
+- **Learnings:**
+  - Linear approach appropriate for single-file GUI refactor (matched 2-point estimate exactly)
+  - All 8 call sites were identical in structure—no edge cases discovered
+  - Anonymous namespace helper function appropriate for file-local GUI utility
+  - Self-documenting function name improves clarity at all call sites
+  - Makes adding future joints trivial (1 line vs 7 lines per joint)
+  - Rule of three validated: 8 instances far exceeded extraction threshold (267% over minimum)
+  - Debug GUI code allowed immediate visual verification without complex testing
+- **Documentation:** See `PLANS/refactor_joint_slider_widget.md` (complete refactor history)
+
