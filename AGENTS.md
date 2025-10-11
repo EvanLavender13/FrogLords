@@ -24,6 +24,13 @@ Solo experimental game project. Optimize for speed of learning. No automated tes
 Techniques: spring-damper transitions, cubic interpolation for velocity continuity, distance-phased motion, IK for world interaction, secondary motion via softness.
 Avoid: manual variants, linear interpolation for organic motion, reactive layers overriding core logic.
 
+**Dual-Reference Pattern for Smoothed Variables:**
+When smoothing a parameter over time (exponential decay, spring-damper), maintain two separate variables:
+- **Immutable target** (reference value, never smoothed): `run_speed`, `max_jump_height`
+- **Smoothed state** (derived from target): `max_speed`, `current_jump_height`
+
+Prevents circular dependencies where smoothed value references itself. Example: Walk/run transition smooths `max_speed` toward `run_speed` (immutable) rather than modifying `max_speed` based on `max_speed` (circular). Pattern applies to any time-based interpolation between discrete states.
+
 ### Procedural Animation (Gameplay‑First)
 - Do no harm to gameplay: input maps to acceleration; animation layers never steal control or add latency.
 - Physics‑first core: keep a simple, predictable controller as the source of truth (slide/resolve collisions cleanly). Rotate model to velocity (not input); add acceleration‑tilt for readable momentum.

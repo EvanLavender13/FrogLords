@@ -16,6 +16,31 @@ Read `AGENTS.md` to synthesize coding standards and quality guidelines for:
    - Affect stable, well-understood code
    - Can be completed independently
 
+### 2.5. Scan for Batching Opportunities
+
+**Before implementing, check if multiple similar items can be batched:**
+
+1. **Identify patterns:** Do 3+ items share the same file, category, or fix type?
+   - Example: C-style void parameters + printf logging + unused parameter markers (all main.cpp style fixes)
+   - Example: Multiple enum case violations in different files
+   - Example: Several redundant includes across the codebase
+
+2. **Evaluate batching criteria:**
+   - Same file: Can all be fixed in one pass
+   - Same category: Similar rationale and fix approach
+   - Low interdependence: Fixes don't depend on each other
+   - Can complete same day: All trivial or all standard complexity
+
+3. **If 3+ similar items found:**
+   - **Propose batch item** in backlog: "Code Standards Cleanup: main.cpp" or "Remove Redundant Includes Across Codebase"
+   - Document all items in the batch with unified rationale
+   - Implement as single maintenance session (reduces commit overhead)
+
+4. **If no batch opportunity:**
+   - Proceed with single-item selection
+
+**Purpose:** Reduces commit overhead for related fixes; prevents 3 separate commits for items that share context (Retro 2: C-style void, printf, [[maybe_unused]] could have been single batch)
+
 ### 3. Select Item
 
 Choose **one item** based on:

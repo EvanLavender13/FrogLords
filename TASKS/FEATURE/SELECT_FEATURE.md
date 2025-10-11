@@ -49,6 +49,23 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 
 **Purpose:** Prevents premature features (like speed_animation_scaling deferral - backlog warned "may not be necessary" but feature was selected anyway).
 
+### 4.6. Certainty Boost for Debug Tools
+
+**Apply certainty boost for features on stable infrastructure:**
+
+1.  **Check feature category:** Is this a debug/iteration tool (GUI panels, visualizations, parameter exposure)?
+2.  **Check infrastructure stability:** Does it extend systems with 90%+ certainty in DEPENDENCY_STACK.md?
+3.  **If both true:** Apply +20-30% certainty boost to base estimate
+    -   Example: Debug visual extending proven debug_draw system (90% certain) → base 60% + 25% boost = 85%
+    -   Example: Parameter exposure on stable controller (95% certain) → base 60% + 25% boost = 85%
+
+4.  **Rationale:**
+    -   Debug tools have zero gameplay risk (isolated to iteration workflow)
+    -   Stable infrastructure means clear integration points
+    -   Pattern validated in Retro 2: debug visuals and walk transition both underestimated by 40 points
+
+**Purpose:** Prevents systematic underestimation of debug tool features (Retro 2 pattern: 60% predicted, completed smoothly → should have been 85-90%).
+
 ### 5. Create Feature Branch
 
 Run the script to create and switch to a new feature branch:

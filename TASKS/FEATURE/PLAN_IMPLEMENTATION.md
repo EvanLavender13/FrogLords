@@ -22,25 +22,36 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 1.  **Identify All Systems Involved:**
     -   Read the feature description's "Graybox Scope" to list all systems the feature touches
     -   Check `PLANS/DEPENDENCY_STACK.md` to verify system placement and dependencies
-    
+
 2.  **Audit Current System Ownership:**
     -   For each identified system, search the codebase to find ALL current instances:
         -   Where is the system instantiated? (game_world, controller, etc.)
         -   Where is the system updated?
         -   Where is the system referenced for rendering/debug/GUI?
     -   Search for all references to key system types (e.g., `locomotion_system`, `skeleton`)
-    
+
 3.  **Document Current State:**
     -   List all files that currently own or reference each system
     -   Note any duplicate instances (e.g., `game_world.locomotion` AND `controller.locomotion`)
     -   Flag architectural conflicts BEFORE creating implementation steps
-    
+
 4.  **Plan Migration/Consolidation:**
     -   If systems need to move ownership (e.g., locomotion from game_world to controller):
         -   Include explicit steps to remove old instances
         -   Include steps to update all references (rendering, GUI, debug draw)
         -   List all files that need changes
     -   If new systems are being added, verify they don't conflict with existing ones
+
+5.  **Multi-Mode Feature Comparison (If Applicable):**
+    -   Does this feature span multiple modes? (e.g., camera ORBIT/FOLLOW, walk/run, manual/automatic)
+    -   If yes, identify existing implementations in each mode:
+        -   Compare update patterns (immediate vs deferred, when transforms propagate)
+        -   Compare state management (separate variables vs shared)
+        -   Compare parameter handling (mode-specific ranges vs unified)
+    -   **Document differences BEFORE implementation** to prevent mode-specific bugs
+    -   Example: Camera zoom discovered one-frame delay because ORBIT calls `update_eye_position()` immediately but FOLLOW used deferred update
+
+    **Purpose:** Prevents mode-specific bugs by identifying pattern differences during planning, not testing (Retro 2: camera zoom one-frame delay caught late)
 
 **Example Foundation Audit:**
 ```

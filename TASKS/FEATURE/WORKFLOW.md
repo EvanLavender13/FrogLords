@@ -133,6 +133,7 @@ graph TD
 - Retrospectives: Run RETROSPECTIVE every 5-10 iterations to review archived documents, identify patterns in what works/fails, and propose workflow improvements
 - **Certainty calibration:** FINALIZE_FEATURE now tracks predicted vs actual certainty to improve planning accuracy over time
 - **Backlog grooming:** Run BACKLOG_GROOMING periodically (every 2-3 iterations) to collapse completed work, prune low-certainty items, and refresh unlocked dependencies; keeps planning docs focused on future work rather than retrospectives
+- **Organic scope evolution:** Debug tool scope growth acceptable if: (1) same session completion, (2) zero gameplay impact, (3) architectural improvements discovered. Scope can grow up to 2x estimate under these conditions without being considered harmful "scope creep." Example: Camera zoom (30→90 min) creating unified Debug Panel architecture. Distinguish from harmful feature bloat (multi-session coordination, gameplay changes, gold-plating).
 
 ## Proposed Numbering Scheme
 
