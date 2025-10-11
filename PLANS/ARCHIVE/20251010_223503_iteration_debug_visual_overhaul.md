@@ -97,4 +97,4 @@
 
 **Summary:** Iteration complete and successful. All three debug visualizations implemented and tested. Code adheres to development principles with no violations. Feature evolved appropriately through iteration (velocity trail sample rate tuning, speed ring dynamic expansion, plot function enhancements). Zero gameplay impact maintained throughout. Ready for archival and merge.
 
-**Review Document:** See `PLANS/code_review_debug_visual_overhaul.md` for detailed code analysis.
+**Review Document:** See `PLANS/ARCHIVE/20251010_223503_code_review_debug_visual_overhaul.md` for detailed code analysis.

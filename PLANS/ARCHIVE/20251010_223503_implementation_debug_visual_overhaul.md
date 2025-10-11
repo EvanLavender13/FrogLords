@@ -320,4 +320,4 @@ if (current_speed > 0.05f) {
 
 **Summary:** Implementation complete with zero violations. All code adheres to project principles (snake_case naming, dependency flow, graybox-first, systemic reusability). Feature evolved appropriately through iteration—velocity trail tuning (1.0s → 0.1s), speed ring refinement (static → dynamic), and plot enhancements (axis labels, histogram variant) demonstrate healthy iteration loops. Ready for archival and merge.
 
-**Review Document:** See `PLANS/code_review_debug_visual_overhaul.md` for detailed analysis.
+**Review Document:** See `PLANS/ARCHIVE/20251010_223503_code_review_debug_visual_overhaul.md` for detailed analysis.

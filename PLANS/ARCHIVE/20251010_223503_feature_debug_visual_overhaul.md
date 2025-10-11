@@ -67,7 +67,7 @@
 
 **Final Certainty Score:** 100% (all features validated and proven)
 
-**Code Review:** See `PLANS/code_review_debug_visual_overhaul.md`
+**Code Review:** See `PLANS/ARCHIVE/20251010_223503_code_review_debug_visual_overhaul.md`
 
 **Outcome Summary:** All three debug visualizations successfully implemented with strong systemic reusability. Velocity trail evolved from 1.0s to 0.1s sampling for better fidelity; speed gradient ring changed from static to dynamic expansion for improved visual feedback; plot functions gained axis labels, histogram variant, and configurable buffers through healthy iteration loops. Zero violations of project principles, zero gameplay impact maintained throughout.
 
