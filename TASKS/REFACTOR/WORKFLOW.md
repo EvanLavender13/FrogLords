@@ -73,7 +73,7 @@ graph TD
 - **Learning capture**: Document insights in Completed section (patterns that worked, anti-patterns discovered)
 - **No scope creep**: Refactor only what's in the plan; track new opportunities separately
 - **Validation integrated**: Validation protocol is part of PLAN_REFACTOR and executed during IMPLEMENT_REFACTOR stages
-- **Single document**: All refactor phases append to the same `PLANS/refactor_<name>.md` document (description → plan → review → execution → code review → finalization); this creates a complete history in one place
+- **Single document**: All refactor phases append to the same `PLANS/REFACTOR_<name>.md` document (description → plan → review → execution → code review → finalization); this creates a complete history in one place
 
 ## Complexity Comparison
 

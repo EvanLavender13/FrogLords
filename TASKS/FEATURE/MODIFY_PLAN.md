@@ -6,8 +6,8 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 ### 2. Gather Context
 
-1.  **Updated Feature Description:** Read the latest version of the feature description at `PLANS/feature_<feature_name>.md`.
-2.  **Existing Implementation Plan:** Read the implementation plan that needs to be updated at `PLANS/implementation_<feature_name>.md`.
+1.  **Updated Feature Description:** Read the latest version of the feature description at `PLANS/<feature_name>_FEATURE.md`.
+2.  **Existing Implementation Plan:** Read the implementation plan that needs to be updated at `PLANS/<feature_name>_IMPLEMENTATION.md`.
 3.  **Principles:** Read and synthesize core principles from `AGENTS.md` to ensure the updated plan remains aligned.
 
 ### 3. Analyze Differences
@@ -17,12 +17,12 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 ### 4. Update Implementation Plan
 
-1.  **Modify Tasks:** Edit `PLANS/implementation_<feature_name>.md` to reflect the identified changes.
+1.  **Modify Tasks:** Edit `PLANS/<feature_name>_IMPLEMENTATION.md` to reflect the identified changes.
     -   Add new checklist items for new requirements.
     -   Remove checklist items for deprecated requirements.
     -   Modify existing checklist items to align with the updated scope.
 2.  **Maintain Quality:** Ensure all tasks remain specific, atomic, and logically ordered, adhering to the conventions in `AGENTS.md`.
-3.  **Log the Change:** Add a changelog entry at the bottom of `PLANS/implementation_<feature_name>.md` to record that the plan was modified to align with an updated feature description, including the date.
+3.  **Log the Change:** Add a changelog entry at the bottom of `PLANS/<feature_name>_IMPLEMENTATION.md` to record that the plan was modified to align with an updated feature description, including the date.
 
 ### 5. Propose for Review
 

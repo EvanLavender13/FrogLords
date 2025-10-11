@@ -10,7 +10,7 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 
 ### 2. Gather Context
 
-1. Read `PLANS/maintenance_<item_name>.md` (from SELECT_ITEM)
+1. Read `PLANS/MAINTENANCE_<item_name>.md` (from SELECT_ITEM)
 2. Read all affected source files (`.h` and `.cpp`)
 3. Analyze code smell or issue
 
@@ -38,7 +38,7 @@ Implement suggested fix from backlog:
 
 ### 6. Append Implementation Notes
 
-Append to `PLANS/maintenance_<item_name>.md`:
+Append to `PLANS/MAINTENANCE_<item_name>.md`:
 
 ```markdown
 ---

@@ -14,7 +14,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 ### 3. Verify Approval
 
-1.  Confirm `PLANS/implementation_<feature_name>.md` has an `## Approval` section with reviewer signature and timestamp
+1.  Confirm `PLANS/<feature_name>_IMPLEMENTATION.md` has an `## Approval` section with reviewer signature and timestamp
 2.  If approval is missing, stop and request completion of `REVIEW_IMPLEMENTATION` task first
 
 ### 4. Update Dependency Stack
@@ -34,7 +34,7 @@ Read and execute `TASKS/FEATURE/UPDATE_BACKLOG.md` to:
 
 ### 6. Archive Planning Documents
 
-1.  Add a `## Completion` section to end of `PLANS/feature_<feature_name>.md`:
+1.  Add a `## Completion` section to end of `PLANS/<feature_name>_FEATURE.md`:
     -   Date completed
     -   Final certainty score
     -   Link to code review document
@@ -42,7 +42,7 @@ Read and execute `TASKS/FEATURE/UPDATE_BACKLOG.md` to:
 
 ### 6.5. Feature Reflection (for Retrospectives)
 
-Add a `## Reflection` section to end of `PLANS/feature_<feature_name>.md` answering:
+Add a `## Reflection` section to end of `PLANS/<feature_name>_FEATURE.md` answering:
 
 1.  **What went well?** (1-3 bullet points)
     -   What practices, decisions, or planning approaches helped this feature succeed?
@@ -61,7 +61,7 @@ Add a `## Reflection` section to end of `PLANS/feature_<feature_name>.md` answer
 
 ### 6.6. Certainty Calibration (for Process Improvement)
 
-Add a `## Certainty Calibration` section to end of `PLANS/feature_<feature_name>.md`:
+Add a `## Certainty Calibration` section to end of `PLANS/<feature_name>_FEATURE.md`:
 
 **Predicted Certainty:** [X%] (from feature plan Section 3)
 

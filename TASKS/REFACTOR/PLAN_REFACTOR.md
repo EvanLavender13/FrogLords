@@ -18,7 +18,7 @@ Create refactor branch:
 
 Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. Read `PLANS/refactor_<refactor_name>.md` (from SELECT_REFACTOR)
+1. Read `PLANS/REFACTOR_<refactor_name>.md` (from SELECT_REFACTOR)
 2. Read all affected `.h` and `.cpp` files
 3. Search for all usage locations to map dependencies
 
@@ -140,7 +140,7 @@ Choose approach based on risk:
 
 ### 10. Append Plan to Refactor Document
 
-Append to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 ---

@@ -68,7 +68,7 @@ Confirm:
 
 ### 6. Create Maintenance Document
 
-Create description and save to `PLANS/maintenance_<item_name>.md`:
+Create description and save to `PLANS/MAINTENANCE_<item_name>.md`:
 
 ```markdown
 # [Item Name]
@@ -102,7 +102,7 @@ State clearly:
 - Severity level
 - Files affected
 - Workflow path (A or B)
-- Document created: `PLANS/maintenance_<item_name>.md`
+- Document created: `PLANS/MAINTENANCE_<item_name>.md`
 
 ### Tone & Constraints
 

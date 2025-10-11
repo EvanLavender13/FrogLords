@@ -6,7 +6,7 @@ Read `AGENTS.md` for coding standards and quality guidelines.
 
 ### 2. Gather Context
 
-1. Read `PLANS/maintenance_<item_name>.md` (description & implementation sections)
+1. Read `PLANS/MAINTENANCE_<item_name>.md` (description & implementation sections)
 2. Check modified files from IMPLEMENT_FIX
 3. Read all changed source files (`.h` and `.cpp`)
 
@@ -39,7 +39,7 @@ Read `AGENTS.md` for coding standards and quality guidelines.
 
 ### 5. Append Review Notes
 
-Append to `PLANS/maintenance_<item_name>.md`:
+Append to `PLANS/MAINTENANCE_<item_name>.md`:
 
 ```markdown
 ---

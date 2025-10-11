@@ -10,8 +10,8 @@ Read `AGENTS.md` to ensure all actions adhere to development principles and codi
 
 ### 3. Review Plans
 
-1.  **Read Feature Description:** Read `PLANS/feature_<feature_name>.md` for high-level goals and context
-2.  **Read Implementation Plan:** Read `PLANS/implementation_<feature_name>.md` for ordered checklist of tasks
+1.  **Read Feature Description:** Read `PLANS/<feature_name>_FEATURE.md` for high-level goals and context
+2.  **Read Implementation Plan:** Read `PLANS/<feature_name>_IMPLEMENTATION.md` for ordered checklist of tasks
 
 ### 4. Execute One Step
 
@@ -28,7 +28,7 @@ Read `AGENTS.md` to ensure all actions adhere to development principles and codi
     - System ownership conflicts (duplicates, missing reference updates)?
     - If issues found: fix them before marking complete
 6.  **Mark Complete:**
-    - Propose change to `PLANS/implementation_<feature_name>.md` marking completed items as `[x]`
+    - Propose change to `PLANS/<feature_name>_IMPLEMENTATION.md` marking completed items as `[x]`
     - Update the implementation plan with a running list of files changed during this step
 
 ### 5. Await Guidance

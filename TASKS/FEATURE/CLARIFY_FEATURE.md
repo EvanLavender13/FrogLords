@@ -86,7 +86,7 @@ State synthesis for confirmation: **"My understanding is..."**
 
 ### 5. Document Clarifications
 
-Add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/feature_<name>.md`:
+Add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/<name>_FEATURE.md`:
 - All identified ambiguities by category
 - Specific questions needing answers
 - Priority indicators for critical info

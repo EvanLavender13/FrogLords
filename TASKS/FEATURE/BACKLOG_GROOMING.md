@@ -14,7 +14,7 @@
 1. **Consolidate Completed Layers:**
    - Group multiple ✅ layers into cohesive "Completed Foundation" sections
    - Keep: Architecture patterns that inform future work, critical learnings affecting design decisions
-   - Remove: Detailed retrospectives already archived in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`
+   - Remove: Detailed retrospectives already archived in `PLANS/*.md` and `PLANS/*.md`
    - Example: Collapse "Reactive Systems Layer (100%) ✅" details into single summary line with links to archived docs
 
 2. **Simplify Layer Descriptions:**
@@ -115,7 +115,7 @@ If collapsing removes significant historical context that might be useful for re
 
 - Acceleration tilt, landing spring implemented and tuned
 - `character::animation_state` pattern validated
-- See `PLANS/implementation_reactive_animation.md` for details
+- See `PLANS/reactive_animation.md` for details
 
 **Dependencies:** Requires stable physics core
 ```

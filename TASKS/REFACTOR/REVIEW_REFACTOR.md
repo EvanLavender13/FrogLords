@@ -11,7 +11,7 @@ Read `AGENTS.md` for coding standards:
 
 Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. Read `PLANS/refactor_<refactor_name>.md` (description, plan, execution sections)
+1. Read `PLANS/REFACTOR_<refactor_name>.md` (description, plan, execution sections)
 2. Review before/after examples from plan
 3. Review execution summary for modified files
 4. Read all changed source files (`.h` and `.cpp`)
@@ -66,7 +66,7 @@ Extract refactor name from branch (`refactor/<refactor_name>`):
 
 ### 6. Append Code Review to Refactor Document
 
-Append to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 ---

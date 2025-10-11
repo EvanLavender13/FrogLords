@@ -12,7 +12,7 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 
 Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. Read `PLANS/refactor_<refactor_name>.md`
+1. Read `PLANS/REFACTOR_<refactor_name>.md`
 2. Review migration strategy (staged/linear) and per-stage goals
 3. Review call site checklist
 4. Review validation protocol
@@ -65,7 +65,7 @@ Before proceeding to REVIEW_REFACTOR:
 
 ### 5. Append Execution Summary
 
-Append to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 ---

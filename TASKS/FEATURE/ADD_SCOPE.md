@@ -13,7 +13,7 @@ Read `AGENTS.md` to synthesize core project principles. This is essential for en
 
 Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
 
-1.  **Review Feature Description:** Read the current feature description at `PLANS/feature_<feature_name>.md`.
+1.  **Review Feature Description:** Read the current feature description at `PLANS/<feature_name>_FEATURE.md`.
 2.  **Check Backlog & Dependencies:** Review `PLANS/DESIGN_BACKLOG.md` and `PLANS/DEPENDENCY_STACK.md`.
 3.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the feature or introduce major unforeseen dependencies. Defer large changes to a new feature.
 
@@ -21,7 +21,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 If the scope addition is acceptable:
 
-1.  **Update Graybox Scope:** Modify the "Graybox Scope" section of `PLANS/feature_<feature_name>.md` to include the new requirements.
+1.  **Update Graybox Scope:** Modify the "Graybox Scope" section of `PLANS/<feature_name>_FEATURE.md` to include the new requirements.
 2.  **Log the Change:** Add a changelog entry at the top or in a dedicated "Changelog" section detailing the added scope, the rationale, and the date.
 
 ### 4. Propose Next Steps

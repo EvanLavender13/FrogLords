@@ -67,12 +67,40 @@ graph TB
     style UB fill:#e1f5ff
 ```
 
+## Document Naming Conventions
+
+Workflow documents follow distinct naming patterns optimized for their usage:
+
+### Feature Documents (Feature-First)
+**Pattern:** `PLANS/<feature_name>_<WORKFLOW>.md`  
+**Archive:** `YYYYMMDD_HHMMSS_<feature_name>_<WORKFLOW>.md`
+
+- `<feature_name>_FEATURE.md` - Feature description and rationale
+- `<feature_name>_IMPLEMENTATION.md` - Detailed implementation steps
+- `<feature_name>_CODE_REVIEW.md` - Implementation review findings
+- `<feature_name>_PLAN_REVIEW.md` - Planning review findings
+
+**Rationale:** Features involve multi-phase iterative work. Grouping by feature name clusters all related documents together alphabetically, making it easy to see the complete arc of a feature at a glance (planning → implementation → reviews).
+
+### Refactor Documents (Workflow-First)
+**Pattern:** `PLANS/REFACTOR_<description>.md`  
+**Archive:** `YYYYMMDD_HHMMSS_REFACTOR_<description>.md`
+
+**Rationale:** Refactors are typically one-off architectural improvements. Grouping by workflow type (REFACTOR_) clusters all refactoring work together, aiding pattern recognition and retrospective analysis of architectural evolution.
+
+### Maintenance Documents (Workflow-First)
+**Pattern:** `PLANS/MAINTENANCE_<description>.md`  
+**Archive:** `YYYYMMDD_HHMMSS_MAINTENANCE_<description>.md`
+
+**Rationale:** Maintenance items are quick, isolated fixes. Grouping by workflow type (MAINTENANCE_) clusters all maintenance work together, making it easy to review code quality trends and identify systemic issues.
+
 ### Feature Development Workflow
 - **Location:** `TASKS/FEATURE/`
 - **Purpose:** Complete feature development workflow for implementing new features
 - **Entry Point:** SELECT_FEATURE
 - **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
 - **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
+- **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_IMPLEMENTATION.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
 
 ### Maintenance Workflow
 - **Location:** `TASKS/MAINTENANCE/`
@@ -80,7 +108,7 @@ graph TB
 - **Entry Point:** SELECT_ITEM
 - **Input Backlog:** [PLANS/MAINTENANCE_BACKLOG.md](../PLANS/MAINTENANCE_BACKLOG.md)
 - **Details:** [MAINTENANCE/WORKFLOW.md](MAINTENANCE/WORKFLOW.md)
-- **Document Approach:** Single document per fix (`PLANS/maintenance_<name>.md`) accumulates all phases
+- **Document Approach:** Single document per fix (`PLANS/MAINTENANCE_<name>.md`) accumulates all phases
 
 ### Refactor Workflow
 - **Location:** `TASKS/REFACTOR/`
@@ -88,7 +116,7 @@ graph TB
 - **Entry Point:** SELECT_REFACTOR
 - **Input Backlog:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
 - **Details:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
-- **Document Approach:** Single document per refactor (`PLANS/refactor_<name>.md`) accumulates all phases
+- **Document Approach:** Single document per refactor (`PLANS/REFACTOR_<name>.md`) accumulates all phases
 
 ---
 

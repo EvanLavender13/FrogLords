@@ -11,7 +11,7 @@ Read `AGENTS.md` to understand knowledge capture principles:
 
 Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. Read `PLANS/refactor_<refactor_name>.md`
+1. Read `PLANS/REFACTOR_<refactor_name>.md`
 2. Review execution summary and issues encountered
 3. Review validation results from plan
 
@@ -105,7 +105,7 @@ Check and update:
 
 ### 7. Append Finalization Status
 
-Append to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 ---
@@ -154,7 +154,7 @@ Inform user of completion:
 - [If applicable: Added N new opportunities]
 
 **Planning Document:**
-- `PLANS/refactor_<name>.md` contains complete history
+- `PLANS/REFACTOR_<name>.md` contains complete history
 ```
 
 ### Tone & Constraints

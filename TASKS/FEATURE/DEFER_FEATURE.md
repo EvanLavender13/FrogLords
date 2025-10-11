@@ -32,7 +32,7 @@ Extract feature name from branch (`feature/<feature_name>`).
 
 ### 3. Verify Deferral Justification
 
-1. Confirm `PLANS/plan_review_<feature_name>.md` exists with clear violations/misalignments
+1. Confirm `PLANS/<feature_name>_FEATURE.md` exists with clear violations/misalignments
 2. Verify specific principle citations from AGENTS.md
 3. Confirm recommendations support deferral
 4. Verify evidence gap documented
@@ -59,7 +59,7 @@ If review missing/incomplete, run REVIEW_PLAN first.
 ### 6. Document Implementation Attempts (If Applicable)
 
 If implementation attempted:
-1. Add `### Implementation Attempts` to `## Deferral` section in `PLANS/implementation_<feature_name>.md`
+1. Add `### Implementation Attempts` to `## Deferral` section in `PLANS/<feature_name>_IMPLEMENTATION.md`
 2. Document each approach:
    - Brief description
    - What went wrong / why failed
@@ -72,7 +72,7 @@ Prevents repeating failed approaches.
 
 **Do NOT delete.** Contains valuable knowledge about *why* deferred.
 
-1. Add `## Deferral` section to `PLANS/feature_<feature_name>.md`
+1. Add `## Deferral` section to `PLANS/<feature_name>_FEATURE.md`
 2. Include: date, reason, evidence gap, reconsideration criteria, prerequisites, review link
 3. For implementation-phase: add `### Implementation Attempts` subsection
 4. Use archive script to move to `PLANS/ARCHIVE/` with timestamp prefix
@@ -176,7 +176,7 @@ Recommend SELECT_FEATURE to identify next work based on dependency stack, highes
 
 **Principle Reinforced:** "Paradox of quality: accept temporary roughness early to maximize iteration count" and "Test before building"
 
-**Review Document:** `PLANS/plan_review_speed_animation_scaling.md`
+**Review Document:** `PLANS/speed_animation_scaling.md`
 ```
 
 ### Example Deferral Log Entry (Implementation Phase)

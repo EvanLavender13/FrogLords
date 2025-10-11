@@ -44,7 +44,7 @@ Read `AGENTS.md` to synthesize core project principles:
 
 ### 5. Write Refactor Description
 
-Create description and save to `PLANS/refactor_<refactor_name>.md`:
+Create description and save to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 # [Refactor Name]

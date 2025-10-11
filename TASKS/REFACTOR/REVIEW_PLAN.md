@@ -13,7 +13,7 @@ Read `AGENTS.md` to synthesize core principles:
 
 Extract refactor name from branch (`refactor/<refactor_name>`):
 
-1. Read `PLANS/refactor_<refactor_name>.md` (description & plan sections)
+1. Read `PLANS/REFACTOR_<refactor_name>.md` (description & plan sections)
 2. Read `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
 3. Read `PLANS/DEPENDENCY_STACK.md` (check tree visualization for system certainty)
 
@@ -75,7 +75,7 @@ Flag these refactoring anti-patterns:
 
 ### 6. Append Review to Refactor Document
 
-Append to `PLANS/refactor_<refactor_name>.md`:
+Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 ```markdown
 ---

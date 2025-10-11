@@ -17,7 +17,7 @@ If unresolved issues remain, return to IMPLEMENT_FIX.
 
 ### 3. Gather Context
 
-1. Read `PLANS/maintenance_<item_name>.md`
+1. Read `PLANS/MAINTENANCE_<item_name>.md`
 2. Review implementation and review sections
 3. Extract item name and affected files
 
@@ -37,7 +37,7 @@ If unresolved issues remain, return to IMPLEMENT_FIX.
 - **Resolution:** [1-sentence summary]
 - **Completed:** [YYYY-MM-DD]
 - **Learnings:** [Key insights - see section 5]
-- **Document:** PLANS/maintenance_<name>.md
+- **Document:** PLANS/MAINTENANCE_<name>.md
 ```
 
 ### 5. Document Learnings
@@ -76,7 +76,7 @@ Scan for batchable items:
 
 ### 7. Append Finalization Status
 
-Append to `PLANS/maintenance_<item_name>.md`:
+Append to `PLANS/MAINTENANCE_<item_name>.md`:
 
 ```markdown
 ---
@@ -132,5 +132,5 @@ Inform user of completion and suggest next action:
 - Capture learnings while fresh
 - Recommend batching if pattern emerges
 - Document path taken (Trivial vs Standard)
-- Complete history in `PLANS/maintenance_<name>.md`
+- Complete history in `PLANS/MAINTENANCE_<name>.md`
 - User handles git operations

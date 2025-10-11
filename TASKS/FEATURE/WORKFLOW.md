@@ -67,7 +67,7 @@ graph TD
 - **REQUEST_FEATURE**: Propose a new feature for evaluation and backlog entry
 
 ### Primary Workflow
-- **SELECT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; create feature branch; write comprehensive feature description with graybox scope, implementation approach, and testing protocol; save to `PLANS/feature_<feature_name>.md`
+- **SELECT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; create feature branch; write comprehensive feature description with graybox scope, implementation approach, and testing protocol; save to `PLANS/<feature_name>_FEATURE.md`
 - **CLARIFY_FEATURE**: (Optional) Eliminate ambiguity by asking targeted questions before implementation planning; captures visual references and concrete requirements
 - **PLAN_IMPLEMENTATION**: Break down feature description into atomic implementation steps with detailed system audit; update existing plan with changelog if it exists
 - **REVIEW_PLAN**: Check implementation plan against principles; prepend changelog entry on re-review

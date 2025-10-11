@@ -5,10 +5,10 @@
 
 .DESCRIPTION
     Moves workflow documents from PLANS/ to PLANS/ARCHIVE/ with a timestamp prefix.
-    Supports three workflow types:
-    - feature: Multi-file artifacts (feature, implementation, code_review, plan_review)
-    - refactor: Single document (refactor_<name>.md)
-    - maintenance: Single document (maintenance_<name>.md)
+    Supports three workflow types with distinct naming patterns:
+    - feature: Multi-file artifacts with feature-first naming (<name>_FEATURE.md, <name>_IMPLEMENTATION.md, etc.)
+    - refactor: Single document with workflow-first naming (REFACTOR_<name>.md)
+    - maintenance: Single document with workflow-first naming (MAINTENANCE_<name>.md)
 
 .PARAMETER Type
     The workflow type: feature, refactor, or maintenance
@@ -49,8 +49,8 @@ if (-not $Name) {
         Write-Host "Usage: .\archive.ps1 maintenance <name>" -ForegroundColor Yellow
         Write-Host "Example: .\archive.ps1 maintenance remove_redundant_includes" -ForegroundColor Yellow
         Write-Host "`nAvailable maintenance documents in PLANS/:" -ForegroundColor Cyan
-        Get-ChildItem "PLANS\maintenance_*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-            $docName = $_.Name -replace '^maintenance_(.+)\.md$', '$1'
+        Get-ChildItem "PLANS\MAINTENANCE_*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+            $docName = $_.Name -replace '^MAINTENANCE_(.+)\.md$', '$1'
             Write-Host "  - $docName" -ForegroundColor Gray
         }
         exit 1
@@ -78,18 +78,21 @@ Write-Host "`nTimestamp: $timestamp" -ForegroundColor Green
 $artifactPatterns = @()
 switch ($Type) {
     'feature' {
+        # Feature uses feature-first naming: <name>_WORKFLOW.md
         $artifactPatterns = @(
-            "feature_$Name.md",
-            "implementation_$Name.md",
-            "code_review_$Name.md",
-            "plan_review_$Name.md"
+            "${Name}_FEATURE.md",
+            "${Name}_IMPLEMENTATION.md",
+            "${Name}_CODE_REVIEW.md",
+            "${Name}_PLAN_REVIEW.md"
         )
     }
     'refactor' {
-        $artifactPatterns = @("refactor_$Name.md")
+        # Refactor uses workflow-first naming: REFACTOR_<name>.md
+        $artifactPatterns = @("REFACTOR_$Name.md")
     }
     'maintenance' {
-        $artifactPatterns = @("maintenance_$Name.md")
+        # Maintenance uses workflow-first naming: MAINTENANCE_<name>.md
+        $artifactPatterns = @("MAINTENANCE_$Name.md")
     }
 }
 
@@ -122,6 +125,10 @@ Write-Host "`nFound $($filesToArchive.Count) artifact(s) to archive:" -Foregroun
 $filesToArchive | ForEach-Object { Write-Host "  - $(Split-Path $_ -Leaf)" }
 
 # Build mapping of old filename -> new filename (basename only, no path)
+# Archive naming:
+# - Features: timestamp_<name>_WORKFLOW.md (feature-first, grouping by feature name)
+# - Refactor: timestamp_REFACTOR_<name>.md (workflow-first, grouping by type)
+# - Maintenance: timestamp_MAINTENANCE_<name>.md (workflow-first, grouping by type)
 $filenameMap = @{}
 foreach ($file in $filesToArchive) {
     $basename = Split-Path $file -Leaf

@@ -8,8 +8,8 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference
 2.  **Planning Documents:** Read the following files:
-    *   `PLANS/feature_<feature_name>.md` (feature description and rationale)
-    *   `PLANS/implementation_<feature_name>.md` (must exist)
+    *   `PLANS/<feature_name>_FEATURE.md` (feature description and rationale)
+    *   `PLANS/<feature_name>_IMPLEMENTATION.md` (must exist)
     *   `PLANS/DEPENDENCY_STACK.md` (check tree visualization for dependencies and certainty)
     *   `PLANS/DESIGN_BACKLOG.md`
 
@@ -46,7 +46,7 @@ Cross-reference the feature description, feature description, and implementation
 
 Generate a new markdown document summarizing the findings.
 
--   **Filename:** `PLANS/plan_review_<feature_name>.md`
+-   **Filename:** `PLANS/<feature_name>_PLAN_REVIEW.md`
 -   **If the review file already exists:** 
     -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via MODIFY_PLAN")
     -   Update the analysis sections (Summary, Violations, Misalignments, Actionable Items) with current findings
