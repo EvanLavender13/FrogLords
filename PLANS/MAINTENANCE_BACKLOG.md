@@ -28,12 +28,6 @@
 
 (Minor inconsistencies or quality improvements)
 
-### Commented-Out Debug Code
-- **File:** `src/input/input.cpp:54, 61, 68, 76, 84`
-- **Severity:** Medium
-- **Description:** Multiple printf debug statements are commented out throughout the event processing function. These should either be removed or converted to a proper debug logging system if they're valuable.
-- **Suggested Fix:** Remove commented debug code entirely. If logging is needed in the future, add a debug logging system rather than accumulating commented printfs.
-
 ### TODO Comments for Future Features
 - **Files:**
   - `src/input/input.h:67-75`
@@ -124,3 +118,10 @@
 - **Description:** `#include "character/controller.h"` is redundant—already included via `debug_draw.h:6`.
 - **Resolution:** Removed redundant #include "character/controller.h" from debug_draw.cpp.
 - **Completed:** October 9, 2025
+
+### Commented-Out Debug Code
+- **File:** `src/input/input.cpp:54, 61, 68, 76, 84`
+- **Severity:** Medium
+- **Description:** Multiple printf debug statements were commented out throughout the event processing function.
+- **Resolution:** Removed all commented-out debug code for clarity and code health. No logic or behavior changed.
+- **Completed:** October 10, 2025
