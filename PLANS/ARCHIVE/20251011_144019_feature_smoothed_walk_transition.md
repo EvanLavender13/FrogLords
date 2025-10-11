@@ -108,3 +108,67 @@ Extends proven spring-damper foundation (currently unused in dependency stack). 
 **Novelty:** Low - exponential smoothing is industry-standard for target tracking
 
 **Risk:** Tuning time only. No architectural unknowns.
+
+---
+
+## Completion
+
+**Date Completed:** 2025-10-11
+
+**Final Certainty Score:** 100% ✅
+
+**Code Review:** [code_review_smoothed_walk_transition.md](code_review_smoothed_walk_transition.md)
+
+**Outcome:** Feature implemented successfully using exponential decay (Option C from backlog). Smooth transitions between walk/run speeds preserve physics-first feel. Critical bug discovered and fixed during implementation: circular dependency in speed state management required separating `run_speed` (immutable reference) from `max_speed` (smoothed state). Debug UI displays enable real-time tuning visualization.
+
+---
+
+## Reflection
+
+### What went well?
+
+- **Architectural audit prevented duplicate systems:** Pre-implementation review of `controller` ownership and all references (gui, game_world, debug_draw, tuning, animation) correctly identified clean single ownership, avoiding migration complexity that plagued earlier features
+- **Bug discovery process was systematic:** Circular dependency caught during functional testing, analyzed in implementation notes with clear before/after code examples, and resolved with minimal rework
+- **Exponential decay over spring-damper was correct choice:** Simpler implementation (one parameter vs. two), no overshoot risk, sufficient for speed transitions; validated the "simplicity over sophistication" principle
+
+### What caused friction?
+
+- **Initial variable naming confusion:** Feature doc suggested adding `current_max_speed` and `target_max_speed`, but implementation correctly reused existing `max_speed` member as smoothed state; naming inconsistency between documents required clarification
+- **Circular dependency not predicted in planning:** Bug only revealed during runtime testing (releasing SHIFT didn't transition back to run); could have been caught with static analysis of state flow during design phase
+- **PowerShell script issue with backticks:** Commit script failed on first attempt due to backticks in commit message being interpreted as escape characters; minor tooling friction
+
+### What would you do differently?
+
+- **Add state flow diagram for smoothed variables:** When planning features that modify reference values (like `max_speed`), explicitly diagram which variables are immutable references vs. derived state; would have caught circular dependency before implementation
+- **Validate commit message format earlier:** Test commit script with placeholder message during planning to catch parsing issues before final commit
+- **Consider "dual reference" pattern upfront:** Any smoothed variable needs both a target reference (immutable) and current state (smoothed); recognizing this pattern would have prevented the `run_speed` bug
+
+---
+
+## Certainty Calibration
+
+**Predicted Certainty:** 60% (from feature plan Section 3)
+
+**Actual Outcome:**
+- [x] Completed on first attempt (no deferrals, no major rework)
+- [ ] Required feature/rework (specify what changed)
+- [ ] Deferred (specify reason and missing prerequisites)
+
+**Variance Analysis:**
+
+Predicted certainty was **40% too low**. Feature completed smoothly despite medium certainty estimate. The implementation approach (exponential decay, max_speed modulation) was architecturally sound and required only a single bug fix (circular dependency) that was resolved within the same session. The "medium certainty (feel)" concern proved unfounded—default transition rate of 10.0 felt natural immediately; no extended tuning iteration required.
+
+**Why was prediction pessimistic?**
+- Overestimated tuning risk: Assumed multiple iteration cycles; actual default value worked well
+- Undervalued pattern reuse: Exponential smoothing is trivial; treating it as "novel" inflated uncertainty
+- Clean system ownership de-risked implementation: Pre-implementation audit confirmed no hidden dependencies
+
+**Calibration Adjustment:**
+
+For similar features in the future:
+- **Pattern reuse (exponential decay, lerp toward target) justifies +20% certainty boost:** Industry-standard smoothing techniques with single-owner state require minimal iteration
+- **Architectural audit completion justifies +10% certainty boost:** Confirmed single ownership and no migration needs reduces implementation risk significantly
+- **Recalibrated certainty for this feature:** 90% (architecture 95%, feel 85%) vs. original 60%
+- **Signal for higher confidence:** When state modification is localized (single struct), transformation is simple (one lerp per frame), and debugging UI exists (real-time visualization), implementation risk is low even if feel tuning is uncertain
+
+**Lesson:** Distinguish "requires tuning iteration" from "uncertain outcome." Tuning with immediate feedback (GUI sliders + real-time display) is low-risk iteration, not architectural uncertainty. Reserve <70% certainty for novel patterns or multi-system integration.

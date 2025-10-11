@@ -102,40 +102,6 @@
 
 ### Input & Control Feel
 
-- **Smoothed Walk Speed Transition:** Decelerate smoothly to walk speed instead of hard velocity clamp when SHIFT pressed
-  - *Prerequisite:* Primary Skeletal Animation validated ✅
-  - *Certainty:* Medium (~60%) - implementation approach clear, tuning feel requires iteration
-  - *Current Implementation:* SHIFT key hard-caps velocity at 2.0 m/s (controller.cpp:92-99), creating instant speed lock
-  - *Problem:* Abrupt transition breaks physics-first feel. Player expects smooth deceleration to walk speed, not instant lock.
-  - *Hypothesis:* Smooth deceleration will feel more natural and controllable; spring-damper or exponential decay to target speed
-  - *Rationale:* Aligns with "input maps to acceleration" principle (AGENTS.md). Current hard cap violates physics-first foundation. Spring-damper or max_speed target modulation preserves momentum while respecting walk speed intent.
-  - *Scope:*
-    - **Option A (Recommended):** Spring-damper to `walk_speed` target when SHIFT held
-      - Add `walk_speed_target` float to controller (driven by SHIFT state)
-      - Use existing spring-damper foundation to smooth velocity toward target
-      - Tunable parameters: stiffness, damping (likely reuse tuning_params pattern)
-    - **Option B:** Exponential decay toward `walk_speed` (simpler but less flexible)
-      - `speed = lerp(speed, walk_speed, decay_rate * dt)` when SHIFT held
-      - Single tuning parameter (decay_rate)
-    - **Option C:** Modulate `max_speed` target directly
-      - Smooth `max_speed` value between run_speed and walk_speed based on SHIFT state
-      - Physics system naturally decelerates to new cap via friction
-  - *Success Criteria:* 
-    - SHIFT press triggers smooth deceleration (no instant lock)
-    - Release SHIFT allows smooth acceleration back to run speed
-    - Transition time feels responsive but not abrupt (~0.2-0.5s estimate)
-    - Works predictably across all speeds (pressing SHIFT at max speed vs mid-speed)
-    - No visual jitter or velocity oscillation
-  - *Test Plan:*
-    1. Run at max speed, press SHIFT → should smoothly decelerate to walk
-    2. Hold SHIFT from standstill → should accelerate directly to walk (no overshoot)
-    3. Release SHIFT while walking → should smoothly accelerate to run
-    4. Rapid SHIFT tapping → should handle state changes gracefully
-  - *Risk:* May feel less responsive than instant lock; tuning required to balance smoothness vs. responsiveness
-  - *Implementation Estimate:* Small (1-2 hours) - leverage existing spring-damper or add exponential decay
-  - *Note:* Current hard cap acceptable for debug workflow but feels wrong for player-facing control. Upgrade to production-quality feel.
-  - *Origin:* User request 2025-10-10; builds on existing "Walk Speed Lock Refactor" backlog item (identified in code review 2025-10-09)
-
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
 - **Active ragdoll:** Spring-driven pose matching for dynamic reactions

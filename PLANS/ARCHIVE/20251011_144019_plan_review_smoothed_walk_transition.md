@@ -20,7 +20,7 @@ The plans are well-aligned with core principles. This is a clean, minimal featur
 ### Minor Terminology Inconsistency
 
 - **Misalignment:** Variable naming confusion across documents
-  - **Source:** `feature_smoothed_walk_transition.md` vs `implementation_smoothed_walk_transition.md`
+  - **Source:** `20251011_144019_feature_smoothed_walk_transition.md` vs `20251011_144019_implementation_smoothed_walk_transition.md`
   - **Principle:** "Clarity over cleverness"
   - **Details:**
     - Feature doc mentions `current_max_speed` and `target_max_speed` as new state variables
@@ -50,7 +50,7 @@ The plans are well-aligned with core principles. This is a clean, minimal featur
 
 All plans are implementation-ready. The following are optional refinements for consistency:
 
-- [ ] **Optional:** Update `PLANS/feature_smoothed_walk_transition.md:35-36` to clarify that `max_speed` becomes dynamic (smoothed each frame) rather than adding new `current_max_speed` variable. Implementation plan is correct; feature doc should match.
+- [ ] **Optional:** Update `PLANS/ARCHIVE/20251011_144019_feature_smoothed_walk_transition.md:35-36` to clarify that `max_speed` becomes dynamic (smoothed each frame) rather than adding new `current_max_speed` variable. Implementation plan is correct; feature doc should match.
 - [ ] **Optional:** Consider adding `target_max_speed` display to GUI debug section (implementation line 96-100) to visualize target vs. smoothed value during tuning. Already suggested as "optional, useful for debugging" - recommend keeping this.
 
 ### Verification Checklist
@@ -65,7 +65,7 @@ The implementation plan quality gates (lines 103-115) are comprehensive and alig
 ### Post-Implementation
 
 - [ ] Update `DEPENDENCY_STACK.md` to mark "Smoothed Walk Transition" as 100% certain after successful implementation
-- [ ] Archive `implementation_smoothed_walk_transition.md` to `ARCHIVE/` when complete (per established pattern)
+- [ ] Archive `20251011_144019_implementation_smoothed_walk_transition.md` to `ARCHIVE/` when complete (per established pattern)
 - [ ] Remove "Smoothed Walk Speed Transition" from `DESIGN_BACKLOG.md:105-137` after implementation
 
 ---

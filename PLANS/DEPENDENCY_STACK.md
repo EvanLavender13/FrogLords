@@ -12,6 +12,8 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)  ← YOU ARE HERE
 ├─────────────────────────────────────┤
+│ Smoothed Walk Transition (100%) ✅  │  ← Exponential decay between walk/run speeds
+├─────────────────────────────────────┤
 │  Pose Blending (100%) ✅            │  ← Quaternion slerp between keyframes
 ├─────────────────────────────────────┤
 │  Debug Visual Overhaul (100%) ✅    │  ← Velocity trail, plot functions, gradient ring
@@ -85,6 +87,14 @@
 **Dependencies:** Everything below remains stable. Changes here won't cascade downward.
 
 ### Completed Foundation (100%) ✅
+
+**Smoothed Walk Speed Transition:**
+- Exponential decay between walk/run speeds based on SHIFT input
+- Fixed circular dependency bug: separated `run_speed` (immutable reference) from `max_speed` (smoothed state)
+- Pattern: `max_speed = lerp(max_speed, target_max_speed, transition_rate * dt)` where target depends on `is_walking` flag
+- Tunable `walk_transition_rate` (1-30, default 10) exposed in character panel with real-time debug displays
+- Validates physics-first control: input modulates acceleration target, not velocity directly
+- See [implementation_smoothed_walk_transition.md](implementation_smoothed_walk_transition.md) and [code_review_smoothed_walk_transition.md](code_review_smoothed_walk_transition.md)
 
 **Skeletal Animation Stack:**
 - Skeleton debug system → Static keyframe preview → Primary skeletal animation (distance-phased) → Secondary motion (spring-damper lag) → Pose blending (quaternion slerp)
