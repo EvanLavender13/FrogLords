@@ -68,49 +68,42 @@ Generate a new markdown document summarizing the findings.
 ```markdown
 # Principle Review: [Feature Name]
 
-### 1. Summary
-(A brief, one-paragraph summary of the findings. State whether the plans are generally aligned or if significant issues were found.)
+**Date:** [YYYY-MM-DD]
+**Status:** APPROVED | REVISE | DEFER
 
-### 2. Violations & Contradictions
-(A bulleted list of direct violations of principles found in the plans. For each, cite the source file, the violated principle from AGENTS.md, and the specific conflicting text.)
+### Summary
 
-**NOTE FOR RETROSPECTIVES:** When documenting violations, categorize them to help identify patterns:
-- **Category:** Premature Polish | Missing Prerequisites | Scope Creep | Reactive Control | System Duplication | Other
-- This categorization helps RETROSPECTIVE task identify recurring failure modes
+[One paragraph: Are plans aligned with principles? Major concerns? Recommendation?]
 
-- **Violation:** (e.g., Premature Polish)
-  - **Category:** Premature Polish
-  - **Source:** `PLANS/implementation_...md`
-  - **Principle:** "Graybox before polish"
-  - **Details:** The plan includes tasks for creating final art assets before the core mechanic has been playtested and validated.
-  - **Suggestion:** Defer all art-related tasks until the graybox is proven successful according to the metrics in the feature description.
+### Violations (Must Fix)
 
-- **Violation:** (e.g., Missing System Migration)
-  - **Category:** System Duplication
-  - **Source:** `PLANS/implementation_...md`
-  - **Principle:** "Bottom-up dependencies" / "Single source of truth"
-  - **Details:** Plan adds `controller.locomotion` but doesn't remove existing `game_world.locomotion` or update all references (debug_draw, character_panel, etc.). This creates duplicate instances and sync issues.
-  - **Suggestion:** Add explicit steps to: (1) Remove old instance, (2) Update all call sites, (3) Verify no remaining references to old instance.
+**NOTE:** Categorize for retrospectives (Premature Polish | Missing Prerequisites | Scope Creep | Reactive Control | System Duplication | Other)
 
-### 3. Misalignments & Risks
-(A bulleted list of items that, while not direct violations, may be misaligned with the spirit of the principles or introduce unnecessary risk.)
+- **[Category]:** [Issue] in [source]
+  - **Principle:** [Violated principle from AGENTS.md]
+  - **Fix:** [How to address]
 
-- **Misalignment:** (e.g., Overly Complex Core)
-  - **Source:** `PLANS/iteration_...md`
-  - **Principle:** "Simplicity over sophistication" / "Stupid Simple Core"
-  - **Details:** The defined graybox scope includes three secondary systems that are not essential for testing the core hypothesis. This increases the implementation time for the first loop.
-  - **Suggestion:** Revise the graybox scope to focus only on the absolute minimum required to test the core mechanic. Defer the secondary systems to a future iteration.
+**If none:** No violations found.
 
-- **Misalignment:** (e.g., Scope Mismatch)
-  - **Source:** `PLANS/feature_...md` vs `PLANS/iteration_...md`
-  - **Principle:** "Iteration over planning" / "Short planning horizons"
-  - **Details:** The feature description promises X, Y, and Z, but the feature description only delivers X. While appropriate scoping down is good, the feature description may not deliver enough to validate the core feature hypothesis.
-  - **Suggestion:** Either expand the iteration scope to include the minimal Y component needed for validation, or revise the feature description to clarify that this iteration focuses solely on X.
+### Misalignments & Risks
 
-### 4. Actionable Items
-(A concise checklist of the specific actions that should be taken to address the findings in the report.)
+- **[Description]:** [Why concerning] in [source]
+  - **Mitigation:** [How to reduce risk]
 
-- [ ] Revise `implementation_...md` to remove tasks related to final art assets.
-- [ ] Update `iteration_...md` to simplify the graybox scope.
-- [ ] Re-evaluate the certainty score for this feature in `DEPENDENCY_STACK.md` based on the identified risks.
+**If none:** Plans appear well-aligned.
+
+### Actionable Items
+
+- [ ] [Specific action needed]
+
+**If none:** Ready to proceed with implementation.
+
+### Recommendation
+
+**Reasoning:** [Brief justification for status]
+
+**Next Steps:**
+- If APPROVED: Proceed to IMPLEMENTATION_STEP
+- If REVISE: Address items, re-review
+- If DEFER: Update DESIGN_BACKLOG with findings
 ```

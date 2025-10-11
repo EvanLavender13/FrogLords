@@ -51,33 +51,43 @@ The approval section should contain reviewer signature and timestamp.
 ```markdown
 # Code Review: [Feature Name]
 
-### 1. Summary
+**Date:** [YYYY-MM-DD]
+**Status:** APPROVED | FIX ISSUES
 
-(A brief, one-paragraph summary of the findings. State whether the implementation is approved or if revisions are required.)
+### Summary
 
-### 2. Violations & Required Changes
+[One paragraph: Is implementation approved? Major issues? Recommendation?]
 
-(A bulleted list of direct violations of principles that must be fixed. For each, cite the source file, the violated principle, and the specific code.)
+### Violations (Must Fix)
 
-- **Violation:** (e.g., Incorrect Naming Convention)
-  - **File:** `src/character/controller.cpp`
-  - **Principle:** "uniform snake_case for user code"
-  - **Details:** The function `updateCharacterState` uses camelCase instead of snake_case.
-  - **Suggestion:** Rename the function to `update_character_state`.
+- **[Category]:** [Issue]
+  - **File:** [src/path/to/file.cpp:line]
+  - **Principle:** [Which principle violated]
+  - **Fix:** [How to address]
 
-### 3. Misalignments & Suggestions
+**If none:** No violations found.
 
-(A bulleted list of items that are not direct violations but could be improved to better align with the project's philosophy.)
+### Suggestions for Improvement
 
-- **Misalignment:** (e.g., Potential for Simplification)
-  - **File:** `src/character/locomotion.cpp`
-  - **Principle:** "Simplicity over sophistication"
-  - **Details:** The jump logic uses a complex state machine that could be simplified to a few boolean flags.
-  - **Suggestion:** Consider refactoring the jump logic to use a simpler state representation.
+- **[Description]:** [Why helpful]
+  - **File:** [src/path/to/file.cpp:line]
+  - **Impact:** [How much better]
 
-### 4. Approval
+**If none:** Implementation looks solid.
 
-- **Status:** [Approved / Pending Revisions]
-- **Reviewer:** [Your Name/Agent ID]
-- **Date:** [Current Date]
+### Code Quality Checks
+
+- [ ] Naming: snake_case
+- [ ] Formatting: 4-space indent, braces on same line
+- [ ] Dependency flow respected
+- [ ] Gameplay-first principles (input→acceleration, interruptible, physics-first)
+- [ ] Simplicity over sophistication
+
+### Recommendation
+
+**Reasoning:** [Brief justification for status]
+
+**Next Steps:**
+- If APPROVED: Proceed to FINALIZE_FEATURE
+- If FIX ISSUES: Address items, re-review
 ```

@@ -2,12 +2,10 @@
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` for coding standards and quality guidelines:
+Read `AGENTS.md` for coding standards:
 - Naming conventions (snake_case)
 - File organization and dependency flow
 - Code formatting (4-space indent, braces on same line)
-- "Clarity over cleverness"
-- "Simplicity over sophistication"
 
 ### 2. Gather Context
 
@@ -37,24 +35,7 @@ Extract refactor name from branch (`refactor/<refactor_name>`):
 - No circular dependencies introduced
 - Single source of truth maintained
 
-### 4. Principle Alignment
-
-**Clarity Over Cleverness:**
-- Is refactored code easier to understand?
-- Do names clearly express purpose?
-- Are we using straightforward approaches?
-
-**Simplicity Over Sophistication:**
-- Is code genuinely simpler?
-- Does abstraction level match problem complexity?
-- Are we solving current problems, not imagined futures?
-
-**Pattern Extraction (if applicable):**
-- Is abstraction at appropriate granularity?
-- Can it be used in all identified locations?
-- Are parameters clear and minimal?
-
-### 5. Check for Side Effects
+### 4. Check for Side Effects
 
 **Correctness:**
 - Logic errors introduced (off-by-one, wrong operators)?
@@ -76,21 +57,14 @@ Extract refactor name from branch (`refactor/<refactor_name>`):
 - No dead code remaining?
 - No half-migrated state?
 
-### 6. Review Scope Discipline
+### 5. Review Scope Discipline
 
 - Changes match refactor plan?
 - No unrelated "while we're here" modifications?
 - Deviations documented and necessary?
 - New opportunities tracked separately (not bundled)?
 
-### 7. Assess Risk Factors
-
-- Did complexity match estimate?
-- Was call site count accurate?
-- Were all hidden dependencies found?
-- Any surprises informing future risk assessment?
-
-### 8. Append Code Review to Refactor Document
+### 6. Append Code Review to Refactor Document
 
 Append to `PLANS/refactor_<refactor_name>.md`:
 
@@ -100,7 +74,7 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 ## Code Review
 
 **Date:** [YYYY-MM-DD]
-**Reviewer:** Claude (AI Assistant)
+**Status:** [APPROVED | FIX ISSUES | ROLLBACK]
 
 ### Goal Achievement
 
@@ -123,18 +97,7 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 - [Issue: description, location]
 [Or "None"]
 
-### Principle Alignment
-
-**Clarity Over Cleverness:** ✓ Improved | ≈ Neutral | ✗ Degraded
-- [Observation about clarity]
-
-**Simplicity Over Sophistication:** ✓ Simplified | ≈ Neutral | ✗ More Complex
-- [Observation about simplicity]
-
-**Pattern Extraction (if applicable):** ✓ Appropriate | ✗ Premature/Over-general
-- [Observation about abstraction]
-
-### Unintended Side Effects
+### Side Effects & Correctness
 
 **Correctness:** ✓ Verified | ⚠ Potential Issues | ✗ Bugs Found
 **Behavior Preservation:** ✓ Preserved | ⚠ Changes Unclear | ✗ Changed
@@ -153,16 +116,6 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 - [What changed from plan, why]
 [Or "None"]
 
-### Risk Assessment Review
-
-**Complexity:** As Estimated | Underestimated | Overestimated
-**Call Site Count:** Accurate | Underestimated | Overestimated
-**Hidden Dependencies:** All Found | Some Missed | Many Missed
-
-**Surprises:**
-- [Unforeseen issues]
-[Or "None"]
-
 ### Critical Issues (Must Fix Before Finalization)
 
 - [ ] [Critical issue: description, file, fix needed]
@@ -170,27 +123,22 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 
 ### Recommendations
 
-**Status:** APPROVED | FIX ISSUES | ROLLBACK
-
-**Reasoning:** [Brief justification]
+**Reasoning:** [Brief justification for status]
 
 **Next Steps:**
 - If APPROVED: Proceed to FINALIZE_REFACTOR and run validation checklist
 - If FIX ISSUES: Address critical items, re-review
 - If ROLLBACK: Execute rollback, update backlog, return to SELECT_REFACTOR
-
-**Confidence Level:** High | Medium | Low
 ```
 
-### 9. Propose Review
+### 7. Propose Review
 
 Present review report. Summarize:
-- Overall quality assessment
+- Overall quality assessment (approved/fix/rollback)
 - Critical issues that must be fixed
-- Principle alignment (clarity, simplicity)
 - Recommended next action
 
-### 10. Await Guidance
+### 8. Await Guidance
 
 Do not proceed to finalization. Await user decision to:
 - Fix identified issues
@@ -200,10 +148,8 @@ Do not proceed to finalization. Await user decision to:
 
 ### Tone & Constraints
 
-- Thorough and rigorous; this is the quality gate
-- Detail scales with severity
+- Concise; detail scales with severity
 - Cite specific file paths and line numbers
 - Distinguish critical issues from polish opportunities
-- Be honest about quality
-- Focus on objective measures: correctness, clarity, simplicity
-- Consider maintenance burden: will future developers understand this?
+- Focus on objective measures: correctness, completeness
+- Principle alignment was already checked in REVIEW_PLAN

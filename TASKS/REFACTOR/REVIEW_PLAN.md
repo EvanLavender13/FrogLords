@@ -83,130 +83,59 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 ## Plan Review
 
 **Date:** [YYYY-MM-DD]
-**Reviewer:** Claude (AI Assistant)
+**Status:** APPROVED | REVISE | DEFER
 
 ### Summary
 
-[One paragraph: Is plan sound? Major concerns? Recommendation to proceed/revise/defer?]
+[One paragraph: Is plan sound? Major concerns? Recommendation?]
 
-### Violations & Critical Issues
+### Violations (Must Fix)
 
-[Direct contradictions that MUST be fixed before proceeding]
-
-- **Violation:** [Category]
-  - **Source:** [Section in plan]
+- **[Category]:** [Issue] in [section]
   - **Principle:** [Which principle violated]
-  - **Details:** [Specific issue]
-  - **Suggestion:** [How to fix]
+  - **Fix:** [How to address]
 
-**If none:** No critical issues found.
+**If none:** No violations found.
 
 ### Risks & Concerns
 
-[Items that increase risk; should be addressed but may not block]
-
-- **Risk:** [Description]
-  - **Source:** [Section in plan]
-  - **Concern:** [Why risky]
+- **[Description]:** [Why risky] in [section]
   - **Mitigation:** [How to reduce]
 
-**If none:** Risk assessment appears thorough.
+**If none:** Risk assessment appears sound.
 
-### Suggestions for Improvement
+### Suggestions
 
-[Optional improvements; not critical]
-
-- **Suggestion:** [Description]
-  - **Rationale:** [Why this helps]
-  - **Impact:** [How much better]
+- **[Description]:** [Why helpful]
 
 **If none:** Plan appears comprehensive.
 
-### Principle Alignment Check
+### Principle Checks
 
-**Clarity Over Cleverness:**
 - [ ] "After" code clearer than "before"
-- [ ] No clever abstractions obscuring intent
-- [ ] New developer could understand
-
-**Simplicity Over Sophistication:**
 - [ ] Genuinely reduces complexity
-- [ ] Not over-engineering
-- [ ] Abstraction matches problem domain
-
-**Rule of Three:**
 - [ ] Pattern appears 3+ times (or Critical fix)
-- [ ] Not abstracting prematurely
-- [ ] Instances truly identical
-
-**Stability Requirement:**
 - [ ] All systems ≥70% certainty
-- [ ] No active development
-- [ ] Safe to refactor now
-
-### Migration Strategy Assessment
-
-**Stage Design:**
 - [ ] Staged approach for Medium/High risk
-- [ ] Stages logically ordered
-- [ ] Each stage independently verifiable
-
-**Coverage:**
 - [ ] All call sites included
-- [ ] Indirect dependencies accounted for
-- [ ] Debug/GUI/test code included
-
-**Hidden Dependencies:**
-- [ ] Initialization order considered
-- [ ] Performance implications assessed
-- [ ] Documentation updates planned
-
-### Safety Assessment
-
-**Testing Protocol:**
-- [ ] Behavior preservation testable
-- [ ] Test scenarios specific/measurable
-- [ ] Regression detection reliable
-- [ ] Per-stage and final validation planned
-
-**Rollback Plan:**
-- [ ] Procedure concrete
-- [ ] Trigger conditions clear
-- [ ] Backup strategy defined
-- [ ] Quick recovery possible
-
-### Complexity Assessment
-
-**Estimated Complexity:** [X points]
+- [ ] Hidden dependencies considered
+- [ ] Validation protocol concrete
 - [ ] Total ≤8 points
-- [ ] Stage estimates realistic
-- [ ] No unexpected complexity
-
-**Recommendation:**
-- [ ] Proceed as planned
-- [ ] Revise plan (address issues)
-- [ ] Split into smaller refactors
-- [ ] Defer (too risky/complex)
 
 ### Actionable Items
 
-[Checklist of specific actions needed]
+- [ ] [Action needed]
 
-- [ ] [Action 1]
-- [ ] [Action 2]
+**If none:** Ready for IMPLEMENT_REFACTOR.
 
-**If none:** Plan approved. Ready for IMPLEMENT_REFACTOR.
+### Recommendation
 
-### Final Recommendation
-
-**Status:** APPROVED | REVISE | DEFER
-
-**Reasoning:** [Brief justification]
+**Reasoning:** [Brief justification for status]
 
 **Next Steps:**
 - If APPROVED: Proceed to IMPLEMENT_REFACTOR
-- If REVISE: Address actionable items, re-review
-- If DEFER: Update REFACTOR_BACKLOG with findings
+- If REVISE: Address items, re-review
+- If DEFER: Update REFACTOR_BACKLOG
 ```
 
 ### 7. Propose Review

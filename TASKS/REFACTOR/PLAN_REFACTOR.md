@@ -149,23 +149,17 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 
 **Date:** [YYYY-MM-DD]
 **Risk Level:** Low | Medium | High
-**Estimated Complexity:** [X points]
+**Complexity:** [X points] (max 8)
 
 ### Impact Analysis
 
-**Scope:**
-- **Files Affected:** [count]
-- **Call Sites:** [count]
-- **Systems Involved:** [list]
+**Files:** [count] | **Call Sites:** [count] | **Systems:** [list]
 
 **Call Site Inventory:**
 - `src/file1.cpp:123` - [description]
 - `src/file2.cpp:456` - [description]
 
-**Risk Assessment:**
-- **Level:** Low/Medium/High
-- **Justification:** [brief explanation]
-- **Certainty Scores:** [system: score]
+**Risk Justification:** [Why Low/Medium/High - cite call site count, system criticality, certainty]
 
 ### Before/After Examples
 
@@ -179,64 +173,33 @@ Append to `PLANS/refactor_<refactor_name>.md`:
 // Refactored code
 ```
 
-**Key Improvements:**
-- [Improvement 1]
-- [Improvement 2]
+**Improvements:** [How this is clearer/simpler]
 
 ### Migration Strategy
 
 **Approach:** Staged | Linear
 
 **Stage 1: Prepare**
-- **Goal:** [What this accomplishes]
-- **Changes:** [Specific changes]
-- **Verification:**
-  - [ ] Compiles without warnings
-  - [ ] [Specific check]
+- [What to implement]
+- Verify: [ ] Compiles [ ] [Specific check]
 
 **Stage 2: Migrate**
-- **Goal:** [What this accomplishes]
-- **Call Sites:**
-  - [ ] `src/file1.cpp:123`
-  - [ ] `src/file2.cpp:456`
-- **Verification:**
-  - [ ] All call sites compile
-  - [ ] [Behavior check]
+- [ ] `src/file1.cpp:123`
+- [ ] `src/file2.cpp:456`
+- Verify: [ ] Compiles [ ] [Behavior check]
 
 **Stage 3: Cleanup**
-- **Goal:** Remove old code
-- **Changes:** [What gets deleted]
-- **Verification:**
-  - [ ] No references remain
-  - [ ] [Final check]
+- [What to delete]
+- Verify: [ ] No references [ ] [Final check]
 
 ### Validation Protocol
 
-**Per-Stage:**
-- [ ] Compiles without errors/warnings
-- [ ] [Stage-specific check 1]
-- [ ] [Stage-specific check 2]
+**Per-Stage:** [ ] Compiles [ ] [Behavior check]
 
 **Final:**
-- [ ] **Scenario 1:** [Description] → [Expected outcome]
-- [ ] **Scenario 2:** [Description] → [Expected outcome]
+- [ ] [Scenario 1] → [Expected]
+- [ ] [Scenario 2] → [Expected]
 - [ ] No regressions in [systems]
-- [ ] Debug visualizations work
-- [ ] Performance preserved
-
-### Hidden Dependencies
-
-- **Debug/GUI:** [Files needing updates]
-- **Documentation:** [Docs needing revision]
-- **Performance:** [Profiling/checks needed]
-
-### Complexity Breakdown
-
-- Stage 1: [X points]
-- Stage 2: [Y points]
-- Stage 3: [Z points]
-- Validation: [W points]
-- **Total:** [sum] (max 8)
 ```
 
 ### Tone & Constraints
