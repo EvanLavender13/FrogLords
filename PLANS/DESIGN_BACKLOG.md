@@ -1,4 +1,4 @@
-# Design Backlog
+﻿# Design Backlog
 
 **Purpose:** Unordered, liquid reservoir of ideas not being worked on soon. Most ideas go here until the foundation solidifies enough to support them.
 
@@ -13,15 +13,15 @@
 ### Debug Visualization
 
 - **Freeze Velocity Trail on Stop:** Stop trail sampling when character velocity drops below threshold; resume when movement resumes
-  - *Prerequisite:* Debug Visual Overhaul ✅ (velocity trail system exists)
+  - *Prerequisite:* Debug Visual Overhaul âœ… (velocity trail system exists)
   - *Certainty:* High (~95%) - trivial implementation, threshold may need tuning iteration
-  - *Problem:* Trail continuously updates regardless of movement, causing spheres to accumulate on stationary character. Visually confusing—trail should show "where character has been during motion," not "time passing while stationary."
+  - *Problem:* Trail continuously updates regardless of movement, causing spheres to accumulate on stationary character. Visually confusingâ€”trail should show "where character has been during motion," not "time passing while stationary."
   - *Hypothesis:* Frozen trail improves visual clarity; acts as "motion breadcrumb" showing last path taken. Better understanding of past trajectory during playtesting.
   - *Rationale:* Aligns with "reactive systems interpret state" principle. Trail should respond to velocity (motion source), not just time. Improves debug tool usefulness for analyzing movement patterns.
   - *Scope:*
     - Add velocity magnitude check before trail sampling ([game_world.cpp:29-45](src/app/game_world.cpp#L29-L45))
     - Only sample when `glm::length(character.velocity) > velocity_threshold`
-    - Threshold likely ~0.05-0.1 m/s (tune to feel—standing still vs. very slow walk)
+    - Threshold likely ~0.05-0.1 m/s (tune to feelâ€”standing still vs. very slow walk)
     - Optional: Add threshold parameter to `velocity_trail_state` for runtime tuning
   - *Implementation:* ~5 lines of code (single conditional check). Zero architectural changes.
   - *Success Criteria:*
@@ -33,7 +33,7 @@
   - *Origin:* User request 2025-10-11; improves existing trail system from Debug Visual Overhaul iteration
 
 - **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
-  - *Prerequisite:* Debug Draw System ✅
+  - *Prerequisite:* Debug Draw System âœ…
   - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact
   - *Rationale:* Eliminates confusion about parent-space vs bone-local rotations when tuning joint angles. Visible reference frame makes it immediately obvious which axis does what (e.g., "Y-axis points up, so rotation around Y is horizontal swing"). Critical for manual pose authoring and validating rotation behavior.
   - *Scope:* Draw 3 colored lines from character root: Red=+X (right), Green=+Y (up), Blue=+Z (forward). Add optional text labels "X", "Y", "Z" at line endpoints. Toggle via GUI checkbox (default: off).
@@ -44,14 +44,14 @@
 ### Skeletal Animation (Keyframe Foundation)
 
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
-  - *Prerequisite:* Foundation ✅ (keyframe architecture proven)
+  - *Prerequisite:* Foundation âœ… (keyframe architecture proven)
   - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
   - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for current graybox iteration
   - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
   - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
 
 - **Running gait keyframes:** Add RUN_STEP_LEFT, RUN_NEUTRAL, RUN_STEP_RIGHT poses to keyframe library
-  - *Prerequisite:* Foundation ✅ (quaternion architecture proven)
+  - *Prerequisite:* Foundation âœ… (quaternion architecture proven)
   - *Certainty:* High (~85%) - direct extension of proven pattern
   - *Rationale:* Walking gait keyframes already validated. Running gait differs in limb extension/timing but uses same quaternion architecture. Needed before implementing speed-based gait switching.
   - *Scope:*
@@ -60,28 +60,17 @@
     - Extend GUI dropdown to include run poses for manual selection
     - Reuse existing `apply_pose()` logic (no architecture changes)
   - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
-  - *Next Step:* Enables speed-based gait switching (walk → run blending)
+  - *Next Step:* Enables speed-based gait switching (walk â†’ run blending)
 
-- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses ✅ COMPLETE
-  - *Prerequisite:* Foundation ✅ (distance-phased triggering proven)
+- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses âœ… COMPLETE
+  - *Prerequisite:* Foundation âœ… (distance-phased triggering proven)
   - *Certainty:* 100%
-  - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walk↔run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes required—quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
+  - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walkâ†”run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes requiredâ€”quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
 
-- **Velocity-based acceleration tilt scaling:** Scale tilt magnitude by absolute velocity, not relative-to-max-speed
-  - *Prerequisite:* Acceleration tilt ✅, Walk/run speed transitions ✅
-  - *Certainty:* High (~85%) - straightforward fix for observable problem
-  - *Problem:* With shift-walking added (post-2025-10-06), tilt now scales relative to current max_speed. Result: walking at 2 m/s with walk-speed=2 produces same tilt as running at 8 m/s with run-speed=8. Visual feedback is deceptive—suggests high momentum when actually moving slowly.
-  - *Hypothesis:* Scaling tilt by absolute velocity (against fixed reference like run_speed) will truthfully communicate speed. Slow walk = subtle tilt, full run = pronounced tilt. Improves movement readability and physical grounding.
-  - *Root Cause:* Line 59 in animation.cpp uses `velocity_magnitude / max_speed` (relative). When max_speed smoothly transitions (lines 95-101 controller.cpp), ratio stays near 1.0 regardless of actual speed.
-  - *Solution:* Change denominator from dynamic `max_speed` to fixed reference (e.g., `run_speed` or hardcoded max like 8.0f). Preserves existing 0.5x-1.5x scaling range but anchors to absolute velocity.
-  - *Scope:* ~2 lines (modify velocity_scale calculation). Zero architectural changes. May need to pass run_speed to tilt function or use fixed constant.
-  - *Success Criteria:*
-    - Shift-walking produces visibly less tilt than full-speed running
-    - Tilt magnitude proportional to actual ground speed
-    - Smooth transitions as speed changes (no pops)
-    - Feels truthful to player's perception of momentum
-  - *Risk:* Low. Reactive layer only; worst case revert takes 30 seconds. May need minor tuning of scaling constants (0.5x-1.5x range).
-  - *Historical Context:* Feature deferred 2025-10-06 as "no evidence of problem" before walk/run transitions existed. Context changed—now addressing regression introduced by shift-walking feature.
+- **Velocity-based acceleration tilt scaling:** Absolute run-speed anchor for tilt magnitude. COMPLETE
+  - *Prerequisite:* Acceleration tilt complete, Walk/run speed transitions complete
+  - *Certainty:* 100%
+  - *Learning:* Passing run_speed into update_acceleration_tilt() and clamping the denominator keeps lean proportional to real momentum while the debug speed ring remains tied to smoothed max_speed. Follow-up: explore a raw (non-smoothed) speed ring and an acceleration ring to visualize intent versus response.
 
 - **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
   - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
@@ -245,7 +234,7 @@
 
 *Note: These are therapeutic planning - written to reduce anxiety, not coordinate work. Actual game design will emerge through iteration and serendipity capture.*
 
-## Frogs Rule! 🐸
+## Frogs Rule! ðŸ¸
 
 ### Frog-Specific Ideas (Wild Speculation)
 - **Tongue grapple:** Long-range grab mechanic
@@ -256,7 +245,7 @@
 - **Inflation:** Puff up for defense or floating
 - **Spawn eggs:** Lay eggs that hatch into allies?
 - **Croak communication:** Audio signals affect environment
-- **Metamorphosis:** Tadpole → frog progression system
+- **Metamorphosis:** Tadpole â†’ frog progression system
 - **Lily pad platforms:** Environmental interaction
 
 *Certainty: ~0% - Pure creative exploration. Most will be cut. Kept here for inspiration.*
@@ -268,3 +257,6 @@
 - No assumed certainty about implementation
 - Pull from backlog only when foundation reaches 90%+ certainty
 - Most items will never be implemented (feature, not bug)
+
+
+

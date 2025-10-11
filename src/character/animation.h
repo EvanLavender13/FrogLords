@@ -55,7 +55,8 @@ struct animation_state {
 
     animation_state();
 
-    void update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity, float max_speed,
+    void update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity,
+                                  float reference_speed, // Absolute speed baseline for tilt scaling
                                   float orientation_yaw, // NOLINT
                                   float dt);
     void update_landing_spring(bool just_landed,

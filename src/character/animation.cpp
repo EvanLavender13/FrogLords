@@ -29,7 +29,7 @@ animation_state::animation_state()
 }
 
 void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity,
-                                               float max_speed,
+                                               float reference_speed,
                                                float orientation_yaw, // NOLINT
                                                float dt) {
     // Extract horizontal acceleration (ignore vertical/gravity)
@@ -55,8 +55,9 @@ void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3
         }
 
         // Scale tilt based on velocity (faster movement = more tilt, but clamped)
-        // Use velocity relative to max speed for scaling (0.5x to 1.5x tilt magnitude)
-        float velocity_scale = glm::clamp(velocity_magnitude / max_speed, 0.0f, 1.0f);
+        // Use velocity relative to the reference speed for scaling (0.5x to 1.5x tilt magnitude)
+        float ref_speed = glm::max(reference_speed, 0.01f);
+        float velocity_scale = glm::clamp(velocity_magnitude / ref_speed, 0.0f, 1.0f);
         float effective_tilt_magnitude = tilt_magnitude * (0.5f + velocity_scale * 1.0f);
 
         // Map normalized local acceleration to tilt angles
@@ -105,6 +106,7 @@ float animation_state::get_vertical_offset() const {
 }
 
 void animation_state::update(const animation_update_params& params) {
+    // Legacy path uses default run reference speed (matches controller default).
     update_acceleration_tilt(params.acceleration, params.velocity, 8.0f, params.orientation_yaw,
                              params.dt);
 }

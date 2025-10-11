@@ -56,7 +56,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
                                               character.vertical_velocity_on_land, dt);
     character.just_landed = false;
     character.animation.update_acceleration_tilt(character.last_acceleration, character.velocity,
-                                                 character.max_speed,
+                                                 character.run_speed,
                                                  character.orientation.get_yaw(), dt);
 
     character::sync_locomotion_targets(character, locomotion);

@@ -166,3 +166,4 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 - Circular dependencies exist but weakest ones ignored
 - Stack will reshape as foundation solidifies
 - **Motion vs. Structure:** Reactive animation layers require **motion sources** (systems that change state each frame), not just data structures. Example: Secondary motion needs skeletal joints that animate (move each frame), not just a static skeleton struct. When analyzing dependencies for reactive systems, verify the prerequisite provides dynamic state changes over time, not just structural existence.
+- Acceleration tilt now scales against the run-speed reference, keeping visual lean honest while the debug speed ring continues to reflect the smoothed `max_speed`.
