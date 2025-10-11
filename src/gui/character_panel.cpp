@@ -30,11 +30,17 @@ void draw_character_panel(character_panel_state& state, controller& character,
     // Main tuning parameters
     if (ImGui::CollapsingHeader("Character Tuning", ImGuiTreeNodeFlags_DefaultOpen)) {
         bool changed = false;
-        changed |= gui::widget::slider_float("Max Speed (m/s)", &character.max_speed, 1.0f, 15.0f);
+        changed |= gui::widget::slider_float("Run Speed (m/s)", &character.run_speed, 1.0f, 15.0f);
         changed |= gui::widget::slider_float("Time to Max Speed (s)", &params.time_to_max_speed,
                                              0.1f, 2.0f);
         changed |= gui::widget::slider_float("Jump Height (m)", &params.jump_height, 0.5f, 3.0f);
         changed |= gui::widget::slider_float("Gravity (m/s^2)", &character.gravity, -20.0f, -5.0f);
+        gui::widget::slider_float("Walk Transition Rate", &character.walk_transition_rate, 1.0f,
+                                  30.0f);
+
+        // Debug displays for walk/run transition
+        gui::widget::text("Target Max Speed: %.2f m/s", character.target_max_speed);
+        gui::widget::text("Current Max Speed: %.2f m/s", character.max_speed);
 
         if (changed) {
             params.apply_to(character);

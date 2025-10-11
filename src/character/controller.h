@@ -42,11 +42,16 @@ struct controller {
     float ground_height = 0.0f;
 
     // Tunable parameters
-    float ground_accel = 20.0f;    // m/s^2
-    float air_accel = 10.0f;       // m/s^2
-    float max_speed = 8.0f;        // m/s
-    float walk_speed = 2.0f;       // m/s (shift key speed limit)
-    float gravity = -9.8f;         // m/s^2
+    float ground_accel = 20.0f; // m/s^2
+    float air_accel = 10.0f;    // m/s^2
+    float run_speed = 8.0f;     // m/s (reference run speed - tunable parameter)
+    float max_speed = 8.0f;     // m/s (smoothed current speed limit - modified each frame)
+    float target_max_speed =
+        8.0f;                // m/s (target speed based on walk/run input, smoothly interpolated)
+    float walk_speed = 2.0f; // m/s (shift key speed limit)
+    float walk_transition_rate =
+        10.0f;             // How quickly max_speed transitions between walk/run (larger = faster)
+    float gravity = -9.8f; // m/s^2
     float max_slope_angle = 45.0f; // degrees
     float jump_velocity = 5.0f;    // m/s
 

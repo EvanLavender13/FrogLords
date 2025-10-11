@@ -69,7 +69,7 @@ graph TB
 
 ### Feature Development Workflow
 - **Location:** `TASKS/FEATURE/`
-- **Purpose:** Full iteration workflow for implementing new features
+- **Purpose:** Complete feature development workflow for implementing new features
 - **Entry Point:** SELECT_FEATURE
 - **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
 - **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)

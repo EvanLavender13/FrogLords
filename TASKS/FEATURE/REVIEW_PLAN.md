@@ -9,23 +9,22 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference
 2.  **Planning Documents:** Read the following files:
     *   `PLANS/feature_<feature_name>.md` (feature description and rationale)
-    *   `PLANS/iteration_<feature_name>.md`
     *   `PLANS/implementation_<feature_name>.md` (must exist)
     *   `PLANS/DEPENDENCY_STACK.md`
     *   `PLANS/DESIGN_BACKLOG.md`
 
 ### 3. Perform Analysis
 
-Cross-reference the feature description, iteration plan, and implementation plan against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
+Cross-reference the feature description, feature description, and implementation plan against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
 
 -   **Verify System Ownership (Architecture Check):** Does the implementation plan correctly identify where systems currently live and where they need to be? Check for duplicate system instances (e.g., locomotion in both game_world and controller). Does the plan include migration steps if systems need to move? Are all references (rendering, debug, GUI) accounted for?
 -   **Check for Contradictions:** Does any part of the feature, iteration, or implementation plan directly violate a directive from `AGENTS.md`? (e.g., planning polish before graybox, letting reactive layers control core logic, creating content restrictions)
--   **Verify Scope Alignment:** Does the iteration plan appropriately scope the feature description? Does it correctly identify the "stupid simple core" from the broader feature concept? Is anything essential missing or unnecessarily included?
+-   **Verify Scope Alignment:** Does the feature description appropriately scope the feature description? Does it correctly identify the "stupid simple core" from the broader feature concept? Is anything essential missing or unnecessarily included?
 -   **Verify Dependency & Certainty:** Does the feature's placement in `DEPENDENCY_STACK.md` seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
--   **Assess Design Rationale:** Does the feature and iteration plan align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
+-   **Assess Design Rationale:** Does the feature and feature description align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
 -   **Verify Implementation Decomposition:** Does the `implementation_plan.md` correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
--   **Check Consistency:** Do the feature description, iteration plan, and implementation plan align? Does the implementation actually build what the iteration plan describes? Does the iteration plan deliver the core of what the feature description promises?
--   **Review Process:** Does the iteration plan reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
+-   **Check Consistency:** Do the feature description, feature description, and implementation plan align? Does the implementation actually build what the feature description describes? Does the feature description deliver the core of what the feature description promises?
+-   **Review Process:** Does the feature description reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
 
 #### Additional Checks for Specific Feature Types
 
@@ -84,7 +83,7 @@ Generate a new markdown document summarizing the findings.
   - **Source:** `PLANS/implementation_...md`
   - **Principle:** "Graybox before polish"
   - **Details:** The plan includes tasks for creating final art assets before the core mechanic has been playtested and validated.
-  - **Suggestion:** Defer all art-related tasks until the graybox is proven successful according to the metrics in the iteration plan.
+  - **Suggestion:** Defer all art-related tasks until the graybox is proven successful according to the metrics in the feature description.
 
 - **Violation:** (e.g., Missing System Migration)
   - **Category:** System Duplication
@@ -105,7 +104,7 @@ Generate a new markdown document summarizing the findings.
 - **Misalignment:** (e.g., Scope Mismatch)
   - **Source:** `PLANS/feature_...md` vs `PLANS/iteration_...md`
   - **Principle:** "Iteration over planning" / "Short planning horizons"
-  - **Details:** The feature description promises X, Y, and Z, but the iteration plan only delivers X. While appropriate scoping down is good, the iteration plan may not deliver enough to validate the core feature hypothesis.
+  - **Details:** The feature description promises X, Y, and Z, but the feature description only delivers X. While appropriate scoping down is good, the feature description may not deliver enough to validate the core feature hypothesis.
   - **Suggestion:** Either expand the iteration scope to include the minimal Y component needed for validation, or revise the feature description to clarify that this iteration focuses solely on X.
 
 ### 4. Actionable Items

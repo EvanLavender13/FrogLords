@@ -5,7 +5,7 @@
 Read `AGENTS.md` to synthesize core project principles. This is essential for ensuring the new scope aligns with the project's foundation:
 -   **Iteration over planning:** Prioritize finishing the original scope over expanding it.
 -   **Dependency management:** Analyze the impact on the `DEPENDENCY_STACK.md` and cascading uncertainty.
--   **Certainty scoring:** Be realistic about how the change affects the iteration's certainty.
+-   **Certainty scoring:** Be realistic about how the change affects the feature's certainty.
 -   **Graybox before polish:** The new scope should also be a "stupid simple core."
 -   **Gameplay-first control:** The change must not compromise interruptibility or the input→acceleration mapping.
 
@@ -15,7 +15,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 1.  **Review Feature Description:** Read the current feature description at `PLANS/feature_<feature_name>.md`.
 2.  **Check Backlog & Dependencies:** Review `PLANS/DESIGN_BACKLOG.md` and `PLANS/DEPENDENCY_STACK.md`.
-3.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the feature or introduce major unforeseen dependencies. Defer large changes to a new iteration.
+3.  **Analyze Impact:** Assess if the requested scope change is a minor addition or a significant pivot. Ensure it doesn't invalidate the core goal of the feature or introduce major unforeseen dependencies. Defer large changes to a new feature.
 
 ### 3. Modify Feature Description
 
@@ -30,13 +30,13 @@ The feature description has changed. The implementation plan is now out of date.
 
 ### 5. Quality Gates
 
--   The scope change must not compromise the ability to meet the iteration's original quality gates.
--   The change must be small enough to be implemented and tested within the remaining iteration time.
+-   The scope change must not compromise the ability to meet the feature's original quality gates.
+-   The change must be small enough to be implemented and tested within the remaining feature time.
 -   The change must not introduce content restrictions.
 
 ### Tone & Constraints
 
 -   Be conservative. Prioritize stability and finishing the original scope.
--   Reject scope changes that fundamentally alter the iteration's goal or significantly increase uncertainty.
+-   Reject scope changes that fundamentally alter the feature's goal or significantly increase uncertainty.
 -   All changes must adhere to the principles in `AGENTS.md`.
 -   Concise and direct; no preamble or postamble.

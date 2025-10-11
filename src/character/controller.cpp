@@ -27,6 +27,10 @@ controller::controller()
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
+
+    // Initialize speed state from run_speed tunable parameter
+    max_speed = run_speed;
+    target_max_speed = run_speed;
 }
 
 void controller::apply_input(const camera& cam, float dt) {
@@ -88,13 +92,19 @@ void controller::update(const scene* scn, float dt) {
         }
     }
 
-    // Apply max speed cap (walk speed if shift held)
-    // Clamp walk_speed to never exceed max_speed
-    float effective_max_speed = is_walking ? std::min(walk_speed, max_speed) : max_speed;
+    // Smooth walk/run speed transition
+    // Set target based on walk input (clamp walk_speed to never exceed run_speed)
+    target_max_speed = is_walking ? std::min(walk_speed, run_speed) : run_speed;
+
+    // Smooth current max_speed toward target (exponential decay)
+    float alpha = std::min(walk_transition_rate * dt, 1.0f);
+    max_speed = glm::mix(max_speed, target_max_speed, alpha);
+
+    // Apply smoothed speed cap
     glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
     float speed = glm::length(horizontal_velocity);
-    if (speed > effective_max_speed) {
-        horizontal_velocity = horizontal_velocity * (effective_max_speed / speed);
+    if (speed > max_speed) {
+        horizontal_velocity = horizontal_velocity * (max_speed / speed);
         velocity.x = horizontal_velocity.x;
         velocity.z = horizontal_velocity.z;
     }

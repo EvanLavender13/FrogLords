@@ -7,7 +7,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 ### 2. Gather Context
 
 1.  **Read Principles:** Read `AGENTS.md` for development principles and coding standards
-2.  **Read Planning Documents:** Read `PLANS/iteration_<feature_name>.md` and `PLANS/implementation_<feature_name>.md`
+2.  **Read Planning Documents:** Read `PLANS/feature_<feature_name>.md` and `PLANS/implementation_<feature_name>.md`
 3.  **Verify Implementation Completeness:** Check if all checklist items in `PLANS/implementation_<feature_name>.md` are marked as complete (`[x]`). If not, report this and stop; a review cannot be performed on incomplete work.
 4.  **Read Implemented Code:** Read the contents of all source files (`.h` and `.cpp`) that were modified as part of the implementation plan.
 
@@ -34,7 +34,6 @@ Generate a new markdown document summarizing the findings.
 If the review is successful and the implementation is complete:
 
 1.  Propose adding an `## Approval` section to `PLANS/implementation_<feature_name>.md`
-2.  Propose adding an `## Approval` section to `PLANS/iteration_<feature_name>.md`
 
 The approval section should contain reviewer signature and timestamp.
 

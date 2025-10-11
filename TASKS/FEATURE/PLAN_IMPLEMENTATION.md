@@ -1,4 +1,4 @@
-# Decompose Iteration Plan into Implementation Steps
+# Decompose Feature Description into Implementation Steps
 
 ### 1. Review Development Principles
 
@@ -20,7 +20,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 **Before decomposing, perform a thorough architectural audit to identify existing system states and prevent duplicate/conflicting implementations:**
 
 1.  **Identify All Systems Involved:**
-    -   Read the iteration plan's "Graybox Scope" to list all systems the feature touches
+    -   Read the feature description's "Graybox Scope" to list all systems the feature touches
     -   Check `PLANS/DEPENDENCY_STACK.md` to verify system placement and dependencies
     
 2.  **Audit Current System Ownership:**

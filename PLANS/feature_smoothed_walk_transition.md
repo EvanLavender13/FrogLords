@@ -21,7 +21,8 @@ Extends proven spring-damper foundation (currently unused in dependency stack). 
 
 **Estimated line count:** 20-40 lines
 - Remove hard velocity clamp at controller.cpp:92-99 (~8 lines deleted)
-- Add `target_max_speed` and `current_max_speed` floats to controller state
+- Add `target_max_speed` float to controller state
+- Convert existing `max_speed` member from static tuning parameter to dynamic smoothed value
 - Add smooth transition logic in `controller::update()` (exponential decay or spring-damper)
 - Add tuning parameter to animation_tuning UI (1-2 lines)
 
@@ -33,11 +34,13 @@ Extends proven spring-damper foundation (currently unused in dependency stack). 
 - Files affected: `controller.cpp`, `controller.h`, potentially `gui/character_panel.cpp` for tuning UI
 
 **Implementation approach (Option C from backlog):**
-1. Add `float target_max_speed` and `float current_max_speed` to `controller` state
+1. Add `float target_max_speed` to `controller` state (new member variable)
 2. Set `target_max_speed = shift_held ? walk_speed : run_speed` each frame
-3. Smooth `current_max_speed` toward target using exponential decay: `current_max_speed = lerp(current_max_speed, target_max_speed, transition_rate * dt)`
-4. Replace existing `max_speed` constant usage with `current_max_speed`
+3. Smooth existing `max_speed` member toward target using exponential decay: `max_speed = lerp(max_speed, target_max_speed, transition_rate * dt)`
+4. Existing velocity cap logic uses smoothed `max_speed` value (no changes to cap application)
 5. Expose `transition_rate` in tuning UI
+
+**Key insight:** Reuse existing `max_speed` member as the smoothed value rather than adding separate `current_max_speed`. This makes `max_speed` dynamic (updated each frame) instead of static, preserving all existing references while enabling smooth transitions.
 
 ## Problem Evidence
 

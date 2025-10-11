@@ -19,9 +19,8 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
 3. **Identify Complete Sets:** 
    - **For feature iterations**, gather all related documents:
      - `*_feature_*.md`
-     - `*_iteration_*.md`
      - `*_implementation_*.md`
-     - `*_review_*.md` or `*_plan_review_*.md`
+     - `*_plan_review_*.md`
      - `*_code_review_*.md`
    - **For refactors**, gather:
      - `refactor_*.md` documents (contain full refactor history in single document)
@@ -267,16 +266,13 @@ PLANS/ARCHIVE/
 ├── RETRO_20251009_143000/
 │   ├── RETROSPECTIVE_20251009_143000.md
 │   ├── 20251006_120000_feature_refactor_game_world.md
-│   ├── 20251006_120000_iteration_refactor_game_world.md
 │   ├── 20251006_120000_implementation_refactor_game_world.md
 │   ├── 20251006_120000_code_review_refactor_game_world.md
 │   ├── 20251006_130000_feature_attach-skeleton-to-body.md
-│   ├── 20251006_130000_iteration_attach-skeleton-to-body.md
 │   ├── refactor_yaw_direction_utilities.md
 │   ├── refactor_horizontal_velocity_utility.md
 │   └── ... (all other artifacts from reviewed work)
-├── 20251008_150000_feature_new_thing.md  ← newer iteration, not yet retrospected
-└── 20251008_150000_iteration_new_thing.md
+├── 20251008_150000_feature_new_thing.md  ← newer feature, not yet retrospected
 ```
 
 ---
