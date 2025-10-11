@@ -153,8 +153,8 @@ This aligns with `AGENTS.md`: "Brief comments for non-obvious public API; skip o
 **Rationale:** Implementation demonstrates mastery of project principles. Code is production-ready with zero technical debt introduced. Hemisphere correction issue showcases adaptive problem-solving and thorough root-cause analysis. Feature is complete, tested, and ready for commit to `main`.
 
 **Next Steps (User Decision):**
-1. Mark implementation plan approved (add signature/timestamp to `implementation_pose_blending.md`)
-2. Mark iteration plan approved (add signature/timestamp to `iteration_pose_blending.md`)
+1. Mark implementation plan approved (add signature/timestamp to `20251011_114904_implementation_pose_blending.md`)
+2. Mark iteration plan approved (add signature/timestamp to `20251011_114904_iteration_pose_blending.md`)
 3. Commit changes to branch with descriptive message
 4. Merge `iteration/pose_blending` → `main` after final smoke test
 5. Update dependency stack: mark "Pose Blending" as 100% certain, enable dependent features (2D blend space, speed scaling)

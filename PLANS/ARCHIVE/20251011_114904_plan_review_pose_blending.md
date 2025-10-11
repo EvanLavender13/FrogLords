@@ -49,7 +49,7 @@ While no direct violations exist, the following items warrant attention during i
 
 ### 3.1 Critical Implementation Detail: Phase Wrap Logic
 
-- **Source:** [PLANS/feature_pose_blending.md:10](feature_pose_blending.md#L10), [PLANS/iteration_pose_blending.md:36](iteration_pose_blending.md#L36), [PLANS/implementation_pose_blending.md:89](implementation_pose_blending.md#L89)
+- **Source:** [PLANS/ARCHIVE/20251011_114904_feature_pose_blending.md:10](feature_pose_blending.md#L10), [PLANS/ARCHIVE/20251011_114904_iteration_pose_blending.md:36](iteration_pose_blending.md#L36), [PLANS/ARCHIVE/20251011_114904_implementation_pose_blending.md:89](implementation_pose_blending.md#L89)
 - **Principle:** "Clarity over cleverness" / "Iteration over planning"
 - **Details:** The last blend segment (phase 0.75-1.0) must target `STEP_LEFT` (not `NEUTRAL`) for seamless loop wrap. This is **architecturally correct** but easy to implement incorrectly.
 
@@ -84,7 +84,7 @@ While no direct violations exist, the following items warrant attention during i
 
 ### 3.2 Spring Parameter Retuning May Be Required
 
-- **Source:** [PLANS/iteration_pose_blending.md:148-149](iteration_pose_blending.md#L148-L149)
+- **Source:** [PLANS/ARCHIVE/20251011_114904_iteration_pose_blending.md:148-149](iteration_pose_blending.md#L148-L149)
 - **Principle:** "Testing Protocol (Get Real Signals)" / "Paradox of quality"
 - **Details:** Current secondary motion springs are tuned to respond to **discrete pose pops** (sudden large rotation deltas). After blending, parent joints will rotate **smoothly and continuously**, producing smaller but constant velocity inputs to springs.
 
@@ -118,7 +118,7 @@ While no direct violations exist, the following items warrant attention during i
 
 ### 3.3 Potential Complexity: Segment Determination Logic
 
-- **Source:** [PLANS/implementation_pose_blending.md:85-123](implementation_pose_blending.md#L85-L123)
+- **Source:** [PLANS/ARCHIVE/20251011_114904_implementation_pose_blending.md:85-123](implementation_pose_blending.md#L85-L123)
 - **Principle:** "Simplicity over sophistication" / "Clarity over cleverness"
 - **Details:** The implementation plan proposes an if-else chain to determine source/target poses and blend factor:
   ```cpp
@@ -144,7 +144,7 @@ While no direct violations exist, the following items warrant attention during i
 
 ### 3.4 Data Structure Validation: Slerp Correctness Assumption
 
-- **Source:** [PLANS/iteration_pose_blending.md:151](iteration_pose_blending.md#L151)
+- **Source:** [PLANS/ARCHIVE/20251011_114904_iteration_pose_blending.md:151](iteration_pose_blending.md#L151)
 - **Principle:** "Dependencies & Uncertainty" / "Data Structure Validation"
 - **Details:** The plan assumes GLM's `glm::slerp(quat, quat, float)` handles shortest-path interpolation correctly. This is marked as "Mitigation: Standard library function; validated in thousands of projects."
 - **Cross-check with AGENTS.md:45:** "When introducing novel data representations (quaternions, new state formats), validate the representation in isolation before building complex features on it."
@@ -162,7 +162,7 @@ While no direct violations exist, the following items warrant attention during i
 
 ### 3.5 Minor Observation: No New Parameters Exposed
 
-- **Source:** [PLANS/iteration_pose_blending.md:77-80](iteration_pose_blending.md#L77-L80)
+- **Source:** [PLANS/ARCHIVE/20251011_114904_iteration_pose_blending.md:77-80](iteration_pose_blending.md#L77-L80)
 - **Principle:** "Graybox First" / "Parameters over assets"
 - **Details:** The plan states "No new parameters needed for core blending." Existing parameters (`cycle_length`, spring parameters) are already tunable via GUI.
 - **Observation:** This is **correct for the graybox scope**. However, future work (custom easing curves, non-linear phase mapping) may want to expose blend shaping parameters.
