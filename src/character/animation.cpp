@@ -259,10 +259,10 @@ void animation_state::update_secondary_motion(skeleton& skel, float dt) {
     // Child joints follow parent motion
     update_spring(joint_index::LEFT_SHOULDER, joint_index::LEFT_ELBOW,
                   secondary_motion.left_elbow_offset, secondary_motion.left_elbow_velocity,
-                  secondary_motion.prev_left_shoulder, glm::vec3(0, 1, 0));
+                  secondary_motion.prev_left_shoulder, math::UP);
     update_spring(joint_index::RIGHT_SHOULDER, joint_index::RIGHT_ELBOW,
                   secondary_motion.right_elbow_offset, secondary_motion.right_elbow_velocity,
-                  secondary_motion.prev_right_shoulder, glm::vec3(0, 1, 0));
+                  secondary_motion.prev_right_shoulder, math::UP);
     update_spring(joint_index::LEFT_HIP, joint_index::LEFT_KNEE, secondary_motion.left_knee_offset,
                   secondary_motion.left_knee_velocity, secondary_motion.prev_left_hip,
                   glm::vec3(1, 0, 0));

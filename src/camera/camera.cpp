@@ -1,4 +1,5 @@
 #include "camera/camera.h"
+#include "foundation/math_utils.h"
 #include <cmath>
 #include <algorithm>
 
@@ -66,7 +67,7 @@ glm::vec3 camera::get_forward_horizontal() const {
 }
 
 glm::vec3 camera::get_right() const {
-    return glm::normalize(glm::cross(get_forward_horizontal(), glm::vec3(0, 1, 0)));
+    return glm::normalize(glm::cross(get_forward_horizontal(), math::UP));
 }
 
 float camera::get_yaw() const {

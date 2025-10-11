@@ -1,4 +1,5 @@
 #include "wireframe.h"
+#include "foundation/math_utils.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
 #include <cmath>
@@ -17,7 +18,7 @@ glm::mat4 wireframe_mesh::get_model_matrix() const {
 
     // Apply rotations (X, Y, Z order)
     model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, rotation.y, math::UP);
     model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
     model = glm::scale(model, scale);
@@ -199,7 +200,7 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
     // Cone head at end
     glm::vec3 perpendicular;
     if (std::abs(direction.y) < 0.9f) {
-        perpendicular = glm::normalize(glm::cross(direction, glm::vec3(0, 1, 0)));
+        perpendicular = glm::normalize(glm::cross(direction, math::UP));
     } else {
         perpendicular = glm::normalize(glm::cross(direction, glm::vec3(1, 0, 0)));
     }
@@ -269,8 +270,7 @@ wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int
     }
 
     glm::vec3 direction = axis / length;
-    glm::vec3 fallback =
-        std::abs(direction.y) < 0.95f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 fallback = std::abs(direction.y) < 0.95f ? math::UP : glm::vec3(1.0f, 0.0f, 0.0f);
     glm::vec3 tangent = glm::normalize(glm::cross(direction, fallback));
     glm::vec3 bitangent = glm::cross(direction, tangent);
 

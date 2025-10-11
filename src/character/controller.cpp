@@ -23,7 +23,7 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , ground_normal(0.0f, 1.0f, 0.0f) {
+    , ground_normal(math::UP) {
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
@@ -153,7 +153,7 @@ glm::mat4 controller::get_world_transform() const {
 
     // Apply orientation (yaw rotation around Y axis)
     float yaw = orientation.get_yaw();
-    transform = glm::rotate(transform, yaw, glm::vec3(0, 1, 0));
+    transform = glm::rotate(transform, yaw, math::UP);
 
     // Apply landing spring vertical offset (crouch effect)
     transform *= animation.get_vertical_offset_matrix();
@@ -188,12 +188,12 @@ void controller::resolve_ground_collision() {
         }
 
         is_grounded = true;
-        ground_normal = vec3(0, 1, 0);
+        ground_normal = math::UP;
         ground_height = ground_y;
 
         collision_contact_debug.active = true;
         collision_contact_debug.from_box = false;
-        collision_contact_debug.normal = vec3(0, 1, 0);
+        collision_contact_debug.normal = math::UP;
         collision_contact_debug.penetration = 0.0f;
         collision_contact_debug.vertical_penetration = 0.0f;
     } else {

@@ -1,4 +1,5 @@
 #include "foundation/collision.h"
+#include "foundation/math_utils.h"
 #include <algorithm>
 #include <cmath>
 
@@ -38,7 +39,7 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
         }
         if (dist_to_max.y < min_dist) {
             min_dist = dist_to_max.y;
-            result.normal = glm::vec3(0, 1, 0);
+            result.normal = math::UP;
         }
         if (dist_to_min.y < min_dist) {
             min_dist = dist_to_min.y;

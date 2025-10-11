@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "foundation/math_utils.h"
 
 enum class camera_mode {
     ORBIT, // Rotate around fixed center
@@ -91,7 +92,7 @@ class camera {
 
     glm::vec3 center;
     glm::vec3 eye_pos;
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 up = math::UP;
 
     float distance;
     float latitude;

@@ -111,7 +111,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
 
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-    glm::vec3 up_axis(0.0f, 1.0f, 0.0f);
+    const glm::vec3 up_axis = math::UP;
 
     float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
     glm::vec3 wheel_center = character.position;
@@ -241,7 +241,7 @@ void draw_character_body(draw_context& ctx, const controller& character,
 
     // Apply orientation (yaw rotation around Y axis)
     float yaw = orientation.get_yaw();
-    transform = glm::rotate(transform, yaw, glm::vec3(0, 1, 0));
+    transform = glm::rotate(transform, yaw, math::UP);
 
     // Apply landing spring vertical offset (crouch effect)
     transform *= character.animation.get_vertical_offset_matrix();

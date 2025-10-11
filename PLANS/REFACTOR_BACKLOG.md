@@ -34,34 +34,15 @@
 
 (Nice-to-have refactors that would improve quality)
 
-### Extract Y-Axis Up Vector Constant
+### Extract Y-Axis Up Vector Constant ✅
+- **Completed:** 2025-10-11
 - **Category:** Pattern Extraction
-- **Files:** 10 call sites across 6 files:
-  - `src/character/controller.cpp:146`
-  - `src/character/animation.cpp:202, 204`
-  - `src/foundation/collision.cpp:41`
-  - `src/rendering/debug_draw.cpp:244`
-  - `src/rendering/wireframe.cpp:20, 202, 273`
-  - `src/camera/camera.cpp:69`
-  - `src/camera/camera.h:94`
-- **Current State:** `glm::vec3(0, 1, 0)` and `glm::vec3(0.0f, 1.0f, 0.0f)` literals appear 10 times. Represents world up axis (Y-up coordinate system).
-- **Proposed Change:** Extract to `math_utils.h` as named constant:
-  ```cpp
-  namespace math {
-  constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
-  }
-  ```
-  Replace all instances with `math::UP`.
-- **Rationale:**
-  - Satisfies rule of three (10 uses across 6 files)
-  - Documents coordinate system convention (Y-up)
-  - Makes intent clearer than raw vector literal
-  - Single point of change if coordinate system ever needs adjustment
-  - Follows project principle: "Abstract repeated patterns into systems"
-- **Impact:** 6 files. Low risk—purely symbolic constant substitution.
-- **Risk:** Very Low — No behavior change, just symbolic constant.
-- **Certainty:** System is stable (coordinate convention unlikely to change).
-          widget::slider_float(y_label, &angles.y, -180.0f, 180.0f);
+- **Files:** `src/foundation/math_utils.h`, `src/character/controller.cpp`, `src/character/animation.cpp`, `src/foundation/collision.cpp`, `src/rendering/debug_draw.cpp`, `src/rendering/wireframe.cpp`, `src/camera/camera.cpp`, `src/camera/camera.h`
+- **Outcome:** Introduced `math::UP` constexpr and replaced 14 duplicate Y-up literals across core gameplay, rendering, and foundation systems.
+- **Learnings:**
+  - Regex scans can miss contextual literals (constructor defaults, helper locals); include targeted searches when enumerating call sites.
+  - Centralizing axis constants clarifies coordinate conventions without adding abstraction cost.
+- **Impact:** Clarified world-up usage at 14 call sites; future orientation changes require a single edit.
 
 ### Extract Character-Local Space Transform Utility
 - **Category:** Utilities
