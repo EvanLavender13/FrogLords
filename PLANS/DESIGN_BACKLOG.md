@@ -67,12 +67,21 @@
   - *Certainty:* 100%
   - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walk↔run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes required—quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
 
-- **Speed-based animation scaling:** Tilt magnitude/bounce height scale with velocity (like surveyor wheel physics)
-  - *Prerequisite:* Acceleration tilt working ✅
-  - *Status:* **DEFERRED** - Investigated 2025-10-06, current constant magnitude feels good
-  - *Certainty:* Low (~30%) - no evidence of problem; premature optimization
-  - *Note:* Needs test-first evidence before implementation. Document specific gameplay moments where constant magnitude fails (e.g., "tilt too subtle at max speed"). Current system works; don't fix what isn't broken.
-  - *Review:* See `PLANS/plan_review_speed_animation_scaling.md` for detailed analysis
+- **Velocity-based acceleration tilt scaling:** Scale tilt magnitude by absolute velocity, not relative-to-max-speed
+  - *Prerequisite:* Acceleration tilt ✅, Walk/run speed transitions ✅
+  - *Certainty:* High (~85%) - straightforward fix for observable problem
+  - *Problem:* With shift-walking added (post-2025-10-06), tilt now scales relative to current max_speed. Result: walking at 2 m/s with walk-speed=2 produces same tilt as running at 8 m/s with run-speed=8. Visual feedback is deceptive—suggests high momentum when actually moving slowly.
+  - *Hypothesis:* Scaling tilt by absolute velocity (against fixed reference like run_speed) will truthfully communicate speed. Slow walk = subtle tilt, full run = pronounced tilt. Improves movement readability and physical grounding.
+  - *Root Cause:* Line 59 in animation.cpp uses `velocity_magnitude / max_speed` (relative). When max_speed smoothly transitions (lines 95-101 controller.cpp), ratio stays near 1.0 regardless of actual speed.
+  - *Solution:* Change denominator from dynamic `max_speed` to fixed reference (e.g., `run_speed` or hardcoded max like 8.0f). Preserves existing 0.5x-1.5x scaling range but anchors to absolute velocity.
+  - *Scope:* ~2 lines (modify velocity_scale calculation). Zero architectural changes. May need to pass run_speed to tilt function or use fixed constant.
+  - *Success Criteria:*
+    - Shift-walking produces visibly less tilt than full-speed running
+    - Tilt magnitude proportional to actual ground speed
+    - Smooth transitions as speed changes (no pops)
+    - Feels truthful to player's perception of momentum
+  - *Risk:* Low. Reactive layer only; worst case revert takes 30 seconds. May need minor tuning of scaling constants (0.5x-1.5x range).
+  - *Historical Context:* Feature deferred 2025-10-06 as "no evidence of problem" before walk/run transitions existed. Context changed—now addressing regression introduced by shift-walking feature.
 
 - **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
   - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.

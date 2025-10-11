@@ -10,7 +10,7 @@ Read `AGENTS.md` to ensure changes adhere to coding standards:
 
 ### 2. Gather Context
 
-1. Reference item from SELECT_ITEM
+1. Read `PLANS/maintenance_<item_name>.md` (from SELECT_ITEM)
 2. Read all affected source files (`.h` and `.cpp`)
 3. Analyze code smell or issue
 
@@ -36,9 +36,29 @@ Implement suggested fix from backlog:
 - **Formatting:** 4-space indent, consistent braces?
 - **Build:** Won't break compilation? (check references if renaming/moving)
 
-### 6. Track Changes
+### 6. Append Implementation Notes
 
-List all modified files with brief description of changes.
+Append to `PLANS/maintenance_<item_name>.md`:
+
+```markdown
+---
+
+## Implementation
+
+**Date:** [YYYY-MM-DD]
+
+**Changes Made:**
+- [File 1]: [Brief description]
+- [File 2]: [Brief description]
+
+**Verification:**
+- [Build check]
+- [Standards check]
+
+**Issues Encountered:** [Or "None"]
+
+**Next Step:** [REVIEW_FIX | FINALIZE_FIX]
+```
 
 ### 7. Determine Next Step
 

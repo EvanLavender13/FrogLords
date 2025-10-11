@@ -2,7 +2,10 @@
 
 ### 1. Review Development Principles
 
-Read `AGENTS.md` to ensure backlog updates follow standards and capture learnings.
+Read `AGENTS.md` to understand knowledge capture principles:
+- Document learnings while fresh
+- Capture patterns that worked
+- Note anti-patterns discovered
 
 ### 2. Verify Completion
 
@@ -12,7 +15,13 @@ Confirm fix is ready:
 
 If unresolved issues remain, return to IMPLEMENT_FIX.
 
-### 3. Update Maintenance Backlog
+### 3. Gather Context
+
+1. Read `PLANS/maintenance_<item_name>.md`
+2. Review implementation and review sections
+3. Extract item name and affected files
+
+### 4. Update Maintenance Backlog
 
 1. Open `PLANS/MAINTENANCE_BACKLOG.md`
 2. Locate item in severity section (Critical/High/Medium/Low)
@@ -26,30 +35,86 @@ If unresolved issues remain, return to IMPLEMENT_FIX.
 - **Severity:** [severity]
 - **Description:** [description]
 - **Resolution:** [1-sentence summary]
-- **Completed:** [date]
+- **Completed:** [YYYY-MM-DD]
+- **Learnings:** [Key insights - see section 5]
+- **Document:** PLANS/maintenance_<name>.md
 ```
 
-### 4. Document Learnings (Optional)
+### 5. Document Learnings
 
-If fix revealed insights:
-- Add note to completed item
-- If pattern appears elsewhere, add new item to backlog
-- Note process improvements
+Capture insights while fresh (add to completed item's "Learnings"):
 
-### 5. Check for Related Items
+**Pattern Learnings:**
+- What patterns emerged?
+- Similar issues elsewhere?
+- Opportunities for batching?
+
+**Process Learnings:**
+- Was complexity classification accurate?
+- Did the fix uncover deeper issues?
+- Should item have been a refactor instead?
+
+**Technical Learnings:**
+- Hidden dependencies discovered?
+- Side effects observed?
+- Standards violations found?
+
+**Example:**
+```markdown
+*Learnings:*
+- Investigation revealed architectural concern; logged to REFACTOR_BACKLOG
+- Classification as "trivial" was accurate; 2-minute fix
+- Pattern appears in 3 other files; created batch item in backlog
+```
+
+### 6. Check for Related Items
 
 Scan for batchable items:
 - If 2+ similar items exist, note for batch processing
 - If fix revealed additional issues, add to backlog
+- If deeper architectural issues found, consider REFACTOR_BACKLOG
 
-### 6. Prepare Commit
+### 7. Append Finalization Status
 
-Prepare commit message:
-- **Domain:** Code domain (`character`, `rendering`, `gui`) or `chore` for cross-cutting
-- **Description:** Brief imperative (e.g., "remove redundant includes")
-- **Why:** Reference severity and impact
-- **Changes:** Keep minimal (single-line items)
-- **Outcome:** State what's cleaner/fixed
+Append to `PLANS/maintenance_<item_name>.md`:
+
+```markdown
+---
+
+## Finalization
+
+**Date:** [YYYY-MM-DD]
+**Status:** COMPLETED
+
+**Backlog Update:**
+- Moved to Completed in MAINTENANCE_BACKLOG.md
+- Learnings documented in backlog entry
+
+**Related Items:**
+- [New items added to backlog]
+[Or "None identified"]
+
+**Next Steps:**
+- Ready for commit
+```
+
+### 8. Prepare Commit Message
+
+Prepare commit message following project conventions:
+
+**Template:**
+```
+[domain]: [brief imperative description]
+
+[Why: 1-2 sentences explaining the reason/impact]
+
+- [Change 1]
+- [Change 2]
+
+[Outcome: 1 sentence stating what's cleaner/fixed]
+```
+
+**Domain:** Code domain (`character`, `rendering`, `gui`) or `chore` for cross-cutting
 
 **Example:**
 ```
@@ -63,9 +128,32 @@ via character_panel.h, reducing compilation dependencies.
 Include chain now correctly flows through header.
 ```
 
-### 7. Recommend Next Steps
+### 9. Recommend Next Steps
 
-After commit, suggest SELECT_ITEM for next fix or return to feature development.
+Inform user of completion and suggest next action:
+
+```markdown
+## Maintenance Fix Finalized: [Item Name]
+
+**Completed:** [YYYY-MM-DD]
+**Severity:** [severity]
+
+### Changes
+- Modified [N] file(s)
+- [Key achievement]
+
+### Learnings
+- [Key insight 1]
+- [Key insight 2]
+
+### Next Steps
+1. Review commit message
+2. Execute git commit (manual)
+3. If on branch, merge to main
+4. Ready for next maintenance item or return to feature work
+
+**Suggested Action:** [SELECT_ITEM for next fix | Return to feature workflow]
+```
 
 ### Tone & Constraints
 
@@ -73,5 +161,6 @@ After commit, suggest SELECT_ITEM for next fix or return to feature development.
 - Ensure backlog reflects completion
 - Capture learnings while fresh
 - Recommend batching if pattern emerges
-- Prune completed section periodically
+- Document path taken (Trivial vs Standard)
+- Complete history in `PLANS/maintenance_<name>.md`
 - User handles git operations

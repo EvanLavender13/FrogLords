@@ -41,13 +41,43 @@ Confirm:
 - Examples: Extract constants, refactor logic, fix case sensitivity
 - Next: IMPLEMENT_FIX → REVIEW_FIX → FINALIZE_FIX
 
-### 6. Document Selection
+### 6. Create Maintenance Document
+
+Create description and save to `PLANS/maintenance_<item_name>.md`:
+
+```markdown
+# [Item Name]
+
+**Severity:** [Critical | High | Medium | Low]
+
+**Current Issue:** [What problem exists today? 1-2 sentences]
+
+**Files Affected:** [Which files will change?]
+
+**Suggested Fix:** [What improvement will be made? 1-2 sentences]
+
+**Workflow Path:** Path A (Trivial) | Path B (Standard)
+
+**Estimated Complexity:** [1-2 points]
+```
+
+### 7. Optional: Create Branch (Path B only)
+
+For Standard fixes with higher risk:
+```powershell
+./scripts/create-branch.ps1 maintenance <item_name>
+```
+
+Trivial fixes work directly on current branch.
+
+### 8. Document Selection
 
 State clearly:
 - Item name/description
 - Severity level
 - Files affected
 - Workflow path (A or B)
+- Document created: `PLANS/maintenance_<item_name>.md`
 
 ### Tone & Constraints
 
@@ -56,3 +86,4 @@ State clearly:
 - Avoid uncertain or actively-changing systems
 - Select one at a time (batch similar later if pattern emerges)
 - Skip items requiring architectural decisions
+

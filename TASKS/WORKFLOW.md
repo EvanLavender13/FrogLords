@@ -80,6 +80,7 @@ graph TB
 - **Entry Point:** SELECT_ITEM
 - **Input Backlog:** [PLANS/MAINTENANCE_BACKLOG.md](../PLANS/MAINTENANCE_BACKLOG.md)
 - **Details:** [MAINTENANCE/WORKFLOW.md](MAINTENANCE/WORKFLOW.md)
+- **Document Approach:** Single document per fix (`PLANS/maintenance_<name>.md`) accumulates all phases
 
 ### Refactor Workflow
 - **Location:** `TASKS/REFACTOR/`
@@ -87,6 +88,7 @@ graph TB
 - **Entry Point:** SELECT_REFACTOR
 - **Input Backlog:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
 - **Details:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
+- **Document Approach:** Single document per refactor (`PLANS/refactor_<name>.md`) accumulates all phases
 
 ---
 
@@ -118,7 +120,9 @@ graph TB
 **Key Tasks:**
 - REVIEW_CODEBASE (populate backlog)
 - SELECT_ITEM (select from backlog)
-- Maintenance workflow tasks (see MAINTENANCE/WORKFLOW.md)
+- IMPLEMENT_FIX (execute fix)
+- REVIEW_FIX (Path B only - verify quality)
+- FINALIZE_FIX (update backlog, document learnings, prepare commit)
 
 ### Refactor Backlog → Refactor Workflow
 **Source:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)

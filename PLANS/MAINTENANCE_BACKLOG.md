@@ -20,38 +20,7 @@
 
 (Significant code smells impacting readability or maintainability)
 
-### Joint Override Angles Not Reset on Pose Change
-- **Files:** `src/gui/character_panel.h`, `src/gui/character_panel.cpp`, `src/app/game_world.cpp`
-- **Severity:** High (confusing UX behavior, functionally incorrect)
-- **Description:** When user manually overrides joint angles and then switches to a different pose (either manually or by disabling manual pose selection), the override angles persist. This causes:
-  1. Overrides applied to T-Pose don't visually affect the skeleton (appears broken)
-  2. Overrides set on one walk pose remain applied when switching to other poses
-  3. No clear way to reset overrides except manually zeroing all 24 sliders
-- **Root Cause:** `character_panel_state` stores override angles (8 `glm::vec3` members) but never resets them on pose change. The state is persistent across all pose selections.
-- **Expected Behavior:**
-  - Option A (Simple): Reset all override angles to (0,0,0) when user switches poses or toggles manual pose selection
-  - Option B (Preserve per-pose): Store separate override sets per pose_type (more complex, questionable value)
-- **Suggested Fix (Option A):**
-  1. Add reset function to `character_panel_state`:
-     ```cpp
-     void reset_joint_overrides() {
-         left_shoulder_angles = glm::vec3(0.0f);
-         left_elbow_angles = glm::vec3(0.0f);
-         // ... all 8 joints
-     }
-     ```
-  2. In `character_panel.cpp`, detect pose change and call reset:
-     ```cpp
-     static pose_type prev_selected_pose = pose_type::T_POSE;
-     if (state.selected_pose != prev_selected_pose) {
-         state.reset_joint_overrides();
-         prev_selected_pose = state.selected_pose;
-     }
-     ```
-  3. Also reset when toggling `use_manual_pose_selection` or `enable_joint_overrides`
-- **Impact:** Improves debug tool usability significantly; prevents confusing "sticky" override behavior
-- **Complexity:** 1-2 points (simple state management, straightforward logic)
-- **Discovered:** 2025-10-11 during joint slider widget refactor validation
+*No items currently tracked.*
 
 ---
 
@@ -181,3 +150,24 @@
 - **Description:** Multiple printf debug statements were commented out throughout the event processing function.
 - **Resolution:** Removed all commented-out debug code for clarity and code health. No logic or behavior changed.
 - **Completed:** October 10, 2025
+
+### Joint Override Angles Not Reset on Pose Change (T-Pose Override Bug)
+- **Files:** `src/gui/character_panel.h`, `src/gui/character_panel.cpp`, `src/app/game_world.cpp`, `src/character/animation.h`, `src/character/animation.cpp`, `src/character/keyframe.cpp`
+- **Severity:** High (confusing UX behavior, functionally incorrect)
+- **Description:** Joint overrides applied to T-Pose didn't visually affect the skeleton, and override angles persisted incorrectly when switching poses.
+- **Root Cause (Discovered):** Two issues:
+  1. `glm::quat()` default constructor creating incorrect identity quaternion in `create_identity_pose()`
+  2. GUI state not resetting override angles on pose transitions
+- **Resolution:** 
+  - Fixed identity quaternion construction with explicit `glm::quat(1.0f, 0.0f, 0.0f, 0.0f)`
+  - Added `reset_joint_overrides()` method called on pose changes and mode toggles
+  - Restructured animation pipeline to centralize `update_global_transforms()` in `game_world.cpp`
+  - Externalized secondary motion as explicit step (clearer separation of concerns)
+- **Learnings:** 
+  - Initial hypothesis (multiple transform updates) led to valuable pipeline improvements
+  - Root cause was data representation issue (quaternion identity)
+  - Follows AGENTS.md principle: "Capture serendipity: reorganize around discoveries"
+  - Pipeline now matches procedural layering: pose → secondary motion → transform propagation
+- **Completed:** October 11, 2025
+- **Document:** PLANS/maintenance_joint_override_reset.md
+

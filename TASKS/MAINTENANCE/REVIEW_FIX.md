@@ -6,7 +6,7 @@ Read `AGENTS.md` for coding standards and quality guidelines.
 
 ### 2. Gather Context
 
-1. Reference original item from SELECT_ITEM
+1. Read `PLANS/maintenance_<item_name>.md` (description & implementation sections)
 2. Check modified files from IMPLEMENT_FIX
 3. Read all changed source files (`.h` and `.cpp`)
 
@@ -37,7 +37,32 @@ Read `AGENTS.md` for coding standards and quality guidelines.
 - **Headers:** If includes changed, no missing dependencies?
 - **Constants:** If values consolidated, all uses point to new location?
 
-### 5. Report Findings
+### 5. Append Review Notes
+
+Append to `PLANS/maintenance_<item_name>.md`:
+
+```markdown
+---
+
+## Code Review
+
+**Date:** [YYYY-MM-DD]
+**Status:** [APPROVED | NEEDS_REVISION]
+
+**Fix Summary:** [One sentence describing changes]
+
+**Verification Results:**
+- Issue Resolution: [✓ | Issues found]
+- Code Standards: [✓ | Issues found]
+- Dependency Flow: [✓ | Issues found]
+- Scope Discipline: [✓ | Issues found]
+
+**Issues Found:** [List with file/line references, or "None"]
+
+**Recommendation:** [Ready to finalize | Address issues first]
+```
+
+### 6. Report Findings
 
 Provide concise analysis:
 1. **Fix Summary:** One sentence describing changes

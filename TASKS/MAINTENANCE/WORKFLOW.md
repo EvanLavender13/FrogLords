@@ -63,6 +63,8 @@ graph TD
 - **Manual git**: Tasks prepare but don't execute commits (user commits after FINALIZE_FIX)
 - **Isolation**: Avoid touching uncertain or actively-changing systems
 - **Learning capture**: Document insights in Completed section
+- **Single document**: All maintenance phases append to the same `PLANS/maintenance_<name>.md` document (description → implementation → review → finalization); this creates a complete history in one place
+- **Optional branching**: Standard (Path B) fixes may use `maintenance/<name>` branches for safety
 - **Experimental**: This automated workflow is a trial—if successful, patterns may inform FEATURE workflow improvements
 
 ## Usage

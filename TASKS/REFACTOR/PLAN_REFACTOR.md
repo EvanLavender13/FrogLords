@@ -11,7 +11,7 @@ Read `AGENTS.md` to ensure alignment with:
 
 Create refactor branch:
 ```powershell
-./scripts/create_refactor_branch.ps1 <refactor_name>
+./scripts/create-branch.ps1 refactor <refactor_name>
 ```
 
 ### 3. Gather Context

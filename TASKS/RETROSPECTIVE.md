@@ -14,7 +14,7 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
 
 ## 1. Select Review Window
 
-1. **Determine Sample Size:** Decide how many recent iterations and refactors to review (typically 5-10 iterations or equivalent work)
+1. **Determine Sample Size:** Decide how many recent iterations, refactors, and maintenance fixes to review (typically 5-10 iterations or equivalent work)
 2. **List Archived Work:** Use `ls -lt PLANS/ARCHIVE/` to identify the most recent timestamped documents
 3. **Identify Complete Sets:** 
    - **For feature iterations**, gather all related documents:
@@ -24,6 +24,8 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
      - `*_code_review_*.md`
    - **For refactors**, gather:
      - `refactor_*.md` documents (contain full refactor history in single document)
+   - **For maintenance fixes**, gather:
+     - `maintenance_*.md` documents (contain full fix history in single document)
 
 ---
 
@@ -88,11 +90,22 @@ For each iteration or refactor in the sample, read through the documents and ext
   - Were stability gates enforced properly?
   - What would make it viable in the future?
 
+### Maintenance Fixes: Analysis
+- **Complexity classification accuracy:** Were Trivial vs Standard classifications accurate?
+- **Scope discipline:** Did fixes stay focused or expand during implementation?
+- **Discovery patterns:** Did "trivial" fixes uncover deeper issues?
+  - How many led to refactor backlog items?
+  - How many revealed architectural concerns?
+- **Path selection:** Was the two-tier review approach (Path A skip, Path B review) appropriate?
+- **Learning capture:** What insights were documented?
+- **Batch opportunities:** Were similar issues identified for future batching?
+
 ### Cross-Cutting: Iteration Reflections
-- Review any explicit reflection notes from FINALIZE_ITERATION or refactor completions
+- Review any explicit reflection notes from FINALIZE_ITERATION, refactor completions, or maintenance fixes
 - Were there recurring frustrations or friction points?
 - What practices helped work go smoothly?
-- How did feature and refactor work interleave? Any conflicts or synergies?
+- How did feature, refactor, and maintenance work interleave? Any conflicts or synergies?
+- **Maintenance-specific:** Did maintenance work complement feature development or create conflicts?
 
 ---
 
@@ -150,10 +163,11 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 ```markdown
 # Retrospective: <Date Range>
 
-**Work Reviewed:** <count> iterations, <count> refactors
+**Work Reviewed:** <count> iterations, <count> refactors, <count> maintenance fixes
 **Date Range:** <first_timestamp> to <last_timestamp>
 **Feature Iterations:** X completed, Y deferred
 **Refactors:** Z completed, W deferred
+**Maintenance Fixes:** M completed
 
 ---
 
@@ -189,10 +203,27 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 - Impact achieved: [examples]
 - Learnings captured: [observations]
 
+### Maintenance Fixes
+
+**Complexity Classification:**
+- Trivial vs Standard accuracy: [observations]
+- Path selection appropriateness: [observations]
+
+**Scope & Discovery:**
+- Scope discipline: [did fixes stay focused?]
+- Unexpected discoveries: [trivial fixes revealing deeper issues]
+- Refactor triggers: [how many led to REFACTOR_BACKLOG items?]
+
+**Process Effectiveness:**
+- Two-tier review working well: [observations]
+- Learning capture quality: [observations]
+- Batch opportunity identification: [observations]
+
 ### Cross-Cutting Observations
-- Feature/refactor interleaving: [patterns]
+- Feature/refactor/maintenance interleaving: [patterns]
 - Workflow friction points: [observations]
 - Process synergies: [what worked well]
+- Maintenance as investigation tool: [how well did quick fixes surface architectural concerns?]
 
 ---
 
@@ -250,12 +281,15 @@ After completing the retrospective, group the reviewed work with the retrospecti
 3. **Move reviewed artifacts:** Move all artifacts from the work that was reviewed into the subdirectory
    - **Feature iterations:** Include all files for each reviewed iteration (feature, iteration, implementation, review, code_review)
    - **Refactors:** Include complete `refactor_*.md` documents
+   - **Maintenance fixes:** Include complete `maintenance_*.md` documents
    - Use `mv PLANS/ARCHIVE/<timestamp>_* PLANS/ARCHIVE/RETRO_<timestamp>/` for each iteration timestamp
    - Use `mv PLANS/ARCHIVE/refactor_* PLANS/ARCHIVE/RETRO_<timestamp>/` for refactor documents
+   - Use `mv PLANS/ARCHIVE/maintenance_* PLANS/ARCHIVE/RETRO_<timestamp>/` for maintenance documents
 4. **Verify organization:** Confirm the subdirectory contains:
    - The retrospective document
    - All artifacts from reviewed iterations (grouped by iteration timestamp prefix)
    - All refactor documents reviewed
+   - All maintenance fix documents reviewed
    - Nothing else remains in flat ARCHIVE that should have been included
 
 **Purpose:** Keeps ARCHIVE clean and navigable. Each RETRO_ subdirectory is a self-contained snapshot of reviewed work plus the analysis that covered it.
@@ -271,6 +305,7 @@ PLANS/ARCHIVE/
 │   ├── 20251006_130000_feature_attach-skeleton-to-body.md
 │   ├── refactor_yaw_direction_utilities.md
 │   ├── refactor_horizontal_velocity_utility.md
+│   ├── maintenance_remove_redundant_includes.md
 │   └── ... (all other artifacts from reviewed work)
 ├── 20251008_150000_feature_new_thing.md  ← newer feature, not yet retrospected
 ```
@@ -305,3 +340,10 @@ PLANS/ARCHIVE/
   - How well do staged vs linear approaches map to risk levels?
   - Are refactor learnings feeding back to improve future planning?
   - Is feature/refactor interleaving causing conflicts or working well?
+- **Maintenance-specific considerations:**
+  - Is Trivial vs Standard classification working well?
+  - Are maintenance fixes uncovering deeper architectural issues consistently?
+  - Should certain recurring patterns be batched proactively?
+  - Is the two-tier review approach (skip for Trivial, review for Standard) appropriate?
+  - Are maintenance investigations surfacing valid refactor opportunities?
+  - Is maintenance work complementing or conflicting with feature/refactor workflows?
