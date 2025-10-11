@@ -30,9 +30,10 @@ Read `AGENTS.md` to synthesize core project principles:
 ### 4. Verify Stability & Rule of Three
 
 **Stability Check:**
-1. Read `PLANS/DEPENDENCY_STACK.md` for affected systems
-2. Verify all systems ≥70% certainty
-3. Confirm no active feature development on these systems
+1. Read `PLANS/DEPENDENCY_STACK.md` and locate affected systems in the dependency tree
+2. Verify all affected systems show ≥70% certainty in the tree visualization
+3. Check that systems are in "Core Gameplay Layer" (90-95%) or "Completed Features" (100% ✅)
+4. Confirm no active feature development on these systems (check tree connections and Layer Details)
 
 **Rule of Three Check (for pattern extractions):**
 1. Read files mentioned in backlog item

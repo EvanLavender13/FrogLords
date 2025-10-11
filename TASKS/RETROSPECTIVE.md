@@ -122,7 +122,7 @@ Practices that prevented issues or enabled smooth iterations/refactors:
 
 ### 🛑 Stop Doing
 Practices that caused problems or friction:
-- Example: "Planning without checking dependency stack led to repeated deferrals"
+- Example: "Planning without checking dependency tree structure led to repeated deferrals"
 - Example: "Implementing multiple loosely-related features in one iteration caused scope creep"
 - Example: "Abstracting patterns with only 2 instances caused premature complexity"
 - Example: "Skipping rule-of-three verification led to over-engineered refactors"
@@ -132,7 +132,7 @@ New practices to try based on observed patterns:
 - Example: "Add explicit 'complexity estimate' to iteration plans to catch over-scoped plans early"
 - Example: "Run REVIEW_CODEBASE before planning major refactors to surface hidden coupling"
 - Example: "Track refactor opportunities discovered during feature work more systematically"
-- Example: "Review DEPENDENCY_STACK certainty scores before selecting refactors"
+- Example: "Review DEPENDENCY_STACK tree structure and certainty scores before selecting refactors"
 
 ---
 

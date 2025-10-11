@@ -64,7 +64,7 @@ graph TD
 ## Notes
 
 - **Medium complexity**: 3-8 complexity points per refactor (between maintenance and feature workflows)
-- **Stability requirement**: Only refactor systems at ≥70% certainty (check DEPENDENCY_STACK.md)
+- **Stability requirement**: Only refactor systems at ≥70% certainty (check DEPENDENCY_STACK.md tree visualization)
 - **Rule of three**: Patterns must appear 3+ times before extraction (verify during SELECT_REFACTOR)
 - **Behavior preservation**: No new features; only simplification, clarification, or pattern extraction
 - **Always reviewed**: Unlike maintenance, all refactors get full review due to architectural impact
@@ -101,7 +101,7 @@ graph TD
 
 ## Stability Gates
 
-Before selecting a refactor, verify from DEPENDENCY_STACK.md:
+Before selecting a refactor, verify from DEPENDENCY_STACK.md tree structure:
 - **70%+ certainty**: System is mature enough to refactor safely
 - **No active development**: System isn't currently being modified by feature work
 - **Proven patterns**: "Rule of three" verified (3+ uses of pattern being extracted)

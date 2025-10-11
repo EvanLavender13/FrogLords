@@ -12,7 +12,12 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 
 ### 2. Identify the Frontier
 1.  Open `PLANS/DEPENDENCY_STACK.md`.
-2.  Locate the `← YOU ARE HERE` marker. The layers at or just below this marker represent the stable foundation—our current frontier of certainty.
+2.  Locate the `← YOU ARE HERE` marker in the dependency tree. This marker indicates the frontier—the boundary between stable foundation (below/behind) and uncertain future work (above/ahead).
+3.  Review the tree structure to understand:
+    - Which systems are in "Completed Features" (100% ✅)
+    - Which systems are in "Core Gameplay Layer" (90-95% certain)
+    - Which systems are in "Foundation Layer" (90-100% certain)
+4.  The stable frontier is everything at or below the marker—these systems are proven and safe to build upon.
 
 ### 3. Find Candidate Features
 1.  Open `PLANS/DESIGN_BACKLOG.md`.

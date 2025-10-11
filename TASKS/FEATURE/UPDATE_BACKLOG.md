@@ -1,7 +1,7 @@
 # Update Design Backlog
 
 ### 1. Review Recent Developments
-1.  Consider the results of the latest iteration loop, including playtest feedback, serendipitous discoveries, and newly stabilized systems in `PLANS/DEPENDENCY_STACK.md`.
+1.  Consider the results of the latest iteration loop, including playtest feedback, serendipitous discoveries, and newly stabilized systems in `PLANS/DEPENDENCY_STACK.md` (check tree for systems moving to "Completed Features").
 2.  Review any new ideas or insights that have emerged since the last update.
 
 ### 2. Add and Update Backlog Items
@@ -14,12 +14,12 @@
     -   If feature implemented and proven, mark as `✅ COMPLETE` and add `Learning:` section
     -   If feature now blocked or irrelevant, mark as `CUT` with brief explanation
     -   If foundational system certainty changed, update dependent items accordingly
-    -   If dependency relationships shifted, reflect in `PLANS/DEPENDENCY_STACK.md`
+    -   If dependency relationships shifted, reflect in dependency tree in `PLANS/DEPENDENCY_STACK.md` (update arrows and connections)
 3.  **Prune Completed Items:** To keep backlog focused on future work:
-    -   Remove items marked `✅ COMPLETE` from backlog (learnings are preserved in implementation/iteration archives)
+    -   Remove items marked `✅ COMPLETE` from backlog (learnings are preserved in DEPENDENCY_STACK Layer Details, implementation/iteration archives, and code)
     -   Keep completed items only if they serve as reference for similar future work
     -   Remove entire subsections if all items are complete (e.g., "Reactive Animation (Architecture Proven ✅)")
-    -   Rationale: Backlog is for *future* work; completed work lives in dependency stack, archived plans, and code
+    -   Rationale: Backlog is for *future* work; completed work lives in dependency tree's "Completed Features" section, archived plans, and code
 
 ### 3. Propose for Review
 

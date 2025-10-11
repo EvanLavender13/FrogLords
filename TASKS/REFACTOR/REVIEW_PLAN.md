@@ -15,7 +15,7 @@ Extract refactor name from branch (`refactor/<refactor_name>`):
 
 1. Read `PLANS/refactor_<refactor_name>.md` (description & plan sections)
 2. Read `PLANS/REFACTOR_BACKLOG.md` (original backlog entry)
-3. Read `PLANS/DEPENDENCY_STACK.md` (system certainty scores)
+3. Read `PLANS/DEPENDENCY_STACK.md` (check tree visualization for system certainty)
 
 ### 3. Perform Analysis
 

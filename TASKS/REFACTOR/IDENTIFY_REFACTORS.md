@@ -59,7 +59,7 @@ For each potential refactor, assess:
 
 1.  **Wait for Third Use:** Has this pattern appeared 3+ times, or is it premature?
 2.  **Complexity vs. Value:** Does the refactor genuinely simplify, or just move complexity?
-3.  **Stability:** Is the system stable enough to refactor, or still evolving rapidly?
+3.  **Stability:** Is the system stable enough to refactor (check DEPENDENCY_STACK.md tree—should be ≥70% certain), or still evolving rapidly?
 4.  **Risk:** What's the blast radius if the refactor introduces bugs?
 5.  **Testability:** Can we verify correctness after the change (manual testing protocol)?
 
@@ -127,7 +127,7 @@ Otherwise, inform the user of total opportunities found and await guidance.
   - *Rationale:* Why this improves the codebase (cite principles)
   - *Impact:* What systems are affected
   - *Risk:* Low/Medium/High - blast radius and testing difficulty
-  - *Certainty:* Is this system stable enough to refactor? (check dependency stack)
+  - *Certainty:* Is this system stable enough to refactor? (check DEPENDENCY_STACK.md tree—should be ≥70% certain)
   - *Examples:* Specific code snippets showing the pattern (optional)
 
 ## High
