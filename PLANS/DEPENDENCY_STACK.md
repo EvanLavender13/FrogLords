@@ -12,6 +12,8 @@
 ┌─────────────────────────────────────┐
 │         DESIGN BACKLOG              │  ← Everything else (liquid)  ← YOU ARE HERE
 ├─────────────────────────────────────┤
+│  Debug Visual Overhaul (100%) ✅    │  ← Velocity trail, plot functions, gradient ring
+├─────────────────────────────────────┤
 │  Secondary Motion (100%) ✅         │  ← Per-bone spring-damper lag
 ├─────────────────────────────────────┤
 │ Primary Skeletal Animation (100%) ✅│  ← Distance-phased pose switching
@@ -160,6 +162,30 @@
 - "Do no harm" principle maintained (pure reactive layer, zero gameplay impact)
 - Parameter exposure pattern consistent with existing tuning UI
 
+### Debug Visual Overhaul (Implemented, 100% certain) ✅
+
+**Status:** Three focused debug visualizations validated and proven
+
+- **Velocity Decay Trail:** Time-sampled position breadcrumbs (0.1s intervals, 25 samples) with age-based size/alpha fade
+- **Plot Functions:** Reusable `plot_value()` and `plot_histogram()` with configurable time windows, value ranges, axis labels
+- **Speed Gradient Ring:** Dynamic expanding ring with blue → green → yellow → red gradient based on speed ratio
+
+**Certainty:** 100% — all visualizations rendering correctly, zero gameplay impact verified, systemic reusability achieved.
+
+**Key Learning:** 
+- Velocity trail tuning: 1.0s sampling too coarse, 0.1s provides readable turning radius visualization
+- Speed ring evolution: Fixed radius (max_speed) less intuitive than dynamic expansion (current_speed)
+- Plot functions: Generic temporal graphing unlocks future debugging (speed, blend factors, any float value)
+- Buffer management: Simple vector erase sufficient for debug use (<500 samples)
+
+**Dependencies:** Built on debug_draw and gui infrastructure. Pure additive layer, no dependencies on gameplay systems. Pattern proven for future debug visualizations (trajectory prediction, cooldown rings, temporal graphs).
+
+**Architecture Validated:**
+- State ownership pattern: `velocity_trail_state` in `game_world` (app layer), visualization in `debug_draw` (rendering layer)
+- Forward declaration pattern prevents circular dependencies (rendering → app)
+- Static map storage for plot buffers scales well (per-label isolation, automatic cleanup not required for debug)
+- Graybox discipline: white spheres, gradient colors, ImGui defaults (no premature polish)
+
 ### Reactive Systems Layer (Implemented, ~100% certain) ✅
 
 **Status:** Architecture proven, tuning UI complete, ready for iteration
@@ -210,7 +236,7 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 
 ## Development Strategy
 
-**Current Focus:** Camera zoom and debug panel complete. Unified Debug Panel architecture established. Ready to pull next feature from backlog.
+**Current Focus:** Debug Visual Overhaul complete. Ready to pull next feature from backlog.
 
 **Work Order:**
 1. ✅ Foundation primitives (spring-damper, easing, collision math)
@@ -224,7 +250,8 @@ Most of these will be cut or heavily redesigned based on discoveries during iter
 9. ✅ Primary Skeletal Animation (distance-phased pose switching)
 10. ✅ Secondary Motion (per-bone spring-damper lag)
 11. ✅ Camera Zoom + Debug Panel (mouse wheel zoom, unified Debug Panel GUI)
-12. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
+12. ✅ Debug Visual Overhaul (velocity trail, plot functions, speed gradient ring)
+13. ⏸️ Pull next item from backlog based on learnings and dependencies ← **YOU ARE HERE**
 
 **Planning Horizon:**
 - Foundation: Large chunks (high certainty, stable)

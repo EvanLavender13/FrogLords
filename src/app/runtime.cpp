@@ -102,6 +102,8 @@ void app_runtime::frame() {
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Text("FPS: %.1f", 1.0f / sapp_frame_duration());
+        // gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f);
+        gui::plot_histogram("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f, 60);
     }
     ImGui::End();
 
@@ -151,6 +153,7 @@ void app_runtime::render_world() {
                                  world.character.orientation, world.wheel_spin_angle);
     debug::draw_foot_positions(debug_ctx, world.character, world.locomotion,
                                world.character.orientation);
+    debug::draw_velocity_trail(debug_ctx, world.trail_state);
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {

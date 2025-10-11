@@ -26,6 +26,24 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     character.apply_input(cam, dt);
     character.update(&scn, dt);
 
+    // Sample velocity trail
+    trail_state.time_since_last_sample += dt;
+    if (trail_state.time_since_last_sample >= trail_state.sample_interval) {
+        // Add new sample
+        if (trail_state.positions.size() >= 25) {
+            // Remove oldest
+            trail_state.positions.erase(trail_state.positions.begin());
+            trail_state.timestamps.erase(trail_state.timestamps.begin());
+        }
+        trail_state.positions.push_back(character.position);
+        // Use relative timestamp (seconds since first sample)
+        float current_time = trail_state.timestamps.empty()
+                                 ? 0.0f
+                                 : trail_state.timestamps.back() + trail_state.sample_interval;
+        trail_state.timestamps.push_back(current_time);
+        trail_state.time_since_last_sample = 0.0f;
+    }
+
     t_pose_skeleton.joints[0].local_transform = character.get_world_transform();
 
     glm::vec3 horizontal_velocity = math::project_to_horizontal(character.velocity);

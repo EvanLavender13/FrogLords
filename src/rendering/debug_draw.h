@@ -9,6 +9,9 @@
 #include "character/skeleton.h"
 #include <glm/glm.hpp>
 
+// Forward declaration from app/game_world.h
+struct velocity_trail_state;
+
 namespace debug {
 
 struct draw_context {
@@ -43,5 +46,7 @@ void draw_character_body(draw_context& ctx, const controller& character,
                          const orientation_system& orientation);
 
 void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show_labels = false);
+
+void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail);
 
 } // namespace debug

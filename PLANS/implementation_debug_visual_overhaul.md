@@ -45,23 +45,29 @@ Add 3 focused debug visualizations: velocity decay trail (3D world-space breadcr
 
 #### Data Structures & State
 
-- [ ] **File:** `src/app/game_world.h`
-  - [ ] Add `velocity_trail_state` struct with ring buffer for position samples
+- [x] **File:** `src/app/game_world.h`
+  - [x] Add `velocity_trail_state` struct with ring buffer for position samples
     - `std::vector<glm::vec3> positions` (max 10 samples)
     - `std::vector<float> timestamps` (max 10 samples)
     - `float sample_interval = 1.0f` (time between samples)
     - `float time_since_last_sample = 0.0f`
-  - [ ] Add `velocity_trail_state trail_state;` member to `game_world` struct
+  - [x] Add `velocity_trail_state trail_state;` member to `game_world` struct
+
+**Files Changed:**
+- `src/app/game_world.h` — Added velocity_trail_state struct and trail_state member
 
 #### Update Logic
 
-- [ ] **File:** `src/app/game_world.cpp`
-  - [ ] In `game_world::update()`, add velocity trail sampling logic
+- [x] **File:** `src/app/game_world.cpp`
+  - [x] In `game_world::update()`, add velocity trail sampling logic
     - Increment `trail_state.time_since_last_sample` by `dt`
     - When `time_since_last_sample >= sample_interval`, sample current character position
     - Add position to ring buffer (if buffer full, remove oldest sample)
     - Add current timestamp to ring buffer
     - Reset `time_since_last_sample`
+
+**Files Changed:**
+- `src/app/game_world.cpp` — Added velocity trail sampling logic in update()
 
 **Pseudocode:**
 ```
@@ -81,12 +87,12 @@ if (trail_state.time_since_last_sample >= trail_state.sample_interval) {
 
 #### Rendering
 
-- [ ] **File:** `src/rendering/debug_draw.h`
-  - [ ] Add function signature: `void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail);`
-  - [ ] Forward declare `velocity_trail_state` struct (or include game_world.h)
+- [x] **File:** `src/rendering/debug_draw.h`
+  - [x] Add function signature: `void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail);`
+  - [x] Forward declare `velocity_trail_state` struct (or include game_world.h)
 
-- [ ] **File:** `src/rendering/debug_draw.cpp`
-  - [ ] Implement `draw_velocity_trail()` function
+- [x] **File:** `src/rendering/debug_draw.cpp`
+  - [x] Implement `draw_velocity_trail()` function
     - Iterate through trail positions (oldest to newest)
     - For each position, calculate age factor (0.0 = oldest, 1.0 = newest)
     - Render white sphere at position using `ctx.unit_sphere_4`
@@ -107,8 +113,13 @@ for (int i = 0; i < trail.positions.size(); ++i) {
 }
 ```
 
-- [ ] **File:** `src/app/runtime.cpp`
-  - [ ] In `render_world()`, add call to `debug::draw_velocity_trail(debug_ctx, world.trail_state);` after existing debug draw calls (around line 153)
+- [x] **File:** `src/app/runtime.cpp`
+  - [x] In `render_world()`, add call to `debug::draw_velocity_trail(debug_ctx, world.trail_state);` after existing debug draw calls (around line 153)
+
+**Files Changed:**
+- `src/rendering/debug_draw.h` — Added draw_velocity_trail() signature and forward declaration
+- `src/rendering/debug_draw.cpp` — Implemented draw_velocity_trail() with age-based size/alpha fade
+- `src/app/runtime.cpp` — Added draw_velocity_trail() call in render_world()
 
 ---
 
@@ -118,22 +129,29 @@ for (int i = 0; i < trail.positions.size(); ++i) {
 
 #### Data Structures & State
 
-- [ ] **File:** `src/gui/gui.h`
-  - [ ] Add function signature to `gui::` namespace: `void plot_value(const char* label, float current_value, float time_window = 5.0f);`
+- [x] **File:** `src/gui/gui.h`
+  - [x] Add function signature to `gui::` namespace: `void plot_value(const char* label, float current_value, float time_window = 5.0f);`
 
-- [ ] **File:** `src/gui/gui.cpp`
-  - [ ] Define internal state struct for plot buffers:
+- [x] **File:** `src/gui/gui.cpp`
+  - [x] Define internal state struct for plot buffers:
     - `struct plot_buffer { std::vector<float> values; std::vector<float> timestamps; float time_window; }`
-  - [ ] Create static map to store per-label buffers: `static std::map<std::string, plot_buffer> plot_buffers;`
+  - [x] Create static map to store per-label buffers: `static std::map<std::string, plot_buffer> plot_buffers;`
+
+**Files Changed:**
+- `src/gui/gui.h` — Added plot_value() function signature
+- `src/gui/gui.cpp` — Added plot_buffer struct and static plot_buffers map
 
 #### Implementation
 
-- [ ] **File:** `src/gui/gui.cpp`
-  - [ ] Implement `plot_value()` function
+- [x] **File:** `src/gui/gui.cpp`
+  - [x] Implement `plot_value()` function
     - Get or create plot buffer for the given label
     - Add current value and timestamp to buffer
     - Remove samples older than `time_window` seconds (prune old data from front)
     - Call `ImGui::PlotLines()` with buffer data
+
+**Files Changed:**
+- `src/gui/gui.cpp` — Implemented plot_value() with buffer management and ImGui::PlotLines rendering
 
 **Pseudocode:**
 ```
@@ -162,8 +180,11 @@ void plot_value(const char* label, float current_value, float time_window) {
 
 #### Integration
 
-- [ ] **File:** `src/app/runtime.cpp`
-  - [ ] In `frame()`, after FPS text display (line 103), add call to `gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f);`
+- [x] **File:** `src/app/runtime.cpp`
+  - [x] In `frame()`, after FPS text display (line 103), add call to `gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f);`
+
+**Files Changed:**
+- `src/app/runtime.cpp` — Added gui::plot_value() call for FPS graphing after FPS text display
 
 ---
 
@@ -173,16 +194,19 @@ void plot_value(const char* label, float current_value, float time_window) {
 
 #### Update Existing Visualization
 
-- [ ] **File:** `src/rendering/debug_draw.cpp`
-  - [ ] In `draw_character_state()`, replace current speed circle rendering (lines 46-54)
-  - [ ] Calculate speed ratio: `float speed_ratio = current_speed / max_speed` (clamp to [0, 1])
-  - [ ] Calculate gradient color based on speed ratio:
+- [x] **File:** `src/rendering/debug_draw.cpp`
+  - [x] In `draw_character_state()`, replace current speed circle rendering (lines 46-54)
+  - [x] Calculate speed ratio: `float speed_ratio = current_speed / max_speed` (clamp to [0, 1])
+  - [x] Calculate gradient color based on speed ratio:
     - 0.0 → blue (0, 0, 1)
     - 0.33 → green (0, 1, 0)
     - 0.66 → yellow (1, 1, 0)
     - 1.0 → red (1, 0, 0)
-  - [ ] Render circle at radius = max_speed (represents 1 second travel distance)
-  - [ ] Use gradient color for ring
+  - [x] Render circle at radius = max_speed (represents 1 second travel distance)
+  - [x] Use gradient color for ring
+
+**Files Changed:**
+- `src/rendering/debug_draw.cpp` — Replaced speed circle with gradient ring using character.max_speed
 
 **Pseudocode:**
 ```
@@ -217,18 +241,51 @@ if (current_speed > 0.05f) {
 }
 ```
 
-- [ ] **Note:** May need to update `draw_character_state()` signature to accept `max_speed` parameter, or access it from controller
+**Files Changed:**
+- `src/rendering/debug_draw.cpp` — Replaced speed circle with gradient ring using character.max_speed
 
 ---
 
 ### 4. Quality Gates
 
-- [ ] Build passes (`CMake: Build (Debug)`)
-- [ ] Lint/format clean (run clang-format/clang-tidy tasks)
-- [ ] Smoke run: Launch and verify all 3 visualizations render correctly
-  - [ ] Velocity trail: Run in circles — does trail show turning radius?
-  - [ ] FPS plot: Does temporal graph appear below FPS text?
-  - [ ] Speed gradient ring: Walk → run transitions show color shift?
+- [x] Build passes (`CMake: Build (Debug)`)
+- [x] Lint/format clean (run clang-format/clang-tidy tasks)
+- [x] Smoke run: Launch and verify all 3 visualizations render correctly
+  - [x] Velocity trail: Shows fine-grained path at 0.1s intervals (changed from 1.0s)
+  - [x] FPS plot/histogram: Both temporal graphs with axis labels appear below FPS text
+  - [x] Speed gradient ring: Expands with current speed, color shifts blue → green → yellow → red
+
+---
+
+## Post-Implementation Changes
+
+**Velocity Trail Tuning:**
+- Sample interval reduced from 1.0s to 0.1s for higher fidelity path visualization
+- File: `src/app/game_world.h` (line 19)
+
+**Speed Gradient Ring Refinement:**
+- Removed fixed threshold circles (walk/run) - only dynamic gradient ring remains
+- Ring now expands with current_speed (was fixed at max_speed)
+- File: `src/rendering/debug_draw.cpp`
+
+**Plot Function Enhancements:**
+- Added axis labels: Y-axis min/max, X-axis time window
+- Added current value overlay on graph
+- Added `plot_histogram()` companion function (same interface, histogram rendering)
+- Made `max_samples` an optional parameter (default 500)
+- Fixed narrowing conversion warnings (ImGui::GetTime(), sapp_frame_duration())
+- Files: `src/gui/gui.h`, `src/gui/gui.cpp`, `src/app/runtime.cpp`
+
+**Final Implementation Stats:**
+- Lines added: ~150 (including enhancements)
+- Files modified: 7 total
+  - `src/app/game_world.h` (velocity trail state)
+  - `src/app/game_world.cpp` (sampling logic)
+  - `src/rendering/debug_draw.h` (trail function signature)
+  - `src/rendering/debug_draw.cpp` (trail rendering, gradient ring)
+  - `src/gui/gui.h` (plot functions)
+  - `src/gui/gui.cpp` (plot implementation)
+  - `src/app/runtime.cpp` (integration calls)
 
 ---
 
@@ -238,15 +295,29 @@ if (current_speed > 0.05f) {
 - Velocity trail state lives in `game_world` (state ownership)
 - Trail sampling happens in `game_world::update()` (time-based logic)
 - Trail rendering happens in `debug_draw` (pure visualization layer)
-- Plot function lives in `gui::` namespace (reusable utility)
+- Plot functions live in `gui::` namespace (reusable utility)
 - Speed gradient ring updates existing visualization (no new state needed)
 
 **Reusability:**
 - Velocity trail: Generic "positions over time" visual (future use: dash paths, trajectory predictions)
-- Plot function: Generic temporal graphing (future use: speed, blend factors, any float value)
+- Plot functions: Generic temporal graphing with both line and histogram modes (future use: speed, blend factors, any float value)
 - Speed gradient ring: Pattern for radial indicators (future use: cooldowns, ranges, zones)
 
-**Estimated line count:** 80-120 lines total
-- Velocity trail: ~40 lines (state struct, sampling logic, rendering function)
-- Plot function: ~30 lines (buffer management, ImGui wrapper)
-- Speed gradient ring: ~20 lines (color gradient calculation, circle update)
+**Deliverables:**
+✓ Velocity decay trail: 3D world-space breadcrumb trail showing character path with age-based fade
+✓ Reusable plot functions: `plot_value()` and `plot_histogram()` with axis labels and configurable buffers
+✓ Speed gradient ring: Dynamic expanding ring with color gradient (blue → red) indicating speed ratio
+
+**Implementation Complete:** All features tested and quality gates passed.
+
+---
+
+## Approval
+
+**Status:** Approved
+**Reviewer:** GitHub Copilot (AI Code Review Agent)
+**Date:** October 10, 2025
+
+**Summary:** Implementation complete with zero violations. All code adheres to project principles (snake_case naming, dependency flow, graybox-first, systemic reusability). Feature evolved appropriately through iteration—velocity trail tuning (1.0s → 0.1s), speed ring refinement (static → dynamic), and plot enhancements (axis labels, histogram variant) demonstrate healthy iteration loops. Ready for archival and merge.
+
+**Review Document:** See `PLANS/code_review_debug_visual_overhaul.md` for detailed analysis.

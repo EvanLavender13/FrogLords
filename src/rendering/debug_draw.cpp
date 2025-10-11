@@ -2,6 +2,7 @@
 #include "rendering/scene.h"
 #include "character/skeleton.h"
 #include "foundation/math_utils.h"
+#include "app/game_world.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
@@ -30,27 +31,34 @@ void draw_character_state(draw_context& ctx, const controller& character,
         ctx.renderer.draw(velocity_indicator, ctx.cam, ctx.aspect, glm::vec4(1, 0, 0, 1));
     }
 
-    // Speed threshold circles
-    wireframe_mesh walk_circle = ctx.unit_circle;
-    walk_circle.position = character.position;
-    walk_circle.scale =
-        glm::vec3(locomotion.walk_speed_threshold, 1.0f, locomotion.walk_speed_threshold);
-    ctx.renderer.draw(walk_circle, ctx.cam, ctx.aspect, glm::vec4(0, 1, 0, 0.5f));
-
-    wireframe_mesh run_circle = ctx.unit_circle;
-    run_circle.position = character.position;
-    run_circle.scale =
-        glm::vec3(locomotion.run_speed_threshold, 1.0f, locomotion.run_speed_threshold);
-    ctx.renderer.draw(run_circle, ctx.cam, ctx.aspect, glm::vec4(1, 1, 0, 0.5f));
-
-    // Current speed circle
+    // Speed gradient ring (blue → green → yellow → red)
     glm::vec3 horiz_vel = math::project_to_horizontal(character.velocity);
     float current_speed = glm::length(horiz_vel);
+    float max_speed = character.max_speed;
+
     if (current_speed > 0.05f) {
-        wireframe_mesh speed_circle = ctx.unit_circle;
-        speed_circle.position = character.position;
-        speed_circle.scale = glm::vec3(current_speed, 1.0f, current_speed);
-        ctx.renderer.draw(speed_circle, ctx.cam, ctx.aspect, glm::vec4(1, 0, 0, 0.8f));
+        float speed_ratio = glm::clamp(current_speed / max_speed, 0.0f, 1.0f);
+
+        // Gradient color: blue → green → yellow → red
+        glm::vec4 color;
+        if (speed_ratio < 0.33f) {
+            // Blue to green
+            float t = speed_ratio / 0.33f;
+            color = glm::vec4(0.0f, t, 1.0f - t, 0.8f);
+        } else if (speed_ratio < 0.66f) {
+            // Green to yellow
+            float t = (speed_ratio - 0.33f) / 0.33f;
+            color = glm::vec4(t, 1.0f, 0.0f, 0.8f);
+        } else {
+            // Yellow to red
+            float t = (speed_ratio - 0.66f) / 0.34f;
+            color = glm::vec4(1.0f, 1.0f - t, 0.0f, 0.8f);
+        }
+
+        wireframe_mesh speed_ring = ctx.unit_circle;
+        speed_ring.position = character.position;
+        speed_ring.scale = glm::vec3(current_speed, 1.0f, current_speed);
+        ctx.renderer.draw(speed_ring, ctx.cam, ctx.aspect, color);
     }
 
     // Orientation indicator (attached to physics position)
@@ -302,6 +310,32 @@ void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show
                 }
             }
         }
+    }
+}
+
+void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail) {
+    if (trail.positions.empty()) {
+        return;
+    }
+
+    // Render trail positions from oldest to newest with size/alpha fade
+    for (size_t i = 0; i < trail.positions.size(); ++i) {
+        // Age factor: 0.0 = oldest, 1.0 = newest
+        float age_factor =
+            trail.positions.size() > 1
+                ? static_cast<float>(i) / static_cast<float>(trail.positions.size() - 1)
+                : 1.0f;
+
+        // Scale: lerp from 0.05 (oldest) to 0.15 (newest)
+        float scale = 0.05f + (0.15f - 0.05f) * age_factor;
+
+        // Alpha: lerp from 0.2 (oldest) to 0.8 (newest)
+        float alpha = 0.2f + (0.8f - 0.2f) * age_factor;
+
+        wireframe_mesh sphere = ctx.unit_sphere_4;
+        sphere.position = trail.positions[i];
+        sphere.scale = glm::vec3(scale);
+        ctx.renderer.draw(sphere, ctx.cam, ctx.aspect, glm::vec4(1.0f, 1.0f, 1.0f, alpha));
     }
 }
 

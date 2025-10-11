@@ -145,6 +145,7 @@ graph TD
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
 - Retrospectives: Run RETROSPECTIVE every 5-10 iterations to review archived documents, identify patterns in what works/fails, and propose workflow improvements
 - **Certainty calibration:** FINALIZE_ITERATION now tracks predicted vs actual certainty to improve planning accuracy over time
+- **Backlog grooming:** Run BACKLOG_GROOMING periodically (every 2-3 iterations) to collapse completed work, prune low-certainty items, and refresh unlocked dependencies; keeps planning docs focused on future work rather than retrospectives
 
 ## Proposed Numbering Scheme
 
@@ -172,6 +173,7 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 ### Finalization Tasks (300-399)
 - **300_UPDATE_DEPENDENCIES** - Update DEPENDENCY_STACK.md
 - **301_UPDATE_BACKLOG** - Mark complete/deferred, document learnings
+- **302_BACKLOG_GROOMING** - Periodic cleanup: collapse completed work, prune low-certainty items, update unlocked dependencies
 
 ### Version Control (400-499)
 - **400_COMMIT** - Format and create git commits

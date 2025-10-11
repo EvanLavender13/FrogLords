@@ -10,21 +10,19 @@
 
 ### Debug Visualization
 
-- **Debug Visual Overhaul:** Audit and fix all debug visualization scale/color inconsistencies
-  - *Prerequisite:* None (cleanup task)
-  - *Certainty:* Medium (~50%) - polish, not critical functionality
-  - *Rationale:* Current debug visuals have scaling/accuracy issues. Examples: red speed circle doesn't match actual velocity (shows brief overshoot before cap), velocity sphere visual may not reflect true speed, threshold circles may not align with actual speed values. Visual debugging is core to rapid iteration—mismatched visuals create false signals during tuning.
-  - *Scope:*
-    - Audit all speed/velocity visualizations (red circle, velocity sphere, walk/run threshold circles)
-    - Verify circle radii match actual speed values (not pre-cap or post-friction)
-    - Consider showing "target speed" vs "current speed" with different visual styles
-    - Add visual legend/labels to clarify what each circle represents
-    - Standardize color scheme (current: green=walk, yellow=run, red=current—confirm consistency)
-    - Check if velocity sphere position matches velocity vector direction/magnitude
-  - *Success Criteria:* When holding SHIFT, red circle aligns exactly with green circle at 2.0 m/s; visual debugging provides accurate feedback for tuning; no confusion about what each circle represents
-  - *Nice-to-Have:* Toggle modes (speed rings only, velocity vectors only, full debug suite, minimal)
-  - *Implementation Risk:* Low—isolated to debug_draw.cpp, no gameplay impact
-  - *Origin:* Identified 2025-10-09 during Primary Skeletal Animation iteration when SHIFT key walk lock revealed red circle larger than green despite speed cap at 2.0 m/s
+- **Debug Visual Overhaul:** Add focused debug visualizations (velocity trail, temporal plots, speed gradient ring) ✅ **COMPLETE**
+  - *Prerequisite:* Debug Draw System ✅, GUI System ✅
+  - *Certainty:* 100%
+  - *Learning:* Three debug visualizations validated with strong systemic reusability. Key findings:
+    - Velocity trail: 0.1s sampling (changed from 1.0s) provides readable turning radius; 25 samples = 2.5s history sufficient
+    - Speed gradient ring: Dynamic expansion (current_speed) more intuitive than fixed radius (max_speed); blue→green→yellow→red gradient clear
+    - Plot functions: Generic `plot_value()`/`plot_histogram()` unlocked temporal debugging (FPS, speed, blend factors); axis labels critical for readability
+    - Buffer management: Simple vector erase (<500 samples) sufficient for debug use; no need for circular buffer complexity
+    - State ownership pattern: `velocity_trail_state` in `game_world` (app layer), visualization in `debug_draw` (rendering layer) prevents circular dependencies
+    - Graybox discipline: White spheres, gradient colors, ImGui defaults (no premature polish)
+  - *Next Step:* Plot functions ready for reuse (speed graphs, blend factors); velocity trail pattern applicable to trajectory prediction; gradient ring pattern for cooldown/range indicators
+  - *Completion Date:* October 10, 2025
+  - *Implementation:* See `PLANS/implementation_debug_visual_overhaul.md` and `PLANS/code_review_debug_visual_overhaul.md`
 
 - **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
   - *Prerequisite:* Debug Draw System ✅
