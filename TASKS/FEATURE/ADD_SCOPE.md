@@ -26,7 +26,7 @@ If the scope addition is acceptable:
 
 ### 4. Propose Next Steps
 
-The iteration plan has changed. The implementation plan is now out of date. Propose to the user that a `DECOMPOSE_PLAN` task must be performed again to synchronize the implementation plan with the new iteration scope.
+The iteration plan has changed. The implementation plan is now out of date. Propose to the user that a `PLAN_IMPLEMENTATION` task must be performed again to synchronize the implementation plan with the new iteration scope.
 
 ### 5. Quality Gates
 

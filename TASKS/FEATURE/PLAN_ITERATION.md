@@ -52,7 +52,7 @@ Architectural Questions to Address:
 - If locomotion moves to controller, what breaks?
 ```
 
-This is NOT a full audit (that happens in DECOMPOSE_PLAN), just a quick sanity check to inform the iteration plan's approach.
+This is NOT a full audit (that happens in PLAN_IMPLEMENTATION), just a quick sanity check to inform the iteration plan's approach.
 
 ### 5. Generate Plan
 

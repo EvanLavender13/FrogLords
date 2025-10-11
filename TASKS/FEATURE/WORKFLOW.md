@@ -13,7 +13,7 @@ graph TD
     CLAR -->|Yes| CF[CLARIFY_FEATURE]
     CF --> B[PLAN_ITERATION]
     CLAR -->|No| B
-    B --> C[DECOMPOSE_PLAN]
+    B --> C[PLAN_IMPLEMENTATION]
     C --> D[REVIEW_PLAN]
     D --> E{Issues?}
     E -->|Violations/Major| F[DEFER_FEATURE]
@@ -80,7 +80,7 @@ graph TD
 - **SELECT_FEATURE**: Identify next feature from backlog based on dependencies and certainty; write high-level feature description and save to `PLANS/feature_<feature_name>.md`
 - **CLARIFY_FEATURE**: (Optional) Eliminate ambiguity by asking targeted questions before planning; captures visual references and concrete requirements
 - **PLAN_ITERATION**: Create detailed iteration plan from feature description with graybox scope and testing protocol
-- **DECOMPOSE_PLAN**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
+- **PLAN_IMPLEMENTATION**: Break down iteration plan into atomic implementation steps; update existing plan with changelog if it exists
 - **REVIEW_PLAN**: Check iteration and implementation plans against principles; prepend changelog entry on re-review
 - **IMPLEMENTATION_STEP**: Execute one major step from implementation checklist; mark completed items and track changed files
 - **REVIEW_STEP**: Verify last completed step against plan alignment, code standards, and gameplay-first principles; provide inline feedback
@@ -101,13 +101,13 @@ graph TD
 2. Add to backlog if viable → Eventually pulled via SELECT_FEATURE
 
 ### Success Path
-1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (pass)
+1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → PLAN_IMPLEMENTATION → REVIEW_PLAN (pass)
 2. IMPLEMENTATION_STEP → REVIEW_STEP (loop until complete)
 3. REVIEW_IMPLEMENTATION (pass) → FINALIZE_ITERATION
 4. UPDATE_DEPENDENCIES + UPDATE_BACKLOG → Manual Git → SELECT_FEATURE
 
 ### Deferral Path (Planning Phase)
-1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → DECOMPOSE_PLAN → REVIEW_PLAN (violations/major issues)
+1. SELECT_FEATURE → (Optional: CLARIFY_FEATURE) → PLAN_ITERATION → PLAN_IMPLEMENTATION → REVIEW_PLAN (violations/major issues)
 2. DEFER_FEATURE
 3. UPDATE_BACKLOG + UPDATE_DEPENDENCIES → Manual Git → SELECT_FEATURE
 
@@ -125,7 +125,7 @@ graph TD
 1. During IMPLEMENTATION_STEP, discover need for scope adjustment
 2. ADD_SCOPE → Update iteration plan with changelog entry
 3. MODIFY_PLAN → Update implementation plan with changelog entry
-4. DECOMPOSE_PLAN → Synchronize implementation steps (adds changelog if updating existing plan)
+4. PLAN_IMPLEMENTATION → Synchronize implementation steps (adds changelog if updating existing plan)
 5. Return to IMPLEMENTATION_STEP with synchronized plans
 
 ## Notes
@@ -139,9 +139,9 @@ graph TD
 - **Problem evidence required:** Features with backlog warnings ("may not be necessary," "low priority") require extra scrutiny during SELECT_FEATURE selection. Document specific gameplay moments or observations that motivate the feature before planning.
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
-- Scope changes: ADD_SCOPE + MODIFY_PLAN + DECOMPOSE_PLAN keep plans synchronized when discovery requires mid-iteration adjustment
+- Scope changes: ADD_SCOPE + MODIFY_PLAN + PLAN_IMPLEMENTATION keep plans synchronized when discovery requires mid-iteration adjustment
 - Feature requests: REQUEST_FEATURE formalizes backlog entry with principle alignment and dependency analysis
-- Plan versioning: DECOMPOSE_PLAN and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
+- Plan versioning: PLAN_IMPLEMENTATION and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
 - Retrospectives: Run RETROSPECTIVE every 5-10 iterations to review archived documents, identify patterns in what works/fails, and propose workflow improvements
 - **Certainty calibration:** FINALIZE_ITERATION now tracks predicted vs actual certainty to improve planning accuracy over time
@@ -155,7 +155,7 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 - **001_SELECT_FEATURE** - Select from backlog
 - **002_CLARIFY_FEATURE** - Optional: eliminate ambiguity
 - **003_PLAN_ITERATION** - Create iteration plan
-- **004_DECOMPOSE_PLAN** - Break into atomic steps
+- **004_PLAN_IMPLEMENTATION** - Break into atomic steps
 - **005_REVIEW_PLAN** - Validate plans against principles
 - **006_IMPLEMENTATION_STEP** - Execute one step
 - **007_REVIEW_STEP** - Validate completed step
