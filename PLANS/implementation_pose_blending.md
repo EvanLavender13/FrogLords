@@ -32,8 +32,8 @@
 
 #### 1.1 Add Function Declaration
 
-- [ ] **File:** `src/character/keyframe.h`
-    - [ ] Add function declaration after `apply_pose()` (around line 30):
+- [x] **File:** `src/character/keyframe.h`
+    - [x] Add function declaration after `apply_pose()` (around line 30):
     ```cpp
     /// Get raw keyframe data for a pose without applying to skeleton.
     /// Returns quaternions for all 8 joints (shoulders, elbows, hips, knees).
@@ -42,17 +42,17 @@
 
 #### 1.2 Implement Keyframe Getter
 
-- [ ] **File:** `src/character/keyframe.cpp`
-    - [ ] Add `get_keyframe_data()` implementation after `create_step_right_pose()` (around line 143):
-    - [ ] Function signature: `keyframe get_keyframe_data(pose_type pose)`
-    - [ ] Use switch statement on `pose` parameter
-    - [ ] Cases: `T_POSE`, `STEP_LEFT`, `NEUTRAL`, `STEP_RIGHT`
-    - [ ] For `T_POSE`: return `create_identity_pose()`
-    - [ ] For `STEP_LEFT`: return `create_step_left_pose()`
-    - [ ] For `NEUTRAL`: return `create_neutral_pose()`
-    - [ ] For `STEP_RIGHT`: return `create_step_right_pose()`
-    - [ ] Default case: return `create_identity_pose()`
-    - [ ] **Estimated lines:** ~15
+- [x] **File:** `src/character/keyframe.cpp`
+    - [x] Add `get_keyframe_data()` implementation after `create_step_right_pose()` (around line 143):
+    - [x] Function signature: `keyframe get_keyframe_data(pose_type pose)`
+    - [x] Use switch statement on `pose` parameter
+    - [x] Cases: `T_POSE`, `STEP_LEFT`, `NEUTRAL`, `STEP_RIGHT`
+    - [x] For `T_POSE`: return `create_identity_pose()`
+    - [x] For `STEP_LEFT`: return `create_step_left_pose()`
+    - [x] For `NEUTRAL`: return `create_neutral_pose()`
+    - [x] For `STEP_RIGHT`: return `create_step_right_pose()`
+    - [x] Default case: return `create_identity_pose()`
+    - [x] **Estimated lines:** ~15
 
 **Pseudocode:**
 ```
@@ -73,30 +73,30 @@ function get_keyframe_data(pose_type pose) -> keyframe:
 
 #### 2.1 Remove Discrete Pose Selection
 
-- [ ] **File:** `src/character/animation.cpp`
-    - [ ] Delete lines 125-138 (threshold-based pose selection)
-    - [ ] Keep phase calculation (lines 122-123)
-    - [ ] Keep manual override early return (lines 114-120)
-    - [ ] **Lines removed:** -12
+- [x] **File:** `src/character/animation.cpp`
+    - [x] Delete lines 125-138 (threshold-based pose selection)
+    - [x] Keep phase calculation (lines 122-123)
+    - [x] Keep manual override early return (lines 114-120)
+    - [x] **Lines removed:** -12
 
 #### 2.2 Implement Segment-Based Blending
 
-- [ ] **File:** `src/character/animation.cpp` (replace deleted section)
-    - [ ] Define 4 blend segments after phase calculation (around line 125):
+- [x] **File:** `src/character/animation.cpp` (replace deleted section)
+    - [x] Define 4 blend segments after phase calculation (around line 125):
         - Segment 1: phase 0.00-0.25 → blend STEP_LEFT to NEUTRAL
         - Segment 2: phase 0.25-0.50 → blend NEUTRAL to STEP_RIGHT
         - Segment 3: phase 0.50-0.75 → blend STEP_RIGHT to NEUTRAL
         - Segment 4: phase 0.75-1.00 → blend NEUTRAL to STEP_LEFT (wrap continuity)
-    - [ ] Use if-else chain to determine current segment
-    - [ ] For each segment, calculate:
+    - [x] Use if-else chain to determine current segment
+    - [x] For each segment, calculate:
         - `segment_start` (float): segment start phase
         - `segment_end` (float): segment end phase
         - `source_pose` (pose_type): start pose
         - `target_pose` (pose_type): end pose
         - `t` (float): blend factor = `(phase - segment_start) / (segment_end - segment_start)`
-    - [ ] Get keyframe data: `keyframe source_kf = get_keyframe_data(source_pose)`
-    - [ ] Get keyframe data: `keyframe target_kf = get_keyframe_data(target_pose)`
-    - [ ] **Estimated lines:** ~25
+    - [x] Get keyframe data: `keyframe source_kf = get_keyframe_data(source_pose)`
+    - [x] Get keyframe data: `keyframe target_kf = get_keyframe_data(target_pose)`
+    - [x] **Estimated lines:** ~25
 
 **Pseudocode:**
 ```
@@ -124,13 +124,13 @@ keyframe target_kf = get_keyframe_data(target_pose)
 
 #### 2.3 Blend and Apply Quaternions
 
-- [ ] **File:** `src/character/animation.cpp` (continuation of blending section)
-    - [ ] Create helper lambda inside `update_skeletal_animation()` to apply blended quaternion:
+- [x] **File:** `src/character/animation.cpp` (continuation of blending section)
+    - [x] Create helper lambda inside `update_skeletal_animation()` to apply blended quaternion:
         - Lambda signature: `auto apply_blended_joint = [&](int joint_idx, const glm::quat& blended_rotation)`
         - Extract T-pose position from skeleton joint: `glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3])`
         - Build transform: `skel.joints[joint_idx].local_transform = glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(blended_rotation)`
-    - [ ] **Pattern:** Copy from `apply_pose()` ([keyframe.cpp:181-187](../src/character/keyframe.cpp#L181-L187))
-    - [ ] Blend and apply all 8 joints using `glm::slerp(source, target, t)`:
+    - [x] **Pattern:** Copy from `apply_pose()` ([keyframe.cpp:181-187](../src/character/keyframe.cpp#L181-L187))
+    - [x] Blend and apply all 8 joints using `glm::slerp(source, target, t)`:
         - `apply_blended_joint(joint_index::LEFT_SHOULDER, glm::slerp(source_kf.left_shoulder, target_kf.left_shoulder, t))`
         - `apply_blended_joint(joint_index::LEFT_ELBOW, glm::slerp(source_kf.left_elbow, target_kf.left_elbow, t))`
         - `apply_blended_joint(joint_index::RIGHT_SHOULDER, glm::slerp(source_kf.right_shoulder, target_kf.right_shoulder, t))`
@@ -139,9 +139,9 @@ keyframe target_kf = get_keyframe_data(target_pose)
         - `apply_blended_joint(joint_index::LEFT_KNEE, glm::slerp(source_kf.left_knee, target_kf.left_knee, t))`
         - `apply_blended_joint(joint_index::RIGHT_HIP, glm::slerp(source_kf.right_hip, target_kf.right_hip, t))`
         - `apply_blended_joint(joint_index::RIGHT_KNEE, glm::slerp(source_kf.right_knee, target_kf.right_knee, t))`
-    - [ ] Call `update_global_transforms(skel)` after applying all joints
-    - [ ] Update `current_automatic_pose` to reflect the target pose of the current segment (for GUI display)
-    - [ ] **Estimated lines:** ~18
+    - [x] Call `update_global_transforms(skel)` after applying all joints
+    - [x] Update `current_automatic_pose` to reflect the target pose of the current segment (for GUI display)
+    - [x] **Estimated lines:** ~18
 
 **Pseudocode:**
 ```
@@ -168,20 +168,20 @@ current_automatic_pose = target_pose
 
 #### 2.4 Handle Root Transform and Secondary Motion
 
-- [ ] **File:** `src/character/animation.cpp`
-    - [ ] Before applying blended quaternions, store root transform: `glm::mat4 root_transform = skel.joints[0].local_transform`
-    - [ ] After blending, restore root transform: `skel.joints[0].local_transform = root_transform`
-    - [ ] Keep secondary motion code unchanged (lines 140-143) - springs operate on blended output
-    - [ ] **Pattern:** Copy root handling from `apply_pose()` ([keyframe.cpp:146-153](../src/character/keyframe.cpp#L146-L153))
-    - [ ] **Estimated lines:** +2 (root store/restore)
+- [x] **File:** `src/character/animation.cpp`
+    - [x] Before applying blended quaternions, store root transform: `glm::mat4 root_transform = skel.joints[0].local_transform`
+    - [x] After blending, restore root transform: `skel.joints[0].local_transform = root_transform`
+    - [x] Keep secondary motion code unchanged (lines 140-143) - springs operate on blended output
+    - [x] **Pattern:** Copy root handling from `apply_pose()` ([keyframe.cpp:146-153](../src/character/keyframe.cpp#L146-L153))
+    - [x] **Estimated lines:** +2 (root store/restore)
 
 ---
 
 ### 3. Include Required Headers
 
-- [ ] **File:** `src/character/animation.cpp`
-    - [ ] Verify `#include <glm/gtx/quaternion.hpp>` is present (provides `glm::slerp`)
-    - [ ] If missing, add after existing GLM includes
+- [x] **File:** `src/character/animation.cpp`
+    - [x] Verify `#include <glm/gtx/quaternion.hpp>` is present (provides `glm::slerp`)
+    - [x] If missing, add after existing GLM includes
 
 ---
 

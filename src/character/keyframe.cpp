@@ -142,6 +142,21 @@ static keyframe create_step_right_pose() {
     };
 }
 
+keyframe get_keyframe_data(pose_type pose) {
+    switch (pose) {
+    case pose_type::T_POSE:
+        return create_identity_pose();
+    case pose_type::STEP_LEFT:
+        return create_step_left_pose();
+    case pose_type::NEUTRAL:
+        return create_neutral_pose();
+    case pose_type::STEP_RIGHT:
+        return create_step_right_pose();
+    default:
+        return create_identity_pose();
+    }
+}
+
 void apply_pose(skeleton& skel, pose_type pose) {
     // Store root transform (set by game_world)
     glm::mat4 root_transform = skel.joints[0].local_transform;

@@ -28,6 +28,10 @@ struct keyframe {
 /// Joint indices: shoulders(5,8), elbows(6,9), hips(11,14), knees(12,15)
 void apply_pose(skeleton& skel, pose_type pose);
 
+/// Get raw keyframe data for a pose without applying to skeleton.
+/// Returns quaternions for all 8 joints (shoulders, elbows, hips, knees).
+keyframe get_keyframe_data(pose_type pose);
+
 /// Apply custom Euler angles (degrees) to skeleton joints for real-time tuning.
 /// Overrides hardcoded pose with user-specified rotations.
 /// @param *_angles vec3 format: (X-rotation, Y-rotation, Z-rotation) in degrees

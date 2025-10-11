@@ -2,6 +2,8 @@
 #include "foundation/math_utils.h"
 #include <cmath>
 #include <glm/gtc/quaternion.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 namespace character {
 
@@ -122,20 +124,81 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     // Calculate phase (0.0-1.0) from distance traveled
     float phase = std::fmod(distance_traveled, cycle_length) / cycle_length;
 
-    // Threshold-based pose selection (STEP_LEFT → NEUTRAL → STEP_RIGHT → NEUTRAL)
-    // Two NEUTRAL ranges (0.25-0.5, 0.75-1.0) frame steps symmetrically
+    // Determine blend segment and calculate interpolation factor
+    pose_type source_pose, target_pose;
+    float segment_start, segment_end, t;
+
     if (phase < 0.25f) {
-        current_automatic_pose = pose_type::STEP_LEFT;
-    } else if (phase < 0.5f) { // NOLINT(bugprone-branch-clone)
-        current_automatic_pose = pose_type::NEUTRAL;
+        // Segment 1: STEP_LEFT → NEUTRAL
+        source_pose = pose_type::STEP_LEFT;
+        target_pose = pose_type::NEUTRAL;
+        segment_start = 0.0f;
+        segment_end = 0.25f;
+    } else if (phase < 0.5f) {
+        // Segment 2: NEUTRAL → STEP_RIGHT
+        source_pose = pose_type::NEUTRAL;
+        target_pose = pose_type::STEP_RIGHT;
+        segment_start = 0.25f;
+        segment_end = 0.5f;
     } else if (phase < 0.75f) {
-        current_automatic_pose = pose_type::STEP_RIGHT;
+        // Segment 3: STEP_RIGHT → NEUTRAL
+        source_pose = pose_type::STEP_RIGHT;
+        target_pose = pose_type::NEUTRAL;
+        segment_start = 0.5f;
+        segment_end = 0.75f;
     } else {
-        current_automatic_pose = pose_type::NEUTRAL;
+        // Segment 4: NEUTRAL → STEP_LEFT (wrap continuity)
+        source_pose = pose_type::NEUTRAL;
+        target_pose = pose_type::STEP_LEFT;
+        segment_start = 0.75f;
+        segment_end = 1.0f;
     }
 
-    // Apply selected pose
-    apply_pose(skel, current_automatic_pose);
+    // Calculate blend factor within current segment
+    t = (phase - segment_start) / (segment_end - segment_start);
+
+    // Get keyframe data for blending
+    keyframe source_kf = get_keyframe_data(source_pose);
+    keyframe target_kf = get_keyframe_data(target_pose);
+
+    // Store root transform (set by game_world)
+    glm::mat4 root_transform = skel.joints[0].local_transform;
+
+    // Helper lambda to apply blended quaternion to joint
+    auto apply_blended_joint = [&](int joint_idx, const glm::quat& blended_rotation) {
+        // Extract T-pose position (T-pose rotations are identity)
+        glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3]);
+        // Build new transform: translation * rotation
+        skel.joints[joint_idx].local_transform =
+            glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(blended_rotation);
+    };
+
+    // Blend and apply all 8 joints using slerp
+    apply_blended_joint(joint_index::LEFT_SHOULDER,
+                        glm::slerp(source_kf.left_shoulder, target_kf.left_shoulder, t));
+    apply_blended_joint(joint_index::LEFT_ELBOW,
+                        glm::slerp(source_kf.left_elbow, target_kf.left_elbow, t));
+    apply_blended_joint(joint_index::RIGHT_SHOULDER,
+                        glm::slerp(source_kf.right_shoulder, target_kf.right_shoulder, t));
+    apply_blended_joint(joint_index::RIGHT_ELBOW,
+                        glm::slerp(source_kf.right_elbow, target_kf.right_elbow, t));
+    apply_blended_joint(joint_index::LEFT_HIP,
+                        glm::slerp(source_kf.left_hip, target_kf.left_hip, t));
+    apply_blended_joint(joint_index::LEFT_KNEE,
+                        glm::slerp(source_kf.left_knee, target_kf.left_knee, t));
+    apply_blended_joint(joint_index::RIGHT_HIP,
+                        glm::slerp(source_kf.right_hip, target_kf.right_hip, t));
+    apply_blended_joint(joint_index::RIGHT_KNEE,
+                        glm::slerp(source_kf.right_knee, target_kf.right_knee, t));
+
+    // Restore root transform
+    skel.joints[0].local_transform = root_transform;
+
+    // Update global transforms after applying blended poses
+    update_global_transforms(skel);
+
+    // Update GUI state to reflect target pose of current segment
+    current_automatic_pose = target_pose;
 
     // Apply secondary motion (spring-based follow-through)
     if (enable_secondary_motion) {
