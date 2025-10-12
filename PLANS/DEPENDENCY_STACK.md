@@ -18,7 +18,7 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          Everything below: <50% certain
                          No dependencies assumed, pull as needed
 ═══════════════════════════════════════════════════════════════════════════
-    [Freeze Trail] [Axis Gizmo] [Extended Keyframes] [Running Gait]
+    [Axis Gizmo] [Extended Keyframes] [Running Gait]
     [IK Systems] [Wall Detection] [Ragdoll] [Dash] [Terrain] [Combat]
                     [Audio] [UI Polish] [🐸 Frog Ideas 🐸]
 ═══════════════════════════════════════════════════════════════════════════
@@ -30,10 +30,19 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          COMPLETED FEATURES (100%) ✅
 ───────────────────────────────────────────────────────────────────────────
 
-                    ┌──────────────────────┐
-                    │ Walk/Run Transition  │ ✅ 100%
-                    │ (smoothed max_speed) │
-                    └──────────┬───────────┘
+         ┌──────────────────────────────┐
+         │ Freeze Velocity Trail on Stop│ ✅ 100%
+         │ (position-delta gate)        │
+         └──────────────┬───────────────┘
+                        │
+              ┌─────────┴─────────┐
+              ▼                   ▼
+    ┌──────────────────────┐  ┌──────────────────────┐
+    │ Walk/Run Transition  │  │ Debug Visual Overhaul│ ✅ 100%
+    │ (smoothed max_speed) │  │ (trail, plots, ring) │
+    └──────────┬───────────┘  └──────────────────────┘
+               │
+    ┌──────────┴────────────┐
                                │
               ┌────────────────┴────────────────┐
               ▼                                 ▼
@@ -184,6 +193,14 @@ Historical snapshots: See `PLANS/ARCHIVE/`
 
 These features are built on the stable foundation below. They represent completed experiments that successfully solved specific problems.
 
+**Freeze Velocity Trail on Stop (100%):**
+- Position-delta gating prevents trail sampling when character is stationary
+- GUI toggle for show/hide velocity trail
+- Sampling gate: only append new sample if `positions.empty()` OR `glm::distance(current_position, positions.back()) > 1e-4f`
+- Trail remains perfectly static while idle; resumes instantly on movement
+- See [freeze_velocity_trail_on_stop_PLAN.md](freeze_velocity_trail_on_stop_PLAN.md) and [freeze_velocity_trail_on_stop_CODE_REVIEW.md](freeze_velocity_trail_on_stop_CODE_REVIEW.md)
+- Dependencies: Debug Visual Overhaul (trail system infrastructure)
+
 **Reactive Systems (100%):**
 - Acceleration tilt and landing spring implemented and tuned
 - Animation tuning UI in place
@@ -208,6 +225,7 @@ These features are built on the stable foundation below. They represent complete
 - **Distance-phased triggering:** Surveyor-wheel pattern scales from locomotion to skeletal animation
 - **Graybox discipline:** Parameters over polish; white spheres over art assets
 - **Data structure validation:** Validate novel representations in isolation before complex integration
+- **Position-delta gating:** For debug trails/visualizations, position-delta checks (with float tolerance) are simpler and more robust than velocity thresholds—no hysteresis, no edge cases, just geometric truth
 
 ---
 
@@ -248,6 +266,7 @@ Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to ex
 5. ✅ Keyframe foundation (static preview → primary → secondary → blending)
 6. ✅ Debug tooling (camera zoom, unified panels, visual overhaul)
 7. ✅ Walk/run transition (smoothed max_speed blending)
+8. ✅ Freeze velocity trail on stop (position-delta gating + GUI toggle)
 
 **Planning Horizon (Adaptive):**
 
@@ -323,4 +342,4 @@ P(unchanged) = C^N
 
 ---
 
-**Last Updated:** 2025-10-11 (Post-Walk/Run Transition iteration; tree visualization added)
+**Last Updated:** 2025-10-12 (Post-Freeze Velocity Trail iteration; feature moved to Completed)

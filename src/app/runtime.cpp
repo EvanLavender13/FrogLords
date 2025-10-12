@@ -153,7 +153,9 @@ void app_runtime::render_world() {
                                  world.character.orientation, world.wheel_spin_angle);
     debug::draw_foot_positions(debug_ctx, world.character, world.locomotion,
                                world.character.orientation);
-    debug::draw_velocity_trail(debug_ctx, world.trail_state);
+    if (panel_state.show_velocity_trail) {
+        debug::draw_velocity_trail(debug_ctx, world.trail_state);
+    }
 
     // Draw skeleton if enabled
     if (panel_state.show_skeleton) {
