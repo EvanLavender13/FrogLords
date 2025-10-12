@@ -88,7 +88,48 @@
   - *Success Criteria:* Natural bouncing visible during run; no control interference; smooth interaction with jump/land; feels alive and dynamic (like Overgrowth character)
   - *Origin:* GDC talk reference (David Rosen - Overgrowth), see [NOTES/Images/bounce.png](../NOTES/Images/bounce.png)
 
+- **Air locomotion weights (phase continuity + contact/air):** Prevent frozen poses in air by reweighting locomotion rather than halting it
+  - *Prerequisite:* Phase-based gait system; 1D pose slerp blending (see pose blending). Existing landing/secondary motion springs.
+  - *Certainty:* Medium-High (~70%) — aligns with GDC “do no harm” and synchronized blending; low risk, small scope.
+  - *Rationale:* Current system freezes pose when airborne, causing visual pops and loss of continuity. Keeping phase advancing in air and reweighting stride amplitude preserves coherence and feel without affecting control.
+  - *References:*
+    - [NOTES/air_locomotion_explained.md](../NOTES/air_locomotion_explained.md)
+    - [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md)
+    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md), [NOTES/GDC/GDC_TechnicalWhitepaper.md](../NOTES/GDC/GDC_TechnicalWhitepaper.md)
+  - *Scope:*
+    - Keep gait phase advancing while airborne (distance/velocity-based); do not pause.
+    - Add spring-smoothed weights (dual-reference): `contact_weight` (1→0) and `air_weight` (0→1) with short time constants; include coyote window.
+    - Suppress stride amplitude via `slerp(neutral, gait_blend, contact_weight)`.
+    - Optional: Add `AIR_NEUTRAL` keyframe; blend toward it by `air_weight` for a clear in-air silhouette.
+    - Scale acceleration tilt by `contact_weight` to avoid extreme lean while falling.
+    - Keep footfall bounce impulses ground-only; gravity in air (no “air bounce”).
+  - *Open Questions:*
+    - Ship without `AIR_NEUTRAL` initially (amplitude suppression only) to minimize content?
+    - Parameter defaults for springs and weights; expose in debug UI?
+  - *Dependencies:* 1D slerp pose blending (phase) recommended; uses existing secondary motion + landing springs. No input system changes required.
+  - *Success Criteria:* No frozen pose in air; smooth takeoff/landing without pops; phase continuity prevents foot sliding; input remains fully responsive; works across walk and future run.
+  - *Origin:* Brainstorm 2025-10-12 integrating GDC principles; see added note above.
+
 ### Input & Control Feel
+
+- **Coyote time + jump buffer:** Elastic timing forgiveness for jumps and micro air gaps
+  - *Prerequisite:* Basic jump impulse; grounded detection available from physics controller.
+  - *Certainty:* High (~85%) — widely used, low risk, improves feel for broad audience per DG_Skill.
+  - *Rationale:* Current “physics-only grounded” can eat jump inputs during bounce or ledge micro-gaps. Short coyote window and input buffering expand accessibility without reducing skill expression.
+  - *References:*
+    - [NOTES/DesigningGames/DG_Skill.md](../NOTES/DesigningGames/DG_Skill.md)
+    - [NOTES/bounce_gravity_explained.md](../NOTES/bounce_gravity_explained.md)
+    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md)
+  - *Scope:*
+    - Add `coyote_time_ms` (e.g., 120–150ms) after leaving ground during which jump still executes.
+    - Add `jump_buffer_ms` (~150ms) to store recent jump input to trigger on next valid grounded frame.
+    - Define `is_grounded_gameplay = is_grounded_physics || within_coyote` for eligibility checks (inputs remain interruptible).
+    - Debug UI readouts for timers/flags; tune values by feel.
+  - *Open Questions:*
+    - Per-surface or per-speed adjustments to coyote time, or keep global?
+  - *Dependencies:* Physics grounded flag; jump controller hook. No new assets.
+  - *Success Criteria:* Jumps feel reliable during micro air gaps and bounce; no accidental multi-jumps; experts retain timing mastery.
+  - *Origin:* Brainstorm 2025-10-12; codifies DG_Skill “elastic challenges” for movement.
 
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
