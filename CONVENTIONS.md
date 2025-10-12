@@ -142,6 +142,41 @@ Represents no rotation (T-pose baseline for skeletal animation).
 
 ---
 
+## Code Conventions
+
+### Constants and Scoping
+
+- File-scope constants (used only within a single .cpp): prefer an anonymous namespace.
+  ```cpp
+  // controller.cpp
+  namespace {
+      constexpr float BUMPER_RADIUS = 0.50f;
+      constexpr float STANDING_HEIGHT = BUMPER_RADIUS;
+  } // namespace
+  ```
+
+- Function-local constants (used only inside one function): declare as `constexpr` at function scope.
+  ```cpp
+  void tuning_params::apply_to(controller& c) const {
+      constexpr float FRICTION_RATIO = 0.75f; // function-local intent
+      // ...
+  }
+  ```
+
+- Shared/public constants (needed across multiple translation units): place in the appropriate header within the owning namespace as `constexpr` variables (avoid macros).
+  ```cpp
+  // src/foundation/math_utils.h
+  namespace math {
+      constexpr glm::vec3 UP(0.0f, 1.0f, 0.0f);
+  } // namespace math
+  ```
+
+- Prefer named constants to magic numbers. For mathematical constants, use library values (e.g., `glm::pi<float>()`) instead of literals like `3.14159f`.
+
+- Migration guidance: align outliers opportunistically (on-touch). Do not churn code solely for cosmetic changes.
+
+---
+
 ## References
 
 **Implementation Examples:**
