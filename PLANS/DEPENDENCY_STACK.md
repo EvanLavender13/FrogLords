@@ -26,91 +26,44 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                                       │
                               ← YOU ARE HERE (pull next feature)
                                       │
-─────────────────────────────────────────────────────────────────────────── 
+───────────────────────────────────────────────────────────────────────────
                          COMPLETED FEATURES (100%) ✅
 ───────────────────────────────────────────────────────────────────────────
 
-         ┌──────────────────────────────┐
-         │ Freeze Velocity Trail on Stop│ ✅ 100%
-         │ (position-delta gate)        │
-         └──────────────┬───────────────┘
-                        │
-              ┌─────────┴─────────┐
-              ▼                   ▼
-    ┌──────────────────────┐  ┌──────────────────────┐
-    │ Walk/Run Transition  │  │ Debug Visual Overhaul│ ✅ 100%
-    │ (smoothed max_speed) │  │ (trail, plots, ring) │
-    └──────────┬───────────┘  └──────────────────────┘
-               │
-    ┌──────────┴────────────┐
-                               │
-              ┌────────────────┴────────────────┐
-              ▼                                 ▼
-    ┌──────────────────┐            ┌──────────────────────┐
-    │  Pose Blending   │ ✅ 100%    │ Debug Visual Overhaul│ ✅ 100%
-    │ (quat slerp)     │            │ (trail, plots, ring) │
-    └────────┬─────────┘            └──────────────────────┘
-             │
-             ▼
-    ┌──────────────────┐
-    │ Secondary Motion │ ✅ 100%
-    │ (spring lag)     │
-    └────────┬─────────┘
-             │
-             ▼
-    ┌────────────────────────┐
-    │ Primary Skeletal Anim  │ ✅ 100%
-    │ (distance-phased)      │
-    └────────┬───────────────┘
-             │
-             ▼
-    ┌────────────────────────┐
-    │ Static Keyframe Preview│ ✅ 100%
-    │ (quat validation)      │
-    └────────┬───────────────┘
-             │
-             ▼
-    ┌────────────────────────┐
-    │ Attach Skeleton to Body│ ✅ 100%
-    │ (transform follow)     │
-    └────────┬───────────────┘
-             │
-             ▼
-    ┌────────────────────────┐
-    │ Skeleton Debug System  │ ✅ 100%
-    │ (hierarchy + visual)   │
-    └────────┬───────────────┘
-             │
-             └─────────────────┐
-                               │
-─────────────────────────────────────────────────────────────────────────── 
+**Skeletal Animation Stack:** Debug system → attach to body → keyframe preview → primary anim → secondary motion → pose blending
+**Debug & Polish:** Visual overhaul (trail, plots, ring), walk/run transition, freeze velocity trail
+**Reactive Animation:** Acceleration tilt, landing spring, tuning UI
+
+See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.) for specifics
+
+───────────────────────────────────────────────────────────────────────────
                     CORE GAMEPLAY LAYER (~95% certain)
                     Stable foundation, proven patterns
 ───────────────────────────────────────────────────────────────────────────
-                               │
-              ┌────────────────┴────────────────┐
-              ▼                                 ▼
-    ┌──────────────────┐            ┌──────────────────────┐
-    │ Reactive Anim    │ ✅ 100%    │  Procedural Anim     │ 95%
-    │ • Accel Tilt     │            │  • Orientation       │
-    │ • Landing Spring │            │  • Locomotion        │
-    │ • Tuning UI      │            │  (surveyor wheel)    │
-    └────────┬─────────┘            └──────────┬───────────┘
-             │                                 │
-             └────────────────┬────────────────┘
-                              ▼
-                   ┌────────────────────┐
-                   │ Character Controller│ 95%
-                   │ (physics, input)    │
-                   └──────────┬──────────┘
-                              │
-              ┌───────────────┼───────────────┐
-              ▼               ▼               ▼
-    ┌─────────────┐  ┌──────────────┐  ┌──────────┐
-    │ Collision   │  │ Camera System│  │  Input   │
-    │ (sphere-box)│  │ (orbit+zoom) │  │ (WASD)   │
-    └─────────────┘  └──────────────┘  └──────────┘
-           95%              95%              95%
+
+              ┌────────────────┬────────────────┐
+              ▼                ▼                ▼
+    ┌──────────────────┐  ┌──────────────────────┐  ┌──────────────────┐
+    │ Reactive Anim    │  │  Procedural Anim     │  │ Skeletal System  │
+    │ • Accel Tilt     │  │  • Orientation       │  │ • Keyframes      │
+    │ • Landing Spring │  │  • Locomotion        │  │ • Pose Blending  │
+    │ • Tuning UI      │  │  (surveyor wheel)    │  │ • Spring Motion  │
+    └────────┬─────────┘  └──────────┬───────────┘  └────────┬─────────┘
+             │                       │                        │
+             └───────────────────────┴────────────────────────┘
+                                     ▼
+                          ┌────────────────────┐
+                          │ Character Controller│ 95%
+                          │ (physics, input)    │
+                          └──────────┬──────────┘
+                                     │
+                   ┌─────────────────┼─────────────────┐
+                   ▼                 ▼                 ▼
+         ┌─────────────┐    ┌──────────────┐    ┌──────────┐
+         │ Collision   │    │ Camera System│    │  Input   │
+         │ (sphere-box)│    │ (orbit+zoom) │    │ (WASD)   │
+         └─────────────┘    └──────────────┘    └──────────┘
+                95%                95%                95%
 
 ─────────────────────────────────────────────────────────────────────────── 
                      FOUNDATION LAYER (90-100% certain)
@@ -189,43 +142,21 @@ Historical snapshots: See `PLANS/ARCHIVE/`
 
 ### Completed Features (100% ✅) 🎉
 
-**Status:** Validated through iteration, patterns proven
+**Status:** Foundation proven through 8 completed iterations
 
-These features are built on the stable foundation below. They represent completed experiments that successfully solved specific problems.
+**Completed Stack:**
+- **Skeletal Animation:** Full pipeline from debug → attach → keyframes → primary → secondary → blending ✅
+- **Reactive Animation:** Acceleration tilt, landing spring, walk/run transitions, tuning UI ✅
+- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels ✅
 
-**Freeze Velocity Trail on Stop (100%):**
-- Position-delta gating prevents trail sampling when character is stationary
-- GUI toggle for show/hide velocity trail
-- Sampling gate: only append new sample if `positions.empty()` OR `glm::distance(current_position, positions.back()) > 1e-4f`
-- Trail remains perfectly static while idle; resumes instantly on movement
-- See [freeze_velocity_trail_on_stop_PLAN.md](freeze_velocity_trail_on_stop_PLAN.md) and [freeze_velocity_trail_on_stop_CODE_REVIEW.md](freeze_velocity_trail_on_stop_CODE_REVIEW.md)
-- Dependencies: Debug Visual Overhaul (trail system infrastructure)
+**Key Patterns Validated:**
+- Quaternion keyframe architecture with hemisphere-safe slerp
+- Distance-phased triggering (surveyor wheel pattern)
+- Position-delta gating for debug visualizations
+- Velocity-injection for spring systems
+- Dual-reference pattern for smooth transitions
 
-**Reactive Systems (100%):**
-- Acceleration tilt and landing spring implemented and tuned
-- Animation tuning UI in place
-- Walk/run transition uses dual-reference pattern (run_speed vs max_speed)
-- See [implementation_smoothed_walk_transition.md](implementation_smoothed_walk_transition.md)
-- Dependencies: Stable physics core
-
-**Skeletal Animation (100%):**
-- Skeleton debug, attach-to-body, primary locomotion, secondary motion, and pose blending complete
-- Quaternion keyframe architecture validated; hemisphere-safe slerp
-- See [iteration_pose_blending.md](iteration_pose_blending.md) and [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md)
-- Dependencies: Foundation (core + locomotion)
-
-**Debug Tooling (100%):**
-- Velocity trail, plots, speed gradient ring, camera zoom, unified panel
-- See [implementation_debug_visual_overhaul.md](implementation_debug_visual_overhaul.md)
-- Dependencies: Foundation
-
-**Key Systemic Learnings:**
-- **Motion vs. Structure:** Reactive layers need motion sources (dynamic state), not just data structures
-- **Velocity-injection approach:** Superior to direct offset manipulation for spring systems
-- **Distance-phased triggering:** Surveyor-wheel pattern scales from locomotion to skeletal animation
-- **Graybox discipline:** Parameters over polish; white spheres over art assets
-- **Data structure validation:** Validate novel representations in isolation before complex integration
-- **Position-delta gating:** For debug trails/visualizations, position-delta checks (with float tolerance) are simpler and more robust than velocity thresholds—no hysteresis, no edge cases, just geometric truth
+See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `implementation_*.md` files for detailed retrospectives
 
 ---
 
@@ -259,14 +190,11 @@ See [DESIGN_BACKLOG.md](DESIGN_BACKLOG.md) for full list with rationale.
 Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to expand based on actual playtesting needs rather than speculative planning.
 
 **Completed Work Order:**
-1. ✅ Foundation layer (primitives, rendering, runtime, input, camera)
-2. ✅ Core gameplay (physics controller, procedural locomotion/orientation)
-3. ✅ Reactive animation (acceleration tilt, landing spring, tuning UI)
-4. ✅ Skeleton debug + refactor (game world separation)
-5. ✅ Keyframe foundation (static preview → primary → secondary → blending)
-6. ✅ Debug tooling (camera zoom, unified panels, visual overhaul)
-7. ✅ Walk/run transition (smoothed max_speed blending)
-8. ✅ Freeze velocity trail on stop (position-delta gating + GUI toggle)
+1. ✅ Foundation (primitives, rendering, runtime)
+2. ✅ Core gameplay (physics, procedural systems)
+3. ✅ Skeletal animation pipeline (8-feature stack)
+4. ✅ Reactive animation (tilt, spring, tuning)
+5. ✅ Debug tooling & polish (trail, ring, transitions)
 
 **Planning Horizon (Adaptive):**
 
@@ -342,4 +270,4 @@ P(unchanged) = C^N
 
 ---
 
-**Last Updated:** 2025-10-12 (Post-Freeze Velocity Trail iteration; feature moved to Completed)
+**Last Updated:** 2025-10-11 (Backlog grooming: collapsed completed features, reduced stack height)

@@ -43,16 +43,6 @@
   - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
   - *Next Step:* Enables speed-based gait switching (walk â†’ run blending)
 
-- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses âœ… COMPLETE
-  - *Prerequisite:* Foundation âœ… (distance-phased triggering proven)
-  - *Certainty:* 100%
-  - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walkâ†”run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes requiredâ€”quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
-
-- **Velocity-based acceleration tilt scaling:** Absolute run-speed anchor for tilt magnitude. COMPLETE
-  - *Prerequisite:* Acceleration tilt complete, Walk/run speed transitions complete
-  - *Certainty:* 100%
-  - *Learning:* Passing run_speed into update_acceleration_tilt() and clamping the denominator keeps lean proportional to real momentum while the debug speed ring remains tied to smoothed max_speed. Follow-up: explore a raw (non-smoothed) speed ring and an acceleration ring to visualize intent versus response.
-
 - **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
   - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
   - *Certainty:* Medium (~60%) - likely a small helper that copies defaults stored alongside the T-pose.
@@ -78,6 +68,27 @@
   - *Prerequisite:* Determine if iteration workflow needs it
   - *Certainty:* Medium (~50%) - useful but not urgent
   - *Note:* Would require config file system (JSON/TOML)
+
+### Procedural Animation Systems
+
+- **Bounce gravity:** Vertical oscillation of character center of mass during locomotion
+  - *Prerequisite:* Running gait keyframes, surveyor wheel locomotion system
+  - *Status:* Concept fleshed out - 2025-10-11
+  - *Certainty:* Medium (~60%) - concept clear, implementation details TBD
+  - *Rationale:* Character behaves like "bouncing ball" (GDC principle). Small upward impulse at footfall + constant gravity creates natural parabolic arcs. Faster gaits = flatter arcs (less airtime), slower gaits = bouncier arcs (more airtime). Pure emergence from physics, zero hand-authored curves.
+  - *Reference:* See [NOTES/bounce_gravity_explained.md](../NOTES/bounce_gravity_explained.md) for full concept breakdown
+  - *Scope:*
+    - Detect footfall events (gait phase crosses 0.0 or 0.5)
+    - Apply small upward velocity impulse (~2.0 m/s, tune by feel)
+    - Gravity continuously pulls down during airborne portions
+    - Redefine "grounded" to include locomoting state (fix pause issue)
+    - Layer additively with existing spring-damper (land/crouch)
+  - *Open Questions:*
+    - Same impulse for walk/run, or per-gait tuning?
+    - How to handle locomotion system pausing during `!is_grounded`?
+    - Does jump need input buffering to feel responsive mid-bounce?
+  - *Success Criteria:* Natural bouncing visible during run; no control interference; smooth interaction with jump/land; feels alive and dynamic (like Overgrowth character)
+  - *Origin:* GDC talk reference (David Rosen - Overgrowth), see [NOTES/Images/bounce.png](../NOTES/Images/bounce.png)
 
 ### Input & Control Feel
 
