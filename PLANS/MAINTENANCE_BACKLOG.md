@@ -28,11 +28,7 @@
 
 (Minor inconsistencies or quality improvements)
 
-### Magic Number in Easing
-- **File:** `src/character/animation.cpp:89`
-- **Severity:** Medium
-- **Description:** Hardcoded max_speed value `8.0f` in legacy `update()` method should use the actual parameter or be named.
-- **Suggested Fix:** Pass max_speed as a parameter to the update method or use a named constant.
+*No items currently tracked.*
 
 ---
 
@@ -73,6 +69,18 @@
 ## Completed
 
 (Resolved items moved here for reference; prune periodically)
+
+### Magic Number in Easing
+- **Files:** `src/character/animation.cpp`, `src/character/animation.h`
+- **Severity:** Medium
+- **Description:** Hardcoded max_speed value `8.0f` in legacy `update()` method should use the actual parameter or be named.
+- **Resolution:** Removed the unused legacy `update()` method and its associated `animation_update_params` struct entirely.
+- **Completed:** 2025-10-12
+- **Learnings:**
+  - The initial diagnosis was a magic number, but investigation revealed the code was entirely unused.
+  - Deleting dead code is a more effective fix than refactoring it.
+  - This reinforces the principle of verifying call sites before modifying a function.
+- **Document:** PLANS/MAINTENANCE_magic_number_in_easing_update.md
 
 ### Unused Variable Suppression & Batched Fixes
 - **Files:** `src/character/controller.h`, `src/character/controller.cpp`, `src/rendering/debug_draw.cpp`, `src/gui/camera_panel.h`, `src/gui/camera_panel.cpp`

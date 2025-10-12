@@ -105,12 +105,6 @@ float animation_state::get_vertical_offset() const {
     return landing_spring.get_position();
 }
 
-void animation_state::update(const animation_update_params& params) {
-    // Legacy path uses default run reference speed (matches controller default).
-    update_acceleration_tilt(params.acceleration, params.velocity, 8.0f, params.orientation_yaw,
-                             params.dt);
-}
-
 void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
                                                 pose_type manual_override_pose,
                                                 bool use_manual_override, float dt) {

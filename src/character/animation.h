@@ -6,13 +6,6 @@
 
 namespace character {
 
-struct animation_update_params {
-    float dt;
-    float orientation_yaw;
-    glm::vec3 acceleration;
-    glm::vec3 velocity;
-};
-
 struct secondary_motion_state {
     // Per-joint spring states (offset + velocity)
     float left_elbow_offset = 0.0f;   // Current angle offset (radians)
@@ -65,9 +58,6 @@ struct animation_state {
     glm::mat4 get_tilt_matrix() const;
     glm::mat4 get_vertical_offset_matrix() const;
     float get_vertical_offset() const;
-
-    // Legacy update method (calls update_acceleration_tilt for compatibility)
-    void update(const animation_update_params& params);
 
     // Distance-phased skeletal animation update
     void update_skeletal_animation(skeleton& skel, float distance_traveled,
