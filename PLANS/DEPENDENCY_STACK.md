@@ -10,6 +10,15 @@ Historical snapshots: See `PLANS/ARCHIVE/`
 
 ---
 
+## Triggers to Update
+- After changes to core logic/rules/physics that can ripple upward (e.g., `src/foundation/*`, `src/character/controller.*`).
+- When introducing a new system or changing a public interface between modules.
+- When certainty of any node meaningfully shifts (±10–20%) due to playtests or metrics.
+- When pulling a backlog item into active work (add it, connect dependencies, tag certainty).
+- After refactors that change data representations (e.g., quaternion formats, keyframe structures).
+- When external dependencies change constraints (toolchain, libraries, platforms).
+- Before starting a feature that depends on nodes <90% certain—reassess ordering and risk.
+
 ## Dependency Tree
 
 ```

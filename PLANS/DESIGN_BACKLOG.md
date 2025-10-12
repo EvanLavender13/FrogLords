@@ -8,6 +8,15 @@
 
 ---
 
+## Triggers to Update
+- After playtests or reviews surface new ideas, constraints, or patterns worth capturing.
+- When an item is pulled into active work (move/link it to the dependency stack; mark prerequisites and certainty).
+- When an item is deferred or deprecated (tag status, rationale, and any blockers discovered).
+- After changes to the dependency stack that affect prerequisites or certainty tags.
+- When a small “knowledge move” creates a new avenue (capture while it’s fresh; keep items non-interlocking).
+- After building tools that shorten test loops (reassess priorities/certainty for related items).
+- When items start to interlock or grow in scope (split into independent, pullable slices).
+
 ## Animation & Feel
 
 ### Debug Visualization

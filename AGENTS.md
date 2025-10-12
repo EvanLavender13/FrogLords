@@ -1,139 +1,118 @@
-# FrogLords Development Principles
+# FrogLords Development Guide
 
-Solo experimental game project. Optimize for speed of learning. No automated tests (mechanics change too fast).
+Solo experimental project. Optimize for learning speed. No automated tests (mechanics change too fast).
 
-## Core Tenets
-- Clarity over cleverness
-- Simplicity over sophistication
-- Iteration over planning
-- Graybox before polish
+## Quick Start
+- Clarity over cleverness; simplicity over sophistication.
+- Iterate, don’t speculate. Short plan -> build -> test -> repeat.
+- Graybox first and long. Polish only to get better test data.
+- Keep core physics/rules inviolable; layer reactivity and polish on top.
+- Prefer multi-role tools with distinct, non-overlapping purposes.
+- Avoid content restrictions that limit future level/art freedom.
 
-## What We’re Building (Design Philosophy)
-- Elegant systems: simple rules that multiply into rich play (emergence beats authored variety).
+## What We’re Building
+- Elegant systems: simple rules that compound into rich play (emergence beats authored variety).
 - Multi-use tools: offensive and defensive roles; avoid single-purpose gimmicks.
 - Distinct roles: no overlap; every tool should unlock new play, not repeat old.
-- Million‑repetition thinking: mechanics must hold up on the 1,000th use.
-- Matched scales: quantities (time, space, speeds, counts) should convert naturally.
-- No content restrictions: don’t add mechanics that force level/art constraints (e.g., 20‑ft jump).
+- Million-repetition thinking: mechanics must hold up on the 1,000th use.
+- Matched scales: time, space, speeds, and counts should convert naturally.
+- No content restrictions: don’t add mechanics that force level/art constraints (e.g., 20 ft jump).
 
-## Procedural Foundation (Layering)
+## Layered Architecture
 1) Core logic (physics, rules) — inviolable
 2) Reactive systems (interpret state)
 3) Polish (visual/audio feedback)
 
-Techniques: spring-damper transitions, cubic interpolation for velocity continuity, distance-phased motion, IK for world interaction, secondary motion via softness.
-Avoid: manual variants, linear interpolation for organic motion, reactive layers overriding core logic.
+Defaults
+- Use spring-damper transitions and cubic interpolation for velocity continuity.
+- Drive locomotion by distance traveled (surveyor-wheel phase).
+- Add secondary motion via softness; use IK for targeted world interaction.
+- Avoid manual animation variants, linear lerps for organic motion, and any reactive layer overriding core logic.
 
-**Dual-Reference Pattern for Smoothed Variables:**
-When smoothing a parameter over time (exponential decay, spring-damper), maintain two separate variables:
-- **Immutable target** (reference value, never smoothed): `run_speed`, `max_jump_height`
-- **Smoothed state** (derived from target): `max_speed`, `current_jump_height`
+Dual-Reference Pattern (for smoothed variables)
+- Keep an immutable target: e.g., `run_speed`, `max_jump_height`.
+- Maintain a smoothed state derived from the target: e.g., `max_speed`, `current_jump_height`.
+- Rationale: prevent circular dependencies where the smoothed value references itself.
 
-Prevents circular dependencies where smoothed value references itself. Example: Walk/run transition smooths `max_speed` toward `run_speed` (immutable) rather than modifying `max_speed` based on `max_speed` (circular). Pattern applies to any time-based interpolation between discrete states.
-
-### Procedural Animation (Gameplay‑First)
-- Do no harm to gameplay: input maps to acceleration; animation layers never steal control or add latency.
-- Physics‑first core: keep a simple, predictable controller as the source of truth (slide/resolve collisions cleanly). Rotate model to velocity (not input); add acceleration‑tilt for readable momentum.
-- Synchronized locomotion: drive gait by distance traveled (surveyor‑wheel phase). Blend walk/run poses and stride lengths; add gravity‑aware bounce that flattens at higher speeds.
-- Interpolation: use cubic interpolation for velocity continuity; use spring‑damper curves for all pose/state transitions (reusable for landings, recoil, UI motion). Prefer rotational springs to accent impacts.
-- IK: apply targeted 2‑bone IK for hands/feet and look‑targets; build ledge shimmy/climbs from few key poses + IK rather than many bespoke clips.
-- Secondary motion: per‑bone softness for subtle follow‑through; add simple cloth/appendage physics where high value.
+## Procedural Animation (Gameplay-First)
+- Do no harm: input maps to acceleration; animation never steals control or adds latency.
+- Physics-first core: simple, predictable controller; rotate model to velocity (not input); add acceleration-tilt.
+- Synchronized locomotion: gait driven by distance; blend walk/run poses; gravity-aware bounce that flattens at speed.
+- Interpolation: cubic for velocity continuity; spring-damper for pose/state transitions; prefer rotational springs to accent impacts.
+- IK: targeted 2-bone IK for hands/feet and look-targets; build ledge shimmy/climbs from few poses + IK (avoid bespoke trees).
+- Secondary motion: per-bone softness and simple cloth/appendage physics when valuable.
 - Active ragdolls: pose/animation matching with contextual reactions (brace, curl, flail) instead of instant limp.
-- Interruptibility: decompose actions into small steps; keep transitions interruptible at all times.
-- Polish workflow: “profile the stupidest” visual; fix with small, context‑aware systems (e.g., swap slide‑on‑wall for a wall‑run) rather than global tweaks.
-- Efficiency: favor minimal keyframes + procedural reuse; new equipment variants swap a small pose set, not an animation tree.
-- Tooling: extract recurring timing/overshoot patterns into reusable curves/tools; pair animator + programmer to turn busywork into systems.
+- Interruptibility: decompose actions into small steps; transitions stay interruptible.
+- Polish workflow: “profile the stupidest” visual; fix locally with small systems (e.g., swap slide-on-wall for wall-run).
+- Efficiency: minimal keyframes + procedural reuse; equipment variants swap a small pose set, not an animation tree.
 
-## Dependencies & Uncertainty
-- Dependency = if A changes, B must change. Uncertainty multiplies up the stack.
-- Work bottom‑up. Stabilize core gameplay (irreducible minimum) before adding layers.
-- Maintain a dependency stack with certainty tags. Expect upper layers to change.
-- Use a liquid design backlog for everything not being worked now (non‑interlocking ideas; pull later).
-- **Data Structure Validation:** When introducing novel data representations (quaternions, new state formats), validate the representation in isolation before building complex features on it. Distinguish "simple interface" from "insufficient representation" - ensure data structures have sufficient degrees of freedom for the problem domain. Example: Single-float keyframes were architecturally insufficient for 3D rotation; quaternion validation iteration (static_keyframe_preview) proved the representation before locomotion integration.
+## Dependencies and Planning
+- Dependencies: if A changes, B must change. Uncertainty multiplies up the stack.
+- Work bottom-up. Stabilize the irreducible core before adding layers.
+- Maintain a dependency stack with certainty tags. Expect upper layers to churn.
+- Use a liquid design backlog for everything not being worked now (non-interlocking ideas only).
+- Data structure validation: validate novel representations (e.g., quaternions, state formats) in isolation before integrating.
 
-## Iteration & Planning Horizon
-- Short plans → build → test → repeat. Extend horizon only as certainty rises.
-- Paradox of quality: accept temporary roughness early to maximize iteration count; the final quality comes from loops, not perfect first passes.
-- Planning horizon guidance:
-  - Original/uncertain → plan 1-3 complexity points ahead.
-  - Derivative/certain → plan larger chunks (3-8 points).
-  - Lower test cost → shorter horizon. Make tools to shorten loops.
-- Big leaps are allowed (to escape local maxima); do them intentionally and then return to tight loops.
+Iteration Horizon
+- Original/uncertain work: plan 1–3 complexity points ahead.
+- Derivative/certain work: plan larger chunks (3–8 points).
+- Lower test cost -> shorter horizon. Build tools to shorten loops.
+- Big leaps are allowed to escape local maxima; take them intentionally, then return to tight loops.
 
-## Graybox First (and Long)
-- Graybox anything expensive: levels, creatures, UI, cutscenes, SFX.
-- Premature production is a tax on every future change. Add art/audio only to get the next round of useful test data.
-- Evaluate grayboxes skillfully: don’t reject working systems because they’re ugly.
-- “Screenplay” equivalence: for games, a working graybox ≈ a screenplay; a design doc isn’t.
+Graybox and Testing
+- Graybox expensive things: levels, creatures, UI, cutscenes, SFX.
+- Don’t reject good systems because they’re ugly; graybox ≈ screenplay.
+- Self-test early; then over-the-shoulder testing. Stay silent—don’t coach.
+- Sample size: watch enough to see patterns (6–12+ per beat).
+- Mix first-time “Kleenex” testers with experienced; use metrics when helpful for small effects/edge cases.
 
-## Testing Protocol (Get Real Signals)
-- Self-test early; then over‑the‑shoulder tests. Stay silent—don’t coach.
-- Sample size: watch enough tests to see patterns (6–12+ per beat is a good baseline).
-- Choose testers to match target skill/segment; mix Kleenex (first‑time) with experienced.
-- Ask, “Tell me the story of what just happened.” Avoid leading questions.
-- Use metrics when helpful to see small effects and rare edge cases.
-
-## Knowledge Creation > Implementation
-- Use the full deck: rumination, research, sketching/previz, brainstorming, written analysis, debate, playtesting, metrics, invented methods.
-- Communicate intent; empower natural authority (closest to the work). Avoid arrogation/micromanagement.
+Knowledge Creation
+- Use the full deck: rumination, research, previz, brainstorming, analysis, debate, playtests, metrics, invented methods.
+- Communicate intent; empower the closest person to the work. Avoid micromanagement.
 - Capture serendipity: notice strange results and reorganize around discoveries.
 
-## Interface & Input
-- Metaphor: leverage real objects, cultural archetypes, game conventions, and logical systems. Establish a consistent metaphor vocabulary early.
-- Signal vs. noise: complex art adds noise; keep mechanical clarity visible.
-- Visual hierarchy: show everything, but scale visibility by importance so novices and experts both succeed.
-- Redundancy: repeat critical info (diverse > homogeneous). Use passive redundancy when the primary cue fails.
-- Indirect control: nudge (defaults, layout), prime (set concepts before moments), and use social imitation (companions/NPCs model behavior).
-- Input:
-  - Mapping: physical control should resemble effect (spatial, color, handedness).
-  - Control exclusivity: exclusive controls map to exclusive actions.
-  - Control feel: design for intent synchronization (dead zones, buffering, momentum, assisted arcs). Joy in moment‑to‑moment input is a feature.
-  - Assistance: aim/jump/drive assists that players don’t feel, tuned by context.
-  - Interruptibility: never lock input behind transitions; animation follows the physics/core.
-  - Latency: responsiveness matters. Prefer higher frame rates when core loops demand quick, precise input.
+## Interface and Input
+- Mapping: physical control should resemble effect (spatial, color, handedness).
+- Exclusivity: exclusive controls map to exclusive actions.
+- Control feel: design for intent synchronization (dead zones, buffering, momentum, assisted arcs).
+- Assistance: aim/jump/drive assists tuned by context and ideally unnoticed.
+- Interruptibility: never lock input behind transitions; animation follows physics/core.
+- Latency: responsiveness matters; prefer higher frame rates when loops demand precision.
 
-## Decision Impacts (Before You Commit)
-Consider more than design taste:
-- Implementation cost (now and maintenance)
-- Immaturity burden (others depending on unfinished systems)
-- Critical failure risk (time‑bombs at bad moments)
-- Process burden (coordination overhead)
-- Political effects (relationships, influence)
-- Cultural effects (habits, climate, future creativity)
-- Decision cost (is deep analysis worth it here?)
-Make a few low‑risk knowledge moves before large commitments when uncertainty is high.
+## Decision Impacts (before you commit)
+- Consider: implementation cost, immaturity burden, critical failure risk, process burden, political/cultural effects, and decision cost.
+- Make a few low-risk knowledge moves before large commitments when uncertainty is high.
 
-## Planning Documents
-- PLANS/dependency_stack.md
-  - Single source of truth for dependencies and certainty. Update after iterations and before changes.
-  - Answers: What’s safe to build now? What’s premature?
-- PLANS/design_backlog.md
-  - Liquid, unordered idea pool. Tag priority/certainty/prereqs. Don’t interlock. Pull only when the current layer is 90%+ certain.
+## Planning Docs
+- `PLANS/DEPENDENCY_STACK.md`: single source of truth for dependencies and certainty. Update after iterations and before changes.
+- `PLANS/DESIGN_BACKLOG.md`: liquid, unordered idea pool. Tag priority/certainty/prereqs. Pull only when current layer is 90%+ certain.
 
 ## Development Directives
-Do:
-- Start at the bottom of the stack, stabilize, then build up
-- Abstract repeated patterns into systems; prefer parameters over assets
-- Maximize mechanic interactions; prefer multi‑role tools
-- Test until patterns repeat; use metrics where useful
-- Capture ideas immediately to backlog; update the stack regularly
-- Challenge future‑restricting assumptions (content freedom)
-
-Don’t:
-- Over‑engineer for imagined futures; wait for the third use before abstracting
-- Polish before structure is proven (art hides mechanical flaws)
-- Let reactive layers control core logic
-- Create content restrictions casually (e.g., jump heights that break worlds)
-- Build on uncertain foundations; fight overconfidence/therapeutic planning
+- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions.
+- Don’t: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); build on uncertain foundations.
 
 ## Communication
 Concise and direct. No preamble/postamble. Detail scales with risk/complexity.
 
-## Code Standards (condensed)
+## Code and Repo
+- See `CONVENTIONS.md` for coordinate, rotation, camera, animation, and debug visualization conventions.
+- File organization
+```
+src/
+  app/         # Runtime/lifecycle
+  camera/      # Camera control and view matrices
+  character/   # Movement, orientation, locomotion, tuning
+  foundation/  # Procedural primitives (easing, springs, collision)
+  rendering/   # Renderers, composition, pipelines, debug draw
+  input/       # Keyboard, mouse, gamepad
+  gui/         # Interface systems, panels
+  main.cpp     # Entry point
+shaders/       # .glsl
+generated/     # Build artifacts (e.g., shader headers)
+```
+- Dependency flow: Foundation -> Character -> Rendering -> App. Avoid sideways includes at higher layers.
 
-Philosophy: consistency enables thoughtless correctness.
-
-Naming (uniform snake_case for user code):
+Naming (uniform snake_case for user code)
 ```cpp
 // Types
 class camera_system { };
@@ -159,7 +138,7 @@ constexpr float GRAVITY = -9.8f;
 namespace rendering { }
 ```
 
-Types:
+Types
 ```cpp
 struct edge { int v0, v1; }; // POD data
 class wireframe_renderer {
@@ -171,42 +150,25 @@ private:
 };
 ```
 
-Namespaces
-- System: input::, gui::, debug::, easing::
-- Domain: character::
-- Core types with clear names: camera, scene, controller
-- Nesting only to prevent real conflicts
-
-File Organization
-```
-src/
-  app/         # Runtime/lifecycle
-  camera/      # Camera control and view matrices
-  character/   # Movement, orientation, locomotion, tuning
-  foundation/  # Procedural primitives (easing, springs, collision)
-  rendering/   # Renderers, composition, pipelines, debug draw
-  input/       # Keyboard, mouse, gamepad
-  gui/         # Interface systems, panels
-  main.cpp     # Entry point
-shaders/       # .glsl
-generated/     # Build artifacts (e.g., shader headers)
-```
-Dependency flow: Foundation → Character → Rendering → App. Avoid sideways includes at higher layers.
-
 Documentation
-- Brief comments for non‑obvious public API; skip obvious
+- Brief comments for non-obvious public API; skip the obvious.
 ```cpp
 /// Orbit camera around center point
 /// delta_x: horizontal rotation (screen space)
 /// delta_y: vertical rotation (screen space)
 void orbit(float delta_x, float delta_y);
 
-float radius = width * 0.5f;  // Half‑extent
+float radius = width * 0.5f;  // Half-extent
 ```
 
 Formatting
-- 4‑space indent; braces on same line; soft 100‑char limit; consistent operator spacing
+- 4-space indent; braces on same line; soft 100-char limit; consistent operator spacing.
+
+## References (deep dives)
+- Designing Games notes: `NOTES/DesigningGames/DG_Dependencies.md`, `NOTES/DesigningGames/DG_Planning.md`, `NOTES/DesigningGames/DG_Interface.md`, `NOTES/DesigningGames/DG_Skill.md`, `NOTES/DesigningGames/DG_Elegance.md`.
+- Procedural animation philosophy: `NOTES/GDC/GDC_DesignPhilosophy.md`, `NOTES/GDC/GDC_TechnicalWhitepaper.md`.
 
 ---
 
 Build, play, learn, adapt. Elegance from simple, interactive systems; discovery over prediction.
+
