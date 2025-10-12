@@ -20,28 +20,6 @@
 
 (Significant improvement to clarity, maintainability, or extensibility)
 
-### Extract Spherical Coordinate Calculation (Camera)
-- **Category:** Pattern Extraction
-- **Files:** `src/camera/camera.cpp` (lines 14-21, 49-53, 86-91)
-- **Current State:** Identical spherical-to-cartesian coordinate calculation appears 3 times in camera system
-- **Proposed Change:** Extract `compute_spherical_position(center, distance, latitude, longitude)` private method
-- **Rationale:** "Abstract repeated patterns into systems" - Identical math appearing 3+ times. Clarifies intent and eliminates duplication.
-- **Impact:** -15 lines, clearer intent, easier to test spherical math in isolation
-- **Risk:** Low (pure function, no side effects)
-- **Certainty:** Camera system is 95% certain per DEPENDENCY_STACK.md
-- **Examples:**
-  ```cpp
-  // Current (3x duplicated):
-  float lat_rad = glm::radians(latitude);
-  float lon_rad = glm::radians(longitude);
-  eye_pos.x = center.x + distance * cosf(lat_rad) * sinf(lon_rad);
-  eye_pos.y = center.y + distance * sinf(lat_rad);
-  eye_pos.z = center.z + distance * cosf(lat_rad) * cosf(lon_rad);
-
-  // Proposed:
-  eye_pos = compute_spherical_position(center, distance, latitude, longitude);
-  ```
-
 ### Extract Angle Wrapping Utilities (Foundation)
 - **Category:** Pattern Extraction
 - **Files:** `src/character/orientation.cpp` (lines 13-16, 21-24), `src/camera/camera.cpp` (lines 36-39)
@@ -367,6 +345,17 @@
 
 (Finished refactors moved here for reference; prune periodically)
 
+### Extract Spherical Coordinate Calculation (Camera)
+- **Completed:** 2025-10-12
+- **Category:** Pattern Extraction
+- **Files:** `src/camera/camera.cpp`
+- **Outcome:** Extracted spherical coordinate calculation to a private helper function, replacing 3 duplicated blocks of code.
+- **Learnings:**
+  - A linear approach was effective for this low-risk refactor.
+  - The `replace` tool can be tricky with complex, multi-line strings. Using a broader search pattern helped identify the correct locations.
+  - The estimate of 1 complexity point was accurate.
+- **Impact:** Reduced code duplication by 12 lines and improved clarity at 3 call sites.
+
 ### Extract Yaw-to-Direction Vector Utilities ✅
 - **Completed:** 2025-10-10
 - **Category:** Utilities
@@ -406,4 +395,3 @@
   - Rule of three validated: 8 instances far exceeded extraction threshold (267% over minimum)
   - Debug GUI code allowed immediate visual verification without complex testing
 - **Documentation:** See `PLANS/refactor_joint_slider_widget.md` (complete refactor history)
-

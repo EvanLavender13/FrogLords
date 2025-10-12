@@ -3,6 +3,18 @@
 #include <cmath>
 #include <algorithm>
 
+namespace {
+glm::vec3 compute_spherical_position(const glm::vec3& center, float dist, float lat, float lon) {
+    float lat_rad = glm::radians(lat);
+    float lon_rad = glm::radians(lon);
+    glm::vec3 pos;
+    pos.x = center.x + dist * cosf(lat_rad) * sinf(lon_rad);
+    pos.y = center.y + dist * sinf(lat_rad);
+    pos.z = center.z + dist * cosf(lat_rad) * cosf(lon_rad);
+    return pos;
+}
+} // namespace
+
 camera::camera(glm::vec3 center, orbit_config orbit)
     : center(center)
     , distance(orbit.distance)
@@ -12,12 +24,7 @@ camera::camera(glm::vec3 center, orbit_config orbit)
 }
 
 void camera::update_eye_position() {
-    float lat_rad = glm::radians(latitude);
-    float lon_rad = glm::radians(longitude);
-
-    eye_pos.x = center.x + distance * cosf(lat_rad) * sinf(lon_rad);
-    eye_pos.y = center.y + distance * sinf(lat_rad);
-    eye_pos.z = center.z + distance * cosf(lat_rad) * cosf(lon_rad);
+    eye_pos = compute_spherical_position(center, distance, latitude, longitude);
 }
 
 glm::mat4 camera::get_view_matrix() const {
@@ -46,11 +53,7 @@ void camera::zoom(float delta) {
         follow_distance =
             std::clamp(follow_distance + delta, min_follow_distance, max_follow_distance);
         // Recalculate eye position immediately to avoid one-frame delay
-        float lat_rad = glm::radians(latitude);
-        float lon_rad = glm::radians(longitude);
-        eye_pos.x = center.x + follow_distance * cosf(lat_rad) * sinf(lon_rad);
-        eye_pos.y = center.y + follow_distance * sinf(lat_rad);
-        eye_pos.z = center.z + follow_distance * cosf(lat_rad) * cosf(lon_rad);
+        eye_pos = compute_spherical_position(center, follow_distance, latitude, longitude);
     } else {
         distance = std::clamp(distance + delta, min_distance, max_distance);
         update_eye_position();
@@ -83,10 +86,5 @@ void camera::follow_update(const glm::vec3& target_position, float dt) {
     center = target_position + glm::vec3(0, follow_height_offset, 0);
 
     // Calculate position using spherical coordinates (reuse orbit logic)
-    float lat_rad = glm::radians(latitude);
-    float lon_rad = glm::radians(longitude);
-
-    eye_pos.x = center.x + follow_distance * cosf(lat_rad) * sinf(lon_rad);
-    eye_pos.y = center.y + follow_distance * sinf(lat_rad);
-    eye_pos.z = center.z + follow_distance * cosf(lat_rad) * cosf(lon_rad);
+    eye_pos = compute_spherical_position(center, follow_distance, latitude, longitude);
 }
