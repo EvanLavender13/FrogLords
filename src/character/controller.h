@@ -71,6 +71,7 @@ struct controller {
     glm::mat4 get_world_transform() const;
 
   private:
+    void resolve_collisions(const scene* scn, float& out_pre_collision_vertical_velocity);
     void resolve_ground_collision();
     void resolve_box_collisions(const scene& scn);
 };

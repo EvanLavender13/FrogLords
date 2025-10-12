@@ -4,7 +4,7 @@
 
 **Status:** Living document (updated after system analysis)
 
-**Last Review:** October 11, 2025
+**Last Review:** October 12, 2025
 
 ---
 
@@ -20,6 +20,86 @@
 
 (Significant improvement to clarity, maintainability, or extensibility)
 
+### Extract Spherical Coordinate Calculation (Camera)
+- **Category:** Pattern Extraction
+- **Files:** `src/camera/camera.cpp` (lines 14-21, 49-53, 86-91)
+- **Current State:** Identical spherical-to-cartesian coordinate calculation appears 3 times in camera system
+- **Proposed Change:** Extract `compute_spherical_position(center, distance, latitude, longitude)` private method
+- **Rationale:** "Abstract repeated patterns into systems" - Identical math appearing 3+ times. Clarifies intent and eliminates duplication.
+- **Impact:** -15 lines, clearer intent, easier to test spherical math in isolation
+- **Risk:** Low (pure function, no side effects)
+- **Certainty:** Camera system is 95% certain per DEPENDENCY_STACK.md
+- **Examples:**
+  ```cpp
+  // Current (3x duplicated):
+  float lat_rad = glm::radians(latitude);
+  float lon_rad = glm::radians(longitude);
+  eye_pos.x = center.x + distance * cosf(lat_rad) * sinf(lon_rad);
+  eye_pos.y = center.y + distance * sinf(lat_rad);
+  eye_pos.z = center.z + distance * cosf(lat_rad) * cosf(lon_rad);
+
+  // Proposed:
+  eye_pos = compute_spherical_position(center, distance, latitude, longitude);
+  ```
+
+### Extract Angle Wrapping Utilities (Foundation)
+- **Category:** Pattern Extraction
+- **Files:** `src/character/orientation.cpp` (lines 13-16, 21-24), `src/camera/camera.cpp` (lines 36-39)
+- **Current State:** Three separate implementations of angle wrapping (2 in radians, 1 in degrees)
+- **Proposed Change:** Add to `foundation/math_utils.h`:
+  - `math::wrap_angle_radians(angle)` → [-π, π]
+  - `math::wrap_angle_degrees(angle)` → [-180, 180]
+  - `math::angle_difference(target, current)` → shortest angular difference
+- **Rationale:** "Abstract repeated patterns into systems" + "Clarity over cleverness" - Fundamental angle math appearing in multiple stable systems (95% certain). Extracting to foundation layer makes intent explicit.
+- **Impact:** -12 lines, clearer intent, prevents bugs from inconsistent wrapping
+- **Risk:** Low (pure math functions)
+- **Certainty:** Both orientation (95%) and camera (95%) are stable systems
+- **Examples:**
+  ```cpp
+  // Current (3 implementations):
+  while (delta > glm::pi<float>()) delta -= 2.0f * glm::pi<float>();
+  while (delta < -glm::pi<float>()) delta += 2.0f * glm::pi<float>();
+
+  // Proposed:
+  delta = math::wrap_angle_radians(delta);
+  ```
+
+### Extract Walk/Run Blend Factor Calculation (Locomotion)
+- **Category:** Pattern Extraction
+- **Files:** `src/character/locomotion.cpp` (lines 26-34, 59-67)
+- **Current State:** Identical blend factor calculation duplicated in `update()` and `get_current_pose()`
+- **Proposed Change:** Extract `compute_walk_run_blend()` private method
+- **Rationale:** "Abstract repeated patterns into systems" - Identical logic appearing twice with 100% certainty of third use (any new animation blending will need this).
+- **Impact:** -12 lines, clearer intent, single source of truth for walk/run blending
+- **Risk:** Very Low (private method, pure calculation)
+- **Certainty:** Locomotion system is 95% certain per DEPENDENCY_STACK.md
+- **Examples:**
+  ```cpp
+  // Current (2x duplicated):
+  float blend = 0.0f;
+  if (smoothed_speed <= walk_speed_threshold) {
+      blend = 0.0f;
+  } else if (smoothed_speed >= run_speed_threshold) {
+      blend = 1.0f;
+  } else {
+      blend = (smoothed_speed - walk_speed_threshold) /
+              (run_speed_threshold - walk_speed_threshold);
+  }
+
+  // Proposed:
+  float blend = compute_walk_run_blend();
+  ```
+
+### Extract Joint Indices to Shared Header (Skeleton)
+- **Category:** Pattern Extraction
+- **Files:** `src/character/animation.cpp` (lines 11-20), `src/character/keyframe.cpp` (lines 32-50)
+- **Current State:** Joint indices defined separately in two files (8 joints in animation.cpp, 17 joints in keyframe.cpp)
+- **Proposed Change:** Move to `character/skeleton.h` as `namespace character::joint_index` with all 17 joints
+- **Rationale:** "Single source of truth" - Joint indices are fundamental skeleton data, duplicating them risks mismatch.
+- **Impact:** Single source of truth for joint indices, prevents mismatches
+- **Risk:** Low (constexpr values, compile-time constants)
+- **Certainty:** Skeletal animation is 100% complete per DEPENDENCY_STACK.md
+
 ### Consolidate Duplicate Constants (WHEEL_RADIUS, TWO_PI) ❌ INVALID
 - **Category:** Pattern Extraction
 - **Files:** `src/rendering/debug_draw.cpp`, `src/app/game_world.cpp`
@@ -33,6 +113,56 @@
 ## Medium
 
 (Nice-to-have refactors that would improve quality)
+
+### Extract Joint Transform Application Lambda (Animation/Keyframe)
+- **Category:** Pattern Extraction
+- **Files:** `src/character/keyframe.cpp` (lines 180-186, 246-250), `src/character/animation.cpp` (lines 166-172, 247-253)
+- **Current State:** Lambda pattern repeated 4 times (8+ individual calls): `apply_joint` / `apply_blended_joint`
+- **Proposed Change:** Add to `character/skeleton.h`: `void set_joint_rotation(skeleton& skel, int joint_idx, const glm::quat& rotation)`
+- **Rationale:** "Abstract repeated patterns into systems" - This is skeletal animation's fundamental operation, appearing 8+ times across 4 lambdas. Making it a named function clarifies intent and ensures consistency.
+- **Impact:** -24 lines, eliminates 4 lambdas, clearer skeletal API
+- **Risk:** Very Low (inline function, no behavior change)
+- **Certainty:** Skeletal animation is 100% complete per DEPENDENCY_STACK.md
+
+### Extract Buffer Pruning Helper (GUI)
+- **Category:** Pattern Extraction
+- **Files:** `src/gui/gui.cpp` (lines 110-120, 159-169)
+- **Current State:** Identical buffer pruning logic duplicated in `plot_value()` and `plot_histogram()`
+- **Proposed Change:** Extract `prune_plot_buffer(buffer, current_time, max_samples)` internal helper
+- **Rationale:** "Abstract repeated patterns into systems" - Identical buffer management appearing twice in similar contexts.
+- **Impact:** -16 lines, single source of truth for buffer pruning
+- **Risk:** Low (internal helper, no API change)
+- **Certainty:** Debug tooling is 100% complete per DEPENDENCY_STACK.md
+
+### Extract Speed Gradient Calculation (Debug Visualization)
+- **Category:** Pattern Extraction
+- **Files:** `src/rendering/debug_draw.cpp` (lines 42-56, 393-403)
+- **Current State:** Two instances of multi-stop gradient interpolation (speed gradient, age gradient)
+- **Proposed Change:** Add to `foundation/easing.h`: `evaluate_gradient()` and `speed_gradient()` preset
+- **Rationale:** "Parameters over assets" + "Wait for third use before abstracting" - This is close to third use (2 gradients + likely more for future debug vis). Extracting now prevents copy-paste when adding new visualizations.
+- **Impact:** Clearer debug code, easier to add new gradients, -20 lines when third use appears
+- **Risk:** Low (completed feature, pure visualization)
+- **Certainty:** Debug tooling is 100% complete per DEPENDENCY_STACK.md
+
+### Consolidate Tuning Constants (Character Controller)
+- **Category:** Simplification
+- **Files:** `src/character/tuning.cpp` (lines 12, 26)
+- **Current State:** Magic constant `FRICTION_RATIO = 0.75f` duplicated in two functions (function-local scope)
+- **Proposed Change:** Move to file-level anonymous namespace
+- **Rationale:** "Clarity over cleverness" - Single source of truth for physics constants. Function-local constexpr is unnecessarily hidden.
+- **Impact:** Clearer coupling between apply_to/read_from, single source of truth
+- **Risk:** Very Low (same values, just moved to wider scope)
+- **Certainty:** Character controller is 95% certain per DEPENDENCY_STACK.md
+
+### Add Verbose Wireframe Drawing Helpers (Debug)
+- **Category:** API Design
+- **Files:** `src/rendering/debug_draw.cpp` (lines 20-23, 28-31, 58-61, 67-70, etc. - 10+ repetitions)
+- **Current State:** Verbose pattern repeated for every instanced mesh (create mesh, set position/scale, draw)
+- **Proposed Change:** Add helpers to `draw_context`: `draw_sphere()`, `draw_circle()`, etc.
+- **Rationale:** "Simplicity over sophistication" - This pattern appears 10+ times in debug_draw.cpp. Reducing verbosity improves readability.
+- **Impact:** -40 lines in debug_draw.cpp, clearer debug visualization code
+- **Risk:** Low (internal debug helpers)
+- **Certainty:** Debug tooling is 100% complete per DEPENDENCY_STACK.md
 
 ### Extract Y-Axis Up Vector Constant ✅
 - **Completed:** 2025-10-11
@@ -112,6 +242,46 @@
 
 (Polish items with minimal impact)
 
+### Simplify Box Collision Heuristic Classification (Debug)
+- **Category:** Simplification
+- **Files:** `src/rendering/debug_draw.cpp` (lines 179-216)
+- **Current State:** Deeply nested if-else chain (4 levels) with complex box classification heuristics
+- **Proposed Change:** Extract `classify_collision_box()` and `get_box_type_color()` helpers using enum
+- **Rationale:** "Clarity over cleverness" + "Simplicity over sophistication" - Breaking nested conditionals into separate classification and coloring functions improves readability and testability.
+- **Impact:** Clearer intent, easier to add new box types, same LOC but better organized
+- **Risk:** Low (debug visualization only, no gameplay impact)
+- **Certainty:** Debug tooling is 100% complete per DEPENDENCY_STACK.md
+
+### Make Collision Constants Visible (Controller)
+- **Category:** Simplification
+- **Files:** `src/character/controller.cpp` (lines 14-17)
+- **Current State:** Anonymous namespace with undocumented constants (`BUMPER_RADIUS`, `STANDING_HEIGHT`)
+- **Proposed Change:** Move to controller class as static constexpr with documentation
+- **Rationale:** "Clarity over cleverness" - Making constants visible in header clarifies what's configurable.
+- **Impact:** Better documentation, easier to find configuration values
+- **Risk:** Very Low (no behavior change, just visibility)
+- **Certainty:** Character controller is 95% certain per DEPENDENCY_STACK.md
+
+### Break Up Long Function: draw_character_panel
+- **Category:** Simplification
+- **Files:** `src/gui/character_panel.cpp` (lines 23-220, 198 lines)
+- **Current State:** Single 198-line function with 6 collapsing sections, deep nesting (4+ levels in joint override section)
+- **Proposed Change:** Break into section functions: `draw_tuning_section()`, `draw_landing_spring_section()`, etc.
+- **Rationale:** "Simplicity over sophistication" - Functions >50 lines are harder to understand. Each collapsing section is conceptually independent.
+- **Impact:** Improved readability, easier to navigate, testable sections
+- **Risk:** Low (internal refactor, no API change)
+- **Certainty:** Debug tooling is 100% complete per DEPENDENCY_STACK.md
+
+### Add Exponential Decay Utility (Foundation)
+- **Category:** Reusable Utilities
+- **Files:** `src/character/animation.cpp` (lines 70, 75), `src/character/controller.cpp` (line 100)
+- **Current State:** Two different exponential decay patterns (`1.0f - glm::exp(-rate * dt)` and `std::min(rate * dt, 1.0f)`)
+- **Proposed Change:** Add to `foundation/easing.h`: `exponential_decay(rate, dt)` and `exponential_decay_clamped(rate, dt, max_alpha)`
+- **Rationale:** "Abstract repeated patterns" - Exponential decay is a fundamental smoothing operation appearing in multiple systems (95%+ certain). Naming it clarifies intent.
+- **Impact:** Clearer intent, easier to find all smoothing operations
+- **Risk:** Very Low (pure math function)
+- **Certainty:** Both character controller and animation are stable (95%+)
+
 ### Extract Velocity Trail to Dedicated Type
 - **Category:** System Design / Simplification
 - **Files:** `src/app/game_world.h:16-21`, `src/app/game_world.cpp:29-45`
@@ -147,6 +317,33 @@
 ## Deferred
 
 (Opportunities that failed "wait for third use" or stability checks)
+
+### Quaternion Hemisphere Correction Utility
+- **Reason:** Only 1 occurrence (`src/character/animation.cpp:207-210`)
+- **Reconsider When:** Second use appears (e.g., blending between animation clips, quaternion interpolation elsewhere)
+- **Proposed:** Add `math::quaternion_hemisphere_align()` to foundation/math_utils.h
+
+### Renderer Buffer Caching Optimization
+- **Reason:** Profile before optimizing - current design is simple and correct (sokol handles deferred destruction)
+- **Reconsider When:** Profiling shows buffer creation in hotspot
+- **Files:** `src/rendering/renderer.cpp` (lines 70-109)
+- **Note:** Creates/destroys GPU buffers every draw call; could cache unit meshes (sphere, circle) used 50+ times per frame
+
+### Controller/Orientation Coupling Architecture
+- **Reason:** Architectural concern with only one instance; wait for more evidence before changing
+- **Reconsider When:** Second similar coupling pattern appears or character system needs major redesign
+- **Files:** `src/character/controller.h`, `src/app/game_world.cpp`
+- **Note:** Unclear ownership - controller contains orientation/animation but game_world also updates them
+
+### Vector Spring-Damper Template
+- **Reason:** Only scalar springs used currently; templating would be premature
+- **Reconsider When:** Vector springs needed 3+ times (currently 0 uses)
+- **Files:** `src/foundation/spring_damper.h`
+
+### Collision Multi-Pass Iteration Count
+- **Reason:** Experimental code (marked "EXPERIMENT: Single-sphere collision")
+- **Reconsider When:** Collision system finalizes and needs tuning
+- **Files:** `src/character/controller.cpp:210` (hardcoded to 3 passes)
 
 ### Velocity Trail Encapsulation
 - **Reason:** Only 1 use (trail tracking for character position only)

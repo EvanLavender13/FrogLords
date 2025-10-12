@@ -14,7 +14,41 @@ Post the drafted message for approval. Do not commit until approved.
 
 ### 4. Commit
 
-After approval, run `scripts/commit_changes.ps1 -Message "<commit message>"`
+After approval, use PowerShell here-string syntax to avoid quoting issues:
+
+```powershell
+$msg = @"
+<Domain>: <Brief description>
+
+<Why paragraph>
+
+- <Change 1>
+- <Change 2>
+
+<Outcome sentence>
+"@
+
+.\scripts\commit_changes.ps1 -Message $msg
+```
+
+**Example:**
+```powershell
+$msg = @"
+character: add dash tuning
+
+Introduces initial dash mechanic with basic timing and distance parameters.
+
+- Add dash_speed and dash_duration to character tuning
+- Implement dash trigger on Shift key
+- Add cooldown timer (2s)
+
+Dash now functional in graybox form.
+"@
+
+.\scripts\commit_changes.ps1 -Message $msg
+```
+
+**Critical:** Use here-string (`@"..."@`) syntax. Do NOT use regular quotes with escape characters.
 
 ### Tone & Constraints
 

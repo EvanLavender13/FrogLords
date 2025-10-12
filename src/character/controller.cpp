@@ -112,24 +112,9 @@ void controller::update(const scene* scn, float dt) {
     // Integrate position
     position += velocity * dt;
 
-    // Reset grounded state
-    is_grounded = false;
-    collision_contact_debug = contact_debug_info{};
-
-    // Capture vertical velocity BEFORE collision resolution (for landing spring)
-    // cppcheck-suppress variableScope
-    float pre_collision_vertical_velocity = velocity.y;
-
-    // Update collision sphere position
-    collision_sphere.center = position;
-
-    // Box collision resolution
-    if (scn != nullptr) {
-        resolve_box_collisions(*scn);
-    }
-
-    // Ground plane (fallback if no box collision)
-    resolve_ground_collision();
+    // Resolve collisions and capture pre-collision state
+    float pre_collision_vertical_velocity = 0.0f;
+    resolve_collisions(scn, pre_collision_vertical_velocity);
 
     // Landing detection (after collision resolution, using pre-collision velocity)
     just_landed = !was_grounded && is_grounded;
@@ -162,6 +147,26 @@ glm::mat4 controller::get_world_transform() const {
     transform *= animation.get_tilt_matrix();
 
     return transform;
+}
+
+void controller::resolve_collisions(const scene* scn, float& out_pre_collision_vertical_velocity) {
+    // Reset grounded state before collision checks
+    is_grounded = false;
+    collision_contact_debug = contact_debug_info{};
+
+    // Update collision sphere position to match integrated position
+    collision_sphere.center = position;
+
+    // Capture vertical velocity BEFORE collision resolution (for landing spring)
+    out_pre_collision_vertical_velocity = velocity.y;
+
+    // Box collision resolution (main environment)
+    if (scn != nullptr) {
+        resolve_box_collisions(*scn);
+    }
+
+    // Ground plane (fallback if no box collision)
+    resolve_ground_collision();
 }
 
 void controller::resolve_ground_collision() {

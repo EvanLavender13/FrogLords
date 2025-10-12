@@ -4,7 +4,7 @@
 
 namespace gui {
 
-void draw_camera_panel(camera_panel_state& state, camera& cam) {
+void draw_camera_panel(const camera_panel_state& state, camera& cam) {
     if (!state.show)
         return;
 

@@ -4,7 +4,7 @@
 
 **Status:** Living document (updated after codebase reviews)
 
-**Last Review:** October 11, 2025
+**Last Review:** October 12, 2025
 
 ---
 
@@ -41,12 +41,6 @@
 - **Severity:** Medium
 - **Description:** Multiple TODO comments for mouse delta tracking and gamepad support. These are tracked features but cluttering implementation files.
 - **Suggested Fix:** Move these feature requests to `DESIGN_BACKLOG.md` and remove TODO comments from code. Keep implementation files focused on current functionality.
-
-### Unused Variable Suppression Comment
-- **File:** `src/character/controller.cpp:104`
-- **Severity:** Medium
-- **Description:** `// cppcheck-suppress variableScope` comment suggests a code smell. The variable `pre_collision_vertical_velocity` is defined early but only used later.
-- **Suggested Fix:** Move the variable declaration closer to its use point (right before line 111 where it's assigned) to eliminate the need for suppression.
 
 ### Magic Number in Easing
 - **File:** `src/character/animation.cpp:89`
@@ -93,6 +87,17 @@
 ## Completed
 
 (Resolved items moved here for reference; prune periodically)
+
+### Unused Variable Suppression & Batched Fixes
+- **Files:** `src/character/controller.h`, `src/character/controller.cpp`, `src/rendering/debug_draw.cpp`, `src/gui/camera_panel.h`, `src/gui/camera_panel.cpp`
+- **Severity:** Medium
+- **Description:** A `cppcheck-suppress variableScope` comment suggested a code smell in `controller.cpp`. This was batched with two other minor `cppcheck` fixes for `const` correctness.
+- **Resolution:** Refactored the collision logic in `controller.cpp` into a new `resolve_collisions` method with an out-parameter to make the data flow explicit. Also applied `const` correctness to a variable in `debug_draw.cpp` and a function parameter in `camera_panel`.
+- **Completed:** 2025-10-12
+- **Learnings:**
+  - A `variableScope` warning can indicate a deeper clarity issue, not just style. Refactoring to make data flow explicit (e.g., with an out-parameter) is a good solution.
+  - Batching small, unrelated static analysis fixes is an efficient way to improve code health without significant overhead.
+- **Document:** PLANS/MAINTENANCE_unused_variable_suppression.md
 
 ### printf Logging in Production Code
 - **Files:** src/main.cpp
@@ -183,4 +188,3 @@
   - Pipeline now matches procedural layering: pose → secondary motion → transform propagation
 - **Completed:** October 11, 2025
 - **Document:** PLANS/maintenance_joint_override_reset.md
-

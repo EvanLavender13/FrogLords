@@ -344,7 +344,7 @@ void draw_axis_gizmo(draw_context& ctx, const character::skeleton& skel, float a
         const char* label;
     };
 
-    axis_visual axes[3] = {
+    const axis_visual axes[3] = {
         {basis_x, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), IM_COL32(255, 0, 0, 255), "X"},
         {basis_y, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), IM_COL32(0, 255, 0, 255), "Y"},
         {basis_z, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), IM_COL32(0, 128, 255, 255), "Z"},
