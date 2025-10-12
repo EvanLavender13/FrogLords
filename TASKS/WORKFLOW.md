@@ -76,7 +76,7 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 **Archive:** `YYYYMMDD_HHMMSS_<feature_name>_<WORKFLOW>.md`
 
 - `<feature_name>_FEATURE.md` - Feature description and rationale
-- `<feature_name>_IMPLEMENTATION.md` - Detailed implementation steps
+- `<feature_name>_PLAN.md` - Detailed implementation steps
 - `<feature_name>_CODE_REVIEW.md` - Implementation review findings
 - `<feature_name>_PLAN_REVIEW.md` - Planning review findings
 
@@ -100,7 +100,7 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 - **Entry Point:** SELECT_FEATURE
 - **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
 - **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
-- **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_IMPLEMENTATION.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
+- **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_PLAN.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
 
 ### Maintenance Workflow
 - **Location:** `TASKS/MAINTENANCE/`

@@ -100,7 +100,7 @@ Required Migrations:
 
 Format as a markdown checklist and save to `PLANS/` directory.
 
--   **Filename:** `implementation_[feature_name].md`
+-   **Filename:** `<feature_name>_PLAN.md.md`
 -   **If the implementation plan already exists:**
     -   Add a changelog entry at the bottom noting the update date and reason (e.g., "Plan updated after scope modification via MODIFY_PLAN")
     -   Update the checklist to reflect current implementation steps

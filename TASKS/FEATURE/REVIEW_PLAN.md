@@ -9,7 +9,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference
 2.  **Planning Documents:** Read the following files:
     *   `PLANS/<feature_name>_FEATURE.md` (feature description and rationale)
-    *   `PLANS/<feature_name>_IMPLEMENTATION.md` (must exist)
+    *   `PLANS/<feature_name>_PLAN.md` (must exist)
     *   `PLANS/DEPENDENCY_STACK.md` (check tree visualization for dependencies and certainty)
     *   `PLANS/DESIGN_BACKLOG.md`
 
@@ -22,7 +22,7 @@ Cross-reference the feature description, feature description, and implementation
 -   **Verify Scope Alignment:** Does the feature description appropriately scope the feature description? Does it correctly identify the "stupid simple core" from the broader feature concept? Is anything essential missing or unnecessarily included?
 -   **Verify Dependency & Certainty:** Does the feature's placement in the DEPENDENCY_STACK.md tree seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
 -   **Assess Design Rationale:** Does the feature and feature description align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
--   **Verify Implementation Decomposition:** Does the `implementation_plan.md` correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
+-   **Verify Implementation Decomposition:** Does the implementation plan correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
 -   **Check Consistency:** Do the feature description, feature description, and implementation plan align? Does the implementation actually build what the feature description describes? Does the feature description deliver the core of what the feature description promises?
 -   **Review Process:** Does the feature description reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
 

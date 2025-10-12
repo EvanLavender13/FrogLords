@@ -18,14 +18,14 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
 2. **List Archived Work:** Use `ls -lt PLANS/ARCHIVE/` to identify the most recent timestamped documents
 3. **Identify Complete Sets:** 
    - **For feature iterations**, gather all related documents:
-     - `*_feature_*.md`
-     - `*_implementation_*.md`
-     - `*_plan_review_*.md`
-     - `*_code_review_*.md`
+     - `*_FEATURE.md`
+     - `*_PLAN.md`
+     - `*_PLAN_REVIEW.md`
+     - `*_CODE_REVIEW.md`
    - **For refactors**, gather:
-     - `refactor_*.md` documents (contain full refactor history in single document)
+     - `REFACTOR_*.md` documents (contain full refactor history in single document)
    - **For maintenance fixes**, gather:
-     - `maintenance_*.md` documents (contain full fix history in single document)
+     - `MAINTENANCE_*.md` documents (contain full fix history in single document)
 
 ---
 

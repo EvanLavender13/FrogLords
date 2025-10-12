@@ -1,218 +1,264 @@
-# Design Backlog
+﻿# Design Backlog
 
-**Purpose:** Liquid reservoir of ideas waiting for the foundation to support them.
+**Purpose:** Unordered, liquid reservoir of ideas not being worked on soon. Most ideas go here until the foundation solidifies enough to support them.
 
-**Status:** Living document (pruned aggressively during backlog grooming).
+**Status:** Living document (updated continuously)
 
-**Historical Snapshots:** Completed work archived in `PLANS/ARCHIVE/dependency_stack_snapshot_2025-10-10.md`. Implementation specifics live in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`.
-
----
-
-## Snapshot
-
-```
-[Freeze Trail] [Axis Gizmo] [Running Gait Poses] [Extended Joints]
-        |
-        v
-[Feature Pull | animation-led expansion]
-
-Long tail: IK Systems, Wall Detection, Ragdoll, Dash, Terrain, Combat, Audio, UI Polish
-Speculative: dY?, Frog Ideas dY?,
-```
+**Historical Snapshots:** Completed items archived in [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md). Implementation details in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`.
 
 ---
 
 ## Animation & Feel
 
-### Debug Visualization (Pull-ready)
+### Debug Visualization
 
-- **Freeze velocity trail on stop**
-  - *Prerequisite:* Debug visual overhaul complete
-  - *Certainty:* High (~95%)
-  - *Status:* Now unblocked (2025-10-12)
-  - *Notes:* Gate sampling on velocity magnitude (threshold ~0.05-0.1 m/s). Optional GUI slider on `velocity_trail_state`. Zero architectural risk.
+- **Freeze Velocity Trail on Stop:** Stop trail sampling when character velocity drops below threshold; resume when movement resumes
+  - *Prerequisite:* Foundation ✅ (velocity trail system exists)
+  - *Status:* Now unblocked - 2025-10-12
+  - *Certainty:* High (~95%) - trivial implementation, threshold may need tuning iteration
+  - *Problem:* Trail continuously updates regardless of movement, causing spheres to accumulate on stationary character. Visually confusingâ€”trail should show "where character has been during motion," not "time passing while stationary."
+  - *Hypothesis:* Frozen trail improves visual clarity; acts as "motion breadcrumb" showing last path taken. Better understanding of past trajectory during playtesting.
+  - *Rationale:* Aligns with "reactive systems interpret state" principle. Trail should respond to velocity (motion source), not just time. Improves debug tool usefulness for analyzing movement patterns.
+  - *Scope:*
+    - Add velocity magnitude check before trail sampling ([game_world.cpp:29-45](src/app/game_world.cpp#L29-L45))
+    - Only sample when `glm::length(character.velocity) > velocity_threshold`
+    - Threshold likely ~0.05-0.1 m/s (tune to feelâ€”standing still vs. very slow walk)
+    - Optional: Add threshold parameter to `velocity_trail_state` for runtime tuning
+  - *Implementation:* ~5 lines of code (single conditional check). Zero architectural changes.
+  - *Success Criteria:*
+    - Trail stops updating when character stands still
+    - Trail resumes immediately when movement starts
+    - No visual artifacts (positions remain stable while frozen)
+    - Threshold feels natural (doesn't freeze during slow intentional movement)
+  - *Risk:* Low. Debug-only feature; worst case revert takes 30 seconds.
+  - *Origin:* User request 2025-10-11; improves existing trail system from Debug Visual Overhaul iteration
 
-- **Character axis gizmo**
-  - *Prerequisite:* Debug draw system complete
-  - *Certainty:* High (~90%)
-  - *Status:* Now unblocked (2025-10-12)
-  - *Notes:* Draw RGB axes from skeleton root, optional text labels. Toggle via GUI checkbox. Eliminates parent-space guesswork during pose tuning.
+- **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
+  - *Prerequisite:* Foundation ✅
+  - *Status:* Now unblocked - 2025-10-12
+  - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact
+  - *Rationale:* Eliminates confusion about parent-space vs bone-local rotations when tuning joint angles. Visible reference frame makes it immediately obvious which axis does what (e.g., "Y-axis points up, so rotation around Y is horizontal swing"). Critical for manual pose authoring and validating rotation behavior.
+  - *Scope:* Draw 3 colored lines from character root: Red=+X (right), Green=+Y (up), Blue=+Z (forward). Add optional text labels "X", "Y", "Z" at line endpoints. Toggle via GUI checkbox (default: off).
+  - *Implementation:* Use existing `debug_draw::line()` API; attach to skeleton root joint global position; scale lines to ~0.3-0.5m length (visible but not obtrusive).
+  - *Success Criteria:* Axes visible in all camera angles; colors/labels clearly readable; rotation behavior immediately understandable when watching joint angle sliders move character
+  - *Origin:* Identified 2025-10-08 during Static Keyframe Preview iteration when rotation axis confusion required deep investigation of parent-space transforms
 
-### Keyframe Extensions (Foundation proven)
+### Skeletal Animation (Keyframe Foundation)
 
-- **Running gait keyframes**
-  - *Prerequisite:* Quaternion pipeline locked
-  - *Certainty:* High (~85%)
-  - *Status:* Now unblocked (2025-10-12)
-  - *Notes:* Add RUN_STEP_LEFT / RUN_NEUTRAL / RUN_STEP_RIGHT poses with longer strides. Unlocks speed-based gait switching.
+- **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
+  - *Prerequisite:* Foundation âœ… (keyframe architecture proven)
+  - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
+  - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for current graybox iteration
+  - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
+  - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
 
-- **Extended keyframe joint set**
-  - *Prerequisite:* Keyframe architecture validated
-  - *Certainty:* Medium (~60%)
-  - *Status:* Candidate - keep deferred until readability gap appears
-  - *Notes:* Add spine_upper and ankle joints once eight-joint greybox hits a readability wall.
+- **Running gait keyframes:** Add RUN_STEP_LEFT, RUN_NEUTRAL, RUN_STEP_RIGHT poses to keyframe library
+  - *Prerequisite:* Foundation âœ… (quaternion architecture proven)
+  - *Certainty:* High (~85%) - direct extension of proven pattern
+  - *Rationale:* Walking gait keyframes already validated. Running gait differs in limb extension/timing but uses same quaternion architecture. Needed before implementing speed-based gait switching.
+  - *Scope:*
+    - Add 3 new `pose_type` enum values: `RUN_STEP_LEFT`, `RUN_NEUTRAL`, `RUN_STEP_RIGHT`
+    - Author 3 hardcoded run poses (greater limb extension, higher arm swing than walk)
+    - Extend GUI dropdown to include run poses for manual selection
+    - Reuse existing `apply_pose()` logic (no architecture changes)
+  - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
+  - *Next Step:* Enables speed-based gait switching (walk â†’ run blending)
 
-- **Skeleton rest-pose reset**
-  - *Prerequisite:* Debug animation toggle behavior
-  - *Certainty:* Medium (~60%)
-  - *Notes:* Copy reference pose back into local transforms so probes do not leave residual offsets.
+- **Pose blending (lerp/slerp):** Smooth transitions between discrete walk poses âœ… COMPLETE
+  - *Prerequisite:* Foundation âœ… (distance-phased triggering proven)
+  - *Certainty:* 100%
+  - *Learning:* Quaternion slerp successfully eliminates pops at phase boundaries (0.25, 0.5, 0.75). Hemisphere correction critical for shortest-path interpolation (dot product check before slerp). GLM slerp function industry-standard and reliable. Secondary motion springs shifted from "compensating for discontinuities" to "natural follow-through." Architecture validated for 2D blend spaces (walkâ†”run speed blending) and custom easing curves (non-linear phase mapping). Implementation stayed within scope (46 lines vs 40-60 estimate). Zero architectural changes requiredâ€”quaternion foundation was architecturally sufficient. See [iteration_pose_blending.md](iteration_pose_blending.md) and [implementation_pose_blending.md](implementation_pose_blending.md) for details.
 
-- **Skeleton validation hooks**
-  - *Prerequisite:* Debug draw overlays
-  - *Certainty:* Medium (~50%)
-  - *Notes:* Optional asserts or visual warnings for invalid parent indices; keeps authoring honest.
+- **Velocity-based acceleration tilt scaling:** Absolute run-speed anchor for tilt magnitude. COMPLETE
+  - *Prerequisite:* Acceleration tilt complete, Walk/run speed transitions complete
+  - *Certainty:* 100%
+  - *Learning:* Passing run_speed into update_acceleration_tilt() and clamping the denominator keeps lean proportional to real momentum while the debug speed ring remains tied to smoothed max_speed. Follow-up: explore a raw (non-smoothed) speed ring and an acceleration ring to visualize intent versus response.
 
-- **Tunable tilt velocity scaling**
-  - *Prerequisite:* More playtest data
-  - *Certainty:* Low (~30%)
-  - *Notes:* Expose current hardcoded curve only if feel demands it.
+- **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
+  - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
+  - *Certainty:* Medium (~60%) - likely a small helper that copies defaults stored alongside the T-pose.
 
-- **Parameter persistence**
-  - *Prerequisite:* Decide if iteration loop needs saved tuning
-  - *Certainty:* Medium (~50%)
-  - *Notes:* Lightweight config file (JSON/TOML) to load debug parameters across sessions.
+- **Skeleton validation hooks:** Optional per-joint debug asserts/visual warnings when parent indices are invalid or hierarchy order breaks.
+  - *Rationale:* Completes the "no cycles" guard promised in plan; keeps future authoring honest.
+  - *Certainty:* Medium (~50%) - cheap runtime check toggled via debug flag.
 
----
+- **Tunable tilt velocity scaling:** Expose hardcoded velocity scaling constants (0.5x-1.5x)
+  - *Current:* Velocity scaling automatically applies (faster = more tilt)
+  - *Prerequisite:* Test current feel first (may be unnecessary)
+  - *Certainty:* Low (~30%) - premature optimization until feel requires it
+  - *Note:* Added to backlog from animation_tuning_plan learnings
+
+- **Independent walk/run thresholds:** Decouple from max_speed auto-sync
+  - *Current:* Thresholds procedurally derived (walk = 20% max_speed, run = 100%)
+  - *Risk:* Breaks elegant abstraction, adds parameter complexity
+  - *Certainty:* Very Low (~10%) - only if procedural approach fails
+  - *Note:* Deliberately excluded from tuning UI to preserve simplicity
+
+- **Parameter persistence:** Save/load tuned values between sessions
+  - *Current:* Manual adjustment at runtime, no persistence
+  - *Prerequisite:* Determine if iteration workflow needs it
+  - *Certainty:* Medium (~50%) - useful but not urgent
+  - *Note:* Would require config file system (JSON/TOML)
+
+### Input & Control Feel
+
+### Advanced Animation (Low Priority)
+- **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
+- **Active ragdoll:** Spring-driven pose matching for dynamic reactions
+- **Contextual poses:** Different arm positions for climbing, hanging, bracing
+- **Flip/roll animations:** Manufactured momentum with anticipation curves
+- **IK for interactions:** Hands reach for ledges, feet step on obstacles
 
 ## Movement & Physics
 
 ### Character Abilities (Medium Priority)
-- Dash or dodge burst
-- Wall jump
-- Ledge grab (IK hands to edge)
-- Climbing on tagged surfaces
-- Swimming with buoyancy and drag
-- Crouching with reduced collider
+- **Dash/dodge:** Short burst of velocity in input direction
+- **Wall jump:** Jump off walls when grounded against them
+- **Ledge grab:** Detect ledge collision, IK hands to edge
+- **Climbing:** Vertical movement on climbable surfaces
+- **Swimming:** Buoyancy, drag, different movement rules
+- **Crouching:** Lower collision height, slower movement
 
 ### Physics Enhancements (Low Priority)
-- Velocity inheritance when jumping off moving platforms
-- Slope physics (slide down steep inclines)
-- Wind or current forces
-- Momentum preservation (bunny hop, air strafe tuning)
-- Dual-sphere experiment (restore bumper + weightlifter setup)
-
----
+- **Velocity inheritance:** Jumping off moving platform adds platform velocity
+- **Slope physics:** Slide down steep slopes, gain speed
+- **Wind/current forces:** Environmental forces affecting movement
+- **Momentum preservation:** Bunny hopping, air strafing
+- **Dual-sphere experiment:** Restore bumper + weightlifter system (currently single sphere)
 
 ## Combat & Interaction
 
 ### Combat Mechanics (Uncertain - Defer)
-- Melee attacks
-- Ranged attacks
-- Enemy AI behaviors
-- Damage and health model
-- Impact reactions (knockback, ragdoll on defeat)
+- **Melee attacks:** Punch, kick, grapple
+- **Ranged attacks:** Throw objects, projectiles
+- **Enemy AI:** Patrol, chase, attack patterns
+- **Damage/health:** Hit points, death state
+- **Impact reactions:** Knockback, stagger, ragdoll on death
 
 ### Interaction Systems (Uncertain - Defer)
-- Object pickup and carry
-- Throwing with applied velocity
-- Doors, buttons, simple triggers
-- Inventory for multiple items
-
----
+- **Object pickup:** Grab and carry physics objects
+- **Throwing:** Apply velocity to held objects
+- **Doors/buttons:** Simple triggered interactions
+- **Inventory:** Hold multiple items
 
 ## World & Environment
 
 ### Terrain (Low-Medium Priority)
-- Heightmap terrain
-- Uneven surfaces (drives foot IK need)
-- Moving platforms (elevators, rotators)
-- Destructible objects
-- Water volumes
+- **Heightmap terrain:** Procedural ground with elevation
+- **Uneven surfaces:** IK foot placement becomes necessary here
+- **Moving platforms:** Elevators, rotating platforms
+- **Destructible objects:** Break on impact
+- **Water volumes:** Swimming areas
 
 ### Level Elements (Medium Priority)
-- Ramps and stairs
-- Obstacles (walls, barriers, gaps)
-- Jump puzzles
-- Collectibles or pickups
+- **Ramps and stairs:** Traversal structures
+- **Obstacles:** Walls, barriers, holes
+- **Jump puzzles:** Platforms requiring precise movement
+- **Collectibles:** Items to gather (if game needs them)
 
 ### World Building (Low Priority - Content Driven)
-- Art style upgrade (post-graybox)
-- Lighting polish
-- Skybox swap
-- Environmental props
-
----
+- **Art style:** Currently graybox/wireframe (intentional for iteration)
+- **Lighting:** Basic directional light exists, could enhance
+- **Skybox:** Environment backdrop
+- **Props:** Visual detail objects (no mechanical meaning = noise)
 
 ## Camera & Controls
 
 ### Camera Enhancements (Low Priority)
-- Camera collision avoidance
-- Smart framing of target + character
-- Camera shake impulses
-- Follow smoothing tied to velocity
+- **Camera collision:** Prevent clipping through walls
+- **Smart framing:** Keep character and target both visible
+- **Camera shake:** Impact feedback
+- **Follow smoothing:** Lag/lead based on velocity
 
 ### Input Refinements (Low Priority)
-- Gamepad support
-- Input buffering
-- Sensitivity curves
-- Rebindable controls
-
----
+- **Gamepad support:** Already have sokol support, just wire it
+- **Input buffering:** Queue commands during animations
+- **Sensitivity curves:** Configurable response curves
+- **Rebindable keys:** Let player remap controls
 
 ## Audio & Feedback
 
 ### Audio System (Uncertain - Defer)
-- Footstep events (distance-phased)
-- Impact sounds
-- Ambient loops
-- Dynamic music system
-- 3D positional audio
+- **Footstep sounds:** Distance-phased triggering (matches surveyor wheel)
+- **Impact sounds:** Landing, collision, attack
+- **Ambient audio:** Environmental loops
+- **Music system:** Dynamic music based on state
+- **3D audio:** Spatial sound positioning
 
-### Visual Feedback (Medium Priority)
-- Screen effects (vignette, chromatic aberration)
-- Particle systems (landing dust, dash trail)
-- Screen shake
-- Time manipulation (slow motion, freeze frames)
-
----
+### Feedback (Medium Priority)
+- **Screen effects:** Chromatic aberration on impact, vignette
+- **Particle systems:** Dust on landing, trail on dash
+- **Screen shake:** Camera impulse on impacts
+- **Time effects:** Slow motion, freeze frames
 
 ## UI & Menus
 
 ### Debug UI (Partially Complete)
-- Extend visualization (acceleration vectors, velocity arrows, ground normal)
-- Performance stats (frame time graph, draw call count)
-- Physics state panel (grounded flag, contact debug)
+- **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
+  - *Status:* Tilt visualization complete via character body box
+  - *Potential additions:* Acceleration vector arrows, velocity trails, ground normal visualization
+  - *Certainty:* High (~90%) - straightforward debug draw additions
+  - *Priority:* Low - current visualization sufficient for tuning
+  
+- **Performance stats:** Frame time, draw calls, memory usage
+  - *Status:* FPS display exists in character panel
+  - *Potential additions:* Frame time graph, draw call count, memory profiling
+  - *Priority:* Low - premature optimization
+  
+- **State display:** Grounded, velocity magnitude, collision contacts
+  - *Status:* Partial - some state visible in locomotion/orientation sections
+  - *Potential additions:* Physics state panel, collision debug info
+  - *Priority:* Medium - useful for debugging physics edge cases
 
 ### Game UI (Uncertain - Defer)
-- Main menu
-- Pause menu
-- HUD elements
-- Settings screen
-
----
+- **Main menu:** Start, options, quit
+- **Pause menu:** Resume, restart, quit
+- **HUD elements:** Health, stamina, whatever game needs
+- **Settings menu:** Graphics, audio, controls
 
 ## Content & Polish
 
 ### Visual Polish (Low Priority - Premature)
-- Replace sphere with character mesh
-- Materials and textures
-- Post-processing pass
-- Additional animation polish (secondary motion, follow-through)
+- **Character mesh:** Replace sphere with visible body
+  - *Note:* Currently sphere is intentional (graybox iteration)
+  - *When:* After core feel proven through playtesting
+  - *Risk:* Art hides mechanical problems
+- **Texture/materials:** PBR materials, surface detail
+- **Post-processing:** Bloom, color grading, anti-aliasing
+- **Animation polish:** Secondary motion, anticipation, follow-through
 
 ### Game Loop (Uncertain - Core Unclear)
-- Win and lose conditions
-- Objectives and progression
-- Scoring or evaluation
-- Replayability hooks
+- **Win/lose conditions:** What is player trying to do?
+- **Objectives:** What are the goals?
+- **Progression:** How does game evolve?
+- **Scoring:** How is player performance measured?
+- **Replayability:** What brings player back?
 
----
+*Note: These are therapeutic planning - written to reduce anxiety, not coordinate work. Actual game design will emerge through iteration and serendipity capture.*
 
-## Frogs Rule! dY?,
+## Frogs Rule! ðŸ¸
 
 ### Frog-Specific Ideas (Wild Speculation)
-- Tongue grapple
-- Hop charge
-- Sticky surfaces / wall-walk
-- Water advantage
-- Fly catching attacks
-- Inflation for defense or flotation
-- Spawn eggs that hatch helpers
-- Croak-based interactions
-- Metamorphosis (tadpole to frog)
-- Lily pad platforms
+- **Tongue grapple:** Long-range grab mechanic
+- **Hop charge:** Hold jump for bigger leap
+- **Sticky surfaces:** Walk on walls/ceilings
+- **Water advantage:** Move faster in water than on land
+- **Fly catching:** Projectile tongue attacks
+- **Inflation:** Puff up for defense or floating
+- **Spawn eggs:** Lay eggs that hatch into allies?
+- **Croak communication:** Audio signals affect environment
+- **Metamorphosis:** Tadpole â†’ frog progression system
+- **Lily pad platforms:** Environmental interaction
 
-*Certainty: ~0% - kept for inspiration and serendipity.*
+*Certainty: ~0% - Pure creative exploration. Most will be cut. Kept here for inspiration.*
 
 ---
 
-**Notes:** Keep items non-interlocking, drop anything that clutters planning, and pull only when the foundation tier reaches 90%+ certainty.
+**Notes:**
+- Ideas here are deliberately non-interlocking and liquid
+- No assumed certainty about implementation
+- Pull from backlog only when foundation reaches 90%+ certainty
+- Most items will never be implemented (feature, not bug)
+
+
+

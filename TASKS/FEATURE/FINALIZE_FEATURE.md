@@ -14,7 +14,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 
 ### 3. Verify Approval
 
-1.  Confirm `PLANS/<feature_name>_IMPLEMENTATION.md` has an `## Approval` section with reviewer signature and timestamp
+1.  Confirm `PLANS/<feature_name>_PLAN.md` has an `## Approval` section with reviewer signature and timestamp
 2.  If approval is missing, stop and request completion of `REVIEW_IMPLEMENTATION` task first
 
 ### 4. Update Dependency Stack

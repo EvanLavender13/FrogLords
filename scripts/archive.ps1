@@ -6,7 +6,7 @@
 .DESCRIPTION
     Moves workflow documents from PLANS/ to PLANS/ARCHIVE/ with a timestamp prefix.
     Supports three workflow types with distinct naming patterns:
-    - feature: Multi-file artifacts with feature-first naming (<name>_FEATURE.md, <name>_IMPLEMENTATION.md, etc.)
+    - feature: Multi-file artifacts with feature-first naming (<name>_FEATURE.md, <name>_PLAN.md, etc.)
     - refactor: Single document with workflow-first naming (REFACTOR_<name>.md)
     - maintenance: Single document with workflow-first naming (MAINTENANCE_<name>.md)
 
@@ -81,7 +81,7 @@ switch ($Type) {
         # Feature uses feature-first naming: <name>_WORKFLOW.md
         $artifactPatterns = @(
             "${Name}_FEATURE.md",
-            "${Name}_IMPLEMENTATION.md",
+            "${Name}_PLAN.md",
             "${Name}_CODE_REVIEW.md",
             "${Name}_PLAN_REVIEW.md"
         )

@@ -59,7 +59,7 @@ If review missing/incomplete, run REVIEW_PLAN first.
 ### 6. Document Implementation Attempts (If Applicable)
 
 If implementation attempted:
-1. Add `### Implementation Attempts` to `## Deferral` section in `PLANS/<feature_name>_IMPLEMENTATION.md`
+1. Add `### Implementation Attempts` to `## Deferral` section in `PLANS/<feature_name>_PLAN.md`
 2. Document each approach:
    - Brief description
    - What went wrong / why failed
