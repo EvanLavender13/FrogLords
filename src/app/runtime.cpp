@@ -162,6 +162,10 @@ void app_runtime::render_world() {
         debug::draw_skeleton(debug_ctx, world.t_pose_skeleton, panel_state.show_joint_labels);
     }
 
+    if (panel_state.show_axis_gizmo) {
+        debug::draw_axis_gizmo(debug_ctx, world.t_pose_skeleton, 0.6f);
+    }
+
     gui::render();
 
     sg_end_pass();

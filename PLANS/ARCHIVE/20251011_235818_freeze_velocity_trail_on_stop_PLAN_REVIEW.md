@@ -39,4 +39,4 @@ No violations found.
 **Reasoning:** Minimal, debug-only change; reactive layer interprets motion without altering core logic; clear ownership; small, reversible scope.
 
 **Next Steps:**
-- If APPROVED: Implement per `PLANS/freeze_velocity_trail_on_stop_PLAN.md`.
+- If APPROVED: Implement per `PLANS/ARCHIVE/20251011_235818_freeze_velocity_trail_on_stop_PLAN.md`.

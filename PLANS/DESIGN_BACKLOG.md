@@ -12,15 +12,12 @@
 
 ### Debug Visualization
 
-- **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root
+- **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root ✅ COMPLETE
   - *Prerequisite:* Foundation ✅
-  - *Status:* Now unblocked - 2025-10-12
-  - *Certainty:* High (~90%) - simple debug visualization, no gameplay impact
-  - *Rationale:* Eliminates confusion about parent-space vs bone-local rotations when tuning joint angles. Visible reference frame makes it immediately obvious which axis does what (e.g., "Y-axis points up, so rotation around Y is horizontal swing"). Critical for manual pose authoring and validating rotation behavior.
-  - *Scope:* Draw 3 colored lines from character root: Red=+X (right), Green=+Y (up), Blue=+Z (forward). Add optional text labels "X", "Y", "Z" at line endpoints. Toggle via GUI checkbox (default: off).
-  - *Implementation:* Use existing `debug_draw::line()` API; attach to skeleton root joint global position; scale lines to ~0.3-0.5m length (visible but not obtrusive).
-  - *Success Criteria:* Axes visible in all camera angles; colors/labels clearly readable; rotation behavior immediately understandable when watching joint angle sliders move character
+  - *Certainty:* 100%
+  - *Learning:* Debug visualization pattern proven - pure reactive layer with zero gameplay coupling. Key technique: ImGui foreground label projection at arrow endpoints using viewport transform (same approach as skeleton joint labels). Safe normalization with fallback prevents degenerate cases. Pattern now validated for future debug tools: toggle-driven, depth-tested wireframe primitives + viewport-projected labels = fast, zero-risk visualization. Font scaling (1.4x) critical for legibility at typical camera distances.
   - *Origin:* Identified 2025-10-08 during Static Keyframe Preview iteration when rotation axis confusion required deep investigation of parent-space transforms
+  - *Completed:* 2025-10-12
 
 ### Skeletal Animation (Keyframe Foundation)
 
@@ -35,6 +32,7 @@
   - *Prerequisite:* Foundation âœ… (quaternion architecture proven)
   - *Certainty:* High (~85%) - direct extension of proven pattern
   - *Rationale:* Walking gait keyframes already validated. Running gait differs in limb extension/timing but uses same quaternion architecture. Needed before implementing speed-based gait switching.
+  - *Reference:* See [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md) for full concept breakdown
   - *Scope:*
     - Add 3 new `pose_type` enum values: `RUN_STEP_LEFT`, `RUN_NEUTRAL`, `RUN_STEP_RIGHT`
     - Author 3 hardcoded run poses (greater limb extension, higher arm swing than walk)

@@ -18,7 +18,7 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          Everything below: <50% certain
                          No dependencies assumed, pull as needed
 ═══════════════════════════════════════════════════════════════════════════
-    [Axis Gizmo] [Extended Keyframes] [Running Gait]
+    [Extended Keyframes] [Running Gait] [Bounce Gravity]
     [IK Systems] [Wall Detection] [Ragdoll] [Dash] [Terrain] [Combat]
                     [Audio] [UI Polish] [🐸 Frog Ideas 🐸]
 ═══════════════════════════════════════════════════════════════════════════
@@ -31,7 +31,7 @@ Historical snapshots: See `PLANS/ARCHIVE/`
 ───────────────────────────────────────────────────────────────────────────
 
 **Skeletal Animation Stack:** Debug system → attach to body → keyframe preview → primary anim → secondary motion → pose blending
-**Debug & Polish:** Visual overhaul (trail, plots, ring), walk/run transition, freeze velocity trail
+**Debug & Polish:** Visual overhaul (trail, plots, ring), walk/run transition, freeze velocity trail, character axis gizmo
 **Reactive Animation:** Acceleration tilt, landing spring, tuning UI
 
 See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.) for specifics
@@ -147,7 +147,7 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 **Completed Stack:**
 - **Skeletal Animation:** Full pipeline from debug → attach → keyframes → primary → secondary → blending ✅
 - **Reactive Animation:** Acceleration tilt, landing spring, walk/run transitions, tuning UI ✅
-- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels ✅
+- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels, character axis gizmo ✅
 
 **Key Patterns Validated:**
 - Quaternion keyframe architecture with hemisphere-safe slerp
@@ -155,6 +155,7 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 - Position-delta gating for debug visualizations
 - Velocity-injection for spring systems
 - Dual-reference pattern for smooth transitions
+- Debug visualization layer pattern (toggle-driven, zero gameplay impact)
 
 See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `implementation_*.md` files for detailed retrospectives
 
@@ -194,7 +195,7 @@ Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to ex
 2. ✅ Core gameplay (physics, procedural systems)
 3. ✅ Skeletal animation pipeline (8-feature stack)
 4. ✅ Reactive animation (tilt, spring, tuning)
-5. ✅ Debug tooling & polish (trail, ring, transitions)
+5. ✅ Debug tooling & polish (trail, ring, transitions, axis gizmo)
 
 **Planning Horizon (Adaptive):**
 
@@ -270,4 +271,4 @@ P(unchanged) = C^N
 
 ---
 
-**Last Updated:** 2025-10-11 (Backlog grooming: collapsed completed features, reduced stack height)
+**Last Updated:** 2025-10-12 (Character Axis Gizmo completed and moved to Completed Features)

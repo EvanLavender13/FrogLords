@@ -14,6 +14,7 @@ struct character_panel_state {
     bool show_skeleton = true;
     bool show_joint_labels = false;
     bool show_velocity_trail = true;
+    bool show_axis_gizmo = false;
     character::pose_type selected_pose = character::pose_type::T_POSE;
 
     // Animation control

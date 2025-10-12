@@ -149,6 +149,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
         gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
         gui::widget::checkbox("Show Velocity Trail", &state.show_velocity_trail);
+        gui::widget::checkbox("Show Axis Gizmo", &state.show_axis_gizmo);
 
         bool manual_pose_toggled =
             gui::widget::checkbox("Manual Pose Selection", &state.use_manual_pose_selection);

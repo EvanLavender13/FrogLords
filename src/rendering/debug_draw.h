@@ -47,6 +47,8 @@ void draw_character_body(draw_context& ctx, const controller& character,
 
 void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show_labels = false);
 
+void draw_axis_gizmo(draw_context& ctx, const character::skeleton& skel, float axis_length = 0.6f);
+
 void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail);
 
 } // namespace debug

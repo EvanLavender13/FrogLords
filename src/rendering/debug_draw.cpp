@@ -311,6 +311,78 @@ void draw_skeleton(draw_context& ctx, const character::skeleton& skel, bool show
     }
 }
 
+void draw_axis_gizmo(draw_context& ctx, const character::skeleton& skel, float axis_length) {
+    if (skel.joints.empty()) {
+        return;
+    }
+
+    const glm::mat4& root_transform = skel.joints[0].model_transform;
+    glm::vec3 root_position = glm::vec3(root_transform[3]);
+
+    glm::vec3 basis_x = glm::vec3(root_transform[0]);
+    glm::vec3 basis_y = glm::vec3(root_transform[1]);
+    glm::vec3 basis_z = glm::vec3(root_transform[2]);
+
+    auto safe_normalize = [](const glm::vec3& v, const glm::vec3& fallback) {
+        float len = glm::length(v);
+        if (len > 0.0001f) {
+            return v / len;
+        }
+        return fallback;
+    };
+
+    basis_x = safe_normalize(basis_x, glm::vec3(1.0f, 0.0f, 0.0f));
+    basis_y = safe_normalize(basis_y, glm::vec3(0.0f, 1.0f, 0.0f));
+    basis_z = safe_normalize(basis_z, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    const float HEAD_SIZE = 0.08f;
+
+    struct axis_visual {
+        glm::vec3 direction;
+        glm::vec4 color;
+        ImU32 label_color;
+        const char* label;
+    };
+
+    axis_visual axes[3] = {
+        {basis_x, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), IM_COL32(255, 0, 0, 255), "X"},
+        {basis_y, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), IM_COL32(0, 255, 0, 255), "Y"},
+        {basis_z, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), IM_COL32(0, 128, 255, 255), "Z"},
+    };
+
+    glm::mat4 view_proj = ctx.cam.get_projection_matrix(ctx.aspect) * ctx.cam.get_view_matrix();
+    ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+    ImVec2 display_size = ImGui::GetIO().DisplaySize;
+    ImFont* label_font = ImGui::GetFont();
+    float label_font_size = (label_font != nullptr) ? ImGui::GetFontSize() * 1.4f : 18.0f;
+
+    for (const auto& axis : axes) {
+        glm::vec3 end_point = root_position + axis.direction * axis_length;
+        wireframe_mesh arrow = generate_arrow(root_position, end_point, HEAD_SIZE);
+        ctx.renderer.draw(arrow, ctx.cam, ctx.aspect, axis.color);
+
+        glm::vec3 label_world = root_position + axis.direction * (axis_length + HEAD_SIZE * 0.25f);
+        glm::vec4 clip = view_proj * glm::vec4(label_world, 1.0f);
+        if (clip.w <= 0.0f) {
+            continue;
+        }
+
+        glm::vec3 ndc = glm::vec3(clip) / clip.w;
+        if (ndc.z < 0.0f || ndc.z > 1.0f) {
+            continue;
+        }
+
+        ImVec2 screen_pos((ndc.x + 1.0f) * 0.5f * display_size.x,
+                          (1.0f - ndc.y) * 0.5f * display_size.y);
+        if (label_font != nullptr) {
+            draw_list->AddText(label_font, label_font_size, screen_pos, axis.label_color,
+                               axis.label);
+        } else {
+            draw_list->AddText(screen_pos, axis.label_color, axis.label);
+        }
+    }
+}
+
 void draw_velocity_trail(draw_context& ctx, const velocity_trail_state& trail) {
     if (trail.positions.empty()) {
         return;

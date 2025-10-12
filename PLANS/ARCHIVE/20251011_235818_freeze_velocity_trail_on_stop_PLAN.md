@@ -66,7 +66,7 @@ Files touched in this step: `src/app/runtime.cpp`
 
 ## Approval
 
-- Reviewer: Codex (2025-10-11) — See `PLANS/freeze_velocity_trail_on_stop_CODE_REVIEW.md`
+- Reviewer: Codex (2025-10-11) — See `PLANS/ARCHIVE/20251011_235818_freeze_velocity_trail_on_stop_CODE_REVIEW.md`
 
 ---
 

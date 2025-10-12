@@ -41,7 +41,7 @@
 
 **Final Certainty Score:** 100% (trivial debug feature, completed on first attempt with zero rework)
 
-**Code Review:** See `PLANS/freeze_velocity_trail_on_stop_CODE_REVIEW.md`
+**Code Review:** See `PLANS/ARCHIVE/20251011_235818_freeze_velocity_trail_on_stop_CODE_REVIEW.md`
 
 **Outcome Summary:** Position-delta gating successfully prevents trail sampling while idle. Trail freezes perfectly on stop and resumes instantly on movement. GUI toggle allows show/hide control. Implementation was simpler than velocity-threshold approach and has no edge cases.
 
