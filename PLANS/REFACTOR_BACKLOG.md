@@ -20,28 +20,6 @@
 
 (Significant improvement to clarity, maintainability, or extensibility)
 
-### Extract Angle Wrapping Utilities (Foundation)
-- **Category:** Pattern Extraction
-- **Files:** `src/character/orientation.cpp` (lines 13-16, 21-24), `src/camera/camera.cpp` (lines 36-39)
-- **Current State:** Three separate implementations of angle wrapping (2 in radians, 1 in degrees)
-- **Proposed Change:** Add to `foundation/math_utils.h`:
-  - `math::wrap_angle_radians(angle)` → [-π, π]
-  - `math::wrap_angle_degrees(angle)` → [-180, 180]
-  - `math::angle_difference(target, current)` → shortest angular difference
-- **Rationale:** "Abstract repeated patterns into systems" + "Clarity over cleverness" - Fundamental angle math appearing in multiple stable systems (95% certain). Extracting to foundation layer makes intent explicit.
-- **Impact:** -12 lines, clearer intent, prevents bugs from inconsistent wrapping
-- **Risk:** Low (pure math functions)
-- **Certainty:** Both orientation (95%) and camera (95%) are stable systems
-- **Examples:**
-  ```cpp
-  // Current (3 implementations):
-  while (delta > glm::pi<float>()) delta -= 2.0f * glm::pi<float>();
-  while (delta < -glm::pi<float>()) delta += 2.0f * glm::pi<float>();
-
-  // Proposed:
-  delta = math::wrap_angle_radians(delta);
-  ```
-
 ### Extract Walk/Run Blend Factor Calculation (Locomotion)
 - **Category:** Pattern Extraction
 - **Files:** `src/character/locomotion.cpp` (lines 26-34, 59-67)
@@ -344,6 +322,17 @@
 ## Completed
 
 (Finished refactors moved here for reference; prune periodically)
+
+### Extract Angle Wrapping Utilities (Foundation)
+- **Completed:** 2025-10-12
+- **Category:** Pattern Extraction
+- **Files:** `src/foundation/math_utils.h`, `src/character/orientation.cpp`, `src/camera/camera.cpp`
+- **Outcome:** Consolidated three separate implementations of angle wrapping into `math::wrap_angle_radians`, `math::wrap_angle_degrees`, and `math::angle_difference_radians` in `foundation/math_utils.h`.
+- **Learnings:**
+  - A linear approach was effective for this low-risk refactor.
+  - The `replace` tool can be tricky with complex, multi-line strings. Using a broader search pattern helped identify the correct locations.
+  - The estimate of 2 complexity points was accurate.
+- **Impact:** Reduced code duplication by 13 lines and improved clarity at 3 call sites.
 
 ### Extract Spherical Coordinate Calculation (Camera)
 - **Completed:** 2025-10-12

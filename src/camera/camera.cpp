@@ -40,10 +40,7 @@ void camera::orbit(float delta_x, float delta_y) {
     latitude = std::clamp(latitude + delta_y, min_latitude, max_latitude);
 
     // Wrap longitude
-    if (longitude < -180.0f)
-        longitude += 360.0f;
-    if (longitude > 180.0f)
-        longitude -= 360.0f;
+    longitude = math::wrap_angle_degrees(longitude);
 
     update_eye_position();
 }
