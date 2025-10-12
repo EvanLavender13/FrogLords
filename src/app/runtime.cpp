@@ -102,7 +102,6 @@ void app_runtime::frame() {
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Text("FPS: %.1f", 1.0f / sapp_frame_duration());
-        // gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f);
         gui::plot_histogram("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f, 60);
     }
     ImGui::End();

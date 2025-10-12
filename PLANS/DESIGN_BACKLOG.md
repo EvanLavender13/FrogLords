@@ -112,6 +112,13 @@
 
 ### Input & Control Feel
 
+- **Mouse delta tracking:** Provide functions to get mouse movement delta between frames.
+  - *Certainty:* High
+  - *Rationale:* Useful for implementing camera controls and other features that rely on mouse movement.
+- **Gamepad support:** Add support for gamepads.
+  - *Certainty:* High
+  - *Rationale:* Allows for more flexible input options for players.
+
 - **Coyote time + jump buffer:** Elastic timing forgiveness for jumps and micro air gaps
   - *Prerequisite:* Basic jump impulse; grounded detection available from physics controller.
   - *Certainty:* High (~85%) — widely used, low risk, improves feel for broad audience per DG_Skill.

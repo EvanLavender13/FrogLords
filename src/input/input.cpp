@@ -17,9 +17,6 @@ float mouse_pos_x = 0.0f;
 float mouse_pos_y = 0.0f;
 float mouse_scroll_delta_y = 0.0f;
 
-// TODO: For future mouse delta tracking
-// float prev_mouse_x = 0.0f;
-// float prev_mouse_y = 0.0f;
 } // namespace
 
 void init() {
@@ -40,10 +37,6 @@ void update() {
 
     // Reset scroll delta
     mouse_scroll_delta_y = 0.0f;
-
-    // TODO: For mouse delta tracking
-    // prev_mouse_x = mouse_x;
-    // prev_mouse_y = mouse_y;
 }
 
 void process_event(const sapp_event* event) {
@@ -146,17 +139,4 @@ float mouse_scroll_y() {
     return mouse_scroll_delta_y;
 }
 
-// TODO: Mouse delta implementation
-// float get_mouse_delta_x() {
-//     return mouse_x - prev_mouse_x;
-// }
-//
-// float get_mouse_delta_y() {
-//     return mouse_y - prev_mouse_y;
-// }
-//
-// void get_mouse_delta(float& dx, float& dy) {
-//     dx = get_mouse_delta_x();
-//     dy = get_mouse_delta_y();
-// }
 } // namespace input

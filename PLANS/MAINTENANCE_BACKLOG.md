@@ -28,20 +28,6 @@
 
 (Minor inconsistencies or quality improvements)
 
-### Commented-Out Code in runtime.cpp
-- **File:** `src/app/runtime.cpp:105`
-- **Severity:** Medium
-- **Description:** Commented-out call to `gui::plot_value` suggests leftover debugging/experimentation code. Line reads: `// gui::plot_value("FPS", 1.0f / sapp_frame_duration(), 5.0f, 0.0f, 200.0f);`
-- **Suggested Fix:** Remove commented-out code. If this represents a potential feature, document it in DESIGN_BACKLOG.md instead.
-
-### TODO Comments for Future Features
-- **Files:**
-  - `src/input/input.h:67-75`
-  - `src/input/input.cpp:20-22, 44-46, 156-165`
-- **Severity:** Medium
-- **Description:** Multiple TODO comments for mouse delta tracking and gamepad support. These are tracked features but cluttering implementation files.
-- **Suggested Fix:** Move these feature requests to `DESIGN_BACKLOG.md` and remove TODO comments from code. Keep implementation files focused on current functionality.
-
 ### Magic Number in Easing
 - **File:** `src/character/animation.cpp:89`
 - **Severity:** Medium

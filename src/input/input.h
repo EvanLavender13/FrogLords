@@ -63,14 +63,4 @@ float mouse_y();
 // Get mouse scroll delta
 float mouse_scroll_y();
 
-// === FUTURE EXTENSIONS ===
-// TODO: Mouse movement/delta tracking
-// float get_mouse_delta_x();
-// float get_mouse_delta_y();
-// void get_mouse_delta(float& dx, float& dy);
-
-// TODO: Gamepad support
-// bool is_gamepad_connected(int gamepad_index);
-// bool is_gamepad_button_down(int gamepad_index, int button);
-// float get_gamepad_axis(int gamepad_index, int axis);
 } // namespace input

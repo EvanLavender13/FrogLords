@@ -344,7 +344,7 @@ void draw_axis_gizmo(draw_context& ctx, const character::skeleton& skel, float a
         const char* label;
     };
 
-    const axis_visual axes[3] = {
+    const axis_visual AXES[3] = {
         {basis_x, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), IM_COL32(255, 0, 0, 255), "X"},
         {basis_y, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), IM_COL32(0, 255, 0, 255), "Y"},
         {basis_z, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), IM_COL32(0, 128, 255, 255), "Z"},
@@ -356,7 +356,7 @@ void draw_axis_gizmo(draw_context& ctx, const character::skeleton& skel, float a
     ImFont* label_font = ImGui::GetFont();
     float label_font_size = (label_font != nullptr) ? ImGui::GetFontSize() * 1.4f : 18.0f;
 
-    for (const auto& axis : axes) {
+    for (const auto& axis : AXES) {
         glm::vec3 end_point = root_position + axis.direction * axis_length;
         wireframe_mesh arrow = generate_arrow(root_position, end_point, HEAD_SIZE);
         ctx.renderer.draw(arrow, ctx.cam, ctx.aspect, axis.color);
