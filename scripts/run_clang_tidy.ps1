@@ -26,15 +26,26 @@ if ($cppFiles.Count -eq 0) {
     exit 0
 }
 
+Write-Host "Starting clang-tidy..."
+Write-Host "Analyzing $($cppFiles.Count) translation unit(s) from $srcDir"
+Write-Host ""
+
 $exitCode = 0
 foreach ($file in $cppFiles) {
     $relative = $file.FullName.Substring($root.Length + 1)
-    Write-Host "clang-tidy $relative"
+    Write-Host "Analyzing: $relative"
 
     & 'clang-tidy' '-p' $buildDir $file.FullName
     if ($LASTEXITCODE -ne 0 -and $exitCode -eq 0) {
         $exitCode = $LASTEXITCODE
     }
+}
+
+Write-Host ""
+if ($exitCode -eq 0) {
+    Write-Host "clang-tidy completed successfully" -ForegroundColor Green
+} else {
+    Write-Host "clang-tidy found issues (exit code $exitCode)" -ForegroundColor Yellow
 }
 
 exit $exitCode

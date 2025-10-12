@@ -36,13 +36,6 @@
 
 (Nitpicks and polish items)
 
-### Magic Number for PI
-- **Files:**
-  - `src/rendering/debug_draw.cpp:129, 160, 171`
-- **Severity:** Low
-- **Description:** Uses literal `3.14159f` for PI instead of named constant. Project uses `glm::pi<float>()` elsewhere (e.g., `orientation.cpp:13`).
-- **Suggested Fix:** Replace `3.14159f` with `glm::pi<float>()` or define `TWO_PI` constant for consistency with project style. Very minor—current code is functional.
-
 ### NOLINT Comment for Intentional Branch Clone
 - **File:** `src/character/animation.cpp:129`
 - **Severity:** Low
@@ -69,6 +62,17 @@
 ## Completed
 
 (Resolved items moved here for reference; prune periodically)
+
+### Magic Number for PI
+- **Files:** `src/rendering/debug_draw.cpp`
+- **Severity:** Low
+- **Description:** Uses literal `3.14159f` for PI instead of named constant. Project uses `glm::pi<float>()` elsewhere (e.g., `orientation.cpp:13`).
+- **Resolution:** Replaced `3.14159f` with `glm::pi<float>()` for consistency.
+- **Completed:** 2025-10-12
+- **Learnings:**
+  - Trivial fix that improves code consistency and maintainability.
+  - Classification as "Trivial" was accurate.
+- **Document:** PLANS/MAINTENANCE_magic_number_for_pi.md
 
 ### Magic Number in Easing
 - **Files:** `src/character/animation.cpp`, `src/character/animation.h`

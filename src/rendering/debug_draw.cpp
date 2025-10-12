@@ -155,7 +155,7 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
     float ground_contact_y = wheel_ground_y;
 
     // Left foot
-    float left_foot_offset = std::sin(locomotion.phase * 2.0f * 3.14159f) * 0.4f;
+    float left_foot_offset = std::sin(locomotion.phase * 2.0f * glm::pi<float>()) * 0.4f;
     glm::vec3 left_foot_pos =
         character.position + forward_dir * left_foot_offset + right_dir * 0.2f;
     left_foot_pos.y = ground_contact_y;
@@ -166,7 +166,7 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
 
     // Right foot
     float right_phase = std::fmod(locomotion.phase + 0.5f, 1.0f);
-    float right_foot_offset = std::sin(right_phase * 2.0f * 3.14159f) * 0.4f;
+    float right_foot_offset = std::sin(right_phase * 2.0f * glm::pi<float>()) * 0.4f;
     glm::vec3 right_foot_pos =
         character.position + forward_dir * right_foot_offset + right_dir * -0.2f;
     right_foot_pos.y = ground_contact_y;

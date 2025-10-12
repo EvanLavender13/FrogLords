@@ -23,6 +23,16 @@ if ($filtered.Count -eq 0) {
     exit 0
 }
 
+Write-Host "Starting clang-format..."
+Write-Host "Formatting $($filtered.Count) source file(s) in $srcDir"
+
 $arguments = @('-i') + $filtered
 & 'clang-format' @arguments
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "clang-format completed successfully" -ForegroundColor Green
+} else {
+    Write-Host "clang-format failed with exit code $LASTEXITCODE" -ForegroundColor Red
+}
+
 exit $LASTEXITCODE
