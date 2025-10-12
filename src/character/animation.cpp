@@ -1,23 +1,12 @@
 #include "animation.h"
 #include "foundation/math_utils.h"
+#include "skeleton.h"
 #include <cmath>
 #include <glm/gtc/quaternion.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace character {
-
-// Joint indices (must match order in t_pose.cpp)
-namespace joint_index {
-constexpr int LEFT_SHOULDER = 5;
-constexpr int LEFT_ELBOW = 6;
-constexpr int RIGHT_SHOULDER = 8;
-constexpr int RIGHT_ELBOW = 9;
-constexpr int LEFT_HIP = 11;
-constexpr int LEFT_KNEE = 12;
-constexpr int RIGHT_HIP = 14;
-constexpr int RIGHT_KNEE = 15;
-} // namespace joint_index
 
 // Forward declaration
 static void update_secondary_motion(skeleton& skel, secondary_motion_state& state, float dt);

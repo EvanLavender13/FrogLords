@@ -46,16 +46,6 @@
   float blend = compute_walk_run_blend();
   ```
 
-### Extract Joint Indices to Shared Header (Skeleton)
-- **Category:** Pattern Extraction
-- **Files:** `src/character/animation.cpp` (lines 11-20), `src/character/keyframe.cpp` (lines 32-50)
-- **Current State:** Joint indices defined separately in two files (8 joints in animation.cpp, 17 joints in keyframe.cpp)
-- **Proposed Change:** Move to `character/skeleton.h` as `namespace character::joint_index` with all 17 joints
-- **Rationale:** "Single source of truth" - Joint indices are fundamental skeleton data, duplicating them risks mismatch.
-- **Impact:** Single source of truth for joint indices, prevents mismatches
-- **Risk:** Low (constexpr values, compile-time constants)
-- **Certainty:** Skeletal animation is 100% complete per DEPENDENCY_STACK.md
-
 ### Consolidate Duplicate Constants (WHEEL_RADIUS, TWO_PI) ❌ INVALID
 - **Category:** Pattern Extraction
 - **Files:** `src/rendering/debug_draw.cpp`, `src/app/game_world.cpp`
@@ -384,3 +374,18 @@
   - Rule of three validated: 8 instances far exceeded extraction threshold (267% over minimum)
   - Debug GUI code allowed immediate visual verification without complex testing
 - **Documentation:** See `PLANS/refactor_joint_slider_widget.md` (complete refactor history)
+
+### Extract Joint Indices to Shared Header (Skeleton) ✅
+- **Completed:** 2025-10-12
+- **Category:** Pattern Extraction / Data Integrity
+- **Files:** `src/character/skeleton.h` (added constants), `src/character/animation.cpp` (16 usages), `src/character/keyframe.cpp` (16 usages)
+- **Outcome:** Consolidated fragmented joint index definitions (8 joints in animation.cpp, 17 joints in keyframe.cpp) into single `character::joint_index` namespace in `skeleton.h`
+- **Learnings:**
+  - "Rule of three" exception validated: Only 2 instances, but fragmented canonical data (conflicting scopes) justified consolidation for data integrity
+  - Single source of truth principle applies to architectural constants even with <3 instances
+  - Transitive includes worked perfectly (`animation.cpp` → `animation.h` → `keyframe.h` → `skeleton.h`)
+  - Compiler verification sufficient for constexpr constants—no runtime testing needed
+  - Estimated 1 complexity point was exact—trivial execution matches simple plan
+  - Zero deviations from plan; textbook linear refactor execution
+- **Impact:** Eliminated fragmented ownership of 17 joint indices; prevented future mismatch bugs; established `skeleton.h` as canonical source for skeleton structure data
+- **Documentation:** See `PLANS/REFACTOR_extract_joint_indices.md` (complete refactor history)

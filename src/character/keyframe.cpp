@@ -21,33 +21,13 @@
 ///   * Roll (Z-axis):  spread leg in/out (abduction/adduction)
 
 #include "keyframe.h"
+#include "skeleton.h"
 #include "t_pose.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace character {
-
-// Joint indices in T-pose skeleton (must match order in t_pose.cpp)
-namespace joint_index {
-constexpr int ROOT = 0;
-constexpr int SPINE_LOWER = 1;
-constexpr int SPINE_UPPER = 2;
-constexpr int NECK = 3;
-constexpr int HEAD = 4;
-constexpr int LEFT_SHOULDER = 5;
-constexpr int LEFT_ELBOW = 6;
-constexpr int LEFT_WRIST = 7;
-constexpr int RIGHT_SHOULDER = 8;
-constexpr int RIGHT_ELBOW = 9;
-constexpr int RIGHT_WRIST = 10;
-constexpr int LEFT_HIP = 11;
-constexpr int LEFT_KNEE = 12;
-constexpr int LEFT_ANKLE = 13;
-constexpr int RIGHT_HIP = 14;
-constexpr int RIGHT_KNEE = 15;
-constexpr int RIGHT_ANKLE = 16;
-} // namespace joint_index
 
 // Cached T-pose positions (translations only, no rotations)
 // Extracted from create_t_pose() to avoid recreating skeleton every frame
