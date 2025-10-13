@@ -35,6 +35,7 @@ Extract refactor name from branch (`refactor/<refactor_name>`):
 - Identify repeated patterns or complexity
 - Find edge cases to preserve
 - Check for explanatory comments
+ - Check naming families for consistency (e.g., math utilities: `_radians`/`_degrees` suffix symmetry, singular/plural, verb/object order)
 
 **Evaluate Risk:**
 
@@ -122,6 +123,7 @@ Choose approach based on risk:
 - [ ] All test scenarios pass
 - [ ] Debug visualizations work
 - [ ] Performance characteristics preserved
+- [ ] Naming consistency across new/affected utilities verified (e.g., `_radians`/`_degrees` families)
 ```
 
 ### 9. Estimate Complexity

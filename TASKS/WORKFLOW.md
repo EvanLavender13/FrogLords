@@ -101,6 +101,7 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 - **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
 - **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
 - **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_PLAN.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
+ - **Common Checkpoints:** Gate Mechanism Review (prefer geometric deltas over thresholds for reactive/debug gating), UI Ordering Verified (enum order matches UI for cycle-based lists)
 
 ### Maintenance Workflow
 - **Location:** `TASKS/MAINTENANCE/`

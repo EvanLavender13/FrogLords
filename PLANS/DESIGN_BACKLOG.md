@@ -8,6 +8,12 @@
 
 ---
 
+## Item Fields (recommended)
+
+Include lightweight metadata to improve selection and planning:
+- **Complexity (points):** 1–2 simple, 3–5 medium, 6–8 complex. If >8, consider splitting.
+- **Intended validation loop:** How you’ll verify success quickly (e.g., debug panel toggle, smoke test path).
+
 ## Triggers to Update
 - After playtests or reviews surface new ideas, constraints, or patterns worth capturing.
 - When an item is pulled into active work (move/link it to the dependency stack; mark prerequisites and certainty).
@@ -291,6 +297,5 @@
 - No assumed certainty about implementation
 - Pull from backlog only when foundation reaches 90%+ certainty
 - Most items will never be implemented (feature, not bug)
-
 
 

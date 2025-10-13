@@ -8,6 +8,10 @@
 
 ---
 
+## Guidance
+
+- **Rule-of-three exceptions:** Canonical data consolidation (e.g., skeleton joint indices, global constants) can be justified without 3+ occurrences when it establishes a single source of truth and systems are ≥70% certainty. Document the rationale explicitly in the plan.
+
 ## Critical
 
 (Blocking new work, major technical debt, or architectural flaws)
@@ -148,4 +152,3 @@
 - **Reconsider When:** Profiling shows buffer creation hot path
 - **Files:** `src/rendering/renderer.cpp`
 - **Note:** Cache unit meshes if/when justified by data
-

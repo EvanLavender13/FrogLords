@@ -96,6 +96,10 @@ Required Migrations:
 -   **Adhere to Conventions:** Follow `AGENTS.md` (snake_case, file organization, dependency flow; brief comments only where non‑obvious).
 -   **Gameplay‑First:** Preserve input→acceleration mapping; rotate model to velocity; transitions remain interruptible. Prefer spring‑damper and cubic interpolation; use targeted IK only where necessary.
 
+4.  **Planning Checks (Feature-Specific):**
+    -   **Gate Mechanism Review:** Prefer geometric deltas (position/angle/phase differences) over heuristic thresholds and hysteresis for reactive/debug gating. Document rationale if a threshold is chosen.
+    -   **UI Ordering Verified (if applicable):** When UI lists reflect semantic cycles (e.g., gait sequences), explicitly verify item order and ensure enum ordering and UI dropdown order match.
+
 ### 5. Save and Propose
 
 Format as a markdown checklist and save to `PLANS/` directory.
@@ -107,7 +111,15 @@ Format as a markdown checklist and save to `PLANS/` directory.
     -   Preserve completed checkboxes and historical context where relevant
 -   Propose the document to the user for review
 
-### 5. Quality Gates
+### 6. Complexity Estimate (NEW)
+
+Add a one-line complexity estimate (points) to calibrate scope, mirroring refactor scale:
+
+-   **Complexity:** [1–2 simple | 3–5 medium | 6–8 complex]. If >8, split or defer.
+
+Include this field near the top of the plan (see example template below).
+
+### 7. Quality Gates
 
 -   Build passes (CMake: Configure/Build Debug tasks)
 -   Lint/format clean (clang‑format/clang‑tidy tasks)
@@ -129,7 +141,14 @@ Format as a markdown checklist and save to `PLANS/` directory.
 ```markdown
 # Implementation Plan: [Feature Name]
 
+**Complexity:** [X points] (feature)
+
 ### Graybox Implementation Checklist
+
+#### 0. Planning Checks
+
+- [ ] Gate Mechanism Review documented (geometric delta preferred OR rationale provided)
+- [ ] UI Ordering Verified where cycles/lists apply (enum order == UI order)
 
 #### 1. Data Structures & State
 
