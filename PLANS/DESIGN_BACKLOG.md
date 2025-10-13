@@ -37,19 +37,6 @@
   - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
   - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
 
-- **Running gait keyframes:** Add RUN_STEP_LEFT, RUN_NEUTRAL, RUN_STEP_RIGHT poses to keyframe library
-  - *Prerequisite:* Foundation âœ… (quaternion architecture proven)
-  - *Certainty:* High (~85%) - direct extension of proven pattern
-  - *Rationale:* Walking gait keyframes already validated. Running gait differs in limb extension/timing but uses same quaternion architecture. Needed before implementing speed-based gait switching.
-  - *Reference:* See [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md) for full concept breakdown
-  - *Scope:*
-    - Add 3 new `pose_type` enum values: `RUN_STEP_LEFT`, `RUN_NEUTRAL`, `RUN_STEP_RIGHT`
-    - Author 3 hardcoded run poses (greater limb extension, higher arm swing than walk)
-    - Extend GUI dropdown to include run poses for manual selection
-    - Reuse existing `apply_pose()` logic (no architecture changes)
-  - *Success Criteria:* Run poses visually distinct from walk poses (more aggressive motion); instant switching between all 7 poses stable; no visual artifacts
-  - *Next Step:* Enables speed-based gait switching (walk â†’ run blending)
-
 - **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
   - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
   - *Certainty:* Medium (~60%) - likely a small helper that copies defaults stored alongside the T-pose.

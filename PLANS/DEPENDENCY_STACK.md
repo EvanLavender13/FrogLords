@@ -157,6 +157,7 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 - **Skeletal Animation:** Full pipeline from debug → attach → keyframes → primary → secondary → blending ✅
 - **Reactive Animation:** Acceleration tilt, landing spring, walk/run transitions, tuning UI ✅
 - **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels, character axis gizmo ✅
+- **Running Gait Keyframes:** Four-pose run cycle (REACH_LEFT → PASS_RIGHT → REACH_RIGHT → PASS_LEFT) with larger limb extension than walk ✅
 
 **Key Patterns Validated:**
 - Quaternion keyframe architecture with hemisphere-safe slerp
@@ -165,6 +166,7 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 - Velocity-injection for spring systems
 - Dual-reference pattern for smooth transitions
 - Debug visualization layer pattern (toggle-driven, zero gameplay impact)
+- Gait clarity through silhouette scaling (run vs walk magnitude differentiation)
 
 See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `implementation_*.md` files for detailed retrospectives
 
@@ -205,6 +207,7 @@ Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to ex
 3. ✅ Skeletal animation pipeline (8-feature stack)
 4. ✅ Reactive animation (tilt, spring, tuning)
 5. ✅ Debug tooling & polish (trail, ring, transitions, axis gizmo)
+6. ✅ Running gait keyframes (4-pose run cycle)
 
 **Planning Horizon (Adaptive):**
 
@@ -280,4 +283,4 @@ P(unchanged) = C^N
 
 ---
 
-**Last Updated:** 2025-10-12 (Character Axis Gizmo completed and moved to Completed Features)
+**Last Updated:** 2025-10-12 (Running Gait Keyframes completed and moved to Completed Features)

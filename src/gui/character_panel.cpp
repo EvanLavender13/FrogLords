@@ -129,14 +129,29 @@ void draw_character_panel(character_panel_state& state, controller& character,
         case character::pose_type::T_POSE:
             pose_name = "T-Pose";
             break;
-        case character::pose_type::STEP_LEFT:
-            pose_name = "Step Left";
+        case character::pose_type::WALK_REACH_LEFT:
+            pose_name = "Walk - Reach Left";
             break;
-        case character::pose_type::NEUTRAL:
-            pose_name = "Neutral";
+        case character::pose_type::WALK_PASS_RIGHT:
+            pose_name = "Walk - Pass Right";
             break;
-        case character::pose_type::STEP_RIGHT:
-            pose_name = "Step Right";
+        case character::pose_type::WALK_REACH_RIGHT:
+            pose_name = "Walk - Reach Right";
+            break;
+        case character::pose_type::WALK_PASS_LEFT:
+            pose_name = "Walk - Pass Left";
+            break;
+        case character::pose_type::RUN_REACH_LEFT:
+            pose_name = "Run - Reach Left";
+            break;
+        case character::pose_type::RUN_PASS_RIGHT:
+            pose_name = "Run - Pass Right";
+            break;
+        case character::pose_type::RUN_REACH_RIGHT:
+            pose_name = "Run - Reach Right";
+            break;
+        case character::pose_type::RUN_PASS_LEFT:
+            pose_name = "Run - Pass Left";
             break;
         default:
             pose_name = "Unknown";
@@ -157,9 +172,12 @@ void draw_character_panel(character_panel_state& state, controller& character,
         if (state.use_manual_pose_selection) {
             ImGui::Separator();
             ImGui::Text("Pose Selection:");
-            const char* pose_names[] = {"T-Pose", "Step Left", "Neutral", "Step Right"};
+            const char* pose_names[] = {
+                "T-Pose",           "Walk - Reach Left", "Walk - Pass Right", "Walk - Reach Right",
+                "Walk - Pass Left", "Run - Reach Left",  "Run - Pass Right",  "Run - Reach Right",
+                "Run - Pass Left"};
             int current_pose = static_cast<int>(state.selected_pose);
-            if (ImGui::Combo("Pose", &current_pose, pose_names, 4)) {
+            if (ImGui::Combo("Pose", &current_pose, pose_names, 9)) {
                 state.selected_pose = static_cast<character::pose_type>(current_pose);
                 state.reset_joint_overrides(); // Reset on pose change
             }

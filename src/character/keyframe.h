@@ -10,7 +10,17 @@
 namespace character {
 
 /// Hardcoded pose types for manual selection
-enum class pose_type { T_POSE, STEP_LEFT, NEUTRAL, STEP_RIGHT };
+enum class pose_type {
+    T_POSE,
+    WALK_REACH_LEFT,
+    WALK_PASS_RIGHT,
+    WALK_REACH_RIGHT,
+    WALK_PASS_LEFT,
+    RUN_REACH_LEFT,
+    RUN_PASS_RIGHT,
+    RUN_REACH_RIGHT,
+    RUN_PASS_LEFT
+};
 
 /// Keyframe data: quaternion rotations for minimum joint set (8 joints)
 struct keyframe {

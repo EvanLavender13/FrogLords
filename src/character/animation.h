@@ -41,7 +41,7 @@ struct animation_state {
 
     // Distance-phased skeletal animation
     float cycle_length = 2.0f;
-    pose_type current_automatic_pose = pose_type::NEUTRAL;
+    pose_type current_automatic_pose = pose_type::WALK_PASS_RIGHT;
 
     // Secondary motion (skeletal follow-through)
     secondary_motion_state secondary_motion;

@@ -55,16 +55,31 @@ function Is-TextFile {
 function Read-TextAutoEncoding {
   param([string]$Path)
   $bytes = [System.IO.File]::ReadAllBytes($Path)
-  # Try strict UTF-8 first
-  $utf8Strict = New-Object System.Text.UTF8Encoding($false, $true)
+  
+  # Check for BOM
+  if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+    # UTF-8 with BOM - strip BOM and decode
+    $utf8 = New-Object System.Text.UTF8Encoding($false)
+    $text = $utf8.GetString($bytes, 3, $bytes.Length - 3)
+    return @{ Text = $text; Encoding = 'UTF8-BOM' }
+  }
+  
+  # Try UTF-8 without BOM (most common case)
+  $utf8NoBom = New-Object System.Text.UTF8Encoding($false, $false)
   try {
-    $text = $utf8Strict.GetString($bytes)
+    # Use non-throwing decoder to avoid exception on valid UTF-8
+    $text = $utf8NoBom.GetString($bytes)
+    
+    # Additional validation: check for replacement characters
+    if ($text.Contains([char]0xFFFD)) {
+      throw "Invalid UTF-8 sequence detected"
+    }
+    
     return @{ Text = $text; Encoding = 'UTF8' }
   } catch {
-    # Fallback to Windows-1252, then re-encode to proper Unicode
-    $cp1252 = [System.Text.Encoding]::GetEncoding(1252)
-    $text = $cp1252.GetString($bytes)
-    return @{ Text = $text; Encoding = 'CP1252' }
+    # Only warn and skip - do NOT attempt CP1252 fallback which causes mojibake
+    Write-Warning ("File appears to have invalid UTF-8: {0}" -f $Path)
+    throw "Cannot safely normalize non-UTF-8 file. Please convert manually."
   }
 }
 

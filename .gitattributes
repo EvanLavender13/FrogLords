@@ -1,0 +1,21 @@
+# Force LF line endings for text files
+* text=auto eol=lf
+
+# Explicitly mark text files as UTF-8
+*.md text eol=lf encoding=utf-8
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.glsl text eol=lf
+*.cmake text eol=lf
+*.ps1 text eol=crlf
+CMakeLists.txt text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.exe binary
+*.dll binary
+*.so binary
+*.a binary
+*.lib binary

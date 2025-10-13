@@ -110,27 +110,27 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     float segment_start, segment_end, t;
 
     if (phase < 0.25f) {
-        // Segment 1: STEP_LEFT → NEUTRAL
-        source_pose = pose_type::STEP_LEFT;
-        target_pose = pose_type::NEUTRAL;
+        // Segment 1: WALK_REACH_LEFT → WALK_PASS_RIGHT
+        source_pose = pose_type::WALK_REACH_LEFT;
+        target_pose = pose_type::WALK_PASS_RIGHT;
         segment_start = 0.0f;
         segment_end = 0.25f;
     } else if (phase < 0.5f) {
-        // Segment 2: NEUTRAL → STEP_RIGHT
-        source_pose = pose_type::NEUTRAL;
-        target_pose = pose_type::STEP_RIGHT;
+        // Segment 2: WALK_PASS_RIGHT → WALK_REACH_RIGHT
+        source_pose = pose_type::WALK_PASS_RIGHT;
+        target_pose = pose_type::WALK_REACH_RIGHT;
         segment_start = 0.25f;
         segment_end = 0.5f;
     } else if (phase < 0.75f) {
-        // Segment 3: STEP_RIGHT → NEUTRAL
-        source_pose = pose_type::STEP_RIGHT;
-        target_pose = pose_type::NEUTRAL;
+        // Segment 3: WALK_REACH_RIGHT → WALK_PASS_LEFT
+        source_pose = pose_type::WALK_REACH_RIGHT;
+        target_pose = pose_type::WALK_PASS_LEFT;
         segment_start = 0.5f;
         segment_end = 0.75f;
     } else {
-        // Segment 4: NEUTRAL → STEP_LEFT (wrap continuity)
-        source_pose = pose_type::NEUTRAL;
-        target_pose = pose_type::STEP_LEFT;
+        // Segment 4: WALK_PASS_LEFT → WALK_REACH_LEFT (wrap continuity)
+        source_pose = pose_type::WALK_PASS_LEFT;
+        target_pose = pose_type::WALK_REACH_LEFT;
         segment_start = 0.75f;
         segment_end = 1.0f;
     }

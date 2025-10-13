@@ -78,8 +78,8 @@ static keyframe create_identity_pose() {
     };
 }
 
-/// Create STEP_LEFT pose: left leg forward, right arm forward (counter-rotation)
-static keyframe create_step_left_pose() {
+/// Create WALK_REACH_LEFT pose: left leg forward, right arm forward (counter-rotation)
+static keyframe create_walk_reach_left_pose() {
     return keyframe{
         glm::quat(glm::radians(
             glm::vec3(0.0f, -45.0f, 90.0f))), // left_shoulder (swing back via Y-rotation)
@@ -94,8 +94,8 @@ static keyframe create_step_left_pose() {
     };
 }
 
-/// Create NEUTRAL pose: transitional stance between steps
-static keyframe create_neutral_pose() {
+/// Create WALK_PASS_RIGHT pose: transitional stance between steps (right leg passing)
+static keyframe create_walk_pass_right_pose() {
     // Arms down at sides: rotate shoulders -90° (left) and +90° (right) around Y-axis
     return keyframe{
         glm::quat(glm::radians(glm::vec3(0.0f, 0.0f, 90.0f))),  // left_shoulder (rotate down)
@@ -109,9 +109,9 @@ static keyframe create_neutral_pose() {
     };
 }
 
-/// Create STEP_RIGHT pose: mirror of STEP_LEFT (swap left/right joints)
-static keyframe create_step_right_pose() {
-    keyframe step_left = create_step_left_pose();
+/// Create WALK_REACH_RIGHT pose: mirror of WALK_REACH_LEFT (swap left/right joints)
+static keyframe create_walk_reach_right_pose() {
+    keyframe walk_reach_left = create_walk_reach_left_pose();
     return keyframe{
         glm::quat(glm::radians(
             glm::vec3(0.0f, 45.0f, 90.0f))), // left_shoulder (swing back via Y-rotation)
@@ -119,10 +119,78 @@ static keyframe create_step_right_pose() {
         glm::quat(glm::radians(
             glm::vec3(0.0f, 45.0f, -90.0f))), // right_shoulder (swing forward via Y-rotation)
         glm::quat(glm::radians(glm::vec3(0.0f, -15.0f, 0.0f))), // right_elbow (slight bend)
-        step_left.right_hip,                                    // left_hip <- right_hip
-        step_left.right_knee,                                   // left_knee <- right_knee
-        step_left.left_hip,                                     // right_hip <- left_hip
-        step_left.left_knee                                     // right_knee <- left_knee
+        walk_reach_left.right_hip,                              // left_hip <- right_hip
+        walk_reach_left.right_knee,                             // left_knee <- right_knee
+        walk_reach_left.left_hip,                               // right_hip <- left_hip
+        walk_reach_left.left_knee                               // right_knee <- left_knee
+    };
+}
+
+/// Create WALK_PASS_LEFT pose: mirror of WALK_PASS_RIGHT (duplicate for symmetry)
+static keyframe create_walk_pass_left_pose() {
+    return create_walk_pass_right_pose();
+}
+
+/// Create RUN_REACH_LEFT pose: exaggerated forward stride for left leg with extended trail leg
+static keyframe create_run_reach_left_pose() {
+    return keyframe{
+        glm::quat(glm::radians(
+            glm::vec3(0.0f, -65.0f, 115.0f))), // left_shoulder (swing back with extra roll)
+        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),     // left_elbow (additional bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, -65.0f, -115.0f))), // right_shoulder (forward reach)
+        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),    // right_elbow (pronounced bend)
+        glm::quat(glm::radians(glm::vec3(-30.0f, 0.0f, 0.0f))),    // left_hip (deep flex)
+        glm::quat(glm::radians(glm::vec3(35.0f, 0.0f, 0.0f))), // left_knee (front leg compression)
+        glm::quat(glm::radians(glm::vec3(35.0f, 0.0f, 0.0f))), // right_hip (drive leg extension)
+        glm::quat(
+            glm::radians(glm::vec3(10.0f, 0.0f, 0.0f))) // right_knee (nearly straight trail leg)
+    };
+}
+
+/// Create RUN_PASS_RIGHT pose: right leg crossing center with elevated energy
+static keyframe create_run_pass_right_pose() {
+    return keyframe{
+        glm::quat(glm::radians(
+            glm::vec3(0.0f, -20.0f, 95.0f))), // left_shoulder (back swing with added roll)
+        glm::quat(glm::radians(glm::vec3(0.0f, 10.0f, 0.0f))),    // left_elbow (moderate bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, -20.0f, -95.0f))), // right_shoulder (forward swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, -10.0f, 0.0f))),   // right_elbow (light bend)
+        glm::quat(
+            glm::radians(glm::vec3(-12.0f, 0.0f, 0.0f))), // left_hip (prepping to drive forward)
+        glm::quat(glm::radians(glm::vec3(22.0f, 0.0f, 0.0f))), // left_knee (soft bend)
+        glm::quat(glm::radians(
+            glm::vec3(18.0f, 0.0f, 0.0f))), // right_hip (extension as leg passes under)
+        glm::quat(glm::radians(glm::vec3(6.0f, 0.0f, 0.0f))) // right_knee (near straight)
+    };
+}
+
+/// Create RUN_REACH_RIGHT pose: mirror of RUN_REACH_LEFT (swap left/right roles)
+static keyframe create_run_reach_right_pose() {
+    return keyframe{
+        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, 115.0f))),  // left_shoulder (forward reach)
+        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),    // left_elbow (pronounced bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, -115.0f))), // right_shoulder (back swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),   // right_elbow (trailing bend)
+        glm::quat(glm::radians(glm::vec3(35.0f, 0.0f, 0.0f))),    // left_hip (extension)
+        glm::quat(glm::radians(glm::vec3(10.0f, 0.0f, 0.0f))),    // left_knee (near straight)
+        glm::quat(glm::radians(glm::vec3(-30.0f, 0.0f, 0.0f))),   // right_hip (deep flex)
+        glm::quat(glm::radians(glm::vec3(35.0f, 0.0f, 0.0f))) // right_knee (front leg compression)
+    };
+}
+
+/// Create RUN_PASS_LEFT pose: mirror of RUN_PASS_RIGHT with left leg crossing center
+static keyframe create_run_pass_left_pose() {
+    return keyframe{
+        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, 95.0f))),  // left_shoulder (forward swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, 10.0f, 0.0f))),   // left_elbow (moderate bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, -95.0f))), // right_shoulder (back swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, -10.0f, 0.0f))),  // right_elbow (light bend)
+        glm::quat(
+            glm::radians(glm::vec3(18.0f, 0.0f, 0.0f))), // left_hip (extension as leg passes under)
+        glm::quat(glm::radians(glm::vec3(6.0f, 0.0f, 0.0f))), // left_knee (near straight)
+        glm::quat(
+            glm::radians(glm::vec3(-12.0f, 0.0f, 0.0f))), // right_hip (prepping to drive forward)
+        glm::quat(glm::radians(glm::vec3(22.0f, 0.0f, 0.0f))) // right_knee (soft bend)
     };
 }
 
@@ -130,12 +198,22 @@ keyframe get_keyframe_data(pose_type pose) {
     switch (pose) {
     case pose_type::T_POSE:
         return create_identity_pose();
-    case pose_type::STEP_LEFT:
-        return create_step_left_pose();
-    case pose_type::NEUTRAL:
-        return create_neutral_pose();
-    case pose_type::STEP_RIGHT:
-        return create_step_right_pose();
+    case pose_type::WALK_REACH_LEFT:
+        return create_walk_reach_left_pose();
+    case pose_type::WALK_PASS_RIGHT:
+        return create_walk_pass_right_pose();
+    case pose_type::WALK_REACH_RIGHT:
+        return create_walk_reach_right_pose();
+    case pose_type::WALK_PASS_LEFT:
+        return create_walk_pass_left_pose();
+    case pose_type::RUN_REACH_LEFT:
+        return create_run_reach_left_pose();
+    case pose_type::RUN_PASS_RIGHT:
+        return create_run_pass_right_pose();
+    case pose_type::RUN_REACH_RIGHT:
+        return create_run_reach_right_pose();
+    case pose_type::RUN_PASS_LEFT:
+        return create_run_pass_left_pose();
     default:
         return create_identity_pose();
     }
@@ -198,14 +276,29 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
     case pose_type::T_POSE:
         base_kf = create_identity_pose();
         break;
-    case pose_type::STEP_LEFT:
-        base_kf = create_step_left_pose();
+    case pose_type::WALK_REACH_LEFT:
+        base_kf = create_walk_reach_left_pose();
         break;
-    case pose_type::NEUTRAL:
-        base_kf = create_neutral_pose();
+    case pose_type::WALK_PASS_RIGHT:
+        base_kf = create_walk_pass_right_pose();
         break;
-    case pose_type::STEP_RIGHT:
-        base_kf = create_step_right_pose();
+    case pose_type::WALK_REACH_RIGHT:
+        base_kf = create_walk_reach_right_pose();
+        break;
+    case pose_type::WALK_PASS_LEFT:
+        base_kf = create_walk_pass_left_pose();
+        break;
+    case pose_type::RUN_REACH_LEFT:
+        base_kf = create_run_reach_left_pose();
+        break;
+    case pose_type::RUN_PASS_RIGHT:
+        base_kf = create_run_pass_right_pose();
+        break;
+    case pose_type::RUN_REACH_RIGHT:
+        base_kf = create_run_reach_right_pose();
+        break;
+    case pose_type::RUN_PASS_LEFT:
+        base_kf = create_run_pass_left_pose();
         break;
     default:
         base_kf = create_identity_pose();
