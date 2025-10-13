@@ -22,7 +22,7 @@ Read `AGENTS.md` to synthesize core project principles:
 
 **Before selecting, check if multiple similar items can be batched:**
 
-1. **Identify patterns:** Do 3+ items share the same file, category, or fix type?
+1. **Identify patterns:** Do multiple items share the same file, category, or fix type?
    - Example: Multiple unused includes across different files
    - Example: Several constant extractions in same system
    - Example: Related enum/naming violations
@@ -34,7 +34,7 @@ Read `AGENTS.md` to synthesize core project principles:
    - Same complexity tier: All trivial (1-2 pts) or all standard (3-5 pts)
    - Can complete same session: Realistic to finish in one sitting
 
-3. **If 3+ similar items found:**
+3. **If multiple similar items found:**
    - Create unified backlog item: "Cleanup: Remove Unused Includes" or "Extract Locomotion Constants"
    - Document all batched items with unified rationale
    - Implement as single improvement session (reduces commit overhead)

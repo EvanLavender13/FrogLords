@@ -111,12 +111,13 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Tags:* #simplification #controller
 
 ### Character / Controller
-**Unused stdio Include**
-- *File:* `src/character/controller.cpp:11`
-- *Issue:* `<cstdio>` unused (leftover from debugging)
-- *Fix:* Remove
-- *Complexity:* 1 point
-- *Tags:* #cleanup #includes
+**Simplify Velocity Clamping**
+- *Files:* `src/character/controller.cpp`
+- *Issue:* Two blocks extract/modify/reassign horizontal velocity
+- *Fix:* Local helper `clamp_horizontal_speed(glm::vec3&, float)`
+- *Impact:* -10 LOC
+- *Complexity:* 2 points
+- *Tags:* #simplification #controller
 
 ---
 
@@ -159,6 +160,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Fix:* Removed unused `<cstdio>` include
 - *Learning:* GUI plot overlays still rely on `<cstdio>`; keep include there until helper exists
 - *Document:* `PLANS/IMPROVE_remove_unused_stdio_include_input.md`
+
+### Medium / Character / Controller
+**Unused stdio Include** (done)
+- *Completed:* October 13, 2025
+- *Files:* `src/character/controller.cpp`
+- *Fix:* Removed unused `<cstdio>` include
+- *Learning:* Rendering debug formatting still uses `<cstdio>`; remove only where unused
+- *Document:* `PLANS/IMPROVE_remove_unused_stdio_include_controller.md`
 
 ---
 

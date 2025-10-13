@@ -8,7 +8,6 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
-#include <cstdio>
 
 namespace {
 // Single-sphere collision configuration (experiment branch)
