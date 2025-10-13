@@ -6,19 +6,13 @@
 #include "character/tuning.h"
 #include "character/skeleton.h"
 #include "rendering/scene.h"
+#include "rendering/velocity_trail.h"
 #include <glm/glm.hpp>
 #include <vector>
 
 namespace gui {
 struct character_panel_state;
 }
-
-struct velocity_trail_state {
-    std::vector<glm::vec3> positions;
-    std::vector<float> timestamps;
-    float sample_interval = 0.1f;
-    float time_since_last_sample = 0.0f;
-};
 
 struct game_world {
     camera cam;

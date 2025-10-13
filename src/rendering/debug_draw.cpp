@@ -1,8 +1,8 @@
 #include "rendering/debug_draw.h"
 #include "rendering/scene.h"
+#include "rendering/velocity_trail.h"
 #include "character/skeleton.h"
 #include "foundation/math_utils.h"
-#include "app/game_world.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>

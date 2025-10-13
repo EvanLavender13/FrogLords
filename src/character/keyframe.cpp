@@ -135,11 +135,11 @@ static keyframe create_walk_pass_left_pose() {
 static keyframe create_run_reach_left_pose() {
     return keyframe{
         glm::quat(glm::radians(
-            glm::vec3(0.0f, -65.0f, 115.0f))), // left_shoulder (swing back with extra roll)
-        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),     // left_elbow (additional bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, -65.0f, -115.0f))), // right_shoulder (forward reach)
-        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),    // right_elbow (pronounced bend)
-        glm::quat(glm::radians(glm::vec3(-75.0f, 0.0f, 0.0f))),    // left_hip (deep flex)
+            glm::vec3(0.0f, -65.0f, 90.0f))), // left_shoulder (swing back with extra roll)
+        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),    // left_elbow (additional bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, -65.0f, -90.0f))), // right_shoulder (forward reach)
+        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),   // right_elbow (pronounced bend)
+        glm::quat(glm::radians(glm::vec3(-75.0f, 0.0f, 0.0f))),   // left_hip (deep flex)
         glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))), // left_knee (front leg compression)
         glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))), // right_hip (drive leg extension)
         glm::quat(
@@ -151,9 +151,9 @@ static keyframe create_run_reach_left_pose() {
 static keyframe create_run_pass_right_pose() {
     return keyframe{
         glm::quat(glm::radians(
-            glm::vec3(0.0f, -20.0f, 95.0f))), // left_shoulder (back swing with added roll)
+            glm::vec3(0.0f, -20.0f, 90.0f))), // left_shoulder (back swing with added roll)
         glm::quat(glm::radians(glm::vec3(0.0f, 10.0f, 0.0f))),    // left_elbow (moderate bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, -20.0f, -95.0f))), // right_shoulder (forward swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, -20.0f, -90.0f))), // right_shoulder (forward swing)
         glm::quat(glm::radians(glm::vec3(0.0f, -10.0f, 0.0f))),   // right_elbow (light bend)
         glm::quat(
             glm::radians(glm::vec3(-15.0f, 0.0f, 0.0f))), // left_hip (prepping to drive forward)
@@ -167,13 +167,13 @@ static keyframe create_run_pass_right_pose() {
 /// Create RUN_REACH_RIGHT pose: mirror of RUN_REACH_LEFT (swap left/right roles)
 static keyframe create_run_reach_right_pose() {
     return keyframe{
-        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, 115.0f))),  // left_shoulder (forward reach)
-        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),    // left_elbow (pronounced bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, -115.0f))), // right_shoulder (back swing)
-        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),   // right_elbow (trailing bend)
-        glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))),    // left_hip (extension)
-        glm::quat(glm::radians(glm::vec3(15.0f, 0.0f, 0.0f))),    // left_knee (near straight)
-        glm::quat(glm::radians(glm::vec3(-75.0f, 0.0f, 0.0f))),   // right_hip (deep flex)
+        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, 90.0f))),  // left_shoulder (forward reach)
+        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),   // left_elbow (pronounced bend)
+        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, -90.0f))), // right_shoulder (back swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),  // right_elbow (trailing bend)
+        glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))),   // left_hip (extension)
+        glm::quat(glm::radians(glm::vec3(15.0f, 0.0f, 0.0f))),   // left_knee (near straight)
+        glm::quat(glm::radians(glm::vec3(-75.0f, 0.0f, 0.0f))),  // right_hip (deep flex)
         glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))) // right_knee (front leg compression)
     };
 }
@@ -181,9 +181,9 @@ static keyframe create_run_reach_right_pose() {
 /// Create RUN_PASS_LEFT pose: mirror of RUN_PASS_RIGHT with left leg crossing center
 static keyframe create_run_pass_left_pose() {
     return keyframe{
-        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, 95.0f))),  // left_shoulder (forward swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, 90.0f))),  // left_shoulder (forward swing)
         glm::quat(glm::radians(glm::vec3(0.0f, 10.0f, 0.0f))),   // left_elbow (moderate bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, -95.0f))), // right_shoulder (back swing)
+        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, -90.0f))), // right_shoulder (back swing)
         glm::quat(glm::radians(glm::vec3(0.0f, -10.0f, 0.0f))),  // right_elbow (light bend)
         glm::quat(
             glm::radians(glm::vec3(20.0f, 0.0f, 0.0f))), // left_hip (extension as leg passes under)

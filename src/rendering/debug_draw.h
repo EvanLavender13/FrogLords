@@ -2,15 +2,13 @@
 
 #include "rendering/renderer.h"
 #include "rendering/wireframe.h"
+#include "rendering/velocity_trail.h"
 #include "camera/camera.h"
 #include "character/controller.h"
 #include "character/locomotion.h"
 #include "character/orientation.h"
 #include "character/skeleton.h"
 #include <glm/glm.hpp>
-
-// Forward declaration from app/game_world.h
-struct velocity_trail_state;
 
 namespace debug {
 
