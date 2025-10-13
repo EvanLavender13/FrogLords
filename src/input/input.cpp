@@ -1,7 +1,6 @@
 #include "input.h"
 #include "sokol_app.h"
 #include <cstring>
-#include <cstdio>
 
 namespace input {
 // Internal state tracking

@@ -118,14 +118,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 1 point
 - *Tags:* #cleanup #includes
 
-### Input
-**Unused stdio Include**
-- *File:* `src/input/input.cpp:4`
-- *Issue:* `<cstdio>` unused
-- *Fix:* Remove
-- *Complexity:* 1 point
-- *Tags:* #cleanup #includes
-
 ---
 
 ## Low
@@ -160,7 +152,13 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Archive periodically; keep ~1 month for learning capture)
 
-*No items yet.*
+### Medium / Input
+**Unused stdio Include** (done)
+- *Completed:* October 13, 2025
+- *Files:* `src/input/input.cpp`
+- *Fix:* Removed unused `<cstdio>` include
+- *Learning:* GUI plot overlays still rely on `<cstdio>`; keep include there until helper exists
+- *Document:* `PLANS/IMPROVE_remove_unused_stdio_include_input.md`
 
 ---
 
