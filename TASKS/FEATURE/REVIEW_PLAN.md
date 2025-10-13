@@ -1,13 +1,19 @@
 # Check Plans Against Principles
 
-### 1. Identify Target Feature
+### 1. Review Development Principles
 
-Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
+Read `AGENTS.md` to synthesize core principles:
+- "Clarity over cleverness"
+- "Simplicity over sophistication"
+- "Graybox first and long"
+- Bottom-up dependency flow
+- "Million-repetition thinking"
 
 ### 2. Gather Context
 
-1.  **Principles:** Read and synthesize core principles from `AGENTS.md`. Use `NOTES/DesigningGames/DG_Manifesto.md` as secondary reference
-2.  **Planning Documents:** Read the following files:
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
+
+1.  **Planning Documents:** Read the following files:
     *   `PLANS/<feature_name>_FEATURE.md` (feature description and rationale)
     *   `PLANS/<feature_name>_PLAN.md` (must exist)
     *   `PLANS/DEPENDENCY_STACK.md` (check tree visualization for dependencies and certainty)
@@ -85,7 +91,7 @@ Generate a new markdown document summarizing the findings.
 
 **If none:** No violations found.
 
-### Misalignments & Risks
+### Risks & Concerns
 
 - **[Description]:** [Why concerning] in [source]
   - **Mitigation:** [How to reduce risk]

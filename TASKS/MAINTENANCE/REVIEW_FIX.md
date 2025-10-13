@@ -47,7 +47,7 @@ Append to `PLANS/MAINTENANCE_<item_name>.md`:
 ## Code Review
 
 **Date:** [YYYY-MM-DD]
-**Status:** [APPROVED | NEEDS_REVISION]
+**Status:** APPROVED | FIX_ISSUES
 
 **Fix Summary:** [One sentence describing changes]
 
@@ -70,7 +70,7 @@ Provide concise analysis:
 3. **Issues Found:** List violations with file/line references
 4. **Recommendation:** "Fix verified. Ready to finalize." or "Address issues before proceeding."
 
-### 6. Await Guidance
+### 7. Await Guidance
 
 Await user decision to:
 - Fix identified issues

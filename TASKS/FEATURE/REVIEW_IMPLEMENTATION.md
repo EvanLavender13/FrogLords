@@ -1,15 +1,20 @@
 # Perform Code Review
 
-### 1. Identify Target Feature
+### 1. Review Development Principles
 
-Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
+Read `AGENTS.md` for development principles and coding standards:
+- snake_case naming conventions
+- 4-space indent, braces on same line
+- Dependency flow (Foundation → Character → Rendering → App)
+- Gameplay-first principles (input→acceleration, interruptible)
 
 ### 2. Gather Context
 
-1.  **Read Principles:** Read `AGENTS.md` for development principles and coding standards
-2.  **Read Planning Documents:** Read `PLANS/<feature_name>_FEATURE.md` and `PLANS/<feature_name>_PLAN.md`
-3.  **Verify Implementation Completeness:** Check if all checklist items in `PLANS/<feature_name>_PLAN.md` are marked as complete (`[x]`). If not, report this and stop; a review cannot be performed on incomplete work.
-4.  **Read Implemented Code:** Read the contents of all source files (`.h` and `.cpp`) that were modified as part of the implementation plan.
+Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
+
+1.  **Read Planning Documents:** Read `PLANS/<feature_name>_FEATURE.md` and `PLANS/<feature_name>_PLAN.md`
+2.  **Verify Implementation Completeness:** Check if all checklist items in `PLANS/<feature_name>_PLAN.md` are marked as complete (`[x]`). If not, report this and stop; a review cannot be performed on incomplete work.
+3.  **Read Implemented Code:** Read the contents of all source files (`.h` and `.cpp`) that were modified as part of the implementation plan.
 
 ### 3. Perform Code Review
 
@@ -52,7 +57,7 @@ The approval section should contain reviewer signature and timestamp.
 # Code Review: [Feature Name]
 
 **Date:** [YYYY-MM-DD]
-**Status:** APPROVED | FIX ISSUES
+**Status:** APPROVED | FIX_ISSUES | ROLLBACK
 
 ### Summary
 
@@ -67,7 +72,7 @@ The approval section should contain reviewer signature and timestamp.
 
 **If none:** No violations found.
 
-### Suggestions for Improvement
+### Suggestions (Consider)
 
 - **[Description]:** [Why helpful]
   - **File:** [src/path/to/file.cpp:line]
@@ -83,11 +88,18 @@ The approval section should contain reviewer signature and timestamp.
 - [ ] Gameplay-first principles (input→acceleration, interruptible, physics-first)
 - [ ] Simplicity over sophistication
 
+### Actionable Items
+
+- [ ] [Specific action needed]
+
+**If none:** Ready to proceed with finalization.
+
 ### Recommendation
 
 **Reasoning:** [Brief justification for status]
 
 **Next Steps:**
 - If APPROVED: Proceed to FINALIZE_FEATURE
-- If FIX ISSUES: Address items, re-review
+- If FIX_ISSUES: Address items, re-review
+- If ROLLBACK: Defer feature, update backlog
 ```

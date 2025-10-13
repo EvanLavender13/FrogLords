@@ -104,7 +104,7 @@ Append to `PLANS/REFACTOR_<refactor_name>.md`:
 
 **If none:** Risk assessment appears sound.
 
-### Suggestions
+### Suggestions (Consider)
 
 - **[Description]:** [Why helpful]
 
