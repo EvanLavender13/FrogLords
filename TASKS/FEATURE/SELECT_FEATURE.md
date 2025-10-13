@@ -70,8 +70,8 @@ Read `AGENTS.md` to synthesize core project principles. Essential for selecting 
 
 Run the script to create and switch to a new feature branch:
 
-```powershell
-./scripts/create-branch.ps1 feature <feature_name>
+```bash
+bash scripts/bash/create_branch.sh feature <feature_name>
 ```
 
 This establishes the workspace before documenting the feature.

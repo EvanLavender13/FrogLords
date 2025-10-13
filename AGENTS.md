@@ -96,6 +96,7 @@ Concise and direct. No preamble/postamble. Detail scales with risk/complexity.
 
 ## Code and Repo
 - See `CONVENTIONS.md` for coordinate, rotation, camera, animation, and debug visualization conventions.
+- See `SCRIPTS.md` for build, quality, and git workflow scripts (all in `scripts/bash/`).
 - File organization
 ```
 src/
@@ -165,6 +166,8 @@ Formatting
 - 4-space indent; braces on same line; soft 100-char limit; consistent operator spacing.
 
 ## References (deep dives)
+- Development scripts: `SCRIPTS.md`.
+- Code conventions: `CONVENTIONS.md`.
 - Designing Games notes: `NOTES/DesigningGames/DG_Dependencies.md`, `NOTES/DesigningGames/DG_Planning.md`, `NOTES/DesigningGames/DG_Interface.md`, `NOTES/DesigningGames/DG_Skill.md`, `NOTES/DesigningGames/DG_Elegance.md`.
 - Procedural animation philosophy: `NOTES/GDC/GDC_DesignPhilosophy.md`, `NOTES/GDC/GDC_TechnicalWhitepaper.md`.
 

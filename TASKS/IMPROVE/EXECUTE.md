@@ -31,12 +31,12 @@ Execute the fix directly:
 
 ### 4. Format and Lint
 
-```powershell
+```bash
 # Run formatter
-.\scripts\run_clang_format.ps1
+bash scripts/bash/run_clang_format.sh
 
 # Run linter
-.\scripts\run_clang_tidy.ps1
+bash scripts/bash/run_clang_tidy.sh
 ```
 
 Fix any formatting or linting issues introduced.
@@ -106,9 +106,9 @@ Open `PLANS/IMPROVE_<name>.md` and review:
 - Verify no regressions
 
 #### 2.3. Format and Lint (each stage)
-```powershell
-.\scripts\run_clang_format.ps1
-.\scripts\run_clang_tidy.ps1
+```bash
+bash scripts/bash/run_clang_format.sh
+bash scripts/bash/run_clang_tidy.sh
 ```
 
 #### 2.4. Consider Intermediate Commit (optional)
@@ -151,8 +151,8 @@ After all stages complete, execute full validation from PLAN:
 - [ ] Follows conventions (`CONVENTIONS.md`)
 
 ### Code Quality
-- [ ] clang-format clean (`.\scripts\run_clang_format.ps1`)
-- [ ] clang-tidy clean (`.\scripts\run_clang_tidy.ps1`)
+- [ ] clang-format clean (`bash scripts/bash/run_clang_format.sh`)
+- [ ] clang-tidy clean (`bash scripts/bash/run_clang_tidy.sh`)
 - [ ] No duplicated logic remains
 - [ ] Comments accurate and helpful
 ````

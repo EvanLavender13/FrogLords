@@ -1,30 +1,26 @@
 {
 	"version": "2.0.0",
+	// All tasks now use bash scripts in scripts/bash/ for consistency with CLI agents.
+	// Scripts run in WSL and call Windows executables, maintaining full performance.
 	"tasks": [
 		{
-			"label": "CMake: Configure (Debug)",
+			"label": "Configure",
 			"type": "shell",
-			"command": "cmake",
+			"command": "wsl",
 			"args": [
-				"-S",
-				".",
-				"-B",
-				"build/ninja",
-				"-G",
-				"Ninja",
-				"-DCMAKE_BUILD_TYPE=Debug",
-				"-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+				"bash",
+				"scripts/bash/configure.sh"
 			],
 			"group": "build",
 			"problemMatcher": []
 		},
 		{
-			"label": "CMake: Build (Debug)",
+			"label": "Build App",
 			"type": "shell",
-			"command": "cmake",
+			"command": "wsl",
 			"args": [
-				"--build",
-				"build/ninja"
+				"bash",
+				"scripts/bash/build.sh"
 			],
 			"group": {
 				"kind": "build",
@@ -35,49 +31,45 @@
 			]
 		},
 		{
-			"label": "Run (Debug)",
+			"label": "Run App",
 			"type": "shell",
-			"command": "${workspaceFolder}/build/ninja/FrogLords.exe",
+			"command": "wsl",
+			"args": [
+				"bash",
+				"scripts/bash/run.sh"
+			],
 			"group": "test",
 			"problemMatcher": []
 		},
 		{
-			"label": "Format: clang-format src",
+			"label": "Run clang-format",
 			"type": "shell",
-			"command": "powershell",
+			"command": "wsl",
 			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}/scripts/run_clang_format.ps1"
+				"bash",
+				"scripts/bash/run_clang_format.sh"
 			],
 			"problemMatcher": []
 		},
 		{
-			"label": "Lint: clang-tidy src",
+			"label": "Run clang-tidy",
 			"type": "shell",
-			"command": "powershell",
+			"command": "wsl",
 			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}/scripts/run_clang_tidy.ps1"
+				"bash",
+				"scripts/bash/run_clang_tidy.sh"
 			],
 			"problemMatcher": []
 		},
 		{
-			"label": "Check: cppcheck",
+			"label": "Run cppcheck",
 			"type": "shell",
-			"command": "powershell",
+			"command": "wsl",
 			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}/scripts/run_cppcheck.ps1"
-			]
+				"bash",
+				"scripts/bash/run_cppcheck.sh"
+			],
+			"problemMatcher": []
 		}
 	]
 }

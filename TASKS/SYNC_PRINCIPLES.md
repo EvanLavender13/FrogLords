@@ -57,22 +57,7 @@ In PLANS:
 In CONVENTIONS:
 - If the implementation changed (e.g., yaw conventions, slerp edge cases), update `CONVENTIONS.md` accordingly.
 
-### 4. Encoding & Line Endings (Optional but Recommended)
-
-Normalize encodings to prevent mojibake in principles and plans:
-
-```powershell
-# Preview (no writes), LF endings, exclude NOTES (default)
-powershell -ExecutionPolicy Bypass -File scripts/normalize_encoding.ps1 -LineEndings LF -DryRun
-
-# Apply normalization (UTF-8 no BOM + LF)
-powershell -ExecutionPolicy Bypass -File scripts/normalize_encoding.ps1 -LineEndings LF
-
-# Include NOTES (only if desired)
-powershell -ExecutionPolicy Bypass -File scripts/normalize_encoding.ps1 -LineEndings LF -IncludeNotes
-```
-
-### 5. Verify Links and Ownership
+### 4. Verify Links and Ownership
 
 Checklist:
 - [ ] `AGENTS.md` references only existing files; links resolve.
@@ -81,7 +66,7 @@ Checklist:
 - [ ] PLANS trigger sections present and relevant.
 - [ ] Layering guidance matches code ownership (Foundation -> Character -> Rendering -> App).
 
-### 6. Document the Sync
+### 5. Document the Sync
 
 Append a short summary to your planning docs (choose one):
 
@@ -106,7 +91,6 @@ Append a short summary to your planning docs (choose one):
 - `AGENTS.md` remains a concise, actionable guide (no duplication of `CONVENTIONS.md`).
 - References list points to the right NOTES documents (as references only).
 - PLANS trigger sections exist and reflect current practice.
-- Encoding issues minimized (UTF-8 no BOM, consistent line endings).
 - Layering and responsibilities in principles match the actual code.
 
 ---

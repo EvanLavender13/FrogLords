@@ -10,15 +10,17 @@
 
 **Quick sanity checks:**
 
-```powershell
+```bash
 # Clean build
-cmake --build build/ninja --clean-first
+bash scripts/bash/clean.sh
+bash scripts/bash/configure.sh
+bash scripts/bash/build.sh
 
 # Format check
-.\scripts\run_clang_format.ps1
+bash scripts/bash/run_clang_format.sh
 
 # Lint check
-.\scripts\run_clang_tidy.ps1
+bash scripts/bash/run_clang_tidy.sh
 ```
 
 Verify all pass with no errors or warnings.

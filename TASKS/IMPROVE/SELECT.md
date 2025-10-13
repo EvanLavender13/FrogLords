@@ -119,8 +119,8 @@ Create description and save to `PLANS/IMPROVE_<item_name>.md`:
 ### 7. Optional: Create Branch (Path B recommended)
 
 For Standard improvements (3-8 pts):
-```powershell
-./scripts/create-branch.ps1 improve <item_name>
+```bash
+bash scripts/bash/create_branch.sh improve <item_name>
 ```
 
 Trivial fixes can work directly on current branch.

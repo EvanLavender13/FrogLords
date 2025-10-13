@@ -2,7 +2,7 @@
 
 ### 1. Analyze Changes
 
-Run `scripts/review_staged_changes.ps1` to confirm staged files and review changes.
+Run `bash scripts/bash/review_staged_changes.sh` to confirm staged files and review changes.
 
 ### 2. Draft Commit Message
 
@@ -14,27 +14,22 @@ Post the drafted message for approval. Do not commit until approved.
 
 ### 4. Commit
 
-After approval, use PowerShell here-string syntax to avoid quoting issues:
+After approval, commit with the message:
 
-```powershell
-$msg = @"
-<Domain>: <Brief description>
+```bash
+bash scripts/bash/commit_changes.sh -m "<Domain>: <Brief description>
 
 <Why paragraph>
 
 - <Change 1>
 - <Change 2>
 
-<Outcome sentence>
-"@
-
-.\scripts\commit_changes.ps1 -Message $msg
+<Outcome sentence>"
 ```
 
 **Example:**
-```powershell
-$msg = @"
-character: add dash tuning
+```bash
+bash scripts/bash/commit_changes.sh -m "character: add dash tuning
 
 Introduces initial dash mechanic with basic timing and distance parameters.
 
@@ -42,13 +37,14 @@ Introduces initial dash mechanic with basic timing and distance parameters.
 - Implement dash trigger on Shift key
 - Add cooldown timer (2s)
 
-Dash now functional in graybox form.
-"@
-
-.\scripts\commit_changes.ps1 -Message $msg
+Dash now functional in graybox form."
 ```
 
-**Critical:** Use here-string (`@"..."@`) syntax. Do NOT use regular quotes with escape characters.
+**For complex multi-line messages, use a temporary file:**
+```bash
+# Create commit_msg.txt with your message
+bash scripts/bash/commit_changes.sh -f commit_msg.txt
+```
 
 ### Tone & Constraints
 
