@@ -45,7 +45,7 @@ Multi-Mode Comparison:
 ### 0. Planning Checks
 - [x] Gate Mechanism Review documented: Amplitude gating uses `contact_weight_spring`, blending uses bilinear slerp; no timeline gating introduced.
 - [x] UI Ordering Verified: `pose_type` enum order matches GUI pose list.
-- Files touched (Step 0): `PLANS/run_gait_blending_PLAN.md`
+- Files touched (Step 0): `PLANS/ARCHIVE/20251013_163313_run_gait_blending_PLAN.md`
 
 ### 1. Data Structures & State
 - [x] File: `src/character/animation.h`
