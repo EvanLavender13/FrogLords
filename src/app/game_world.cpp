@@ -67,8 +67,10 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
                                                  character.orientation.get_yaw(), dt);
 
     character::sync_locomotion_targets(character, locomotion);
-    locomotion.update(horizontal_velocity, dt, character.is_grounded);
+    locomotion.update(horizontal_velocity, dt);
 
+    // Update contact/air weight (smooth transition for phase continuity)
+    character.animation.update_contact_weight(character.is_grounded, dt);
     float angular_speed = 0.0f;
     if (WHEEL_RADIUS > 0.0001f) {
         angular_speed = locomotion.current_speed / WHEEL_RADIUS;

@@ -2,6 +2,7 @@
 #include "foundation/math_utils.h"
 #include "skeleton.h"
 #include <cmath>
+#include <glm/gtc/constants.hpp>
 #include <glm/gtc/quaternion.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
@@ -15,6 +16,12 @@ animation_state::animation_state()
     : tilt_angles(0.0f) {
     landing_spring.stiffness = 400.0f;
     landing_spring.damping = critical_damping(landing_spring.stiffness);
+
+    // Initialize contact weight spring (start grounded)
+    contact_weight_spring.position = 1.0f;
+    float omega = contact_weight_frequency * glm::two_pi<float>();
+    contact_weight_spring.stiffness = omega * omega;
+    contact_weight_spring.damping = critical_damping(contact_weight_spring.stiffness);
 }
 
 void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3 velocity,
@@ -55,6 +62,11 @@ void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3
         float target_pitch = local_forward * effective_tilt_magnitude;
         float target_roll = local_right * effective_tilt_magnitude;
 
+        // Scale by contact weight (no tilt when airborne)
+        float contact_weight = contact_weight_spring.get_position();
+        target_pitch *= contact_weight;
+        target_roll *= contact_weight;
+
         // Smooth toward target (exponential decay)
         float blend = 1.0f - glm::exp(-tilt_smoothing * dt);
         tilt_angles.x = glm::mix(tilt_angles.x, target_pitch, blend);
@@ -76,6 +88,19 @@ void animation_state::update_landing_spring(bool just_landed,
 
     spring_step step{.target = 0.0f, .delta_time = dt};
     landing_spring.update(step);
+}
+
+void animation_state::update_contact_weight(bool is_grounded, float dt) {
+    contact_weight_target = is_grounded ? 1.0f : 0.0f;
+
+    // Convert frequency (Hz) to spring stiffness (API consistency: use glm::two_pi)
+    float omega = contact_weight_frequency * glm::two_pi<float>();
+    contact_weight_spring.stiffness = omega * omega;
+    contact_weight_spring.damping = critical_damping(contact_weight_spring.stiffness);
+
+    // Update spring toward target
+    spring_step step = {.target = contact_weight_target, .delta_time = dt};
+    contact_weight_spring.update(step);
 }
 
 glm::mat4 animation_state::get_tilt_matrix() const {
@@ -142,6 +167,12 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     keyframe source_kf = get_keyframe_data(source_pose);
     keyframe target_kf = get_keyframe_data(target_pose);
 
+    // Get contact weight for amplitude suppression (1.0 grounded, 0.0 airborne)
+    float contact_weight = contact_weight_spring.get_position();
+
+    // T_POSE uses identity quaternion (no rotation)
+    glm::quat t_pose_rotation(1.0f, 0.0f, 0.0f, 0.0f);
+
     // Store root transform (set by game_world)
     glm::mat4 root_transform = skel.joints[0].local_transform;
 
@@ -154,23 +185,31 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
             glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(blended_rotation);
     };
 
+    // Blend gait animation, then suppress amplitude based on contact weight
+    // When airborne (contact_weight → 0), limbs return to T-pose (neutral)
+    // When grounded (contact_weight → 1), full gait animation plays
+    auto blend_with_contact = [&](const glm::quat& source, const glm::quat& target) {
+        glm::quat gait_blend = glm::slerp(source, target, t);
+        return glm::slerp(t_pose_rotation, gait_blend, contact_weight);
+    };
+
     // Blend and apply all 8 joints using slerp
     apply_blended_joint(joint_index::LEFT_SHOULDER,
-                        glm::slerp(source_kf.left_shoulder, target_kf.left_shoulder, t));
+                        blend_with_contact(source_kf.left_shoulder, target_kf.left_shoulder));
     apply_blended_joint(joint_index::LEFT_ELBOW,
-                        glm::slerp(source_kf.left_elbow, target_kf.left_elbow, t));
+                        blend_with_contact(source_kf.left_elbow, target_kf.left_elbow));
     apply_blended_joint(joint_index::RIGHT_SHOULDER,
-                        glm::slerp(source_kf.right_shoulder, target_kf.right_shoulder, t));
+                        blend_with_contact(source_kf.right_shoulder, target_kf.right_shoulder));
     apply_blended_joint(joint_index::RIGHT_ELBOW,
-                        glm::slerp(source_kf.right_elbow, target_kf.right_elbow, t));
+                        blend_with_contact(source_kf.right_elbow, target_kf.right_elbow));
     apply_blended_joint(joint_index::LEFT_HIP,
-                        glm::slerp(source_kf.left_hip, target_kf.left_hip, t));
+                        blend_with_contact(source_kf.left_hip, target_kf.left_hip));
     apply_blended_joint(joint_index::LEFT_KNEE,
-                        glm::slerp(source_kf.left_knee, target_kf.left_knee, t));
+                        blend_with_contact(source_kf.left_knee, target_kf.left_knee));
     apply_blended_joint(joint_index::RIGHT_HIP,
-                        glm::slerp(source_kf.right_hip, target_kf.right_hip, t));
+                        blend_with_contact(source_kf.right_hip, target_kf.right_hip));
     apply_blended_joint(joint_index::RIGHT_KNEE,
-                        glm::slerp(source_kf.right_knee, target_kf.right_knee, t));
+                        blend_with_contact(source_kf.right_knee, target_kf.right_knee));
 
     // Restore root transform
     skel.joints[0].local_transform = root_transform;

@@ -75,6 +75,21 @@ void draw_character_panel(character_panel_state& state, controller& character,
                           character.animation.tilt_angles.x, character.animation.tilt_angles.z);
     }
 
+    // Air locomotion weights (phase continuity)
+    if (ImGui::CollapsingHeader("Air Locomotion Weights")) {
+        gui::widget::slider_float("Contact Weight Frequency (Hz)",
+                                  &character.animation.contact_weight_frequency, 3.0f, 12.0f);
+
+        // Read-only weight state display
+        gui::widget::text("Contact Weight Target: %.3f", character.animation.contact_weight_target);
+        gui::widget::text("Contact Weight (smoothed): %.3f",
+                          character.animation.contact_weight_spring.get_position());
+        gui::widget::text("Air Weight: %.3f",
+                          1.0f - character.animation.contact_weight_spring.get_position());
+        gui::widget::text("Spring Velocity: %.3f",
+                          character.animation.contact_weight_spring.get_velocity());
+    }
+
     // Secondary motion parameters
     if (ImGui::CollapsingHeader("Secondary Motion")) {
         gui::widget::checkbox("Enable Secondary Motion", &state.enable_secondary_motion);

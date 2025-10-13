@@ -39,6 +39,11 @@ struct animation_state {
     spring_damper landing_spring;
     float landing_impulse_scale = 0.5f;
 
+    // Contact/air weight system (phase continuity)
+    spring_damper contact_weight_spring;
+    float contact_weight_target = 1.0f;    // Dual-reference pattern (instant 0/1 flip)
+    float contact_weight_frequency = 8.0f; // Tuning parameter (Hz)
+
     // Distance-phased skeletal animation
     float cycle_length = 2.0f;
     pose_type current_automatic_pose = pose_type::WALK_PASS_RIGHT;
@@ -55,6 +60,7 @@ struct animation_state {
     void update_landing_spring(bool just_landed,
                                float vertical_velocity, // NOLINT
                                float dt);
+    void update_contact_weight(bool is_grounded, float dt);
     glm::mat4 get_tilt_matrix() const;
     glm::mat4 get_vertical_offset_matrix() const;
     float get_vertical_offset() const;

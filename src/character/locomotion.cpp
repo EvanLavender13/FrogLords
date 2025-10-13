@@ -15,42 +15,41 @@ locomotion_system::locomotion_system() {
     run_state.stride_length = 2.0f;
 }
 
-void locomotion_system::update(glm::vec3 ground_velocity, float dt, bool is_grounded) {
-    if (is_grounded) {
-        current_speed = glm::length(ground_velocity);
+void locomotion_system::update(glm::vec3 ground_velocity, float dt) {
+    // Calculate current speed from horizontal velocity (XZ plane)
+    current_speed = glm::length(ground_velocity);
 
-        // Smooth speed to prevent erratic behavior
-        smoothed_speed = smoothed_speed + (current_speed - smoothed_speed) * speed_smoothing * dt;
+    // Smooth speed to prevent erratic behavior
+    smoothed_speed = smoothed_speed + (current_speed - smoothed_speed) * speed_smoothing * dt;
 
-        // Calculate blend factor using smoothed speed
-        float blend = 0.0f;
-        if (smoothed_speed <= walk_speed_threshold) {
-            blend = 0.0f; // Pure walk
-        } else if (smoothed_speed >= run_speed_threshold) {
-            blend = 1.0f; // Pure run
-        } else {
-            blend = (smoothed_speed - walk_speed_threshold) /
-                    (run_speed_threshold - walk_speed_threshold);
+    // Calculate blend factor using smoothed speed
+    float blend = 0.0f;
+    if (smoothed_speed <= walk_speed_threshold) {
+        blend = 0.0f; // Pure walk
+    } else if (smoothed_speed >= run_speed_threshold) {
+        blend = 1.0f; // Pure run
+    } else {
+        blend =
+            (smoothed_speed - walk_speed_threshold) / (run_speed_threshold - walk_speed_threshold);
+    }
+
+    // Blend stride length with eased blend weight
+    float blended_stride = easing::smooth_mix(
+        easing::scalar_span{walk_state.stride_length, run_state.stride_length}, blend);
+    if (blended_stride <= 0.0f) {
+        phase = 0.0f;
+    } else {
+        float drive_speed = std::max(0.0f, current_speed);
+
+        float new_phase = phase + (drive_speed / blended_stride) * dt;
+
+        phase = std::fmod(new_phase, 1.0f);
+        if (phase < 0.0f) {
+            phase += 1.0f;
         }
 
-        // Blend stride length with eased blend weight
-        float blended_stride = easing::smooth_mix(
-            easing::scalar_span{walk_state.stride_length, run_state.stride_length}, blend);
-        if (blended_stride <= 0.0f) {
-            phase = 0.0f;
-        } else {
-            float drive_speed = std::max(0.0f, current_speed);
-
-            float new_phase = phase + (drive_speed / blended_stride) * dt;
-
-            phase = std::fmod(new_phase, 1.0f);
-            if (phase < 0.0f) {
-                phase += 1.0f;
-            }
-
-            // Accumulate distance continuously (surveyor-wheel odometer)
-            distance_traveled += drive_speed * dt;
-        }
+        // Accumulate distance continuously (surveyor-wheel odometer)
+        distance_traveled += drive_speed * dt;
     }
 }
 

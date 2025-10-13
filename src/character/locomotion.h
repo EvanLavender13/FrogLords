@@ -31,7 +31,7 @@ struct locomotion_system {
 
     locomotion_system();
 
-    void update(glm::vec3 ground_velocity, float dt, bool is_grounded);
+    void update(glm::vec3 ground_velocity, float dt);
     simple_pose get_current_pose() const;
 
   private:

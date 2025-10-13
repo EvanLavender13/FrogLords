@@ -36,6 +36,25 @@ Include lightweight metadata to improve selection and planning:
 
 ### Skeletal Animation (Keyframe Foundation)
 
+- **Run gait pose integration:** Blend between walk and run keyframe poses based on `walk_factor`
+  - *Prerequisite:* Running gait keyframes ✅, walk/run blend factor computation ✅
+  - *Certainty:* High (~85%) - straightforward pose slerp, proven infrastructure
+  - *Complexity:* 1-2 points (~30-50 lines)
+  - *Rationale:* Run keyframes authored but not yet integrated into animation system. Currently only walk poses used regardless of speed.
+  - *Scope:*
+    - Add `run_gait_poses[]` array alongside existing `walk_gait_poses[]`
+    - Modify `animation::update()` to slerp between walk and run poses: `final_pose = slerp(walk_pose, run_pose, 1.0 - walk_factor)`
+    - Expose debug toggle to isolate walk-only vs run-only vs blended
+    - Tune visual transition threshold (currently walk_factor computed from speed)
+  - *Implementation:* ~30-50 lines in `src/character/animation.cpp`
+    - Declare run pose array (4 keyframes: REACH_LEFT, PASS_RIGHT, REACH_RIGHT, PASS_LEFT)
+    - Add second gait phase lookup for run poses
+    - Insert slerp between walk and run results before applying to skeleton
+  - *Validation Loop:* Sprint at different speeds, verify smooth walk→run visual transition; debug UI shows both walk and run contributions
+  - *Success Criteria:* Larger limb extension visible at high speeds; smooth blending across speed range; no pops or discontinuities
+  - *Origin:* Running gait keyframes completed 2025-10-12 but not yet wired into animation pipeline
+  - *Note:* This is the "obvious next step" after running gait authoring - completes the walk/run animation stack
+
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
   - *Prerequisite:* Foundation âœ… (keyframe architecture proven)
   - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
@@ -89,6 +108,36 @@ Include lightweight metadata to improve selection and planning:
     - Does jump need input buffering to feel responsive mid-bounce?
   - *Success Criteria:* Natural bouncing visible during run; no control interference; smooth interaction with jump/land; feels alive and dynamic (like Overgrowth character)
   - *Origin:* GDC talk reference (David Rosen - Overgrowth), see [NOTES/Images/bounce.png](../NOTES/Images/bounce.png)
+
+- **Air locomotion weights (phase continuity + contact/air):** Prevent frozen poses in air by reweighting locomotion rather than halting it ✅ COMPLETE
+  - *Prerequisite:* Phase-based gait system ✅; 1D pose slerp blending ✅. Existing landing/secondary motion springs ✅.
+  - *Certainty:* 100%
+  - *Learning:* Dual-reference spring-damper pattern proven for decoupled target/smoothed state. Phase continuity in air (horizontal XZ velocity) maintains animation flow without gameplay compromise. T_POSE blend provides neutral target without content cost. Contact weight scaling (tilt + amplitude) cleanly separates grounded/airborne behaviors. Pattern validates: keep core physics running, layer reactive suppression on top.
+  - *References:*
+    - [NOTES/air_locomotion_explained.md](../NOTES/air_locomotion_explained.md)
+    - [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md)
+    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md), [NOTES/GDC/GDC_TechnicalWhitepaper.md](../NOTES/GDC/GDC_TechnicalWhitepaper.md)
+  - *Completed:* 2025-10-13 (feature branch: feature/air_locomotion_weights)
+  - *Implementation:* See [PLANS/air_locomotion_weights_PLAN.md](air_locomotion_weights_PLAN.md)
+
+- **Secondary motion joint limits (elbow/knee constraints):** Enforce anatomical bend limits to prevent unnatural hyperextension
+  - *Prerequisite:* Secondary motion system ✅
+  - *Certainty:* Medium (~60%) - polish item, graybox-acceptable without
+  - *Complexity:* 1-2 points (~10-15 lines)
+  - *Problem:* Secondary motion spring offsets apply without anatomical limits. Rapid pose transitions (e.g., swing → T-pose during jumps) can cause elbows to hyperextend backward unnaturally as springs respond to parent velocity reversals.
+  - *Root Cause:* Spring offsets are clamped only by damping, not joint-specific ranges. Elbows/knees are hinge joints (~1 DOF) but current system allows unbounded rotation along fixed axis.
+  - *Proposed Solution:*
+    - Add `min_offset`/`max_offset` per joint type to `secondary_motion_state`
+    - Clamp spring offset before applying rotation: `offset = clamp(offset, min, max)`
+    - Suggested ranges:
+      - Elbows: `[0°, 150°]` (can't bend backward)
+      - Knees: `[0°, 150°]` (similar hinge constraint)
+  - *Alternative (defer):** Full IK constraints with joint limit cones (overkill for current scope)
+  - *Validation:* Jump mid-stride with T-pose blending; elbows should not hyperextend during spring catch-up
+  - *Origin:* Identified 2025-10-13 during air locomotion weights visual validation
+  - *Deferred Because:* Graybox-acceptable; doesn't break core mechanics. Polish item for animation believability.
+
+### Input & Control Feel
 
 - **Air locomotion weights (phase continuity + contact/air):** Prevent frozen poses in air by reweighting locomotion rather than halting it
   - *Prerequisite:* Phase-based gait system; 1D pose slerp blending (see pose blending). Existing landing/secondary motion springs.
@@ -232,6 +281,20 @@ Include lightweight metadata to improve selection and planning:
 ## UI & Menus
 
 ### Debug UI (Partially Complete)
+
+- **Debug panel layout improvements:** Reduce visual clutter, hide "settled" parameters
+  - *Problem:* As features accumulate, character panel becomes dense with spring frequencies, damping ratios, and other tuned-once parameters that rarely change
+  - *Potential solutions:*
+    - Collapsible "Advanced" subsections within each header (e.g., "Landing Spring" shows position/velocity, hides stiffness/damping behind "Advanced" toggle)
+    - "Lock" icon next to settled parameters to visually indicate "don't touch unless re-tuning"
+    - Separate "Read-Only State" vs "Tunable Parameters" tabs
+    - Auto-collapse sections that haven't been modified recently
+  - *Validation:* Can tune new features without scrolling past 10+ irrelevant sliders
+  - *Complexity:* 2-3 points (ImGui layout exploration, state persistence for collapsed sections)
+  - *Certainty:* Low (~40%) - UX problem exists, but solution unclear without experimentation
+  - *Priority:* Medium - quality-of-life improvement that becomes more valuable as system count grows
+  - *Origin:* Identified 2025-10-13 during air locomotion weights planning (concern about adding another spring frequency slider)
+
 - **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
   - *Status:* Tilt visualization complete via character body box
   - *Potential additions:* Acceleration vector arrows, velocity trails, ground normal visualization
