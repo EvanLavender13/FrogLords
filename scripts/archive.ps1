@@ -5,36 +5,34 @@
 
 .DESCRIPTION
     Moves workflow documents from PLANS/ to PLANS/ARCHIVE/ with a timestamp prefix.
-    Supports three workflow types with distinct naming patterns:
+    Supports two workflow types with distinct naming patterns:
     - feature: Multi-file artifacts with feature-first naming (<name>_FEATURE.md, <name>_PLAN.md, etc.)
-    - refactor: Single document with workflow-first naming (REFACTOR_<name>.md)
-    - maintenance: Single document with workflow-first naming (MAINTENANCE_<name>.md)
+    - improve: Single document with workflow-first naming (IMPROVE_<name>.md)
 
 .PARAMETER Type
-    The workflow type: feature, refactor, or maintenance
+    The workflow type: feature or improve
 
 .PARAMETER Name
     The name of the work to archive (e.g., "static_keyframe_preview", "yaw_direction_utilities")
-    - For feature/refactor: Optional if on a matching branch (will auto-detect)
-    - For maintenance: Required (maintenance typically works on main branch)
+    - For feature/improve: Optional if on a matching branch (will auto-detect)
 
 .EXAMPLE
     .\archive.ps1 feature static_keyframe_preview
 
 .EXAMPLE
-    .\archive.ps1 refactor yaw_direction_utilities
+    .\archive.ps1 improve yaw_direction_utilities
 
 .EXAMPLE
-    .\archive.ps1 maintenance remove_redundant_includes
+    .\archive.ps1 improve remove_redundant_includes
 
 .EXAMPLE
-    .\archive.ps1 refactor
-    # Auto-detects name from refactor/<name> branch (feature/refactor only)
+    .\archive.ps1 improve
+    # Auto-detects name from improve/<name> branch
 #>
 
 param(
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet('feature', 'refactor', 'maintenance')]
+    [ValidateSet('feature', 'improve')]
     [string]$Type,
 
     [Parameter(Position=1)]
@@ -43,20 +41,7 @@ param(
 
 # If no name provided, try to extract from git branch
 if (-not $Name) {
-    # Maintenance items typically work on main branch, so name is required
-    if ($Type -eq 'maintenance') {
-        Write-Host "Error: Name is required for maintenance archiving" -ForegroundColor Red
-        Write-Host "Usage: .\archive.ps1 maintenance <name>" -ForegroundColor Yellow
-        Write-Host "Example: .\archive.ps1 maintenance remove_redundant_includes" -ForegroundColor Yellow
-        Write-Host "`nAvailable maintenance documents in PLANS/:" -ForegroundColor Cyan
-        Get-ChildItem "PLANS\MAINTENANCE_*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-            $docName = $_.Name -replace '^MAINTENANCE_(.+)\.md$', '$1'
-            Write-Host "  - $docName" -ForegroundColor Gray
-        }
-        exit 1
-    }
-    
-    # For feature/refactor, try to extract from branch
+    # Try to extract from branch
     $currentBranch = git branch --show-current
     if ($currentBranch -match "^$Type/(.+)`$") {
         $Name = $Matches[1]
@@ -65,7 +50,14 @@ if (-not $Name) {
         Write-Host "Error: No name provided and not on a $Type/* branch" -ForegroundColor Red
         Write-Host "Usage: .\archive.ps1 <type> <name>" -ForegroundColor Yellow
         Write-Host "   or: Run from a $Type/<name> branch" -ForegroundColor Yellow
-        Write-Host "Types: feature, refactor, maintenance" -ForegroundColor Yellow
+        Write-Host "Types: feature, improve" -ForegroundColor Yellow
+        Write-Host "`nAvailable documents in PLANS/:" -ForegroundColor Cyan
+        if ($Type -eq 'improve') {
+            Get-ChildItem "PLANS\IMPROVE_*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+                $docName = $_.Name -replace '^IMPROVE_(.+)\.md$', '$1'
+                Write-Host "  - $docName" -ForegroundColor Gray
+            }
+        }
         exit 1
     }
 }
@@ -86,13 +78,9 @@ switch ($Type) {
             "${Name}_PLAN_REVIEW.md"
         )
     }
-    'refactor' {
-        # Refactor uses workflow-first naming: REFACTOR_<name>.md
-        $artifactPatterns = @("REFACTOR_$Name.md")
-    }
-    'maintenance' {
-        # Maintenance uses workflow-first naming: MAINTENANCE_<name>.md
-        $artifactPatterns = @("MAINTENANCE_$Name.md")
+    'improve' {
+        # Improve uses workflow-first naming: IMPROVE_<name>.md
+        $artifactPatterns = @("IMPROVE_$Name.md")
     }
 }
 
@@ -127,8 +115,7 @@ $filesToArchive | ForEach-Object { Write-Host "  - $(Split-Path $_ -Leaf)" }
 # Build mapping of old filename -> new filename (basename only, no path)
 # Archive naming:
 # - Features: timestamp_<name>_WORKFLOW.md (feature-first, grouping by feature name)
-# - Refactor: timestamp_REFACTOR_<name>.md (workflow-first, grouping by type)
-# - Maintenance: timestamp_MAINTENANCE_<name>.md (workflow-first, grouping by type)
+# - Improve: timestamp_IMPROVE_<name>.md (workflow-first, grouping by type)
 $filenameMap = @{}
 foreach ($file in $filesToArchive) {
     $basename = Split-Path $file -Leaf
@@ -200,6 +187,4 @@ Write-Host "Archived $($archivedFiles.Count) file(s) to $archiveDir" -Foreground
 Write-Host "`nNext steps:" -ForegroundColor Yellow
 Write-Host "  1. Review the changes: git status" -ForegroundColor Gray
 Write-Host "  2. Commit the archive: git add . && git commit -m 'archive: $Name $Type artifacts'" -ForegroundColor Gray
-if ($Type -ne 'maintenance') {
-    Write-Host "  3. Merge $Type branch to main (if not already done)" -ForegroundColor Gray
-}
+Write-Host "  3. Merge $Type branch to main (if not already done)" -ForegroundColor Gray

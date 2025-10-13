@@ -14,7 +14,7 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
 
 ## 1. Select Review Window
 
-1. **Determine Sample Size:** Decide how many recent iterations, refactors, and maintenance fixes to review (typically 5-10 iterations or equivalent work)
+1. **Determine Sample Size:** Decide how many recent iterations and improvements to review (typically 5-10 iterations or equivalent work)
 2. **List Archived Work:** Use `ls -lt PLANS/ARCHIVE/` to identify the most recent timestamped documents
 3. **Identify Complete Sets:** 
    - **For feature iterations**, gather all related documents:
@@ -22,16 +22,14 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
      - `*_PLAN.md`
      - `*_PLAN_REVIEW.md`
      - `*_CODE_REVIEW.md`
-   - **For refactors**, gather:
-     - `REFACTOR_*.md` documents (contain full refactor history in single document)
-   - **For maintenance fixes**, gather:
-     - `MAINTENANCE_*.md` documents (contain full fix history in single document)
+   - **For improvements**, gather:
+     - `IMPROVE_*.md` documents (contain full improvement history in single document)
 
 ---
 
 ## 2. Extract Patterns from Archives
 
-For each iteration or refactor in the sample, read through the documents and extract:
+For each iteration or improvement in the sample, read through the documents and extract:
 
 ### Feature Iterations: Planning Phase Analysis
 - **REVIEW_PLAN outcomes:** Did plans pass on first try? What types of issues were found?
@@ -62,50 +60,45 @@ For each iteration or refactor in the sample, read through the documents and ext
   - Were there early warning signs that were missed?
   - What learnings were captured?
 
-### Refactors: Planning Phase Analysis
-- **REVIEW_PLAN outcomes:** Did refactor plans pass review? What issues were found?
-  - Rule of three violations (pattern didn't appear 3+ times)
+### Improvements: Planning Phase Analysis (Standard Path)
+- **REVIEW_PLAN outcomes:** Did improvement plans pass review? What issues were found?
+  - Rule of three violations (pattern didn't appear 3+ times for extractions)
   - Stability gate failures (systems <70% certainty)
   - Scope creep or premature abstraction
   - Risk assessment accuracy
-- **Complexity estimates:** Were estimates accurate? Did refactors exceed 8-point limit?
-- **Migration strategy:** Were staged approaches chosen appropriately for risk level?
+- **Complexity estimates:** Were estimates accurate? Did improvements exceed 8-point limit?
+- **Trivial vs Standard classification:** Was the classification accurate?
 
-### Refactors: Execution Analysis
-- **Stage completion:** For staged refactors, did each stage verify correctly?
-- **Call site accuracy:** Were all call sites identified in planning?
+### Improvements: Execution Analysis
+- **Stage completion:** For staged improvements, did each stage verify correctly?
+- **Call site accuracy:** Were all call sites identified in planning (for pattern extractions)?
 - **Hidden dependencies:** What hidden dependencies were discovered during execution?
-- **Code review findings:** What types of issues appeared in code review?
+- **Code review findings (Standard path):** What types of issues appeared in code review?
   - Principle alignment (clarity, simplicity)
   - Behavioral preservation
   - Scope discipline
+- **Scope discipline:** Did fixes stay focused or expand during implementation?
+- **Discovery patterns:** Did improvements uncover deeper issues?
+  - How many led to additional improvement backlog items?
+  - How many revealed architectural concerns?
 
-### Refactors: Outcome Analysis
+### Improvements: Outcome Analysis
 - **Successful completions:**
-  - What impact was achieved? (e.g., "Reduced duplication 5→1")
+  - What impact was achieved? (e.g., "Reduced duplication 5→1", "Fixed architectural violation")
   - What learnings were captured?
-  - Did abstraction quality meet expectations?
-- **Deferred refactors:**
+  - Did abstraction quality meet expectations (for pattern extractions)?
+- **Deferred improvements:**
   - What triggered deferral? (too risky, complexity exceeded estimate, unstable systems)
   - Were stability gates enforced properly?
   - What would make it viable in the future?
-
-### Maintenance Fixes: Analysis
-- **Complexity classification accuracy:** Were Trivial vs Standard classifications accurate?
-- **Scope discipline:** Did fixes stay focused or expand during implementation?
-- **Discovery patterns:** Did "trivial" fixes uncover deeper issues?
-  - How many led to refactor backlog items?
-  - How many revealed architectural concerns?
-- **Path selection:** Was the two-tier review approach (Path A skip, Path B review) appropriate?
-- **Learning capture:** What insights were documented?
 - **Batch opportunities:** Were similar issues identified for future batching?
 
 ### Cross-Cutting: Iteration Reflections
-- Review any explicit reflection notes from FINALIZE_ITERATION, refactor completions, or maintenance fixes
+- Review any explicit reflection notes from FINALIZE_ITERATION or improvement completions
 - Were there recurring frustrations or friction points?
 - What practices helped work go smoothly?
-- How did feature, refactor, and maintenance work interleave? Any conflicts or synergies?
-- **Maintenance-specific:** Did maintenance work complement feature development or create conflicts?
+- How did feature and improvement work interleave? Any conflicts or synergies?
+- **Improvement-specific:** Did improvement work complement feature development or create conflicts?
 
 ---
 
@@ -114,7 +107,7 @@ For each iteration or refactor in the sample, read through the documents and ext
 Organize patterns into three categories:
 
 ### ✅ Keep Doing
-Practices that prevented issues or enabled smooth iterations/refactors:
+Practices that prevented issues or enabled smooth iterations/improvements:
 - Example: "Clarifying visual references before planning prevented implementation surprises"
 - Example: "Small, focused iteration scopes completed faster with fewer issues"
 - Example: "Staged migration approach for 10+ call sites prevented refactor issues"
@@ -130,9 +123,9 @@ Practices that caused problems or friction:
 ### 🆕 Start Doing
 New practices to try based on observed patterns:
 - Example: "Add explicit 'complexity estimate' to iteration plans to catch over-scoped plans early"
-- Example: "Run REVIEW_CODEBASE before planning major refactors to surface hidden coupling"
-- Example: "Track refactor opportunities discovered during feature work more systematically"
-- Example: "Review DEPENDENCY_STACK tree structure and certainty scores before selecting refactors"
+- Example: "Run REVIEW_CODEBASE before planning major improvements to surface hidden coupling"
+- Example: "Track improvement opportunities discovered during feature work more systematically"
+- Example: "Review DEPENDENCY_STACK tree structure and certainty scores before selecting improvements"
 
 ---
 
@@ -163,11 +156,10 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 ```markdown
 # Retrospective: <Date Range>
 
-**Work Reviewed:** <count> iterations, <count> refactors, <count> maintenance fixes
+**Work Reviewed:** <count> iterations, <count> improvements
 **Date Range:** <first_timestamp> to <last_timestamp>
 **Feature Iterations:** X completed, Y deferred
-**Refactors:** Z completed, W deferred
-**Maintenance Fixes:** M completed
+**Improvements:** I completed
 
 ---
 
@@ -184,53 +176,48 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 **Completion/Deferral:**
 - [Summarize outcomes and learnings]
 
-### Refactors
+### Improvements
 
 **Planning Phase:**
-- [Summarize refactor planning patterns]
+- [Summarize improvement planning patterns]
 - Stability gate enforcement: [observations]
-- Rule of three verification: [observations]
+- Rule of three verification (for pattern extractions): [observations]
 - Complexity estimation accuracy: [observations]
+- Trivial vs Standard classification: [observations]
 
 **Execution Phase:**
 - [Summarize execution patterns]
 - Staged vs linear approaches: [observations]
-- Call site identification accuracy: [observations]
+- Call site identification accuracy (for refactors): [observations]
 - Hidden dependency discovery: [observations]
-
-**Completion/Deferral:**
-- [Summarize refactor outcomes]
-- Impact achieved: [examples]
-- Learnings captured: [observations]
-
-### Maintenance Fixes
-
-**Complexity Classification:**
-- Trivial vs Standard accuracy: [observations]
-- Path selection appropriateness: [observations]
 
 **Scope & Discovery:**
 - Scope discipline: [did fixes stay focused?]
 - Unexpected discoveries: [trivial fixes revealing deeper issues]
-- Refactor triggers: [how many led to REFACTOR_BACKLOG items?]
+- New improvement triggers: [how many led to additional IMPROVE_BACKLOG items?]
 
 **Process Effectiveness:**
 - Two-tier review working well: [observations]
 - Learning capture quality: [observations]
 - Batch opportunity identification: [observations]
 
+**Completion/Deferral:**
+- [Summarize improvement outcomes]
+- Impact achieved: [examples]
+- Learnings captured: [observations]
+
 ### Cross-Cutting Observations
-- Feature/refactor/maintenance interleaving: [patterns]
+- Feature/improvement interleaving: [patterns]
 - Workflow friction points: [observations]
 - Process synergies: [what worked well]
-- Maintenance as investigation tool: [how well did quick fixes surface architectural concerns?]
+- Improvements as investigation tool: [how well did quick fixes surface architectural concerns?]
 
 ---
 
 ## Findings
 
 ### ✅ Keep Doing
-- [List effective practices from both features and refactors]
+- [List effective practices from both features and improvements]
 
 ### 🛑 Stop Doing
 - [List problematic practices]
@@ -249,7 +236,7 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 ### Documentation Updates
 - [ ] **WORKFLOW.md:** [Specific change description]
 - [ ] **DEPENDENCY_STACK.md:** [Specific change description]
-- [ ] **REFACTOR_BACKLOG.md:** [Specific change description]
+- [ ] **IMPROVE_BACKLOG.md:** [Specific change description]
 
 ### Process Experiments
 - [ ] **Experiment:** [Description and success criteria]
@@ -280,16 +267,13 @@ After completing the retrospective, group the reviewed work with the retrospecti
 2. **Move retrospective document:** `RETROSPECTIVE_<timestamp>.md` into the new subdirectory
 3. **Move reviewed artifacts:** Move all artifacts from the work that was reviewed into the subdirectory
    - **Feature iterations:** Include all files for each reviewed iteration (feature, iteration, implementation, review, code_review)
-   - **Refactors:** Include complete `refactor_*.md` documents
-   - **Maintenance fixes:** Include complete `maintenance_*.md` documents
+   - **Improvements:** Include complete `improve_*.md` documents
    - Use `mv PLANS/ARCHIVE/<timestamp>_* PLANS/ARCHIVE/RETRO_<timestamp>/` for each iteration timestamp
-   - Use `mv PLANS/ARCHIVE/refactor_* PLANS/ARCHIVE/RETRO_<timestamp>/` for refactor documents
-   - Use `mv PLANS/ARCHIVE/maintenance_* PLANS/ARCHIVE/RETRO_<timestamp>/` for maintenance documents
+   - Use `mv PLANS/ARCHIVE/improve_* PLANS/ARCHIVE/RETRO_<timestamp>/` for improvement documents
 4. **Verify organization:** Confirm the subdirectory contains:
    - The retrospective document
    - All artifacts from reviewed iterations (grouped by iteration timestamp prefix)
-   - All refactor documents reviewed
-   - All maintenance fix documents reviewed
+   - All improvement documents reviewed
    - Nothing else remains in flat ARCHIVE that should have been included
 
 **Purpose:** Keeps ARCHIVE clean and navigable. Each RETRO_ subdirectory is a self-contained snapshot of reviewed work plus the analysis that covered it.
@@ -329,21 +313,21 @@ PLANS/ARCHIVE/
 - Small, incremental changes are better than sweeping overhauls
 - Not all patterns need immediate action; some are just observations
 - Track which workflow changes came from retrospectives to evaluate their impact in future retros
-- If deferral rate is high (>40%) for features or refactors, dig deep into root causes
+- If deferral rate is high (>40%) for features or improvements, dig deep into root causes
 - If planning issues are recurring, consider adding CLARIFY_FEATURE or REVIEW_PLAN improvements
 - Celebrate what's working; don't just focus on problems
 - Archive organization keeps PLANS/ARCHIVE/ from becoming unnavigable; RETRO_ subdirectories are chronological snapshots of process reviews
-- **Refactor-specific considerations:**
+- **Improve-specific considerations:**
   - Are stability gates (70% certainty) being enforced consistently?
-  - Is rule-of-three discipline preventing premature abstraction?
-  - Are complexity estimates (3-8 points) accurate for refactors?
+  - Is rule-of-three discipline preventing premature abstraction (for pattern extractions)?
+  - Are complexity estimates (1-8 points) accurate for improvements?
   - How well do staged vs linear approaches map to risk levels?
-  - Are refactor learnings feeding back to improve future planning?
-  - Is feature/refactor interleaving causing conflicts or working well?
-- **Maintenance-specific considerations:**
+  - Are improvement learnings feeding back to improve future planning?
+  - Is feature/improvement interleaving causing conflicts or working well?
+- **Improve-specific considerations:**
   - Is Trivial vs Standard classification working well?
-  - Are maintenance fixes uncovering deeper architectural issues consistently?
+  - Are fixes uncovering deeper architectural issues consistently?
   - Should certain recurring patterns be batched proactively?
   - Is the two-tier review approach (skip for Trivial, review for Standard) appropriate?
-  - Are maintenance investigations surfacing valid refactor opportunities?
-  - Is maintenance work complementing or conflicting with feature/refactor workflows?
+  - Are improvement investigations surfacing new improvement opportunities?
+  - Is improvement work complementing or conflicting with feature workflows?

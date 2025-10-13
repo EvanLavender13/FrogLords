@@ -8,8 +8,7 @@ This document provides an overview of all task workflows and how backlogs feed i
 graph TB
     subgraph Backlogs["PLANS/ - Backlogs"]
         DB[DESIGN_BACKLOG]
-        MB[MAINTENANCE_BACKLOG]
-        RB[REFACTOR_BACKLOG]
+        IB[IMPROVE_BACKLOG]
     end
 
     subgraph FeatureTasks["FEATURE/ - Feature Workflow"]
@@ -20,16 +19,10 @@ graph TB
         UD[UPDATE_DEPENDENCIES]
     end
 
-    subgraph MaintenanceTasks["MAINTENANCE/ - Maintenance Workflow"]
+    subgraph ImproveTasks["IMPROVE/ - Improve Workflow"]
         RC[REVIEW_CODEBASE]
-        PI[SELECT_ITEM]
-        MW[Maintenance Tasks<br/>IMPLEMENT → REVIEW → FINALIZE]
-    end
-
-    subgraph RefactorTasks["REFACTOR/ - Refactor Workflow"]
-        IR[IDENTIFY_REFACTORS]
-        SR[SELECT_REFACTOR]
-        RW[Refactor Tasks<br/>PLAN → REVIEW → EXECUTE<br/>VERIFY → FINALIZE]
+        SI[SELECT]
+        IW[Improve Tasks<br/>PLAN → REVIEW → EXECUTE<br/>REVIEW → FINALIZE]
     end
 
     %% Feature workflow flows
@@ -40,28 +33,18 @@ graph TB
     FW --> UD
     UB -->|update status| DB
 
-    %% Maintenance workflow flows
-    RC -->|populate items| MB
-    MB -->|select item| PI
-    PI --> MW
-    MW -->|mark complete| MB
-
-    %% Refactor workflow flows
-    IR -->|populate opportunities| RB
-    RB -->|select refactor| SR
-    SR --> RW
-    RW -->|update status| RB
+    %% Improve workflow flows
+    RC -->|populate items| IB
+    IB -->|select item| SI
+    SI --> IW
+    IW -->|mark complete| IB
 
     style DB fill:#e1f5ff
-    style MB fill:#fff3cd
-    style RB fill:#ffe1e1
+    style IB fill:#fff3cd
     style FW fill:#d4edda
-    style MW fill:#d4edda
-    style RW fill:#d4edda
+    style IW fill:#d4edda
     style NF fill:#b8e6b8
-    style PI fill:#b8e6b8
-    style IR fill:#b8e6b8
-    style SR fill:#b8e6b8
+    style SI fill:#b8e6b8
     style RF fill:#e1f5ff
     style RC fill:#fff3cd
     style UB fill:#e1f5ff
@@ -82,17 +65,11 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 
 **Rationale:** Features involve multi-phase iterative work. Grouping by feature name clusters all related documents together alphabetically, making it easy to see the complete arc of a feature at a glance (planning → implementation → reviews).
 
-### Refactor Documents (Workflow-First)
-**Pattern:** `PLANS/REFACTOR_<description>.md`  
-**Archive:** `YYYYMMDD_HHMMSS_REFACTOR_<description>.md`
+### Improve Documents (Workflow-First)
+**Pattern:** `PLANS/IMPROVE_<description>.md`  
+**Archive:** `YYYYMMDD_HHMMSS_IMPROVE_<description>.md`
 
-**Rationale:** Refactors are typically one-off architectural improvements. Grouping by workflow type (REFACTOR_) clusters all refactoring work together, aiding pattern recognition and retrospective analysis of architectural evolution.
-
-### Maintenance Documents (Workflow-First)
-**Pattern:** `PLANS/MAINTENANCE_<description>.md`  
-**Archive:** `YYYYMMDD_HHMMSS_MAINTENANCE_<description>.md`
-
-**Rationale:** Maintenance items are quick, isolated fixes. Grouping by workflow type (MAINTENANCE_) clusters all maintenance work together, making it easy to review code quality trends and identify systemic issues.
+**Rationale:** Improvements (maintenance, refactors, architectural fixes) are typically one-off enhancements. Grouping by workflow type (IMPROVE_) clusters all improvement work together, aiding pattern recognition and retrospective analysis of code quality evolution.
 
 ### Feature Development Workflow
 - **Location:** `TASKS/FEATURE/`
@@ -103,21 +80,14 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 - **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_PLAN.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
  - **Common Checkpoints:** Gate Mechanism Review (prefer geometric deltas over thresholds for reactive/debug gating), UI Ordering Verified (enum order matches UI for cycle-based lists)
 
-### Maintenance Workflow
-- **Location:** `TASKS/MAINTENANCE/`
-- **Purpose:** Quick fixes and code quality improvements
-- **Entry Point:** SELECT_ITEM
-- **Input Backlog:** [PLANS/MAINTENANCE_BACKLOG.md](../PLANS/MAINTENANCE_BACKLOG.md)
-- **Details:** [MAINTENANCE/WORKFLOW.md](MAINTENANCE/WORKFLOW.md)
-- **Document Approach:** Single document per fix (`PLANS/MAINTENANCE_<name>.md`) accumulates all phases
-
-### Refactor Workflow
-- **Location:** `TASKS/REFACTOR/`
-- **Purpose:** Architectural improvements and pattern extraction
-- **Entry Point:** SELECT_REFACTOR
-- **Input Backlog:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
-- **Details:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
-- **Document Approach:** Single document per refactor (`PLANS/REFACTOR_<name>.md`) accumulates all phases
+### Improve Workflow
+- **Location:** `TASKS/IMPROVE/`
+- **Purpose:** Code quality improvements, architectural fixes, tech debt, and pattern extraction
+- **Entry Point:** SELECT
+- **Input Backlog:** [PLANS/IMPROVE_BACKLOG.md](../PLANS/IMPROVE_BACKLOG.md)
+- **Details:** [IMPROVE/WORKFLOW.md](IMPROVE/WORKFLOW.md)
+- **Document Approach:** Single document per improvement (`PLANS/IMPROVE_<name>.md`) accumulates all phases
+- **Paths:** Trivial (1-2 pts, skip planning/review) or Standard (3-8 pts, full workflow)
 
 ---
 
@@ -137,36 +107,24 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 - SELECT_FEATURE (select from backlog)
 - UPDATE_BACKLOG (mark complete/deferred)
 
-### Maintenance Backlog → Maintenance Workflow
-**Source:** [PLANS/MAINTENANCE_BACKLOG.md](../PLANS/MAINTENANCE_BACKLOG.md)
-**Workflow:** [MAINTENANCE/WORKFLOW.md](MAINTENANCE/WORKFLOW.md)
+### Improve Backlog → Improve Workflow
+**Source:** [PLANS/IMPROVE_BACKLOG.md](../PLANS/IMPROVE_BACKLOG.md)
+**Workflow:** [IMPROVE/WORKFLOW.md](IMPROVE/WORKFLOW.md)
 **Process:**
-1. REVIEW_CODEBASE populates MAINTENANCE_BACKLOG with code quality items
-2. Items prioritized by severity (Critical → High → Medium → Low)
-3. SELECT_ITEM selects appropriate fixes based on available time
-4. Quick fix-test-commit cycle
+1. REVIEW_CODEBASE populates IMPROVE_BACKLOG with code quality items, architectural violations, tech debt, and pattern extraction opportunities
+2. Items prioritized by severity/priority (Critical → High → Medium → Low)
+3. Items must meet stability gate (≥70% certainty) and rule of three (for pattern extractions)
+4. SELECT chooses appropriate improvements based on complexity and readiness
+5. Trivial items (1-2 pts) skip planning/review; Standard items (3-8 pts) get full workflow
 
 **Key Tasks:**
 - REVIEW_CODEBASE (populate backlog)
-- SELECT_ITEM (select from backlog)
-- IMPLEMENT_FIX (execute fix)
-- REVIEW_FIX (Path B only - verify quality)
-- FINALIZE_FIX (update backlog, document learnings, prepare commit)
-
-### Refactor Backlog → Refactor Workflow
-**Source:** [PLANS/REFACTOR_BACKLOG.md](../PLANS/REFACTOR_BACKLOG.md)
-**Workflow:** [REFACTOR/WORKFLOW.md](REFACTOR/WORKFLOW.md)
-**Process:**
-1. IDENTIFY_REFACTORS populates REFACTOR_BACKLOG with pattern extraction opportunities
-2. Items mature when systems reach ≥70% certainty (stability gate)
-3. Follows "rule of three" (3+ uses) before extraction
-4. SELECT_REFACTOR chooses ready items based on priority and stability
-5. Refactor flows through planning → execution → review → finalization (impact analysis and validation live inside the refactor plan)
-
-**Key Tasks:**
-- IDENTIFY_REFACTORS (populate backlog)
-- SELECT_REFACTOR (select from backlog)
-- Refactor workflow tasks (see REFACTOR/WORKFLOW.md)
+- SELECT (select from backlog)
+- PLAN (Standard path only - create detailed approach)
+- REVIEW_PLAN (Standard path only - verify against principles)
+- EXECUTE (implement changes in stages)
+- REVIEW_CODE (Standard path only - comprehensive review)
+- FINALIZE (update backlog, document learnings, prepare commit)
 
 ---
 
@@ -184,17 +142,8 @@ These tasks support all workflows:
 - **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
 - **UPDATE_BACKLOG**: Mark features complete/deferred in DESIGN_BACKLOG, document learnings
 
-### Maintenance Workflow (`TASKS/MAINTENANCE/`)
-- **REVIEW_CODEBASE**: Random walk through src/ to populate MAINTENANCE_BACKLOG.md
-
-### Refactor Workflow (`TASKS/REFACTOR/`)
-- **IDENTIFY_REFACTORS**: Deep system analysis to populate REFACTOR_BACKLOG.md
-- **SELECT_REFACTOR**: Choose refactor opportunity from backlog based on priority and stability
-- **PLAN_REFACTOR**: Capture impact analysis, migration strategy, and validation checklist in a single plan
-- **REVIEW_PLAN**: Verify plan against principles and stability requirements
-- **IMPLEMENT_REFACTOR**: Implement refactor in stages with verification
-- **REVIEW_REFACTOR**: Comprehensive code review for correctness and principle alignment
-- **FINALIZE_REFACTOR**: Run plan's validation checklist, update backlog, document learnings, prepare commits
+### Improve Workflow (`TASKS/IMPROVE/`)
+- **REVIEW_CODEBASE**: Systematic review of src/ to populate IMPROVE_BACKLOG.md with code quality items, architectural violations, tech debt, and pattern extraction opportunities
 
 ---
 
@@ -207,18 +156,12 @@ These tasks support all workflows:
 
 ## Workflow Complexity Comparison
 
-### MAINTENANCE (Low Complexity)
-- **Complexity:** 1-2 points
-- **Scope:** Single-file or small multi-file changes
-- **Review:** Two-tier (trivial skip review, standard get review)
-- **Purpose:** Quick fixes and code quality improvements
-
-### REFACTOR (Medium Complexity)
-- **Complexity:** 3-8 points
-- **Scope:** Multi-file, cross-system changes
-- **Review:** Always reviewed and validated
-- **Purpose:** Architectural improvements and pattern extraction
-- **Gates:** Stability requirement (≥70% certainty), rule of three verification
+### IMPROVE (Low to Medium Complexity)
+- **Complexity:** 1-8 points (two paths)
+- **Trivial Path (1-2 pts):** Single-file, mechanical changes; skip planning/review
+- **Standard Path (3-8 pts):** Multi-file, architectural changes; full workflow with planning and review
+- **Purpose:** Code quality improvements, architectural fixes, tech debt, pattern extraction
+- **Gates:** Stability requirement (≥70% certainty), rule of three verification (for pattern extractions)
 
 ### FEATURE (High Complexity)
 - **Complexity:** 8+ points (or split into smaller iterations)

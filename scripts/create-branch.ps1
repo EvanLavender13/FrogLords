@@ -6,11 +6,10 @@
 .DESCRIPTION
     Creates and switches to a new git branch with the appropriate prefix:
     - feature/<name> for feature development
-    - refactor/<name> for refactoring work
-    - maintenance/<name> for maintenance fixes
+    - improve/<name> for improvement work (maintenance, refactors, tech debt, architectural fixes)
 
 .PARAMETER Type
-    The workflow type: feature, refactor, or maintenance
+    The workflow type: feature or improve
 
 .PARAMETER Name
     The branch name (without prefix)
@@ -19,15 +18,15 @@
     .\create-branch.ps1 feature static-keyframe-preview
 
 .EXAMPLE
-    .\create-branch.ps1 refactor yaw-direction-utilities
+    .\create-branch.ps1 improve yaw-direction-utilities
 
 .EXAMPLE
-    .\create-branch.ps1 maintenance remove-redundant-includes
+    .\create-branch.ps1 improve remove-redundant-includes
 #>
 
 param (
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet('feature', 'refactor', 'maintenance')]
+    [ValidateSet('feature', 'improve')]
     [string]$Type,
 
     [Parameter(Mandatory=$true, Position=1)]
@@ -37,7 +36,7 @@ param (
 if (-not $Name) {
     Write-Host "Error: Branch name is required." -ForegroundColor Red
     Write-Host "Usage: .\create-branch.ps1 <type> <name>" -ForegroundColor Yellow
-    Write-Host "Types: feature, refactor, maintenance" -ForegroundColor Yellow
+    Write-Host "Types: feature, improve" -ForegroundColor Yellow
     exit 1
 }
 

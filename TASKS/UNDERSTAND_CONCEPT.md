@@ -222,8 +222,7 @@ UNDERSTAND_CONCEPT (meta-task: knowledge creation)
         ↓
     Informs all workflows:
     - FEATURE (implementation approach)
-    - MAINTENANCE (code quality decisions)
-    - REFACTOR (pattern recognition)
+    - IMPROVE (code quality decisions, pattern recognition)
     - RETROSPECTIVE (process improvements)
 ```
 

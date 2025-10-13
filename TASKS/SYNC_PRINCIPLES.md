@@ -52,7 +52,7 @@ In `AGENTS.md`:
 
 In PLANS:
 - Confirm "Triggers to Update" exist in `PLANS/DEPENDENCY_STACK.md` and `PLANS/DESIGN_BACKLOG.md`.
-- Add missing triggers if needed (dependencies shifts, certainty changes, backlog pulls, refactors that change data representations).
+- Add missing triggers if needed (dependencies shifts, certainty changes, backlog pulls, improvements that change data representations).
 
 In CONVENTIONS:
 - If the implementation changed (e.g., yaw conventions, slerp edge cases), update `CONVENTIONS.md` accordingly.

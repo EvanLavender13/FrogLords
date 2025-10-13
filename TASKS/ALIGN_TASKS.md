@@ -66,8 +66,8 @@ Run ALIGN_TASKS when:
   - `### Actionable Items` (checklist)
   - `### Recommendation` or `### Next Steps`
 - Match verbosity to task complexity:
-  - MAINTENANCE: Minimal (fix is straightforward)
-  - REFACTOR: Moderate (staged, risky)
+  - IMPROVE Trivial: Minimal (fix is straightforward)
+  - IMPROVE Standard: Moderate (staged, risky, architectural)
   - FEATURE: Comprehensive (uncertain, exploratory)
 
 ### 4. Principle Alignment
@@ -96,19 +96,19 @@ Run ALIGN_TASKS when:
 
 ### 5. Cross-Workflow Consistency
 
-**Review Tasks (REVIEW_PLAN, REVIEW_REFACTOR, REVIEW_FIX, REVIEW_IMPLEMENTATION):**
+**Review Tasks (REVIEW_PLAN, REVIEW_CODE, REVIEW_IMPLEMENTATION):**
 - All should output similar status format
 - All should categorize findings by severity
 - All should provide actionable next steps
-- Verbosity scales with complexity (FIX < REFACTOR < PLAN/IMPLEMENTATION)
+- Verbosity scales with complexity (IMPROVE Trivial < IMPROVE Standard < FEATURE)
 
-**Finalize Tasks (FINALIZE_FIX, FINALIZE_REFACTOR, FINALIZE_FEATURE):**
+**Finalize Tasks (FINALIZE, FINALIZE_FEATURE):**
 - All should run final validation
 - All should update backlog (move to Completed)
 - All should document learnings
 - All should propose next steps
 
-**Plan Tasks (PLAN_REFACTOR, PLAN_IMPLEMENTATION):**
+**Plan Tasks (PLAN, PLAN_IMPLEMENTATION):**
 - All should analyze impact/risk
 - All should create migration/implementation strategy
 - All should provide validation checklists
@@ -131,12 +131,12 @@ Determine what prompted this alignment check:
 Based on trigger, identify tasks that need alignment:
 
 **If modifying a REVIEW task:**
-- Compare all review tasks: REVIEW_PLAN, REVIEW_REFACTOR, REVIEW_FIX, REVIEW_IMPLEMENTATION
+- Compare all review tasks: REVIEW_PLAN, REVIEW_CODE, REVIEW_IMPLEMENTATION
 - Check template format consistency
 - Verify severity categorization matches
 
 **If modifying a FINALIZE task:**
-- Compare all finalize tasks: FINALIZE_FIX, FINALIZE_REFACTOR, FINALIZE_FEATURE
+- Compare all finalize tasks: FINALIZE (IMPROVE), FINALIZE_FEATURE
 - Check backlog update patterns
 - Verify learning documentation format
 
@@ -233,7 +233,7 @@ Create summary of alignment changes:
 
 ### Pattern: Review Task Template
 
-**Enforced across:** REVIEW_PLAN, REVIEW_REFACTOR, REVIEW_FIX, REVIEW_IMPLEMENTATION
+**Enforced across:** REVIEW_PLAN, REVIEW_CODE, REVIEW_IMPLEMENTATION
 
 ```markdown
 **Date:** [YYYY-MM-DD]
@@ -278,7 +278,7 @@ Read `AGENTS.md` to ensure alignment with:
 ```markdown
 ### 2. Gather Context
 
-Extract [feature|refactor|fix] name from branch (`[workflow]/<name>`):
+Extract [feature|improvement] name from branch (`[workflow]/<name>`):
 
 1. Read `PLANS/[workflow]_<name>.md`
 2. Read affected source files
@@ -323,7 +323,7 @@ Alignment complete when:
 
 - Systematic and thorough; consistency is the goal
 - Enforce patterns, don't invent new ones
-- Preserve workflow-specific differences (MAINTENANCE vs REFACTOR verbosity)
+- Preserve workflow-specific differences (IMPROVE Trivial vs Standard vs FEATURE verbosity)
 - Document rationale for patterns being enforced
 - Use diffs/comparisons to show before/after
 - Verify changes don't break workflow logic
