@@ -55,13 +55,13 @@ graph TD
 ## Workflow Paths
 
 ### Path A: Trivial (1-2 points, single file, mechanical)
-1. SELECT → Classify as Trivial
+1. SELECT → Create branch, classify as Trivial
 2. EXECUTE → Make the fix
 3. FINALIZE → Update backlog, prepare commit
 4. Manual Git → SELECT
 
 ### Path B: Standard (3-8 points, multi-file or architectural)
-1. SELECT → Classify as Standard
+1. SELECT → Create branch, classify as Standard
 2. PLAN → Detail the approach
 3. REVIEW_PLAN (pass) → EXECUTE
 4. EXECUTE → Implement in stages
@@ -89,10 +89,8 @@ graph TD
 - **Stage verification**: Standard changes execute in logical stages with validation between each
 - **Manual progression**: Each task initiated manually; user decides when to proceed (except automated trivial path)
 - **Learning capture**: Document insights in Completed section (what worked, what to avoid, patterns discovered)
-- **Single document**: All improvement phases append to `PLANS/IMPROVE_<name>.md` (description → plan → review → execution → code review → finalization) for complete history
-- **Optional branching**:
-  - Trivial: Usually work on current branch
-  - Standard: Use `improve/<name>` branch for safety
+- **Single document**: All improvement phases append to `PLANS/IMPROVE_<name>.md` (description → plan → review → execution → code review → finalization) for complete history; no separate REVIEW documents
+- **Always branch**: Create `improve/<name>` branch for ALL improvements (trivial and standard) to isolate work and enable clean rollback
 - **Batch opportunity**: FINALIZE notes similar items for future batch processing
 
 ## Complexity Classification

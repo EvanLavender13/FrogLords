@@ -26,15 +26,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Architectural violations, bugs, blocking issues requiring immediate attention)
 
-### Rendering
-**Debug Draw Depends on App**
-- *File:* `src/rendering/debug_draw.cpp:5`
-- *Issue:* Includes `app/game_world.h` to access `velocity_trail_state`, violating layered architecture
-- *Principle Violated:* Rendering must not depend on App
-- *Fix:* Extract `velocity_trail_state` to shared header (e.g., `rendering/velocity_trail.h`) or pass minimal data via parameters
-- *Complexity:* 2-3 points
-- *Tags:* #architecture #layers
-
 ### Character
 **Character Controller Depends on Rendering**
 - *File:* `src/character/controller.cpp:4`
@@ -152,6 +143,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Critical / Rendering
+**Debug Draw Depends on App** ✓
+- *Completed:* October 13, 2025
+- *Files:* `src/rendering/debug_draw.cpp`, `src/app/game_world.h`, `src/rendering/velocity_trail.h`
+- *Fix:* Extracted `velocity_trail_state` from `game_world.h` to new header `rendering/velocity_trail.h` to break App → Rendering dependency.
+- *Learning:* Architectural violations, even if small, should be fixed promptly to prevent them from spreading.
+- *Document:* `PLANS/IMPROVE_debug_draw_app_dependency.md`
 
 ### Medium / Input
 **Unused stdio Include** (done)

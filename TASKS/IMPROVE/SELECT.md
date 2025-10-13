@@ -116,14 +116,18 @@ Create description and save to `PLANS/IMPROVE_<item_name>.md`:
 **Tags:** [From backlog: #architecture, #cleanup, #pattern-extraction, etc.]
 ```
 
-### 7. Optional: Create Branch (Path B recommended)
+### 7. Create Branch
 
-For Standard improvements (3-8 pts):
+**ALWAYS create a branch for all improvements:**
 ```bash
 bash scripts/bash/create_branch.sh improve <item_name>
 ```
 
-Trivial fixes can work directly on current branch.
+This provides:
+- Clean isolation of changes
+- Easy rollback if issues arise
+- Clear history of improvement work
+- Consistent workflow regardless of complexity
 
 ### 8. Document Selection
 
@@ -133,7 +137,7 @@ State clearly:
 - Files affected
 - Workflow path (A or B)
 - Document created: `PLANS/IMPROVE_<item_name>.md`
-- Branch created (if Path B): `improve/<item_name>`
+- Branch created: `improve/<item_name>`
 
 ---
 

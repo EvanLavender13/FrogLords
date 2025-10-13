@@ -67,35 +67,14 @@ Re-verify the validation checklist from PLAN was properly executed:
 - Code quality tools clean (clang-format, clang-tidy)
 - Learnings captured in execution notes
 
-### 4. Save and Propose
+### 4. Append Review to Planning Document
 
-Generate review document and propose to user.
-
-**Filename:** `PLANS/IMPROVE_<name>_CODE_REVIEW.md`
+Add review analysis to `PLANS/IMPROVE_<name>.md` using template below.
 
 **Decision Options:**
 - **APPROVED:** All checks passed; principles followed; no side effects; quality standards met → Proceed to FINALIZE
 - **FIX_ISSUES:** Specific problems found (missed edge case, naming violation, unintended behavior change, missing comment update) → Return to EXECUTE with fix list
 - **ROLLBACK:** Fundamental issues with approach; unintended complexity revealed; risk too high for reward → Rollback changes, update backlog with learnings
-
-**Content:** Use the template below
-
-### 5. Append to Planning Document
-
-If decision is made, append review summary to `PLANS/IMPROVE_<name>.md`:
-
-```markdown
----
-
-## CODE REVIEW
-
-**Date:** [YYYY-MM-DD]
-**Status:** APPROVED | FIX_ISSUES | ROLLBACK
-
-[Brief summary of decision and key findings]
-
-See `PLANS/IMPROVE_<name>_CODE_REVIEW.md` for full analysis.
-```
 
 ### Tone & Constraints
 
@@ -111,8 +90,12 @@ See `PLANS/IMPROVE_<name>_CODE_REVIEW.md` for full analysis.
 
 ### Code Review Template
 
+**Append to `PLANS/IMPROVE_<name>.md`:**
+
 ```markdown
-# Code Review: [Improvement Name]
+---
+
+## CODE REVIEW
 
 **Date:** [YYYY-MM-DD]
 **Status:** APPROVED | FIX_ISSUES | ROLLBACK

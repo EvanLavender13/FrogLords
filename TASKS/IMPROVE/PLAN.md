@@ -171,11 +171,11 @@ Add to `PLANS/IMPROVE_<name>.md`:
 ### 9. Document Plan Completion
 
 State clearly:
-- Plan created in `PLANS/IMPROVE_<name>.md`
+- Plan appended to `PLANS/IMPROVE_<name>.md`
 - Number of stages
 - Estimated time per stage
 - Risk level and mitigation approach
-- Ready for REVIEW_PLAN
+- Ready for REVIEW_PLAN (will be appended to same document)
 
 ---
 

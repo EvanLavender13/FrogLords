@@ -86,18 +86,16 @@ Must have:
 - Branch strategy allows clean revert
 - Intermediate commit points identified (for multi-stage work)
 
-### 4. Save and Propose
+### 4. Append Review to Planning Document
 
-Generate review document and propose to user.
-
-**Filename:** `PLANS/IMPROVE_<name>_PLAN_REVIEW.md`
+Add review analysis to `PLANS/IMPROVE_<name>.md` using template below.
 
 **Decision Options:**
 - **APPROVED:** Plan is sound; all principles satisfied; risk/reward acceptable → Proceed to EXECUTE
 - **REVISE:** Minor issues found; small clarifications required; stage decomposition needed; validation checklist incomplete → Return to PLAN with specific feedback
 - **DEFER:** Major issues; risk too high for reward; scope creep significant; stability gate not met (and not Critical); architectural concerns require design discussion → Update backlog with deferral reason
 
-**Content:** Use the template below
+### Tone & Constraints
 
 ### 5. Append to Planning Document
 
@@ -107,31 +105,6 @@ If decision is made, append review summary to `PLANS/IMPROVE_<name>.md`:
 ---
 
 ## PLAN REVIEW
-
-**Date:** [YYYY-MM-DD]
-**Status:** APPROVED | REVISE | DEFER
-
-[Brief summary of decision and key points]
-
-See `PLANS/IMPROVE_<name>_PLAN_REVIEW.md` for full analysis.
-```
-
-### Tone & Constraints
-
-- Concise and direct; no preamble or postamble
-- Detail scales with risk and complexity
-- Cite specific principles from `AGENTS.md`
-- Focus on actionable recommendations
-- Be objective and principle-driven
-- Balance risk aversion with pragmatism (perfect is enemy of good)
-- Defer only when truly necessary
-
----
-
-### Plan Review Template
-
-```markdown
-# Plan Review: [Improvement Name]
 
 **Date:** [YYYY-MM-DD]
 **Status:** APPROVED | REVISE | DEFER
@@ -184,3 +157,15 @@ See `PLANS/IMPROVE_<name>_PLAN_REVIEW.md` for full analysis.
 - If REVISE: Address items, re-review
 - If DEFER: Update IMPROVE_BACKLOG with findings
 ```
+
+---
+
+### Tone & Constraints
+
+- Concise and direct; no preamble or postamble
+- Detail scales with risk and complexity
+- Cite specific principles from `AGENTS.md`
+- Focus on actionable recommendations
+- Be objective and principle-driven
+- Balance risk aversion with pragmatism (perfect is enemy of good)
+- Defer only when truly necessary

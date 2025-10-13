@@ -1,8 +1,35 @@
 # Execute Improvement
 
 **Prerequisites:**
-- **Trivial Path:** Completed SELECT; created `PLANS/IMPROVE_<name>.md`
+- **Trivial Path:** Completed SELECT; created `PLANS/IMPROVE_<name>.md`; on `improve/<name>` branch
 - **Standard Path:** Completed SELECT, PLAN, REVIEW_PLAN (approved); on `improve/<name>` branch
+
+---
+
+## Common Steps (Both Paths)
+
+### Format and Lint
+
+After making changes, always run:
+
+```bash
+# Run formatter
+bash scripts/bash/run_clang_format.sh
+
+# Run linter
+bash scripts/bash/run_clang_tidy.sh
+```
+
+Fix any formatting or linting issues introduced.
+
+### Build Verification
+
+```bash
+# Clean build
+bash scripts/bash/build.sh
+```
+
+Verify build succeeds with no new errors or warnings.
 
 ---
 
@@ -29,28 +56,11 @@ Execute the fix directly:
 - [ ] No unintended side effects
 - [ ] File still readable and sensible
 
-### 4. Format and Lint
+### 4. Format, Lint, and Build
 
-```bash
-# Run formatter
-bash scripts/bash/run_clang_format.sh
+Run common steps above (Format and Lint, Build Verification).
 
-# Run linter
-bash scripts/bash/run_clang_tidy.sh
-```
-
-Fix any formatting or linting issues introduced.
-
-### 5. Build Verification
-
-```powershell
-# Clean build
-cmake --build build/ninja --clean-first
-```
-
-Verify build succeeds with no new errors or warnings.
-
-### 6. Append Execution Notes
+### 5. Append Execution Notes
 
 Add to `PLANS/IMPROVE_<name>.md`:
 
@@ -101,15 +111,12 @@ Open `PLANS/IMPROVE_<name>.md` and review:
 - No deviation from planned scope
 
 #### 2.2. Validate Incrementally
-- Build the project
+- Build the project (see Build Verification in common steps)
 - Check validation criteria for this stage
 - Verify no regressions
 
-#### 2.3. Format and Lint (each stage)
-```bash
-bash scripts/bash/run_clang_format.sh
-bash scripts/bash/run_clang_tidy.sh
-```
+#### 2.3. Format and Lint
+Run common steps above (Format and Lint) after each stage.
 
 #### 2.4. Consider Intermediate Commit (optional)
 For multi-stage work, can commit after each major stage:
@@ -136,7 +143,7 @@ After all stages complete, execute full validation from PLAN:
 ## Validation Checklist
 
 ### Build & Compile
-- [ ] Clean build succeeds (`cmake --build build/ninja --clean-first`)
+- [ ] Clean build succeeds (see Build Verification in common steps)
 - [ ] No compilation errors
 - [ ] No new warnings
 
@@ -151,8 +158,8 @@ After all stages complete, execute full validation from PLAN:
 - [ ] Follows conventions (`CONVENTIONS.md`)
 
 ### Code Quality
-- [ ] clang-format clean (`bash scripts/bash/run_clang_format.sh`)
-- [ ] clang-tidy clean (`bash scripts/bash/run_clang_tidy.sh`)
+- [ ] clang-format clean (see Format and Lint in common steps)
+- [ ] clang-tidy clean (see Format and Lint in common steps)
 - [ ] No duplicated logic remains
 - [ ] Comments accurate and helpful
 ````

@@ -6,45 +6,11 @@
 
 ---
 
-### 1. Final Validation
-
-**Quick sanity checks:**
-
-```bash
-# Clean build
-bash scripts/bash/clean.sh
-bash scripts/bash/configure.sh
-bash scripts/bash/build.sh
-
-# Format check
-bash scripts/bash/run_clang_format.sh
-
-# Lint check
-bash scripts/bash/run_clang_tidy.sh
-```
-
-Verify all pass with no errors or warnings.
-
-### 2. Review Complete Change
-
-**Read git diff:**
-```powershell
-git diff
-# or
-git diff main
-```
-
-Verify:
-- [ ] Only intended files changed
-- [ ] Changes match plan/description
-- [ ] No debug code, commented blocks, or temp changes
-- [ ] No unintended whitespace or formatting changes (beyond clang-format)
-
-### 3. Update Improve Backlog
+### 1. Update Improve Backlog
 
 Open `PLANS/IMPROVE_BACKLOG.md`:
 
-#### 3.1. Move Item to Completed
+#### 1.1. Move Item to Completed
 
 Find the item under its current section (Critical/High/Medium/Low) and:
 1. Cut the entire item entry
@@ -63,7 +29,7 @@ Find the item under its current section (Critical/High/Medium/Low) and:
 - *Document:* `PLANS/IMPROVE_<name>.md`
 ```
 
-#### 3.2. Check for Similar Items
+#### 1.2. Check for Similar Items
 
 Scan backlog for related items that:
 - Affect same files or systems
@@ -74,7 +40,7 @@ Scan backlog for related items that:
 - Add note to backlog: "Batch opportunity: [Item A, Item B, Item C] (similar fix pattern)"
 - Tag items with `#batch-candidate`
 
-#### 3.3. Note New Discoveries
+#### 1.3. Note New Discoveries
 
 If during execution you discovered:
 - Additional issues not in backlog
@@ -96,7 +62,7 @@ If during execution you discovered:
 - *Tags:* [appropriate tags]
 ```
 
-### 4. Document Learnings
+### 2. Document Learnings
 
 Add final section to `PLANS/IMPROVE_<name>.md`:
 
@@ -145,92 +111,9 @@ Add final section to `PLANS/IMPROVE_<name>.md`:
 - Estimated: [X points / Y hours]
 - Actual: [A points / B hours]
 - Variance: [Under/Over/Accurate]
-
-### Final Validation
-
-- [x] Clean build passes
-- [x] clang-format clean
-- [x] clang-tidy clean
-- [x] No new warnings
-- [x] Git diff reviewed
-- [x] Backlog updated
-- [x] Learnings captured
 ````
 
-### 5. Prepare Commit Message
-
-Create commit message following project conventions (see `TASKS/COMMIT.md` for full guidance):
-
-**Format:**
-```
-[Improve] <Brief description of change>
-
-<Optional: More detailed explanation if needed>
-
-<Optional: Rationale or context>
-
-Files:
-- path/to/file1.cpp
-- path/to/file2.h
-
-Fixes: Issue described in IMPROVE_BACKLOG.md
-Doc: PLANS/IMPROVE_<name>.md
-```
-
-**Examples:**
-
-```
-[Improve] Remove unused stdio includes from input and controller
-
-Cleanup unused <cstdio> includes left over from debugging.
-
-Files:
-- src/input/input.cpp
-- src/character/controller.cpp
-
-Doc: PLANS/IMPROVE_unused_includes.md
-```
-
-```
-[Improve] Decouple debug_draw from app/game_world
-
-Extract velocity_trail_state to rendering/velocity_trail.h to fix
-architectural violation (Rendering must not depend on App).
-
-Files:
-- src/rendering/velocity_trail.h (new)
-- src/rendering/debug_draw.cpp
-- src/app/game_world.h
-
-Fixes: Critical architectural violation in IMPROVE_BACKLOG.md
-Doc: PLANS/IMPROVE_decouple_debug_draw_from_app.md
-```
-
-**Append commit message to document:**
-
-````markdown
-### Commit Message
-
-```
-[Paste prepared commit message]
-```
-````
-
-### 6. Clean Up Branch (Standard Path)
-
-If on `improve/<name>` branch:
-
-```powershell
-# Switch back to main
-git checkout main
-
-# Delete improvement branch (after commit)
-# User will do this manually after committing
-```
-
-**Note for document:** "Branch `improve/<name>` can be deleted after commit."
-
-### 7. State Completion
+### 3. State Completion
 
 **Output to user:**
 
@@ -251,9 +134,8 @@ Backlog updated:
 - [Batch opportunities noted]
 
 Document: PLANS/IMPROVE_<name>.md
-Commit message prepared (see document)
 
-Ready to commit. Review changes and commit when ready.
+Ready for user to review and commit on branch improve/<name>.
 ```
 
 ---
@@ -264,5 +146,5 @@ Ready to commit. Review changes and commit when ready.
 - Capture learnings while fresh
 - Be honest about time estimates (builds calibration)
 - Note batch opportunities (reduces future overhead)
-- Prepare commit message but don't commit (user control)
+- No git operations (user handles all git workflow)
 - Celebrate completion (improvement work is valuable!)
