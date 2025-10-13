@@ -84,6 +84,12 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         cam.follow_update(character.position, dt);
     }
 
+    float walk_factor = 1.0f - locomotion.get_run_blend();
+    smoothed_walk_factor += (walk_factor - smoothed_walk_factor) * walk_factor_smoothing * dt;
+
+    float applied_walk_factor =
+        gui::compute_walk_factor_override(panel_state, smoothed_walk_factor);
+
     // Update skeletal animation pipeline
     // 1. Apply base pose (manual with optional overrides, or procedural animation)
     if (panel_state.use_manual_pose_selection && panel_state.enable_joint_overrides) {
@@ -96,9 +102,9 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
             panel_state.right_knee_angles);
     } else {
         // Apply base animation (manual pose selection or procedural distance-phased animation)
-        character.animation.update_skeletal_animation(t_pose_skeleton, locomotion.distance_traveled,
-                                                      panel_state.selected_pose,
-                                                      panel_state.use_manual_pose_selection, dt);
+        character.animation.update_skeletal_animation(
+            t_pose_skeleton, locomotion.distance_traveled, applied_walk_factor,
+            panel_state.selected_pose, panel_state.use_manual_pose_selection, dt);
     }
 
     // 2. Apply secondary motion on top of the final pose.

@@ -1,4 +1,5 @@
 #include "character/tuning.h"
+#include <algorithm>
 #include <cmath>
 
 namespace character {
@@ -37,11 +38,16 @@ void tuning_params::read_from(const controller& c) {
 }
 
 void sync_locomotion_targets(const controller& c, locomotion_system& loco) {
-    float run_speed = c.max_speed;
+    float run_speed = std::max(c.run_speed, 0.0f);
+    float walk_speed = std::clamp(c.walk_speed, 0.0f, run_speed);
+
     loco.run_speed_threshold = run_speed;
-    loco.walk_speed_threshold = run_speed * 0.2f;
-    loco.walk_state.stride_length = loco.walk_speed_threshold * 1.0f;
-    loco.run_state.stride_length = run_speed * 0.8f;
+    loco.walk_speed_threshold = walk_speed;
+
+    float walk_stride = std::max(walk_speed, 0.1f);
+    float run_stride = std::max(run_speed * 0.8f, walk_stride);
+    loco.walk_state.stride_length = walk_stride;
+    loco.run_state.stride_length = run_stride;
 }
 
 } // namespace character

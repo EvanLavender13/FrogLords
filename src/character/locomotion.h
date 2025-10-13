@@ -33,6 +33,7 @@ struct locomotion_system {
 
     void update(glm::vec3 ground_velocity, float dt);
     simple_pose get_current_pose() const;
+    float get_run_blend() const;
 
   private:
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;

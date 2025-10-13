@@ -39,7 +39,7 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          COMPLETED FEATURES (100%) ✅
 ───────────────────────────────────────────────────────────────────────────
 
-**Skeletal Animation Stack:** Debug system → attach to body → keyframe preview → primary anim → secondary motion → pose blending
+**Skeletal Animation Stack:** Debug system → attach to body → keyframe preview → primary anim → secondary motion → pose blending → run gait blending
 **Debug & Polish:** Visual overhaul (trail, plots, ring), walk/run transition, freeze velocity trail, character axis gizmo
 **Reactive Animation:** Acceleration tilt, landing spring, tuning UI
 

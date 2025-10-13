@@ -28,6 +28,8 @@ struct game_world {
     character::tuning_params character_params;
     character::skeleton t_pose_skeleton;
     float wheel_spin_angle = 0.0f;
+    float smoothed_walk_factor = 1.0f;
+    float walk_factor_smoothing = 15.0f;
     velocity_trail_state trail_state;
 
     void init();

@@ -3,6 +3,7 @@
 #include "skeleton.h"
 #include <cmath>
 #include <glm/gtc/constants.hpp>
+#include <glm/common.hpp>
 #include <glm/gtc/quaternion.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
@@ -120,7 +121,7 @@ float animation_state::get_vertical_offset() const {
 }
 
 void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
-                                                pose_type manual_override_pose,
+                                                float walk_factor, pose_type manual_override_pose,
                                                 bool use_manual_override, float dt) {
     if (use_manual_override) {
         apply_pose(skel, manual_override_pose);
@@ -131,31 +132,44 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     float phase = std::fmod(distance_traveled, cycle_length) / cycle_length;
 
     // Determine blend segment and calculate interpolation factor
-    pose_type source_pose, target_pose;
-    float segment_start, segment_end, t;
+    pose_type walk_source_pose;
+    pose_type walk_target_pose;
+    pose_type run_source_pose;
+    pose_type run_target_pose;
+    float segment_start;
+    float segment_end;
+    float t;
 
     if (phase < 0.25f) {
-        // Segment 1: WALK_REACH_LEFT → WALK_PASS_RIGHT
-        source_pose = pose_type::WALK_REACH_LEFT;
-        target_pose = pose_type::WALK_PASS_RIGHT;
+        // Segment 1: REACH_L → PASS_R
+        walk_source_pose = pose_type::WALK_REACH_LEFT;
+        walk_target_pose = pose_type::WALK_PASS_RIGHT;
+        run_source_pose = pose_type::RUN_REACH_LEFT;
+        run_target_pose = pose_type::RUN_PASS_RIGHT;
         segment_start = 0.0f;
         segment_end = 0.25f;
     } else if (phase < 0.5f) {
-        // Segment 2: WALK_PASS_RIGHT → WALK_REACH_RIGHT
-        source_pose = pose_type::WALK_PASS_RIGHT;
-        target_pose = pose_type::WALK_REACH_RIGHT;
+        // Segment 2: PASS_R → REACH_R
+        walk_source_pose = pose_type::WALK_PASS_RIGHT;
+        walk_target_pose = pose_type::WALK_REACH_RIGHT;
+        run_source_pose = pose_type::RUN_PASS_RIGHT;
+        run_target_pose = pose_type::RUN_REACH_RIGHT;
         segment_start = 0.25f;
         segment_end = 0.5f;
     } else if (phase < 0.75f) {
-        // Segment 3: WALK_REACH_RIGHT → WALK_PASS_LEFT
-        source_pose = pose_type::WALK_REACH_RIGHT;
-        target_pose = pose_type::WALK_PASS_LEFT;
+        // Segment 3: REACH_R → PASS_L
+        walk_source_pose = pose_type::WALK_REACH_RIGHT;
+        walk_target_pose = pose_type::WALK_PASS_LEFT;
+        run_source_pose = pose_type::RUN_REACH_RIGHT;
+        run_target_pose = pose_type::RUN_PASS_LEFT;
         segment_start = 0.5f;
         segment_end = 0.75f;
     } else {
-        // Segment 4: WALK_PASS_LEFT → WALK_REACH_LEFT (wrap continuity)
-        source_pose = pose_type::WALK_PASS_LEFT;
-        target_pose = pose_type::WALK_REACH_LEFT;
+        // Segment 4: PASS_L → REACH_L (wrap continuity)
+        walk_source_pose = pose_type::WALK_PASS_LEFT;
+        walk_target_pose = pose_type::WALK_REACH_LEFT;
+        run_source_pose = pose_type::RUN_PASS_LEFT;
+        run_target_pose = pose_type::RUN_REACH_LEFT;
         segment_start = 0.75f;
         segment_end = 1.0f;
     }
@@ -163,12 +177,15 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     // Calculate blend factor within current segment
     t = (phase - segment_start) / (segment_end - segment_start);
 
-    // Get keyframe data for blending
-    keyframe source_kf = get_keyframe_data(source_pose);
-    keyframe target_kf = get_keyframe_data(target_pose);
+    // Fetch keyframe data for blending
+    keyframe walk_source_kf = get_keyframe_data(walk_source_pose);
+    keyframe walk_target_kf = get_keyframe_data(walk_target_pose);
+    keyframe run_source_kf = get_keyframe_data(run_source_pose);
+    keyframe run_target_kf = get_keyframe_data(run_target_pose);
 
     // Get contact weight for amplitude suppression (1.0 grounded, 0.0 airborne)
     float contact_weight = contact_weight_spring.get_position();
+    float run_weight = glm::clamp(1.0f - walk_factor, 0.0f, 1.0f);
 
     // T_POSE uses identity quaternion (no rotation)
     glm::quat t_pose_rotation(1.0f, 0.0f, 0.0f, 0.0f);
@@ -185,37 +202,46 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
             glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(blended_rotation);
     };
 
-    // Blend gait animation, then suppress amplitude based on contact weight
-    // When airborne (contact_weight → 0), limbs return to T-pose (neutral)
-    // When grounded (contact_weight → 1), full gait animation plays
-    auto blend_with_contact = [&](const glm::quat& source, const glm::quat& target) {
-        glm::quat gait_blend = glm::slerp(source, target, t);
+    auto blend_channel = [&](const glm::quat& walk_source, const glm::quat& walk_target,
+                             const glm::quat& run_source, const glm::quat& run_target) {
+        glm::quat walk_blend = glm::slerp(walk_source, walk_target, t);
+        glm::quat run_blend = glm::slerp(run_source, run_target, t);
+        glm::quat gait_blend = glm::slerp(walk_blend, run_blend, run_weight);
         return glm::slerp(t_pose_rotation, gait_blend, contact_weight);
     };
 
-    // Blend and apply all 8 joints using slerp
+    // Blend and apply all 8 joints using bilinear slerp
     apply_blended_joint(joint_index::LEFT_SHOULDER,
-                        blend_with_contact(source_kf.left_shoulder, target_kf.left_shoulder));
+                        blend_channel(walk_source_kf.left_shoulder, walk_target_kf.left_shoulder,
+                                      run_source_kf.left_shoulder, run_target_kf.left_shoulder));
     apply_blended_joint(joint_index::LEFT_ELBOW,
-                        blend_with_contact(source_kf.left_elbow, target_kf.left_elbow));
+                        blend_channel(walk_source_kf.left_elbow, walk_target_kf.left_elbow,
+                                      run_source_kf.left_elbow, run_target_kf.left_elbow));
     apply_blended_joint(joint_index::RIGHT_SHOULDER,
-                        blend_with_contact(source_kf.right_shoulder, target_kf.right_shoulder));
+                        blend_channel(walk_source_kf.right_shoulder, walk_target_kf.right_shoulder,
+                                      run_source_kf.right_shoulder, run_target_kf.right_shoulder));
     apply_blended_joint(joint_index::RIGHT_ELBOW,
-                        blend_with_contact(source_kf.right_elbow, target_kf.right_elbow));
+                        blend_channel(walk_source_kf.right_elbow, walk_target_kf.right_elbow,
+                                      run_source_kf.right_elbow, run_target_kf.right_elbow));
     apply_blended_joint(joint_index::LEFT_HIP,
-                        blend_with_contact(source_kf.left_hip, target_kf.left_hip));
+                        blend_channel(walk_source_kf.left_hip, walk_target_kf.left_hip,
+                                      run_source_kf.left_hip, run_target_kf.left_hip));
     apply_blended_joint(joint_index::LEFT_KNEE,
-                        blend_with_contact(source_kf.left_knee, target_kf.left_knee));
+                        blend_channel(walk_source_kf.left_knee, walk_target_kf.left_knee,
+                                      run_source_kf.left_knee, run_target_kf.left_knee));
     apply_blended_joint(joint_index::RIGHT_HIP,
-                        blend_with_contact(source_kf.right_hip, target_kf.right_hip));
+                        blend_channel(walk_source_kf.right_hip, walk_target_kf.right_hip,
+                                      run_source_kf.right_hip, run_target_kf.right_hip));
     apply_blended_joint(joint_index::RIGHT_KNEE,
-                        blend_with_contact(source_kf.right_knee, target_kf.right_knee));
+                        blend_channel(walk_source_kf.right_knee, walk_target_kf.right_knee,
+                                      run_source_kf.right_knee, run_target_kf.right_knee));
 
     // Restore root transform
     skel.joints[0].local_transform = root_transform;
 
-    // Update GUI state to reflect target pose of current segment
-    current_automatic_pose = target_pose;
+    // Update GUI state to reflect dominant gait pose for current segment
+    pose_type display_pose = run_weight > 0.5f ? run_target_pose : walk_target_pose;
+    current_automatic_pose = display_pose;
 }
 
 /// Apply per-joint spring-damper lag to create natural follow-through.

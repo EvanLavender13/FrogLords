@@ -2,6 +2,7 @@
 #include "gui/gui.h"
 #include "sokol_app.h"
 #include "imgui.h"
+#include <glm/common.hpp>
 
 namespace {
 
@@ -14,6 +15,19 @@ void draw_joint_angles_widget(const char* label, glm::vec3& angles, const char* 
         gui::widget::slider_float(z_label, &angles.z, -180.0f, 180.0f);
         ImGui::TreePop();
     }
+}
+
+float compute_base_walk_factor(const locomotion_system& locomotion) {
+    float threshold_span = locomotion.run_speed_threshold - locomotion.walk_speed_threshold;
+    float run_blend = 0.0f;
+    if (threshold_span > 0.0f) {
+        float normalized =
+            (locomotion.smoothed_speed - locomotion.walk_speed_threshold) / threshold_span;
+        run_blend = glm::clamp(normalized, 0.0f, 1.0f);
+    } else {
+        run_blend = locomotion.smoothed_speed > locomotion.walk_speed_threshold ? 1.0f : 0.0f;
+    }
+    return 1.0f - run_blend;
 }
 
 } // namespace
@@ -175,6 +189,20 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::text("Current Pose: %s", pose_name);
     }
 
+    if (ImGui::CollapsingHeader("Locomotion Blending", ImGuiTreeNodeFlags_DefaultOpen)) {
+        const char* mode_labels[] = {"Walk Only", "Mixed (Speed)", "Run Only"};
+        int current_mode = static_cast<int>(state.gait_blend_mode);
+        if (ImGui::Combo("Blend Mode", &current_mode, mode_labels, 3)) {
+            state.gait_blend_mode = static_cast<character_panel_state::blend_mode>(current_mode);
+        }
+        float base_walk_factor = compute_base_walk_factor(locomotion);
+        float applied_walk_factor = compute_walk_factor_override(state, base_walk_factor);
+        gui::widget::text("Walk Factor (locomotion): %.3f", base_walk_factor);
+        gui::widget::text("Walk Factor (applied): %.3f", applied_walk_factor);
+        gui::widget::text("Contact Weight: %.3f",
+                          character.animation.contact_weight_spring.get_position());
+    }
+
     if (ImGui::CollapsingHeader("Skeleton")) {
         gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
         gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
@@ -195,6 +223,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
             if (ImGui::Combo("Pose", &current_pose, pose_names, 9)) {
                 state.selected_pose = static_cast<character::pose_type>(current_pose);
                 state.reset_joint_overrides(); // Reset on pose change
+                state.gait_blend_mode = character_panel_state::blend_mode::MIXED;
             }
 
             ImGui::Separator();
@@ -208,6 +237,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
 
         if (manual_pose_toggled) {
             state.reset_joint_overrides();
+            state.gait_blend_mode = character_panel_state::blend_mode::MIXED;
         }
 
         if (state.enable_joint_overrides && state.use_manual_pose_selection &&
@@ -249,6 +279,18 @@ void draw_character_panel(character_panel_state& state, controller& character,
 
             ImGui::PopItemWidth();
         }
+    }
+}
+
+float compute_walk_factor_override(const character_panel_state& state, float base_walk_factor) {
+    switch (state.gait_blend_mode) {
+    case character_panel_state::blend_mode::WALK_ONLY:
+        return 1.0f;
+    case character_panel_state::blend_mode::RUN_ONLY:
+        return 0.0f;
+    case character_panel_state::blend_mode::MIXED:
+    default:
+        return base_walk_factor;
     }
 }
 

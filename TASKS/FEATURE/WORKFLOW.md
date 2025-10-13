@@ -38,9 +38,8 @@ graph TD
     U --> A
 
     %% Mid-feature scope changes
-    H --> AS[ADD_SCOPE]
-    AS --> MP[MODIFY_PLAN]
-    MP --> C
+    H --> UP[UPDATE_PLAN]
+    UP --> C
 
     %% Implementation-phase deferral
     H --> F
@@ -57,8 +56,7 @@ graph TD
     style M fill:#e1f5ff
     style N fill:#e1f5ff
     style O fill:#e1f5ff
-    style AS fill:#fff3cd
-    style MP fill:#fff3cd
+    style UP fill:#fff3cd
 ```
 
 ## Feature Tasks
@@ -76,8 +74,7 @@ graph TD
 - **FINALIZE_FEATURE**: Update stack, backlog, archive documents; prepare for next feature
 
 ### Mid-Feature Adjustments
-- **ADD_SCOPE**: Add requirements to an active feature (triggers plan update)
-- **MODIFY_PLAN**: Update implementation plan to match modified feature scope
+- **UPDATE_PLAN**: Update feature scope and/or implementation plan when requirements change during implementation
 
 ### Alternative Path
 - **DEFER_FEATURE**: Cleanly back out of premature/unnecessary features identified during planning or implementation phase
@@ -111,9 +108,8 @@ graph TD
 
 ### Mid-Feature Scope Change Path
 1. During IMPLEMENTATION_STEP, discover need for scope adjustment
-2. ADD_SCOPE → Update feature description with changelog entry
-3. MODIFY_PLAN → Update implementation plan with changelog entry
-4. Return to IMPLEMENTATION_STEP with synchronized plans
+2. UPDATE_PLAN → Update feature description and/or implementation plan with changelog entries
+3. Return to IMPLEMENTATION_STEP with synchronized plans
 
 ## Notes
 
@@ -126,7 +122,7 @@ graph TD
 - **Problem evidence required:** Features with backlog warnings ("may not be necessary," "low priority") require extra scrutiny during SELECT_FEATURE selection. Document specific gameplay moments or observations that motivate the feature before planning.
 - Knowledge capture: document learnings at finalization/deferral while fresh
 - Manual git: tasks prepare but don't execute commits
-- Scope changes: ADD_SCOPE + MODIFY_PLAN keep plans synchronized when discovery requires mid-feature adjustment
+- Scope changes: UPDATE_PLAN keeps feature scope and implementation plan synchronized when discovery requires mid-feature adjustment
 - Feature requests: REQUEST_FEATURE formalizes backlog entry with principle alignment and dependency analysis
 - Plan versioning: PLAN_IMPLEMENTATION and REVIEW_PLAN add changelog entries when updating existing plans; IMPLEMENTATION_STEP tracks changed files
 - Re-reviews: REVIEW_PLAN prepends changelog entries on re-review to maintain historical context
@@ -150,8 +146,7 @@ Once workflow stabilizes, consider renaming files with 3-digit prefixes to provi
 - **007_FINALIZE_FEATURE** - Wrap up and prepare next
 
 ### Mid-Feature Adjustments (100-199)
-- **100_ADD_SCOPE** - Add requirements to active feature
-- **101_MODIFY_PLAN** - Update implementation plan
+- **100_UPDATE_PLAN** - Update feature scope and/or implementation plan
 
 ### Alternative Paths (200-299)
 - **200_DEFER_FEATURE** - Clean exit from premature features

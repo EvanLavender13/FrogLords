@@ -53,8 +53,8 @@ Cross-reference the feature description, feature description, and implementation
 Generate a new markdown document summarizing the findings.
 
 -   **Filename:** `PLANS/<feature_name>_PLAN_REVIEW.md`
--   **If the review file already exists:** 
-    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via MODIFY_PLAN")
+-   **If the review file already exists:**
+    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via UPDATE_PLAN")
     -   Update the analysis sections (Summary, Violations, Misalignments, Actionable Items) with current findings
     -   Preserve the overall structure and previous context where relevant
 -   **Content:** Use the template below

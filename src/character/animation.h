@@ -66,7 +66,7 @@ struct animation_state {
     float get_vertical_offset() const;
 
     // Distance-phased skeletal animation update
-    void update_skeletal_animation(skeleton& skel, float distance_traveled,
+    void update_skeletal_animation(skeleton& skel, float distance_traveled, float walk_factor,
                                    pose_type manual_override_pose, bool use_manual_override,
                                    float dt);
 

@@ -17,6 +17,9 @@ struct character_panel_state {
     bool show_axis_gizmo = false;
     character::pose_type selected_pose = character::pose_type::T_POSE;
 
+    enum class blend_mode { WALK_ONLY, MIXED, RUN_ONLY };
+    blend_mode gait_blend_mode = blend_mode::MIXED;
+
     // Animation control
     bool use_manual_pose_selection = false;
     bool enable_secondary_motion = true;
@@ -49,5 +52,7 @@ struct character_panel_state {
 void draw_character_panel(character_panel_state& state, controller& character,
                           locomotion_system& locomotion, orientation_system& orientation,
                           character::tuning_params& params);
+
+float compute_walk_factor_override(const character_panel_state& state, float base_walk_factor);
 
 } // namespace gui
