@@ -106,7 +106,7 @@ Format as a markdown checklist and save to `PLANS/` directory.
 
 -   **Filename:** `<feature_name>_PLAN.md`
 -   **If the implementation plan already exists:**
-    -   Add a changelog entry at the bottom noting the update date and reason (e.g., "Plan updated after scope modification via UPDATE_PLAN")
+    -   Add a changelog entry at the bottom noting the update date and reason (e.g., "Plan updated after scope modification via REVISE")
     -   Update the checklist to reflect current implementation steps
     -   Preserve completed checkboxes and historical context where relevant
 -   Propose the document to the user for review

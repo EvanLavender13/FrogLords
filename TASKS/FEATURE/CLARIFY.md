@@ -126,7 +126,7 @@ Once clarifications resolved, perform consistency and redundancy pass:
 
 ### 7. Proceed to Implementation Planning
 
-Once clarity achieved, documented, and consolidated, proceed to PLAN_IMPLEMENTATION. Reference clarified requirements and visual references as validation checkpoints.
+Once clarity achieved, documented, and consolidated, proceed to PLAN. Reference clarified requirements and visual references as validation checkpoints.
 
 ## Example Clarification Flow
 
@@ -182,5 +182,5 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN_IMPLEMENTAT
 
 **Next Steps:**
 1. Update feature description with clarifications
-2. Proceed to PLAN_IMPLEMENTATION with clear requirements
+2. Proceed to PLAN with clear requirements
 3. Reference visual materials as validation checkpoints

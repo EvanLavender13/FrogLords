@@ -12,9 +12,9 @@ graph TB
     end
 
     subgraph FeatureTasks["FEATURE/ - Feature Workflow"]
-        RF[REQUEST_FEATURE]
-        NF[SELECT_FEATURE]
-        FW[Feature Tasks<br/>PLAN → DECOMPOSE → REVIEW<br/>IMPLEMENT → FINALIZE]
+        RF[REQUEST]
+        NF[SELECT]
+        FW[Feature Tasks<br/>PLAN → REVIEW_PLAN<br/>EXECUTE → REVIEW_CODE<br/>FINALIZE]
         UB[UPDATE_BACKLOG]
         UD[UPDATE_DEPENDENCIES]
     end
@@ -74,7 +74,7 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 ### Feature Development Workflow
 - **Location:** `TASKS/FEATURE/`
 - **Purpose:** Complete feature development workflow for implementing new features
-- **Entry Point:** SELECT_FEATURE
+- **Entry Point:** SELECT
 - **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
 - **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
 - **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_PLAN.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
@@ -98,13 +98,13 @@ Workflow documents follow distinct naming patterns optimized for their usage:
 **Workflow:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
 **Process:**
 1. Items mature in DESIGN_BACKLOG with certainty scores and prerequisites
-2. SELECT_FEATURE task selects ready items based on dependency stack
+2. SELECT task selects ready items based on dependency stack
 3. Feature flows through planning → implementation → finalization
 4. UPDATE_BACKLOG marks items complete/deferred with learnings
 
 **Key Tasks:**
-- REQUEST_FEATURE (add new items)
-- SELECT_FEATURE (select from backlog)
+- REQUEST (add new items)
+- SELECT (select from backlog)
 - UPDATE_BACKLOG (mark complete/deferred)
 
 ### Improve Backlog → Improve Workflow

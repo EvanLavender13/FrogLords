@@ -105,7 +105,7 @@ Helps identify patterns and improve planning.
 
 ### 10. Propose Next Steps
 
-Recommend SELECT_FEATURE to identify next work based on dependency stack, highest certainty foundations, and test-driven needs.
+Recommend SELECT to identify next work based on dependency stack, highest certainty foundations, and test-driven needs.
 
 ### Tone & Constraints
 

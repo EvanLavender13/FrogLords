@@ -15,7 +15,7 @@ Extract the feature name from the current git branch name (format: `feature/<fea
 ### 3. Verify Approval
 
 1.  Confirm `PLANS/<feature_name>_PLAN.md` has an `## Approval` section with reviewer signature and timestamp
-2.  If approval is missing, stop and request completion of `REVIEW_IMPLEMENTATION` task first
+2.  If approval is missing, stop and request completion of `REVIEW_CODE` task first
 
 ### 4. Update Dependency Stack
 
@@ -84,7 +84,7 @@ Add a `## Certainty Calibration` section to end of `PLANS/<feature_name>_FEATURE
 
 ### 7. Propose Next Steps
 
-Recommend running `TASKS/FEATURE/SELECT_FEATURE.md` to identify next work after user handles git operations.
+Recommend running `TASKS/FEATURE/SELECT.md` to identify next work after user handles git operations.
 
 ### Tone & Constraints
 

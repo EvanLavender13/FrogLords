@@ -54,7 +54,7 @@ Generate a new markdown document summarizing the findings.
 
 -   **Filename:** `PLANS/<feature_name>_PLAN_REVIEW.md`
 -   **If the review file already exists:**
-    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via UPDATE_PLAN")
+    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via REVISE")
     -   Update the analysis sections (Summary, Violations, Misalignments, Actionable Items) with current findings
     -   Preserve the overall structure and previous context where relevant
 -   **Content:** Use the template below
@@ -109,7 +109,7 @@ Generate a new markdown document summarizing the findings.
 **Reasoning:** [Brief justification for status]
 
 **Next Steps:**
-- If APPROVED: Proceed to IMPLEMENTATION_STEP
+- If APPROVED: Proceed to EXECUTE
 - If REVISE: Address items, re-review
 - If DEFER: Update DESIGN_BACKLOG with findings
 ```

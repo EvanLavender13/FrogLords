@@ -24,7 +24,7 @@
 ### 3. Propose for Review
 
 1.  After updating `PLANS/DESIGN_BACKLOG.md`, inform the user of the changes
-2.  If a previously blocked feature is now unblocked, propose it using `TASKS/FEATURE/SELECT_FEATURE.md`
+2.  If a previously blocked feature is now unblocked, propose it using `TASKS/FEATURE/SELECT.md`
 
 ### Tone & Constraints
 

@@ -99,7 +99,7 @@ The approval section should contain reviewer signature and timestamp.
 **Reasoning:** [Brief justification for status]
 
 **Next Steps:**
-- If APPROVED: Proceed to FINALIZE_FEATURE
+- If APPROVED: Proceed to FINALIZE
 - If FIX_ISSUES: Address items, re-review
 - If ROLLBACK: Defer feature, update backlog
 ```

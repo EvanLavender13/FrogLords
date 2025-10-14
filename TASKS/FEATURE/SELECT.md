@@ -102,7 +102,7 @@ Create a comprehensive feature description following this structure:
 
 Save the feature description to `PLANS/<feature_name>_FEATURE.md` (use snake_case, e.g., `primary_skeletal_animation_FEATURE.md`).
 
-The feature description is now complete and serves as the planning artifact. Proceed directly to PLAN_IMPLEMENTATION for granular decomposition.
+The feature description is now complete and serves as the planning artifact. Proceed directly to PLAN for granular decomposition.
 
 ### Tone & Constraints
 
