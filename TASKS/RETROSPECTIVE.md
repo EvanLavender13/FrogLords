@@ -31,74 +31,20 @@ Periodic review of archived iterations to identify workflow patterns, improve pr
 
 For each iteration or improvement in the sample, read through the documents and extract:
 
-### Feature Iterations: Planning Phase Analysis
-- **REVIEW_PLAN outcomes:** Did plans pass on first try? What types of issues were found?
-  - Principle violations (which principles?)
-  - Scope concerns (too large, too vague, missing graybox boundaries?)
-  - Missing prerequisites or dependencies
-  - Testing protocol weaknesses
-- **Scope changes:** Were ADD_SCOPE or MODIFY_PLAN tasks needed? Why?
-- **Clarification needs:** Did the feature require CLARIFY_FEATURE? What was unclear initially?
+### Feature Iterations
+**Planning:** REVIEW_PLAN outcomes (principle violations, scope issues, dependencies, testing), scope changes, clarification needs  
+**Implementation:** Step velocity, self-verification effectiveness, review feedback, file prediction accuracy  
+**Completion/Deferral:** Success factors, learnings, surprises, deferral phase/category, early warning signs
 
-### Feature Iterations: Implementation Phase Analysis
-- **Step completion velocity:** How many IMPLEMENTATION_STEP cycles occurred? Were steps appropriately sized?
-- **Self-verification effectiveness:** Did self-verification catch issues before final review?
-- **Review feedback patterns:** What types of issues appeared in REVIEW_IMPLEMENTATION?
-  - Code quality issues
-  - Principle violations in implementation
-  - Misalignment with plan
-- **Changed files tracking:** Were implementation plans accurate in predicting file changes?
+### Improvements
+**Planning:** REVIEW_PLAN outcomes (rule of three, stability gates, scope, risk), complexity estimates, Trivial vs Standard classification accuracy  
+**Execution:** Stage completion, call site identification accuracy, hidden dependencies, code review findings, scope discipline, discovery patterns  
+**Outcome:** Impact achieved, learnings, abstraction quality, deferral triggers, stability gate enforcement, batch opportunities
 
-### Feature Iterations: Completion/Deferral Analysis
-- **Successful completions:**
-  - What enabled smooth completion?
-  - What learnings were documented in UPDATE_BACKLOG?
-  - Were there any surprises or serendipitous discoveries?
-- **Deferred features:**
-  - What phase was deferral triggered? (planning vs. implementation)
-  - What category of deferral? (premature, missing prereq, principle violation, blocker)
-  - Were there early warning signs that were missed?
-  - What learnings were captured?
+### Cross-Cutting
+Explicit reflections, recurring friction, effective practices, feature/improvement interleaving patterns
 
-### Improvements: Planning Phase Analysis (Standard Path)
-- **REVIEW_PLAN outcomes:** Did improvement plans pass review? What issues were found?
-  - Rule of three violations (pattern didn't appear 3+ times for extractions)
-  - Stability gate failures (systems <70% certainty)
-  - Scope creep or premature abstraction
-  - Risk assessment accuracy
-- **Complexity estimates:** Were estimates accurate? Did improvements exceed 8-point limit?
-- **Trivial vs Standard classification:** Was the classification accurate?
-
-### Improvements: Execution Analysis
-- **Stage completion:** For staged improvements, did each stage verify correctly?
-- **Call site accuracy:** Were all call sites identified in planning (for pattern extractions)?
-- **Hidden dependencies:** What hidden dependencies were discovered during execution?
-- **Code review findings (Standard path):** What types of issues appeared in code review?
-  - Principle alignment (clarity, simplicity)
-  - Behavioral preservation
-  - Scope discipline
-- **Scope discipline:** Did fixes stay focused or expand during implementation?
-- **Discovery patterns:** Did improvements uncover deeper issues?
-  - How many led to additional improvement backlog items?
-  - How many revealed architectural concerns?
-
-### Improvements: Outcome Analysis
-- **Successful completions:**
-  - What impact was achieved? (e.g., "Reduced duplication 5→1", "Fixed architectural violation")
-  - What learnings were captured?
-  - Did abstraction quality meet expectations (for pattern extractions)?
-- **Deferred improvements:**
-  - What triggered deferral? (too risky, complexity exceeded estimate, unstable systems)
-  - Were stability gates enforced properly?
-  - What would make it viable in the future?
-- **Batch opportunities:** Were similar issues identified for future batching?
-
-### Cross-Cutting: Iteration Reflections
-- Review any explicit reflection notes from FINALIZE_ITERATION or improvement completions
-- Were there recurring frustrations or friction points?
-- What practices helped work go smoothly?
-- How did feature and improvement work interleave? Any conflicts or synergies?
-- **Improvement-specific:** Did improvement work complement feature development or create conflicts?
+**Note:** See full analysis criteria in archived retrospectives if needed for reference.
 
 ---
 
@@ -131,21 +77,10 @@ New practices to try based on observed patterns:
 
 ## 4. Propose Workflow Changes
 
-Based on findings, propose specific, actionable changes:
-
-### Task Definition Updates
-- Which task files need updated instructions?
-- What new checklist items or validation steps should be added?
-- Are there missing tasks that would prevent recurring issues?
-
-### Documentation Updates
-- Does WORKFLOW.md need revised paths or decision points?
-- Should any principles be clarified or examples added?
-- Do backlog/stack templates need additional fields?
-
-### Process Experiments
-- Are there new practices to trial for 2-3 iterations before codifying?
-- Should any existing practices be relaxed or removed?
+Based on findings, propose specific, actionable changes. Tag each with type:
+- **[TASK]** Task definition updates (which files, what changes)
+- **[DOC]** Documentation updates (WORKFLOW.md, principles, templates)
+- **[EXPERIMENT]** Process experiments to trial for 2-3 iterations before codifying
 
 ---
 
@@ -229,70 +164,33 @@ Create `PLANS/RETROSPECTIVE_<timestamp>.md` with the following structure:
 
 ## Proposed Workflow Changes
 
-### Task Updates
-- [ ] **TASK_NAME.md:** [Specific change description]
-- [ ] **TASK_NAME.md:** [Specific change description]
+- [ ] **[TASK] TASK_NAME.md:** [Specific change description]
+- [ ] **[DOC] WORKFLOW.md:** [Specific change description]
+- [ ] **[EXPERIMENT] Name:** [Description and success criteria]
 
-### Documentation Updates
-- [ ] **WORKFLOW.md:** [Specific change description]
-- [ ] **DEPENDENCY_STACK.md:** [Specific change description]
-- [ ] **IMPROVE_BACKLOG.md:** [Specific change description]
-
-### Process Experiments
-- [ ] **Experiment:** [Description and success criteria]
-
----
-
-## User Decision
-
-[User reviews and marks which changes to implement]
+**User Decision:** [User reviews and marks which changes to implement]
 ```
 
 ---
 
-## 6. User Review and Implementation
+## 6. Organize Archive
 
-1. **Present findings** to the user with the retrospective document
-2. **User decides** which workflow changes to implement
-3. **Update task files** based on approved changes
+After completing the retrospective and user approval, run the automation script:
 
----
-
-## 7. Organize Archive
-
-After completing the retrospective, group the reviewed work with the retrospective document:
-
-1. **Create subdirectory:** `PLANS/ARCHIVE/RETRO_<timestamp>/`
-   - Use same timestamp format as retrospective document (YYYYMMDD_HHMMSS)
-2. **Move retrospective document:** `RETROSPECTIVE_<timestamp>.md` into the new subdirectory
-3. **Move reviewed artifacts:** Move all artifacts from the work that was reviewed into the subdirectory
-   - **Feature iterations:** Include all files for each reviewed iteration (feature, iteration, implementation, review, code_review)
-   - **Improvements:** Include complete `improve_*.md` documents
-   - Use `mv PLANS/ARCHIVE/<timestamp>_* PLANS/ARCHIVE/RETRO_<timestamp>/` for each iteration timestamp
-   - Use `mv PLANS/ARCHIVE/improve_* PLANS/ARCHIVE/RETRO_<timestamp>/` for improvement documents
-4. **Verify organization:** Confirm the subdirectory contains:
-   - The retrospective document
-   - All artifacts from reviewed iterations (grouped by iteration timestamp prefix)
-   - All improvement documents reviewed
-   - Nothing else remains in flat ARCHIVE that should have been included
-
-**Purpose:** Keeps ARCHIVE clean and navigable. Each RETRO_ subdirectory is a self-contained snapshot of reviewed work plus the analysis that covered it.
-
-**Example structure after organization:**
+```powershell
+.\scripts\archive_retro.ps1
 ```
-PLANS/ARCHIVE/
-├── RETRO_20251009_143000/
-│   ├── RETROSPECTIVE_20251009_143000.md
-│   ├── 20251006_120000_feature_refactor_game_world.md
-│   ├── 20251006_120000_implementation_refactor_game_world.md
-│   ├── 20251006_120000_code_review_refactor_game_world.md
-│   ├── 20251006_130000_feature_attach-skeleton-to-body.md
-│   ├── refactor_yaw_direction_utilities.md
-│   ├── refactor_horizontal_velocity_utility.md
-│   ├── maintenance_remove_redundant_includes.md
-│   └── ... (all other artifacts from reviewed work)
-├── 20251008_150000_feature_new_thing.md  ← newer feature, not yet retrospected
-```
+
+**Script behavior:**
+- Auto-detects most recent `RETROSPECTIVE_*.md`
+- Auto-detects all artifacts (files matching `*_FEATURE.md`, `*_PLAN.md`, `*_CODE_REVIEW.md`, `*_PLAN_REVIEW.md`, `*_IMPROVE_*.md`)
+- Creates `RETRO_<timestamp>/` subdirectory
+- Moves retrospective + all artifacts using `git mv` (preserves history)
+- Provides commit message suggestion
+
+**Manual override:** Use `-Timestamp "20251012_225921"` to specify a different retrospective
+
+**Purpose:** Keeps ARCHIVE clean and navigable. Each RETRO_ subdirectory is a self-contained snapshot of reviewed work plus analysis.
 
 ---
 
@@ -313,21 +211,13 @@ PLANS/ARCHIVE/
 - Small, incremental changes are better than sweeping overhauls
 - Not all patterns need immediate action; some are just observations
 - Track which workflow changes came from retrospectives to evaluate their impact in future retros
-- If deferral rate is high (>40%) for features or improvements, dig deep into root causes
-- If planning issues are recurring, consider adding CLARIFY_FEATURE or REVIEW_PLAN improvements
+- If deferral rate is high (>40%), dig deep into root causes
 - Celebrate what's working; don't just focus on problems
-- Archive organization keeps PLANS/ARCHIVE/ from becoming unnavigable; RETRO_ subdirectories are chronological snapshots of process reviews
-- **Improve-specific considerations:**
-  - Are stability gates (70% certainty) being enforced consistently?
-  - Is rule-of-three discipline preventing premature abstraction (for pattern extractions)?
-  - Are complexity estimates (1-8 points) accurate for improvements?
-  - How well do staged vs linear approaches map to risk levels?
-  - Are improvement learnings feeding back to improve future planning?
-  - Is feature/improvement interleaving causing conflicts or working well?
-- **Improve-specific considerations:**
-  - Is Trivial vs Standard classification working well?
-  - Are fixes uncovering deeper architectural issues consistently?
-  - Should certain recurring patterns be batched proactively?
-  - Is the two-tier review approach (skip for Trivial, review for Standard) appropriate?
-  - Are improvement investigations surfacing new improvement opportunities?
-  - Is improvement work complementing or conflicting with feature workflows?
+- **Key questions for improvements:**
+  - Stability gates (70% certainty) enforced consistently?
+  - Rule-of-three discipline preventing premature abstraction?
+  - Complexity estimates (1-8 points) accurate?
+  - Trivial vs Standard classification working well?
+  - Are fixes uncovering deeper architectural issues?
+  - Two-tier review approach appropriate?
+  - Feature/improvement interleaving causing conflicts or working well?

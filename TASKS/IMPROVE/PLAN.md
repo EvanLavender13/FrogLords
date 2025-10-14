@@ -12,6 +12,12 @@ Read all affected files completely:
 - Note any edge cases or special handling
 - Document file/line references in plan
 
+**For pattern extractions:** Verify code structure shows genuine duplication before planning:
+- Cite specific line numbers for each occurrence
+- Confirm logic is duplicated (not reuse of existing abstractions)
+- Example: "Lines 238-244, 319-323 in keyframe.cpp and 197-203 in animation.cpp all contain identical `apply_joint` lambda logic"
+- Prevents false premise plans where assumed duplication doesn't exist
+
 ### 2. Assess Impact & Risk
 
 **Impact Analysis:**

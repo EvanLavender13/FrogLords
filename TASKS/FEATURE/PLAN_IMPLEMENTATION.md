@@ -119,7 +119,23 @@ Add a one-line complexity estimate (points) to calibrate scope, mirroring refact
 
 Include this field near the top of the plan (see example template below).
 
-### 7. Quality Gates
+### 7. Known Polish Gaps
+
+Document expected rough edges that should be deferred rather than expanded into scope mid-validation:
+
+-   List visual/behavioral imperfections that are acceptable for graybox
+-   Tag as "defer to backlog" rather than "discover during validation"
+-   Prevents scope creep when testing reveals predictable polish needs
+
+**Example:**
+```markdown
+**Known Polish Gaps (defer to backlog):**
+- Secondary motion may cause joint hyperextension during rapid transitions
+- T-pose blending may look stiff at high speeds (can add AIR_NEUTRAL keyframe later if needed)
+- Transition thresholds need tuning based on feel (acceptable with debug sliders)
+```
+
+### 8. Quality Gates
 
 -   Build passes (CMake: Configure/Build Debug tasks)
 -   Lint/format clean (clang‑format/clang‑tidy tasks)
@@ -149,6 +165,7 @@ Include this field near the top of the plan (see example template below).
 
 - [ ] Gate Mechanism Review documented (geometric delta preferred OR rationale provided)
 - [ ] UI Ordering Verified where cycles/lists apply (enum order == UI order)
+- [ ] Parameter Cleanup Review: Check for unused parameters introduced by conditional removals or logic changes (e.g., removing `if (is_grounded)` gates may leave `is_grounded` parameter unused)
 
 #### 1. Data Structures & State
 
