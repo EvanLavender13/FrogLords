@@ -122,7 +122,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 }
 
 void setup_test_level(game_world& world) {
-    wireframe_mesh floor = generate_grid_floor(40.0f, 40);
+    foundation::wireframe_mesh floor = foundation::generate_grid_floor(40.0f, 40);
     world.scn.add_object(floor);
 
     for (int i = 0; i < 5; ++i) {

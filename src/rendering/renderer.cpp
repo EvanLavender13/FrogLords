@@ -46,8 +46,8 @@ void wireframe_renderer::shutdown() {
     initialized = false;
 }
 
-void wireframe_renderer::draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio,
-                              const glm::vec4& color) {
+void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const camera& cam,
+                              float aspect_ratio, const glm::vec4& color) {
     if (!initialized)
         return;
     if (mesh.vertices.empty() || mesh.edges.empty())
@@ -62,7 +62,7 @@ void wireframe_renderer::draw(const wireframe_mesh& mesh, const camera& cam, flo
     // Convert edges to line indices
     std::vector<uint16_t> indices;
     indices.reserve(mesh.edges.size() * 2);
-    for (const edge& e : mesh.edges) {
+    for (const foundation::edge& e : mesh.edges) {
         indices.push_back(static_cast<uint16_t>(e.v0));
         indices.push_back(static_cast<uint16_t>(e.v1));
     }

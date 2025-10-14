@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sokol_gfx.h"
-#include "rendering/wireframe.h"
+#include "foundation/procedural_mesh.h"
 #include "camera/camera.h"
 #include <glm/glm.hpp>
 
@@ -21,7 +21,7 @@ class wireframe_renderer {
     /// @param cam Camera for view/projection matrices
     /// @param aspect_ratio Viewport width/height ratio
     /// @param color Line color (RGBA, defaults to white)
-    void draw(const wireframe_mesh& mesh, const camera& cam, float aspect_ratio,
+    void draw(const foundation::wireframe_mesh& mesh, const camera& cam, float aspect_ratio,
               const glm::vec4& color = glm::vec4(1.0f));
 
   private:

@@ -65,8 +65,8 @@ add_executable(FrogLords
     src/foundation/easing.cpp
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp
+    src/foundation/procedural_mesh.cpp
     src/rendering/scene.cpp
-    src/rendering/wireframe.cpp
     src/rendering/renderer.cpp
     src/rendering/debug_draw.cpp
     src/input/input.cpp

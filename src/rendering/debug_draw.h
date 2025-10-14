@@ -1,7 +1,7 @@
 #pragma once
 
 #include "rendering/renderer.h"
-#include "rendering/wireframe.h"
+#include "foundation/procedural_mesh.h"
 #include "camera/camera.h"
 #include "rendering/debug_primitives.h"
 #include <glm/glm.hpp>
@@ -15,10 +15,10 @@ struct draw_context {
     camera& cam;
     float aspect;
 
-    const wireframe_mesh& unit_circle;
-    const wireframe_mesh& unit_sphere_8;
-    const wireframe_mesh& unit_sphere_6;
-    const wireframe_mesh& unit_sphere_4;
+    const foundation::wireframe_mesh& unit_circle;
+    const foundation::wireframe_mesh& unit_sphere_8;
+    const foundation::wireframe_mesh& unit_sphere_6;
+    const foundation::wireframe_mesh& unit_sphere_4;
 };
 
 // The single entry point for all debug drawing.

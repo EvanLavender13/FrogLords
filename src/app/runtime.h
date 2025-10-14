@@ -3,7 +3,7 @@
 #include "sokol_gfx.h"
 #include "app/game_world.h"
 #include "rendering/renderer.h"
-#include "rendering/wireframe.h"
+#include "foundation/procedural_mesh.h"
 #include "gui/character_panel.h"
 #include "gui/camera_panel.h"
 #include <glm/glm.hpp>
@@ -31,10 +31,10 @@ struct app_runtime {
 
     float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-    wireframe_mesh unit_circle{};
-    wireframe_mesh unit_sphere_8{};
-    wireframe_mesh unit_sphere_6{};
-    wireframe_mesh unit_sphere_4{};
+    foundation::wireframe_mesh unit_circle{};
+    foundation::wireframe_mesh unit_sphere_8{};
+    foundation::wireframe_mesh unit_sphere_6{};
+    foundation::wireframe_mesh unit_sphere_4{};
     bool static_meshes_initialized = false;
 };
 

@@ -26,13 +26,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Architectural violations, bugs, blocking issues requiring immediate attention)
 
-### [Regression] Restore Missing Debug Visualizations
-- *File(s):* `src/app/debug_generation.cpp`, `src/rendering/wireframe.h`, `src/rendering/wireframe.cpp`
-- *Issue:* Several debug visualizations (locomotion wheel, physics spring, character body, foot positions, speed circle) disappeared after the `debug_draw` refactoring. This was a regression caused by moving the visualization logic to a layer that could not access the necessary procedural mesh generation functions.
-- *Fix:* Move the procedural mesh generation functions (e.g., `generate_box`, `generate_spring`) from the `rendering` layer to a new file in the `foundation` layer (e.g., `foundation/procedural_mesh.cpp`). Then, update `app/debug_generation.cpp` to call these functions and re-implement the logic for the missing visuals.
-- *Rationale:* This restores critical debug feedback that was lost in a recent refactoring. It completes the architectural improvement by correctly placing the geometry generation utilities in a shared, foundational layer.
-- *Complexity:* 5 points
-- *Tags:* #regression #critical #debug-viz #architecture
+
 
 ---
 
@@ -152,6 +146,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Recent completions; see `PLANS/ARCHIVE/improve_completed_*.md` for history)
+
+### Medium / Regression
+**Restore Missing Debug Visualizations** ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/foundation/procedural_mesh.h`, `src/foundation/procedural_mesh.cpp`, `src/rendering/wireframe.h`, `src/rendering/wireframe.cpp`, `src/app/debug_generation.cpp`, `src/rendering/debug_draw.cpp`, `CMakeLists.txt`
+- *Fix:* Moved procedural mesh generation to the foundation layer to fix a regression where several debug visuals disappeared. Also fixed multiple follow-up bugs with transformations and color batching.
+- *Learning:* Refactoring rendering code requires careful visual verification. A simplified plan from a code review was crucial for success.
+- *Document:* `PLANS/IMPROVE_restore_missing_debug_visuals.md`
 
 ### Critical / Architecture
 **Reverse Dependency in Rendering Layer** ✓

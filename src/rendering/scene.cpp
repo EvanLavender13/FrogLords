@@ -1,6 +1,6 @@
 #include "rendering/scene.h"
 
-void scene::add_object(const wireframe_mesh& mesh) {
+void scene::add_object(const foundation::wireframe_mesh& mesh) {
     meshes.push_back(mesh);
 }
 
@@ -17,7 +17,7 @@ size_t scene::object_count() const {
     return meshes.size();
 }
 
-const std::vector<wireframe_mesh>& scene::objects() const {
+const std::vector<foundation::wireframe_mesh>& scene::objects() const {
     return meshes;
 }
 

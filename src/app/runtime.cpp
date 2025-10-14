@@ -120,10 +120,10 @@ void app_runtime::ensure_static_meshes() {
         return;
     }
 
-    unit_circle = generate_circle(glm::vec3(0.0f), circle_config{1.0f});
-    unit_sphere_8 = generate_sphere(sphere_config{8, 8, 1.0f});
-    unit_sphere_6 = generate_sphere(sphere_config{6, 6, 1.0f});
-    unit_sphere_4 = generate_sphere(sphere_config{4, 4, 1.0f});
+    unit_circle = foundation::generate_circle(glm::vec3(0.0f), {1.0f});
+    unit_sphere_8 = foundation::generate_sphere({8, 8, 1.0f});
+    unit_sphere_6 = foundation::generate_sphere({6, 6, 1.0f});
+    unit_sphere_4 = foundation::generate_sphere({4, 4, 1.0f});
 
     static_meshes_initialized = true;
 }

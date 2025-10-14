@@ -2,6 +2,7 @@
 #include "app/game_world.h"
 #include "gui/character_panel.h"
 #include "rendering/debug_primitives.h"
+#include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
 #include "character/locomotion.h"
 #include "character/skeleton.h"
@@ -19,6 +20,16 @@ auto safe_normalize = [](const glm::vec3& v, const glm::vec3& fallback) {
     return fallback;
 };
 
+void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wireframe_mesh& mesh,
+                         const glm::vec4& color) {
+    glm::mat4 transform = mesh.get_model_matrix();
+    for (const auto& edge : mesh.edges) {
+        glm::vec3 v0 = glm::vec3(transform * glm::vec4(mesh.vertices[edge.v0], 1.0f));
+        glm::vec3 v1 = glm::vec3(transform * glm::vec4(mesh.vertices[edge.v1], 1.0f));
+        list.lines.push_back(debug::debug_line{v0, v1, color});
+    }
+}
+
 // Anonymous namespace for helper functions that translate game state into debug primitives.
 
 void generate_character_state_primitives(debug::debug_primitive_list& list,
@@ -30,7 +41,7 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         .center = character.collision_sphere.center,
         .radius = character.collision_sphere.radius,
         .color = {0, 1, 1, 1},
-        .segments = 12, // Smoother than the default 8
+        .segments = 12,
     });
 
     // Velocity indicator
@@ -50,6 +61,124 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         .radius = 0.1f,
         .color = {0, 1, 0, 1},
     });
+
+    // Speed gradient ring
+    float current_speed = glm::length(math::project_to_horizontal(character.velocity));
+    if (current_speed > 0.05f) {
+        float speed_ratio = glm::clamp(current_speed / character.max_speed, 0.0f, 1.0f);
+        glm::vec4 color;
+        if (speed_ratio < 0.33f) {
+            float t = speed_ratio / 0.33f;
+            color = glm::vec4(0.0f, t, 1.0f - t, 0.8f);
+        } else if (speed_ratio < 0.66f) {
+            float t = (speed_ratio - 0.33f) / 0.33f;
+            color = glm::vec4(t, 1.0f, 0.0f, 0.8f);
+        } else {
+            float t = (speed_ratio - 0.66f) / 0.34f;
+            color = glm::vec4(1.0f, 1.0f - t, 0.0f, 0.8f);
+        }
+        foundation::wireframe_mesh speed_ring =
+            foundation::generate_circle(character.position, {current_speed});
+        mesh_to_debug_lines(list, speed_ring, color);
+    }
+}
+
+void generate_physics_springs_primitives(debug::debug_primitive_list& list,
+                                         const controller& character) {
+    float spring_offset = character.animation.get_vertical_offset();
+    glm::vec3 spring_bottom = character.collision_sphere.center;
+    spring_bottom.y -= character.collision_sphere.radius;
+    glm::vec3 spring_top = character.position;
+    spring_top.y += spring_offset;
+
+    foundation::wireframe_mesh spring_mesh =
+        foundation::generate_spring(spring_bottom, spring_top, 8, 0.2f);
+
+    glm::vec4 spring_color;
+    if (spring_offset < -0.01f) {
+        float compression_factor = glm::min(1.0f, -spring_offset / 0.3f);
+        spring_color = glm::vec4(1.0f, 0.8f, 0.1f, 0.7f + compression_factor * 0.3f);
+    } else {
+        spring_color = glm::vec4(0.6f, 0.6f, 0.6f, 0.25f);
+    }
+    mesh_to_debug_lines(list, spring_mesh, spring_color);
+}
+
+void generate_locomotion_wheel_primitives(debug::debug_primitive_list& list,
+                                          const controller& character,
+                                          const locomotion_system& locomotion,
+                                          const orientation_system& orientation,
+                                          float wheel_spin_angle) {
+
+    float wheel_radius = locomotion.get_blended_stride() / TWO_PI;
+
+    if (wheel_radius <= 0.0f)
+        return;
+
+    float yaw = orientation.get_yaw();
+
+    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
+
+    glm::vec3 wheel_center = character.position;
+
+    const int RIM_SEGMENTS = 24;
+
+    std::vector<glm::vec3> points;
+
+    points.reserve(RIM_SEGMENTS);
+
+    for (int i = 0; i < RIM_SEGMENTS; ++i) {
+
+        float base_angle = static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * TWO_PI;
+
+        float rim_angle = base_angle - wheel_spin_angle;
+
+        glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * math::UP;
+
+        points.push_back(wheel_center + offset * wheel_radius);
+    }
+
+    // Add rim lines
+
+    for (int i = 0; i < RIM_SEGMENTS; ++i) {
+
+        list.lines.push_back(
+            {points[i], points[(i + 1) % RIM_SEGMENTS], {0.85f, 0.85f, 0.85f, 1.0f}});
+    }
+
+    // Add spoke lines
+
+    const int SPOKE_COUNT = 4;
+
+    for (int i = 0; i < SPOKE_COUNT; ++i) {
+
+        int rim_index = (i * RIM_SEGMENTS) / SPOKE_COUNT;
+
+        list.lines.push_back({wheel_center, points[rim_index], {0.85f, 0.85f, 0.85f, 1.0f}});
+    }
+}
+
+void generate_character_body_primitives(debug::debug_primitive_list& list,
+                                        const controller& character) {
+
+    // Get the full world transform from the controller, which includes tilt and offset
+
+    glm::mat4 transform = character.get_world_transform();
+
+    // Generate the character body box in local space
+
+    foundation::wireframe_mesh body_mesh = foundation::generate_box({0.4f, 0.8f, 0.3f});
+
+    // Manually transform the vertices and add them as debug lines
+
+    for (const auto& edge : body_mesh.edges) {
+
+        glm::vec3 v0 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v0], 1.0f));
+
+        glm::vec3 v1 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v1], 1.0f));
+
+        list.lines.push_back(debug::debug_line{v0, v1, {1.0f, 0.2f, 1.0f, 1.0f}});
+    }
 }
 
 void generate_collision_state_primitives(debug::debug_primitive_list& list,
@@ -181,6 +310,10 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_collision_state_primitives(list, world.character, world.world_geometry);
     generate_character_state_primitives(list, world.character, world.locomotion,
                                         world.character.orientation);
+    generate_physics_springs_primitives(list, world.character);
+    generate_locomotion_wheel_primitives(list, world.character, world.locomotion,
+                                         world.character.orientation, world.wheel_spin_angle);
+    generate_character_body_primitives(list, world.character);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);
