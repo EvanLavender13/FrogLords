@@ -51,10 +51,21 @@ void draw_character_panel(character_panel_state& state, controller& character,
         changed |= gui::widget::slider_float("Gravity (m/s^2)", &character.gravity, -20.0f, -5.0f);
         gui::widget::slider_float("Walk Transition Rate", &character.walk_transition_rate, 1.0f,
                                   30.0f);
+        gui::widget::slider_float("Coyote Window (s)", &character.coyote_window, 0.0f, 0.5f);
+        gui::widget::slider_float("Jump Buffer Window (s)", &character.jump_buffer_window, 0.0f,
+                                  0.5f);
 
         // Debug displays for walk/run transition
         gui::widget::text("Target Max Speed: %.2f m/s", character.target_max_speed);
         gui::widget::text("Current Max Speed: %.2f m/s", character.max_speed);
+
+        // Debug displays for jump timing forgiveness
+        gui::widget::text("Coyote Timer: %.3f s", character.coyote_timer);
+        gui::widget::text("Jump Buffer Timer: %.3f s", character.jump_buffer_timer);
+        gui::widget::text(
+            "Can Jump (Coyote): %s",
+            (character.is_grounded || character.coyote_timer < character.coyote_window) ? "YES"
+                                                                                        : "NO");
 
         if (changed) {
             params.apply_to(character);

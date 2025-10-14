@@ -179,24 +179,14 @@ Include lightweight metadata to improve selection and planning:
   - *Certainty:* High
   - *Rationale:* Allows for more flexible input options for players.
 
-- **Coyote time + jump buffer:** Elastic timing forgiveness for jumps and micro air gaps
-  - *Prerequisite:* Basic jump impulse; grounded detection available from physics controller.
-  - *Certainty:* High (~85%) — widely used, low risk, improves feel for broad audience per DG_Skill.
-  - *Rationale:* Current “physics-only grounded” can eat jump inputs during bounce or ledge micro-gaps. Short coyote window and input buffering expand accessibility without reducing skill expression.
-  - *References:*
-    - [NOTES/DesigningGames/DG_Skill.md](../NOTES/DesigningGames/DG_Skill.md)
-    - [NOTES/bounce_gravity_explained.md](../NOTES/bounce_gravity_explained.md)
-    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md)
-  - *Scope:*
-    - Add `coyote_time_ms` (e.g., 120–150ms) after leaving ground during which jump still executes.
-    - Add `jump_buffer_ms` (~150ms) to store recent jump input to trigger on next valid grounded frame.
-    - Define `is_grounded_gameplay = is_grounded_physics || within_coyote` for eligibility checks (inputs remain interruptible).
-    - Debug UI readouts for timers/flags; tune values by feel.
-  - *Open Questions:*
-    - Per-surface or per-speed adjustments to coyote time, or keep global?
-  - *Dependencies:* Physics grounded flag; jump controller hook. No new assets.
-  - *Success Criteria:* Jumps feel reliable during micro air gaps and bounce; no accidental multi-jumps; experts retain timing mastery.
-  - *Origin:* Brainstorm 2025-10-12; codifies DG_Skill “elastic challenges” for movement.
+- **Coyote time + jump buffer:** Elastic timing forgiveness for jumps and micro air gaps ✅ COMPLETE
+  - *Prerequisite:* Basic jump impulse ✅; grounded detection ✅
+  - *Certainty:* 100%
+  - *Learning:* Completed 2025-10-14. Simple timer pattern (coyote accumulates in air, buffer decays each frame) layered cleanly on existing grounded detection. Zero physics changes—pure input layer addition. Feature toggle via zero-value parameters validated design principle of parameter-driven mechanics. Tuning window durations (default 150ms) felt natural without exploits. Pattern proves elastic timing forgiveness improves accessibility without reducing skill expression (DG_Skill "elastic challenges" principle). Key insight: exhausting coyote timer on jump (set to window duration) prevents double-jump exploits while preserving window for fall-off scenarios.
+  - *Implementation:* [PLANS/coyote_jump_buffer_PLAN.md](coyote_jump_buffer_PLAN.md)
+  - *Pattern Validated:* Input-layer timing windows can expand gameplay accessibility without affecting core physics determinism
+  - *Completed:* 2025-10-14 (feature branch: feature/coyote_jump_buffer)
+
 
 ### Advanced Animation (Low Priority)
 - **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run

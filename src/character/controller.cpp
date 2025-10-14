@@ -41,6 +41,13 @@ controller::controller()
 }
 
 void controller::apply_input(const camera& cam, float dt) {
+    // Execute buffered jump on next grounded frame
+    if (is_grounded && jump_buffer_timer > 0.0f) {
+        velocity.y = jump_velocity;
+        coyote_timer = coyote_window; // Exhaust coyote window
+        jump_buffer_timer = 0.0f;     // Clear buffer
+    }
+
     // Read WASD input
     glm::vec2 move_direction(0.0f, 0.0f);
 
@@ -71,9 +78,17 @@ void controller::apply_input(const camera& cam, float dt) {
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
     acceleration = input_direction * accel_magnitude;
 
-    // Jump input (space bar)
-    if (input::is_key_pressed(SAPP_KEYCODE_SPACE) && is_grounded) {
+    // Jump input (space bar with coyote time and jump buffer)
+    bool jump_input = input::is_key_pressed(SAPP_KEYCODE_SPACE);
+    bool can_jump = is_grounded || (coyote_timer < coyote_window);
+
+    if (jump_input && can_jump) {
         velocity.y = jump_velocity;
+        coyote_timer = coyote_window; // Exhaust coyote window
+        jump_buffer_timer = 0.0f;     // Clear any buffered input
+    } else if (jump_input && !can_jump) {
+        // Store buffered input for next valid grounded frame
+        jump_buffer_timer = jump_buffer_window;
     }
 }
 
@@ -119,6 +134,14 @@ void controller::update(const collision_world* world, float dt) {
         vertical_velocity_on_land = pre_collision_vertical_velocity;
     }
     was_grounded = is_grounded;
+
+    // Update jump timing forgiveness timers
+    if (is_grounded) {
+        coyote_timer = 0.0f; // Reset when grounded
+    } else {
+        coyote_timer += dt; // Accumulate time since leaving ground
+    }
+    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
 
     // Save acceleration for animation system (before reset)
     last_acceleration = acceleration;

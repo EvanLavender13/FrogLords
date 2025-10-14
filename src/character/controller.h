@@ -41,6 +41,10 @@ struct controller {
     glm::vec3 ground_normal;
     float ground_height = 0.0f;
 
+    // Jump timing forgiveness
+    float coyote_timer = 0.0f;      // Time since leaving ground (for coyote time)
+    float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
+
     // Tunable parameters
     float ground_accel = 20.0f; // m/s^2
     float air_accel = 10.0f;    // m/s^2
@@ -52,8 +56,10 @@ struct controller {
     float walk_transition_rate =
         10.0f;             // How quickly max_speed transitions between walk/run (larger = faster)
     float gravity = -9.8f; // m/s^2
-    float max_slope_angle = 45.0f; // degrees
-    float jump_velocity = 5.0f;    // m/s
+    float max_slope_angle = 45.0f;    // degrees
+    float jump_velocity = 5.0f;       // m/s
+    float coyote_window = 0.15f;      // seconds (150ms default - window after leaving ground)
+    float jump_buffer_window = 0.15f; // seconds (150ms default - window for buffered jump input)
 
     // Input modifiers
     bool is_walking = false; // True when shift key held
