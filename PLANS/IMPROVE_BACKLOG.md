@@ -84,24 +84,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 4 points
 - *Tags:* #pattern-extraction #debug-viz
 
-### Character / Controller
-**Simplify Velocity Clamping**
-- *Files:* `src/character/controller.cpp`
-- *Issue:* Two blocks extract/modify/reassign horizontal velocity
-- *Fix:* Local helper `clamp_horizontal_speed(glm::vec3&, float)`
-- *Impact:* -10 LOC
-- *Complexity:* 2 points
-- *Tags:* #simplification #controller
-
-### Character / Controller
-**Simplify Velocity Clamping**
-- *Files:* `src/character/controller.cpp`
-- *Issue:* Two blocks extract/modify/reassign horizontal velocity
-- *Fix:* Local helper `clamp_horizontal_speed(glm::vec3&, float)`
-- *Impact:* -10 LOC
-- *Complexity:* 2 points
-- *Tags:* #simplification #controller
-
 ---
 
 ## Low
@@ -135,6 +117,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Medium / Character / Controller
+**Simplify Velocity Clamping** ✓
+- *Completed:* October 13, 2025
+- *Files:* `src/character/controller.cpp`
+- *Fix:* Created a local helper function `clamp_horizontal_speed` to reduce code duplication.
+- *Learning:* Encapsulating repetitive logic in helper functions improves code readability and maintainability.
+- *Document:* `PLANS/IMPROVE_simplify_velocity_clamping.md`
 
 ### Medium / Character / Tuning
 **Consolidate Tuning Constants** ✓

@@ -15,7 +15,16 @@ namespace {
 constexpr float BUMPER_RADIUS = 0.50f;
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // Spawn with sphere resting on ground
 
-// (Surface classification constants removed as part of single-sphere simplification)
+void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+    float speed = glm::length(horizontal_velocity);
+    if (speed > max_speed) {
+        horizontal_velocity = horizontal_velocity * (max_speed / speed);
+        velocity.x = horizontal_velocity.x;
+        velocity.z = horizontal_velocity.z;
+    }
+}
+
 } // namespace
 
 controller::controller()
@@ -78,16 +87,11 @@ void controller::update(const scene* scn, float dt) {
 
     // Apply friction (if grounded)
     if (is_grounded) {
-        glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
-
-        float speed = glm::length(horizontal_velocity);
+        float speed = glm::length(math::project_to_horizontal(velocity));
         if (speed > 0.0f) {
             float friction_decel = friction * std::abs(gravity) * dt;
             float new_speed = std::max(0.0f, speed - friction_decel);
-            horizontal_velocity = horizontal_velocity * (new_speed / speed);
-
-            velocity.x = horizontal_velocity.x;
-            velocity.z = horizontal_velocity.z;
+            clamp_horizontal_speed(velocity, new_speed);
         }
     }
 
@@ -100,13 +104,7 @@ void controller::update(const scene* scn, float dt) {
     max_speed = glm::mix(max_speed, target_max_speed, alpha);
 
     // Apply smoothed speed cap
-    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
-    float speed = glm::length(horizontal_velocity);
-    if (speed > max_speed) {
-        horizontal_velocity = horizontal_velocity * (max_speed / speed);
-        velocity.x = horizontal_velocity.x;
-        velocity.z = horizontal_velocity.z;
-    }
+    clamp_horizontal_speed(velocity, max_speed);
 
     // Integrate position
     position += velocity * dt;
