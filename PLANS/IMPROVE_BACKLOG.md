@@ -34,7 +34,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Significant improvements to clarity, maintainability, or extensibility)
 
-### [Architecture] Sideways Dependency between Character and Camera
+### [Architecture] Sideways Dependency between Character and Camera ✓
 - *File(s):* `src/character/controller.cpp:13`
 - *Issue:* `character::controller` directly includes `camera/camera.h` to get the camera's forward and right vectors for processing input. This creates a tight coupling between two separate top-level subsystems (`character` and `camera`).
 - *Fix:* Modify `controller::apply_input` to accept the camera's orientation vectors as parameters (e.g., `apply_input(const camera_vectors& cam_vectors, float dt)`). The `game_world` or `runtime` can be responsible for getting the vectors from the camera and passing them to the controller.

@@ -4,10 +4,14 @@
 #include "character/animation.h"
 #include "character/orientation.h"
 
-class camera;
 struct collision_world;
 
 struct controller {
+    struct camera_input_params {
+        glm::vec3 forward;
+        glm::vec3 right;
+    };
+
     // Collision volumes
     sphere collision_sphere; // Single sphere used for all collision
 
@@ -72,7 +76,7 @@ struct controller {
 
     controller();
 
-    void apply_input(const camera& cam, float dt);
+    void apply_input(const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
     glm::mat4 get_world_transform() const;
 };

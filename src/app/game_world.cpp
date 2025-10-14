@@ -26,7 +26,11 @@ void game_world::init() {
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
     debug_list.clear();
 
-    character.apply_input(cam, dt);
+    controller::camera_input_params cam_params;
+    cam_params.forward = cam.get_forward_horizontal();
+    cam_params.right = cam.get_right();
+    character.apply_input(cam_params, dt);
+
     character.update(&world_geometry, dt);
 
     // Sample velocity trail

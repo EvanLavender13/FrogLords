@@ -1,7 +1,6 @@
 #include "character/controller.h"
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
-#include "camera/camera.h"
 #include "input/input.h"
 #include "sokol_app.h"
 #include <glm/gtc/constants.hpp>
@@ -40,7 +39,7 @@ controller::controller()
     target_max_speed = run_speed;
 }
 
-void controller::apply_input(const camera& cam, float dt) {
+void controller::apply_input(const camera_input_params& cam_params, float dt) {
     // Execute buffered jump on next grounded frame
     if (is_grounded && jump_buffer_timer > 0.0f) {
         velocity.y = jump_velocity;
@@ -65,8 +64,8 @@ void controller::apply_input(const camera& cam, float dt) {
     }
 
     // Convert 2D input to 3D acceleration (camera-relative)
-    glm::vec3 forward = cam.get_forward_horizontal();
-    glm::vec3 right = cam.get_right();
+    glm::vec3 forward = cam_params.forward;
+    glm::vec3 right = cam_params.right;
 
     input_direction = forward * move_direction.y + right * move_direction.x;
 
