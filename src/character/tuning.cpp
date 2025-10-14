@@ -4,7 +4,8 @@
 
 namespace {
 constexpr float FRICTION_RATIO = 0.75f;
-}
+constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
+} // namespace
 
 namespace character {
 
@@ -14,7 +15,6 @@ void tuning_params::apply_to(controller& c) const {
     }
 
     float desired_accel = c.max_speed / time_to_max_speed;
-    constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
 
     c.ground_accel = desired_accel / NET_FRACTION;
     c.air_accel = desired_accel;
@@ -27,7 +27,6 @@ void tuning_params::apply_to(controller& c) const {
 }
 
 void tuning_params::read_from(const controller& c) {
-    constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
     if (c.ground_accel > 0.0f) {
         float net_accel = c.ground_accel * NET_FRACTION;
         time_to_max_speed = c.max_speed / net_accel;

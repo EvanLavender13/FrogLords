@@ -55,14 +55,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nitpicks and polish)
 
-### Character
-**Inconsistent Constant Naming Scope**
-- *Files:* Various (e.g., `src/character/controller.cpp:15-16`)
-- *Issue:* Some constants in anonymous namespaces, others `constexpr` at function scope
-- *Fix:* Document preferred placement in `CONVENTIONS.md`; align opportunistically
-- *Complexity:* 2 points (docs + alignment)
-- *Tags:* #conventions #polish
-
 ---
 
 ## Deferred
@@ -82,6 +74,15 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Low / Character
+**Inconsistent Constant Naming Scope** ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/character/tuning.cpp`
+- *Fix:* Extracted repeated function-scope `NET_FRACTION` constant to file-scope anonymous namespace, aligning with existing pattern for `FRICTION_RATIO` and other constants
+- *Impact:* Eliminated constant duplication; established consistent scoping pattern
+- *Learning:* File-scope constants in anonymous namespaces work well for derived values; simple consistency fixes improve readability
+- *Document:* `PLANS/IMPROVE_inconsistent_constant_scope.md`
 
 ### Medium / GUI
 **Extract Buffer Pruning Helper** ✓
