@@ -17,19 +17,6 @@ void draw_joint_angles_widget(const char* label, glm::vec3& angles, const char* 
     }
 }
 
-float compute_base_walk_factor(const locomotion_system& locomotion) {
-    float threshold_span = locomotion.run_speed_threshold - locomotion.walk_speed_threshold;
-    float run_blend = 0.0f;
-    if (threshold_span > 0.0f) {
-        float normalized =
-            (locomotion.smoothed_speed - locomotion.walk_speed_threshold) / threshold_span;
-        run_blend = glm::clamp(normalized, 0.0f, 1.0f);
-    } else {
-        run_blend = locomotion.smoothed_speed > locomotion.walk_speed_threshold ? 1.0f : 0.0f;
-    }
-    return 1.0f - run_blend;
-}
-
 } // namespace
 
 namespace gui {
@@ -205,7 +192,7 @@ void draw_character_panel(character_panel_state& state, controller& character,
         if (ImGui::Combo("Blend Mode", &current_mode, mode_labels, 3)) {
             state.gait_blend_mode = static_cast<character_panel_state::blend_mode>(current_mode);
         }
-        float base_walk_factor = compute_base_walk_factor(locomotion);
+        float base_walk_factor = 1.0f - locomotion.get_run_blend();
         float applied_walk_factor = compute_walk_factor_override(state, base_walk_factor);
         gui::widget::text("Walk Factor (locomotion): %.3f", base_walk_factor);
         gui::widget::text("Walk Factor (applied): %.3f", applied_walk_factor);
