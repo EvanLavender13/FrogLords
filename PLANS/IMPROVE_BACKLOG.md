@@ -4,7 +4,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 **Status:** Living document (updated after reviews and feature work)
 
-**Last Review:** October 13, 2025
+**Last Review:** October 14, 2025
 
 ---
 
@@ -32,20 +32,20 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Significant improvements to clarity, maintainability, or extensibility)
 
+(None)
+
 ---
 
 ## Medium
 
 (Nice-to-have improvements)
 
-
-
 ### Rendering / Debug
 **Extract Speed/Age Gradient Helpers**
-- *Files:* `src/rendering/debug_draw.cpp`
-- *Issue:* Hand-coded multi-stop gradients (speed ring, trail age)
-- *Fix:* Add `evaluate_gradient()` to `foundation/easing.h` + presets
-- *Rationale:* Parameters over assets; likely 3rd+ use coming
+- *Files:* `src/rendering/debug_draw.cpp:42-55` (speed ring), `src/rendering/debug_draw.cpp:393-403` (trail age)
+- *Issue:* Two hand-coded gradient evaluations: 4-stop gradient (blue→green→yellow→red) for speed ring and 2-stop lerp (scale + alpha) for trail age
+- *Fix:* Add `evaluate_gradient()` helper to `foundation/easing.h` with multi-stop support and presets
+- *Rationale:* Parameters over assets; 2 occurrences found, likely 3rd+ use coming in future debug visualizations
 - *Complexity:* 4 points
 - *Tags:* #pattern-extraction #debug-viz
 
@@ -55,6 +55,8 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nitpicks and polish)
 
+(None)
+
 ---
 
 ## Deferred
@@ -63,92 +65,41 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 ### Foundation / Math
 **Consider Rotation Matrix Helper**
-- *Files:* `controller.cpp`, `debug_draw.cpp`
-- *Occurrences:* 2 uses of `glm::rotate(..., yaw, up)`
+- *Files:* `src/character/controller.cpp:138`, `src/rendering/debug_draw.cpp:242`
+- *Occurrences:* 2 uses of `glm::rotate(transform, yaw, math::UP)`
 - *Defer Reason:* Rule of three not met; wait for 3rd use
-- *Proposed:* `math::rotation_y(float)` in foundation
+- *Proposed:* `math::rotation_y(float)` helper in `foundation/math_utils.h`
 - *Tags:* #deferred #rule-of-three
 
 ---
 
 ## Completed
 
-(Archive periodically; keep ~1 month for learning capture)
+(Recent completions; see `PLANS/ARCHIVE/improve_completed_*.md` for history)
 
-### Low / Character
-**Inconsistent Constant Naming Scope** ✓
-- *Completed:* October 14, 2025
-- *Files:* `src/character/tuning.cpp`
-- *Fix:* Extracted repeated function-scope `NET_FRACTION` constant to file-scope anonymous namespace, aligning with existing pattern for `FRICTION_RATIO` and other constants
-- *Impact:* Eliminated constant duplication; established consistent scoping pattern
-- *Learning:* File-scope constants in anonymous namespaces work well for derived values; simple consistency fixes improve readability
-- *Document:* `PLANS/IMPROVE_inconsistent_constant_scope.md`
+### Critical / Character & Rendering
+**Architectural Dependency Violations** ✓
+- *Completed:* October 13-14, 2025
+- *Files:* Character controller, debug draw, collision, game world
+- *Learning:* Fix architectural violations immediately to prevent spread; move logic to appropriate layer (collision → foundation)
+
+### Medium / Character
+**Extract Pattern Helpers** ✓
+- *Completed:* October 13-14, 2025
+- *Files:* Tuning, controller, skeleton, animation, keyframe
+- *Learning:* File-scope constants in anonymous namespaces for derived values; static helpers for localized patterns; include glm headers when adding functions using glm types
 
 ### Medium / GUI
 **Extract Buffer Pruning Helper** ✓
 - *Completed:* October 14, 2025
 - *Files:* `src/gui/gui.cpp`
-- *Fix:* Created static helper function `prune_plot_buffer()` to encapsulate buffer pruning logic used by both `plot_value()` and `plot_histogram()`
-- *Impact:* -14 LOC; eliminated duplicated pruning logic; single source of truth for buffer management
-- *Learning:* Straightforward extraction refactor with no behavior changes; trivial path works well for localized pattern extraction
-- *Document:* `PLANS/IMPROVE_extract_buffer_pruning_helper.md`
+- *Learning:* Straightforward extraction with no behavior changes; -14 LOC
 
-### Medium / Character / Animation
-**Extract Joint Transform Application** ✓
-- *Completed:* October 14, 2025
-- *Files:* `src/character/skeleton.h`, `src/character/skeleton.cpp`, `src/character/keyframe.cpp`, `src/character/animation.cpp`
-- *Fix:* Added `set_joint_rotation(skeleton&, int, const glm::quat&)` in `skeleton.h` to replace 3 duplicated lambdas
-- *Impact:* -26 LOC; removed 3 lambda definitions; single source of truth for joint rotation application
-- *Learning:* Include management matters—when adding functions using glm types to headers, include appropriate glm headers in the header file. Incremental builds validate each stage quickly.
-- *Document:* `PLANS/IMPROVE_extract_joint_transform_application.md`
-
-### Critical / Character
-**Character Controller Depends on Rendering** ✓
-- *Completed:* October 14, 2025
-- *Files:* `src/character/controller.cpp`, `src/character/controller.h`, `src/foundation/collision.h`, `src/foundation/collision.cpp`, `src/app/game_world.h`, `src/app/game_world.cpp`, `src/rendering/debug_draw.h`, `src/rendering/debug_draw.cpp`, `src/app/runtime.cpp`
-- *Fix:* Moved collision resolution logic from the character controller to the foundation layer to remove the dependency of the character layer on the rendering layer.
-- *Learning:* Architectural violations should be fixed as soon as they are found to prevent them from spreading and making the codebase harder to maintain.
-- *Document:* `PLANS/IMPROVE_character_controller_depends_on_rendering.md`
-
-### Medium / Character / Controller
-**Simplify Velocity Clamping** ✓
+### Medium / Input & Controller
+**Remove Unused stdio Includes** ✓
 - *Completed:* October 13, 2025
-- *Files:* `src/character/controller.cpp`
-- *Fix:* Created a local helper function `clamp_horizontal_speed` to reduce code duplication.
-- *Learning:* Encapsulating repetitive logic in helper functions improves code readability and maintainability.
-- *Document:* `PLANS/IMPROVE_simplify_velocity_clamping.md`
-
-### Medium / Character / Tuning
-**Consolidate Tuning Constants** ✓
-- *Completed:* October 13, 2025
-- *Files:* `src/character/tuning.cpp`
-- *Fix:* Moved duplicated `FRICTION_RATIO` constant to a file-level anonymous namespace.
-- *Learning:* Simple cleanups like this are quick wins for improving code quality.
-- *Document:* `PLANS/IMPROVE_consolidate_tuning_constants.md`
-
-### Critical / Rendering
-**Debug Draw Depends on App** ✓
-- *Completed:* October 13, 2025
-- *Files:* `src/rendering/debug_draw.cpp`, `src/app/game_world.h`, `src/rendering/velocity_trail.h`
-- *Fix:* Extracted `velocity_trail_state` from `game_world.h` to new header `rendering/velocity_trail.h` to break App → Rendering dependency.
-- *Learning:* Architectural violations, even if small, should be fixed promptly to prevent them from spreading.
-- *Document:* `PLANS/IMPROVE_debug_draw_app_dependency.md`
-
-### Medium / Input
-**Unused stdio Include** (done)
-- *Completed:* October 13, 2025
-- *Files:* `src/input/input.cpp`
-- *Fix:* Removed unused `<cstdio>` include
-- *Learning:* GUI plot overlays still rely on `<cstdio>`; keep include there until helper exists
-- *Document:* `PLANS/IMPROVE_remove_unused_stdio_include_input.md`
-
-### Medium / Character / Controller
-**Unused stdio Include** (done)
-- *Completed:* October 13, 2025
-- *Files:* `src/character/controller.cpp`
-- *Fix:* Removed unused `<cstdio>` include
-- *Learning:* Rendering debug formatting still uses `<cstdio>`; remove only where unused
-- *Document:* `PLANS/IMPROVE_remove_unused_stdio_include_controller.md`
+- *Files:* `src/input/input.cpp`, `src/character/controller.cpp`
+- *Learning:* Remove unused includes; keep `<cstdio>` only where GUI plot overlays need it
 
 ---
 
