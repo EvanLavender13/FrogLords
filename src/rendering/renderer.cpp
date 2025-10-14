@@ -15,7 +15,6 @@ void wireframe_renderer::init() {
     if (initialized)
         return;
 
-    // Create shader from generated header
     shader = sg_make_shader(wireframe_shader_desc(sg_query_backend()));
 
     // Create pipeline for line rendering
@@ -83,7 +82,6 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
     draw_bindings.vertex_buffers[0] = vbuf;
     draw_bindings.index_buffer = ibuf;
 
-    // Apply pipeline and bindings
     sg_apply_pipeline(pipeline);
     sg_apply_bindings(&draw_bindings);
 

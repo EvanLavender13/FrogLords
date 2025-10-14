@@ -64,30 +64,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nice-to-have improvements)
 
-### [Simplification] Duplicated Gait Blending Logic
-- *File(s):* `src/gui/character_panel.cpp:31`, `src/character/locomotion.cpp:53`
-- *Issue:* `gui/character_panel.cpp` has a `compute_base_walk_factor` function that re-implements the logic from `locomotion_system::get_run_blend`. The GUI should not be re-implementing core game logic.
-- *Fix:* Remove `compute_base_walk_factor` from the GUI and have it call `locomotion.get_run_blend()` directly (and compute `1.0f - run_blend` if needed).
-- *Rationale:* Consolidates game logic within the responsible system (`locomotion`), making the GUI purely a view/controller. Reduces duplication and improves maintainability.
-- *Complexity:* 1 point
-- *Tags:* #simplification #cleanup #gui #locomotion
-
-### [Constants] Magic Numbers in Velocity Trail
-- *File(s):* `src/app/game_world.cpp:27`
-- *Issue:* The maximum number of samples in the velocity trail is hardcoded to `25`.
-- *Fix:* Define a named constant in `rendering/velocity_trail.h`, such as `constexpr size_t MAX_TRAIL_SAMPLES = 25;`, and use it in `game_world.cpp`.
-- *Rationale:* Improves readability and makes the trail length easier to find and tune.
-- *Complexity:* 1 point
-- *Tags:* #constants #cleanup #batch-candidate
-
-### [Cleanup] Inconsistent Constant Scoping
-- *File(s):* `src/character/locomotion.h`, `src/character/controller.cpp`, `src/character/tuning.cpp`
-- *Issue:* `constexpr` values are defined in global scope in some files (`locomotion.h`) and in anonymous namespaces in others (`controller.cpp`).
-- *Fix:* Standardize on one approach. For constants only used within a single `.cpp` file, prefer an anonymous namespace. For constants that are part of a header's public API, they should remain in the header.
-- *Rationale:* Improves code consistency and adheres to best practices for constant scoping.
-- *Complexity:* 1 point
-- *Tags:* #conventions #cleanup #batch-candidate
-
 ### [Dependencies] `sokol_app.h` included for keycodes
 - *File(s):* `src/character/controller.cpp:6`
 - *Issue:* `controller.cpp` includes the large `sokol_app.h` header solely for access to `SAPP_KEYCODE_*` constants. This creates an unnecessary dependency on a platform-specific header in a core gameplay file.
@@ -111,21 +87,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nitpicks and polish)
 
-### [Conventions] Over-commenting in `renderer.cpp`
-- *File(s):* `src/rendering/renderer.cpp`
-- *Issue:* Contains comments that state the obvious, such as `// Create shader from generated header` and `// Apply pipeline and bindings`.
-- *Fix:* Remove these redundant comments.
-- *Rationale:* Code should be self-documenting where possible. Removing obvious comments cleans up the code.
-- *Complexity:* 1 point
-- *Tags:* #conventions #cleanup #batch-candidate
 
-### [Documentation] Missing comment for `sync_locomotion_targets`
-- *File(s):* `src/character/tuning.h:20`
-- *Issue:* The free function `sync_locomotion_targets` has no documentation explaining its purpose, which is to synchronize tunable controller parameters with the locomotion system's internal state.
-- *Fix:* Add a Doxygen-style comment explaining what the function does, its parameters, and why it's necessary.
-- *Rationale:* Improves code clarity and makes the API easier to understand for future development.
-- *Complexity:* 1 point
-- *Tags:* #documentation #cleanup #batch-candidate
 
 ---
 
@@ -146,6 +108,19 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Recent completions; see `PLANS/ARCHIVE/improve_completed_*.md` for history)
+
+### [Batch] Consolidate Minor Cleanup Tasks ✓
+- *Completed:* October 14, 2025
+- *Fix:* Batched four small cleanup tasks: extracted a constant, standardized constant scoping (already done), removed redundant comments, and added missing documentation.
+- *Learning:* Batching trivial items is an efficient way to improve code quality without significant overhead. Verifying backlog items are still relevant is important.
+- *Document:* `PLANS/IMPROVE_consolidate_minor_cleanup_tasks.md`
+
+### [Simplification] Duplicated Gait Blending Logic ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/gui/character_panel.cpp`, `src/character/locomotion.cpp`
+- *Fix:* Removed `compute_base_walk_factor` from the GUI and had it call `locomotion.get_run_blend()` directly.
+- *Learning:* Consolidating duplicated logic into the authoritative system (`locomotion`) cleans up the GUI code and improves maintainability. A trivial but valuable architectural cleanup.
+- *Document:* `PLANS/IMPROVE_simplify_gait_blending_logic.md`
 
 ### Medium / Regression
 **Restore Missing Debug Visualizations** ✓

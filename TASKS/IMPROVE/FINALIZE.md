@@ -6,7 +6,20 @@
 
 ---
 
-### 1. Capture New Discoveries
+### 1. Mark Item Complete in Backlog
+
+Open `PLANS/IMPROVE_BACKLOG.md`:
+
+1. Find the completed item under its current section (Critical/High/Medium/Low)
+2. Mark it complete by appending `✓` to the item name:
+
+```markdown
+**[Item Name]** ✓
+```
+
+**Note:** BACKLOG_GROOMING task handles moving completed items to Completed section, finding batch opportunities, and broader maintenance. For now, just mark complete inline.
+
+### 2. Capture New Discoveries
 
 If during execution you discovered:
 - Additional issues not in backlog
@@ -28,9 +41,7 @@ If during execution you discovered:
 - *Tags:* [appropriate tags]
 ```
 
-**Note:** BACKLOG_GROOMING task handles moving completed items, finding batch opportunities, and broader maintenance.
-
-### 2. Document Learnings
+### 3. Document Learnings
 
 Add final section to `PLANS/IMPROVE_<name>.md`:
 
@@ -76,7 +87,7 @@ Add final section to `PLANS/IMPROVE_<name>.md`:
 - Variance: [Under/Over/Accurate]
 ````
 
-### 3. State Completion
+### 4. State Completion
 
 **Output to user:**
 

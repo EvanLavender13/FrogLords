@@ -5,6 +5,7 @@
 #include "foundation/math_utils.h"
 #include "rendering/wireframe.h"
 #include "gui/character_panel.h"
+#include "rendering/velocity_trail.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <algorithm>
@@ -36,7 +37,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
                                                                 character.position) > 1e-4f;
 
         if (position_changed) {
-            if (trail_state.positions.size() >= 25) {
+            if (trail_state.positions.size() >= MAX_TRAIL_SAMPLES) {
                 // Remove oldest sample
                 trail_state.positions.erase(trail_state.positions.begin());
                 trail_state.timestamps.erase(trail_state.timestamps.begin());
