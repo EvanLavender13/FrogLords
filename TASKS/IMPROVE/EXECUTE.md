@@ -10,24 +10,13 @@
 
 ### Format and Lint
 
-After making changes, always run:
-
-```bash
-# Run formatter
-bash scripts/bash/run_clang_format.sh
-
-# Run linter
-bash scripts/bash/run_clang_tidy.sh
-```
+After making changes, always run the formatter and linter tasks.
 
 Fix any formatting or linting issues introduced.
 
 ### Build Verification
 
-```bash
-# Clean build
-bash scripts/bash/build.sh
-```
+Run the build task.
 
 Verify build succeeds with no new errors or warnings.
 
@@ -118,13 +107,7 @@ Open `PLANS/IMPROVE_<name>.md` and review:
 #### 2.3. Format and Lint
 Run common steps above (Format and Lint) after each stage.
 
-#### 2.4. Consider Intermediate Commit (optional)
-For multi-stage work, can commit after each major stage:
-- Keeps changes atomic
-- Easier to roll back if later stage fails
-- Don't push yet (user handles final git workflow)
-
-#### 2.5. Document Stage Completion
+#### 2.4. Document Stage Completion
 Append notes to `PLANS/IMPROVE_<name>.md` after each stage:
 
 ````markdown
@@ -170,7 +153,7 @@ After all stages complete, execute full validation from PLAN:
 
 1. **Stop immediately**
 2. Document what was attempted and why it failed
-3. Rollback changes (use git to discard or stash)
+3. Rollback changes (discard or stash working changes)
 4. Append to `PLANS/IMPROVE_<name>.md`:
 
 ````markdown

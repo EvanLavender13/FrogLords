@@ -193,15 +193,6 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     // Store root transform (set by game_world)
     glm::mat4 root_transform = skel.joints[0].local_transform;
 
-    // Helper lambda to apply blended quaternion to joint
-    auto apply_blended_joint = [&](int joint_idx, const glm::quat& blended_rotation) {
-        // Extract T-pose position (T-pose rotations are identity)
-        glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3]);
-        // Build new transform: translation * rotation
-        skel.joints[joint_idx].local_transform =
-            glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(blended_rotation);
-    };
-
     auto blend_channel = [&](const glm::quat& walk_source, const glm::quat& walk_target,
                              const glm::quat& run_source, const glm::quat& run_target) {
         glm::quat walk_blend = glm::slerp(walk_source, walk_target, t);
@@ -211,30 +202,30 @@ void animation_state::update_skeletal_animation(skeleton& skel, float distance_t
     };
 
     // Blend and apply all 8 joints using bilinear slerp
-    apply_blended_joint(joint_index::LEFT_SHOULDER,
-                        blend_channel(walk_source_kf.left_shoulder, walk_target_kf.left_shoulder,
-                                      run_source_kf.left_shoulder, run_target_kf.left_shoulder));
-    apply_blended_joint(joint_index::LEFT_ELBOW,
-                        blend_channel(walk_source_kf.left_elbow, walk_target_kf.left_elbow,
-                                      run_source_kf.left_elbow, run_target_kf.left_elbow));
-    apply_blended_joint(joint_index::RIGHT_SHOULDER,
-                        blend_channel(walk_source_kf.right_shoulder, walk_target_kf.right_shoulder,
-                                      run_source_kf.right_shoulder, run_target_kf.right_shoulder));
-    apply_blended_joint(joint_index::RIGHT_ELBOW,
-                        blend_channel(walk_source_kf.right_elbow, walk_target_kf.right_elbow,
-                                      run_source_kf.right_elbow, run_target_kf.right_elbow));
-    apply_blended_joint(joint_index::LEFT_HIP,
-                        blend_channel(walk_source_kf.left_hip, walk_target_kf.left_hip,
-                                      run_source_kf.left_hip, run_target_kf.left_hip));
-    apply_blended_joint(joint_index::LEFT_KNEE,
-                        blend_channel(walk_source_kf.left_knee, walk_target_kf.left_knee,
-                                      run_source_kf.left_knee, run_target_kf.left_knee));
-    apply_blended_joint(joint_index::RIGHT_HIP,
-                        blend_channel(walk_source_kf.right_hip, walk_target_kf.right_hip,
-                                      run_source_kf.right_hip, run_target_kf.right_hip));
-    apply_blended_joint(joint_index::RIGHT_KNEE,
-                        blend_channel(walk_source_kf.right_knee, walk_target_kf.right_knee,
-                                      run_source_kf.right_knee, run_target_kf.right_knee));
+    set_joint_rotation(skel, joint_index::LEFT_SHOULDER,
+                       blend_channel(walk_source_kf.left_shoulder, walk_target_kf.left_shoulder,
+                                     run_source_kf.left_shoulder, run_target_kf.left_shoulder));
+    set_joint_rotation(skel, joint_index::LEFT_ELBOW,
+                       blend_channel(walk_source_kf.left_elbow, walk_target_kf.left_elbow,
+                                     run_source_kf.left_elbow, run_target_kf.left_elbow));
+    set_joint_rotation(skel, joint_index::RIGHT_SHOULDER,
+                       blend_channel(walk_source_kf.right_shoulder, walk_target_kf.right_shoulder,
+                                     run_source_kf.right_shoulder, run_target_kf.right_shoulder));
+    set_joint_rotation(skel, joint_index::RIGHT_ELBOW,
+                       blend_channel(walk_source_kf.right_elbow, walk_target_kf.right_elbow,
+                                     run_source_kf.right_elbow, run_target_kf.right_elbow));
+    set_joint_rotation(skel, joint_index::LEFT_HIP,
+                       blend_channel(walk_source_kf.left_hip, walk_target_kf.left_hip,
+                                     run_source_kf.left_hip, run_target_kf.left_hip));
+    set_joint_rotation(skel, joint_index::LEFT_KNEE,
+                       blend_channel(walk_source_kf.left_knee, walk_target_kf.left_knee,
+                                     run_source_kf.left_knee, run_target_kf.left_knee));
+    set_joint_rotation(skel, joint_index::RIGHT_HIP,
+                       blend_channel(walk_source_kf.right_hip, walk_target_kf.right_hip,
+                                     run_source_kf.right_hip, run_target_kf.right_hip));
+    set_joint_rotation(skel, joint_index::RIGHT_KNEE,
+                       blend_channel(walk_source_kf.right_knee, walk_target_kf.right_knee,
+                                     run_source_kf.right_knee, run_target_kf.right_knee));
 
     // Restore root transform
     skel.joints[0].local_transform = root_transform;

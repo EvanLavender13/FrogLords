@@ -8,6 +8,7 @@
 #pragma once
 
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 
 namespace character {
@@ -49,5 +50,9 @@ struct skeleton {
 /// Compute model (global) transforms for the entire skeleton from local transforms.
 /// Assumes parent-before-child ordering in the joints array and that joint 0 is the root.
 void update_global_transforms(skeleton& skel);
+
+/// Apply rotation to joint while preserving its T-pose position.
+/// Extracts the joint's translation, then builds transform = translate * mat4_cast(rotation).
+void set_joint_rotation(skeleton& skel, int joint_idx, const glm::quat& rotation);
 
 } // namespace character

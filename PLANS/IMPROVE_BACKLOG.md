@@ -38,15 +38,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nice-to-have improvements)
 
-### Character / Animation
-**Extract Joint Transform Application**
-- *Files:* `src/character/keyframe.cpp`, `src/character/animation.cpp`
-- *Issue:* Repeated lambdas `apply_joint` / `apply_blended_joint`
-- *Fix:* Add `set_joint_rotation(skeleton&, int, const glm::quat&)` in `skeleton.h`
-- *Impact:* -20–30 LOC; removes 4 lambdas
-- *Complexity:* 3 points
-- *Tags:* #pattern-extraction #skeleton
-
 ### GUI
 **Extract Buffer Pruning Helper**
 - *Files:* `src/gui/gui.cpp` (plots)
@@ -98,6 +89,15 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Medium / Character / Animation
+**Extract Joint Transform Application** ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/character/skeleton.h`, `src/character/skeleton.cpp`, `src/character/keyframe.cpp`, `src/character/animation.cpp`
+- *Fix:* Added `set_joint_rotation(skeleton&, int, const glm::quat&)` in `skeleton.h` to replace 3 duplicated lambdas
+- *Impact:* -26 LOC; removed 3 lambda definitions; single source of truth for joint rotation application
+- *Learning:* Include management matters—when adding functions using glm types to headers, include appropriate glm headers in the header file. Incremental builds validate each stage quickly.
+- *Document:* `PLANS/IMPROVE_extract_joint_transform_application.md`
 
 ### Critical / Character
 **Character Controller Depends on Rendering** ✓

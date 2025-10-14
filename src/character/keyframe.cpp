@@ -233,24 +233,14 @@ void apply_pose(skeleton& skel, pose_type pose) {
     keyframe kf = get_keyframe_data(pose);
 
     // Apply keyframe quaternions to skeleton joints using named indices
-
-    // Helper lambda to apply quaternion to joint
-    auto apply_joint = [&](int joint_idx, const glm::quat& rotation) {
-        // Extract T-pose position (T-pose rotations are identity)
-        glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3]);
-        // Build new transform: translation * rotation (position bone, then apply joint rotation)
-        skel.joints[joint_idx].local_transform =
-            glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
-    };
-
-    apply_joint(joint_index::LEFT_SHOULDER, kf.left_shoulder);
-    apply_joint(joint_index::LEFT_ELBOW, kf.left_elbow);
-    apply_joint(joint_index::RIGHT_SHOULDER, kf.right_shoulder);
-    apply_joint(joint_index::RIGHT_ELBOW, kf.right_elbow);
-    apply_joint(joint_index::LEFT_HIP, kf.left_hip);
-    apply_joint(joint_index::LEFT_KNEE, kf.left_knee);
-    apply_joint(joint_index::RIGHT_HIP, kf.right_hip);
-    apply_joint(joint_index::RIGHT_KNEE, kf.right_knee);
+    set_joint_rotation(skel, joint_index::LEFT_SHOULDER, kf.left_shoulder);
+    set_joint_rotation(skel, joint_index::LEFT_ELBOW, kf.left_elbow);
+    set_joint_rotation(skel, joint_index::RIGHT_SHOULDER, kf.right_shoulder);
+    set_joint_rotation(skel, joint_index::RIGHT_ELBOW, kf.right_elbow);
+    set_joint_rotation(skel, joint_index::LEFT_HIP, kf.left_hip);
+    set_joint_rotation(skel, joint_index::LEFT_KNEE, kf.left_knee);
+    set_joint_rotation(skel, joint_index::RIGHT_HIP, kf.right_hip);
+    set_joint_rotation(skel, joint_index::RIGHT_KNEE, kf.right_knee);
 }
 
 void apply_pose_with_overrides(skeleton& skel, pose_type pose,
@@ -315,30 +305,23 @@ void apply_pose_with_overrides(skeleton& skel, pose_type pose,
         return override_rot * base;
     };
 
-    // Helper lambda to apply composed quaternion to joint
-    auto apply_joint = [&](int joint_idx, const glm::quat& rotation) {
-        glm::vec3 t_pose_pos = glm::vec3(skel.joints[joint_idx].local_transform[3]);
-        skel.joints[joint_idx].local_transform =
-            glm::translate(glm::mat4(1.0f), t_pose_pos) * glm::mat4_cast(rotation);
-    };
-
     // Apply composed rotations (base pose + user overrides) to all joints
-    apply_joint(joint_index::LEFT_SHOULDER,
-                compose_rotation(base_kf.left_shoulder, to_quat(left_shoulder_angles)));
-    apply_joint(joint_index::LEFT_ELBOW,
-                compose_rotation(base_kf.left_elbow, to_quat(left_elbow_angles)));
-    apply_joint(joint_index::RIGHT_SHOULDER,
-                compose_rotation(base_kf.right_shoulder, to_quat(right_shoulder_angles)));
-    apply_joint(joint_index::RIGHT_ELBOW,
-                compose_rotation(base_kf.right_elbow, to_quat(right_elbow_angles)));
-    apply_joint(joint_index::LEFT_HIP,
-                compose_rotation(base_kf.left_hip, to_quat(left_hip_angles)));
-    apply_joint(joint_index::LEFT_KNEE,
-                compose_rotation(base_kf.left_knee, to_quat(left_knee_angles)));
-    apply_joint(joint_index::RIGHT_HIP,
-                compose_rotation(base_kf.right_hip, to_quat(right_hip_angles)));
-    apply_joint(joint_index::RIGHT_KNEE,
-                compose_rotation(base_kf.right_knee, to_quat(right_knee_angles)));
+    set_joint_rotation(skel, joint_index::LEFT_SHOULDER,
+                       compose_rotation(base_kf.left_shoulder, to_quat(left_shoulder_angles)));
+    set_joint_rotation(skel, joint_index::LEFT_ELBOW,
+                       compose_rotation(base_kf.left_elbow, to_quat(left_elbow_angles)));
+    set_joint_rotation(skel, joint_index::RIGHT_SHOULDER,
+                       compose_rotation(base_kf.right_shoulder, to_quat(right_shoulder_angles)));
+    set_joint_rotation(skel, joint_index::RIGHT_ELBOW,
+                       compose_rotation(base_kf.right_elbow, to_quat(right_elbow_angles)));
+    set_joint_rotation(skel, joint_index::LEFT_HIP,
+                       compose_rotation(base_kf.left_hip, to_quat(left_hip_angles)));
+    set_joint_rotation(skel, joint_index::LEFT_KNEE,
+                       compose_rotation(base_kf.left_knee, to_quat(left_knee_angles)));
+    set_joint_rotation(skel, joint_index::RIGHT_HIP,
+                       compose_rotation(base_kf.right_hip, to_quat(right_hip_angles)));
+    set_joint_rotation(skel, joint_index::RIGHT_KNEE,
+                       compose_rotation(base_kf.right_knee, to_quat(right_knee_angles)));
 }
 
 } // namespace character
