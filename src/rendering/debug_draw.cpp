@@ -1,5 +1,4 @@
 #include "rendering/debug_draw.h"
-#include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
 #include "character/skeleton.h"
 #include "foundation/math_utils.h"
@@ -176,9 +175,10 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
     ctx.renderer.draw(right_foot, ctx.cam, ctx.aspect, glm::vec4(1, 0.5f, 0, 1));
 }
 
-void draw_collision_state(draw_context& ctx, const controller& character, const scene& scn) {
+void draw_collision_state(draw_context& ctx, const controller& character,
+                          const collision_world& world) {
     // Draw all collision boxes with distinct colors based on type
-    for (const auto& box : scn.collision_boxes()) {
+    for (const auto& box : world.boxes) {
         box_dimensions dims{box.half_extents.x * 2.0f, box.half_extents.y * 2.0f,
                             box.half_extents.z * 2.0f};
         wireframe_mesh box_mesh = generate_box(dims);

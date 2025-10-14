@@ -7,6 +7,7 @@
 #include "character/skeleton.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
+#include "foundation/collision_primitives.h"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -17,6 +18,7 @@ struct character_panel_state;
 struct game_world {
     camera cam;
     scene scn;
+    collision_world world_geometry;
     controller character;
     locomotion_system locomotion;
     character::tuning_params character_params;
@@ -30,4 +32,4 @@ struct game_world {
     void update(float dt, const gui::character_panel_state& panel_state);
 };
 
-void setup_test_level(scene& scn);
+void setup_test_level(game_world& world);

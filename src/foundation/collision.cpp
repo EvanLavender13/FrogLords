@@ -1,64 +1,121 @@
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
+#include <glm/gtc/constants.hpp>
+#include <glm/trigonometric.hpp>
 #include <algorithm>
-#include <cmath>
-
-namespace {
-constexpr float EPSILON = 0.0001f;
-}
 
 sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
-    sphere_collision result{};
+    sphere_collision result;
 
-    glm::vec3 min_corner = box.center - box.half_extents;
-    glm::vec3 max_corner = box.center + box.half_extents;
-    glm::vec3 closest = glm::clamp(s.center, min_corner, max_corner);
+    // Find the closest point on the AABB to the center of the sphere
+    glm::vec3 closest_point;
+    closest_point.x = std::max(box.center.x - box.half_extents.x,
+                               std::min(s.center.x, box.center.x + box.half_extents.x));
+    closest_point.y = std::max(box.center.y - box.half_extents.y,
+                               std::min(s.center.y, box.center.y + box.half_extents.y));
+    closest_point.z = std::max(box.center.z - box.half_extents.z,
+                               std::min(s.center.z, box.center.z + box.half_extents.z));
 
-    glm::vec3 delta = s.center - closest;
-    float distance_sq = glm::dot(delta, delta);
-    float radius_sq = s.radius * s.radius;
+    // Calculate the distance between the sphere's center and the closest point
+    glm::vec3 distance = s.center - closest_point;
 
-    if (distance_sq >= radius_sq) {
-        return result;
+    float distance_squared = glm::dot(distance, distance);
+
+    // If the distance is less than the sphere's radius, there is a collision
+    if (distance_squared < (s.radius * s.radius)) {
+        result.hit = true;
+        float distance_magnitude = std::sqrt(distance_squared);
+        result.normal = distance / distance_magnitude;
+        result.penetration = s.radius - distance_magnitude;
     }
 
-    float distance = std::sqrt(distance_sq);
-
-    // Special case: sphere center is inside the AABB.
-    // We need to find the smallest push-out vector.
-    if (distance < EPSILON) {
-        glm::vec3 dist_to_max = max_corner - s.center;
-        glm::vec3 dist_to_min = s.center - min_corner;
-
-        float min_dist = dist_to_max.x;
-        result.normal = glm::vec3(1, 0, 0);
-
-        if (dist_to_min.x < min_dist) {
-            min_dist = dist_to_min.x;
-            result.normal = glm::vec3(-1, 0, 0);
-        }
-        if (dist_to_max.y < min_dist) {
-            min_dist = dist_to_max.y;
-            result.normal = math::UP;
-        }
-        if (dist_to_min.y < min_dist) {
-            min_dist = dist_to_min.y;
-            result.normal = glm::vec3(0, -1, 0);
-        }
-        if (dist_to_max.z < min_dist) {
-            min_dist = dist_to_max.z;
-            result.normal = glm::vec3(0, 0, 1);
-        }
-        if (dist_to_min.z < min_dist) {
-            min_dist = dist_to_min.z;
-            result.normal = glm::vec3(0, 0, -1);
-        }
-        result.penetration = s.radius + min_dist;
-    } else {
-        result.normal = delta / distance;
-        result.penetration = s.radius - distance;
-    }
-
-    result.hit = true;
     return result;
+}
+
+void resolve_ground_collision(sphere& collision_sphere, glm::vec3& position, glm::vec3& velocity,
+                              bool& is_grounded, glm::vec3& ground_normal, float& ground_height) {
+    using namespace glm;
+
+    // Only check ground plane if not already grounded by box collision
+    if (is_grounded) {
+        return;
+    }
+
+    // Simple ground plane at y=0 - single sphere collision
+    float ground_y = 0.0f;
+    float distance_to_ground = collision_sphere.center.y - ground_y;
+    float penetration = collision_sphere.radius - distance_to_ground;
+
+    if (penetration > 0.0f) {
+        // Push sphere up to rest on surface
+        collision_sphere.center.y += penetration;
+        position = collision_sphere.center;
+
+        // Remove velocity into ground
+        if (velocity.y < 0.0f) {
+            velocity.y = 0.0f;
+        }
+
+        is_grounded = true;
+        ground_normal = math::UP;
+        ground_height = ground_y;
+    } else {
+        is_grounded = false;
+    }
+}
+
+void resolve_box_collisions(sphere& collision_sphere, const collision_world& world,
+                            glm::vec3& position, glm::vec3& velocity, bool& is_grounded,
+                            glm::vec3& ground_normal, float& ground_height, float max_slope_angle) {
+    // Multi-pass collision resolution to handle corner cases
+    for (int pass = 0; pass < 3; ++pass) {
+        bool any_collision = false;
+
+        for (const auto& box : world.boxes) {
+            sphere_collision col = resolve_sphere_aabb(collision_sphere, box);
+
+            if (col.hit) {
+                // Push out of collision
+                position += col.normal * col.penetration;
+                collision_sphere.center = position;
+
+                // Check if this is a ground surface (upward-facing normal)
+                if (col.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
+                    // Set grounded state
+                    is_grounded = true;
+                    ground_normal = col.normal;
+                    ground_height = box.center.y + box.half_extents.y;
+                }
+
+                // Remove velocity into surface
+                float vel_into_surface = glm::dot(velocity, col.normal);
+                if (vel_into_surface < 0.0f) {
+                    velocity -= col.normal * vel_into_surface;
+                }
+
+                any_collision = true;
+            }
+        }
+
+        if (!any_collision)
+            break; // Early exit if no collisions in this pass
+    }
+}
+
+void resolve_collisions(sphere& collision_sphere, const collision_world& world, glm::vec3& position,
+                        glm::vec3& velocity, bool& is_grounded, glm::vec3& ground_normal,
+                        float& ground_height, float max_slope_angle) {
+    // Reset grounded state before collision checks
+    is_grounded = false;
+
+    // Update collision sphere position to match integrated position
+    collision_sphere.center = position;
+
+    // Box collision resolution (main environment)
+    resolve_box_collisions(collision_sphere, world, position, velocity, is_grounded, ground_normal,
+                           ground_height, max_slope_angle);
+
+    // Ground plane (fallback if no box collision)
+    resolve_ground_collision(collision_sphere, position, velocity, is_grounded, ground_normal,
+                             ground_height);
 }

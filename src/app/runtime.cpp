@@ -143,7 +143,7 @@ void app_runtime::render_world() {
     debug::draw_context debug_ctx{renderer,      world.cam,     aspect,       unit_circle,
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
-    debug::draw_collision_state(debug_ctx, world.character, world.scn);
+    debug::draw_collision_state(debug_ctx, world.character, world.world_geometry);
     debug::draw_character_body(debug_ctx, world.character, world.character.orientation);
     debug::draw_character_state(debug_ctx, world.character, world.locomotion,
                                 world.character.orientation);

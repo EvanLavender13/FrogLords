@@ -9,4 +9,7 @@ struct sphere_collision {
     float penetration = 0.0f;
 };
 
+void resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&, bool&, glm::vec3&,
+                        float&, float);
+
 sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box);

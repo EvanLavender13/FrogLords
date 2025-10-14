@@ -26,15 +26,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Architectural violations, bugs, blocking issues requiring immediate attention)
 
-### Character
-**Character Controller Depends on Rendering**
-- *File:* `src/character/controller.cpp:4`
-- *Issue:* Includes `rendering/scene.h`, pulling rendering into character layer
-- *Principle Violated:* Layered architecture (Foundation → Character → Rendering → App)
-- *Fix:* Move collision queries to foundation interface or pass narrow collision struct from app
-- *Complexity:* 5-8 points
-- *Tags:* #architecture #layers #collision
-
 ---
 
 ## High
@@ -117,6 +108,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Critical / Character
+**Character Controller Depends on Rendering** ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/character/controller.cpp`, `src/character/controller.h`, `src/foundation/collision.h`, `src/foundation/collision.cpp`, `src/app/game_world.h`, `src/app/game_world.cpp`, `src/rendering/debug_draw.h`, `src/rendering/debug_draw.cpp`, `src/app/runtime.cpp`
+- *Fix:* Moved collision resolution logic from the character controller to the foundation layer to remove the dependency of the character layer on the rendering layer.
+- *Learning:* Architectural violations should be fixed as soon as they are found to prevent them from spreading and making the codebase harder to maintain.
+- *Document:* `PLANS/IMPROVE_character_controller_depends_on_rendering.md`
 
 ### Medium / Character / Controller
 **Simplify Velocity Clamping** ✓

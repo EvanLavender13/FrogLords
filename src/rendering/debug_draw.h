@@ -38,7 +38,8 @@ void draw_foot_positions(draw_context& ctx, const controller& character,
                          const locomotion_system& locomotion,
                          const orientation_system& orientation);
 
-void draw_collision_state(draw_context& ctx, const controller& character, const scene& scn);
+void draw_collision_state(draw_context& ctx, const controller& character,
+                          const collision_world& world);
 
 void draw_character_body(draw_context& ctx, const controller& character,
                          const orientation_system& orientation);

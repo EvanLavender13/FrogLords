@@ -1,7 +1,6 @@
 #include "character/controller.h"
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
-#include "rendering/scene.h"
 #include "camera/camera.h"
 #include "input/input.h"
 #include "sokol_app.h"
@@ -78,7 +77,7 @@ void controller::apply_input(const camera& cam, float dt) {
     }
 }
 
-void controller::update(const scene* scn, float dt) {
+void controller::update(const collision_world* world, float dt) {
     // Apply gravity
     acceleration.y += gravity;
 
@@ -110,8 +109,9 @@ void controller::update(const scene* scn, float dt) {
     position += velocity * dt;
 
     // Resolve collisions and capture pre-collision state
-    float pre_collision_vertical_velocity = 0.0f;
-    resolve_collisions(scn, pre_collision_vertical_velocity);
+    float pre_collision_vertical_velocity = velocity.y;
+    resolve_collisions(collision_sphere, *world, position, velocity, is_grounded, ground_normal,
+                       ground_height, max_slope_angle);
 
     // Landing detection (after collision resolution, using pre-collision velocity)
     just_landed = !was_grounded && is_grounded;
@@ -144,109 +144,4 @@ glm::mat4 controller::get_world_transform() const {
     transform *= animation.get_tilt_matrix();
 
     return transform;
-}
-
-void controller::resolve_collisions(const scene* scn, float& out_pre_collision_vertical_velocity) {
-    // Reset grounded state before collision checks
-    is_grounded = false;
-    collision_contact_debug = contact_debug_info{};
-
-    // Update collision sphere position to match integrated position
-    collision_sphere.center = position;
-
-    // Capture vertical velocity BEFORE collision resolution (for landing spring)
-    out_pre_collision_vertical_velocity = velocity.y;
-
-    // Box collision resolution (main environment)
-    if (scn != nullptr) {
-        resolve_box_collisions(*scn);
-    }
-
-    // Ground plane (fallback if no box collision)
-    resolve_ground_collision();
-}
-
-void controller::resolve_ground_collision() {
-    using namespace glm;
-
-    // Only check ground plane if not already grounded by box collision
-    if (is_grounded) {
-        return;
-    }
-
-    // Simple ground plane at y=0 - single sphere collision
-    float ground_y = 0.0f;
-    float distance_to_ground = collision_sphere.center.y - ground_y;
-    float penetration = collision_sphere.radius - distance_to_ground;
-
-    if (penetration > 0.0f) {
-        // Push sphere up to rest on surface
-        collision_sphere.center.y += penetration;
-        position = collision_sphere.center;
-
-        // Remove velocity into ground
-        if (velocity.y < 0.0f) {
-            velocity.y = 0.0f;
-        }
-
-        is_grounded = true;
-        ground_normal = math::UP;
-        ground_height = ground_y;
-
-        collision_contact_debug.active = true;
-        collision_contact_debug.from_box = false;
-        collision_contact_debug.normal = math::UP;
-        collision_contact_debug.penetration = 0.0f;
-        collision_contact_debug.vertical_penetration = 0.0f;
-    } else {
-        is_grounded = false;
-    }
-}
-
-void controller::resolve_box_collisions(const scene& scn) {
-    // EXPERIMENT: Single-sphere collision system
-    // One sphere handles ALL collision - no dual-sphere complexity
-    // Goal: Test if simpler system feels more responsive and stable
-
-    // Multi-pass collision resolution to handle corner cases
-    for (int pass = 0; pass < 3; ++pass) {
-        bool any_collision = false;
-
-        for (const auto& box : scn.collision_boxes()) {
-            sphere_collision col = resolve_sphere_aabb(collision_sphere, box);
-
-            if (col.hit) {
-                // Push out of collision
-                position += col.normal * col.penetration;
-                collision_sphere.center = position;
-
-                // Check if this is a ground surface (upward-facing normal)
-                if (col.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
-                    // Set grounded state
-                    is_grounded = true;
-                    ground_normal = col.normal;
-                    ground_height = box.center.y + box.half_extents.y;
-                }
-
-                // Record all collisions for debug
-                collision_contact_debug.active = true;
-                collision_contact_debug.from_box = true;
-                collision_contact_debug.normal = col.normal;
-                collision_contact_debug.penetration = col.penetration;
-                collision_contact_debug.vertical_penetration =
-                    col.penetration * std::max(col.normal.y, 0.0f);
-
-                // Remove velocity into surface
-                float vel_into_surface = glm::dot(velocity, col.normal);
-                if (vel_into_surface < 0.0f) {
-                    velocity -= col.normal * vel_into_surface;
-                }
-
-                any_collision = true;
-            }
-        }
-
-        if (!any_collision)
-            break; // Early exit if no collisions in this pass
-    }
 }

@@ -17,14 +17,14 @@ void game_world::init() {
     cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
     cam.set_mode(camera_mode::FOLLOW);
     scn = scene();
-    setup_test_level(scn);
+    setup_test_level(*this);
     create_t_pose(t_pose_skeleton);
     character::update_global_transforms(t_pose_skeleton);
 }
 
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
     character.apply_input(cam, dt);
-    character.update(&scn, dt);
+    character.update(&world_geometry, dt);
 
     // Sample velocity trail
     trail_state.time_since_last_sample += dt;
@@ -116,48 +116,55 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     character::update_global_transforms(t_pose_skeleton);
 }
 
-void setup_test_level(scene& scn) {
+void setup_test_level(game_world& world) {
     wireframe_mesh floor = generate_grid_floor(40.0f, 40);
-    scn.add_object(floor);
+    world.scn.add_object(floor);
 
     for (int i = 0; i < 5; ++i) {
         float height = 1.0f + static_cast<float>(i) * 1.5f;
         aabb platform;
         platform.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
         platform.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
-        scn.add_collision_box(platform);
+        world.scn.add_collision_box(platform);
+        world.world_geometry.boxes.push_back(platform);
     }
 
     aabb long_wall;
     long_wall.center = glm::vec3(6.0f, 2.0f, -10.0f);
     long_wall.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
-    scn.add_collision_box(long_wall);
+    world.scn.add_collision_box(long_wall);
+    world.world_geometry.boxes.push_back(long_wall);
 
     aabb corner_wall_1;
     corner_wall_1.center = glm::vec3(-6.0f, 1.5f, -8.0f);
     corner_wall_1.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
-    scn.add_collision_box(corner_wall_1);
+    world.scn.add_collision_box(corner_wall_1);
+    world.world_geometry.boxes.push_back(corner_wall_1);
 
     aabb corner_wall_2;
     corner_wall_2.center = glm::vec3(-4.0f, 1.5f, -12.0f);
     corner_wall_2.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
-    scn.add_collision_box(corner_wall_2);
+    world.scn.add_collision_box(corner_wall_2);
+    world.world_geometry.boxes.push_back(corner_wall_2);
 
     aabb gap_wall_1;
     gap_wall_1.center = glm::vec3(3.0f, 1.0f, 2.0f);
     gap_wall_1.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
-    scn.add_collision_box(gap_wall_1);
+    world.scn.add_collision_box(gap_wall_1);
+    world.world_geometry.boxes.push_back(gap_wall_1);
 
     aabb gap_wall_2;
     gap_wall_2.center = glm::vec3(3.0f, 1.0f, 4.0f);
     gap_wall_2.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
-    scn.add_collision_box(gap_wall_2);
+    world.scn.add_collision_box(gap_wall_2);
+    world.world_geometry.boxes.push_back(gap_wall_2);
 
     for (int i = 0; i < 4; ++i) {
         float height = 0.15f * static_cast<float>(i + 1);
         aabb step;
         step.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
         step.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
-        scn.add_collision_box(step);
+        world.scn.add_collision_box(step);
+        world.world_geometry.boxes.push_back(step);
     }
 }
