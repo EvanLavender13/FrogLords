@@ -39,11 +39,24 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          COMPLETED FEATURES (100%) ✅
 ───────────────────────────────────────────────────────────────────────────
 
-**Skeletal Animation Stack:** Debug system → attach to body → keyframe preview → primary anim → secondary motion → pose blending → run gait blending
-**Debug & Polish:** Visual overhaul (trail, plots, ring), walk/run transition, freeze velocity trail, character axis gizmo
-**Reactive Animation:** Acceleration tilt, landing spring, tuning UI
+**Foundation Complete:**
+- Skeletal animation pipeline (debug → keyframes → blending → secondary motion)
+- Reactive animation (tilt, landing spring, walk/run transitions, tuning UI)
+- Procedural animation (orientation, locomotion, air weights, phase continuity)
+- Input timing forgiveness (coyote time + jump buffer)
+- Debug tooling (velocity trail, plots, speed ring, zoom, panels, axis gizmo)
+- Running gait (4-pose cycle with magnitude scaling)
 
-See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.) for specifics
+**Key Patterns Validated:**
+- Quaternion keyframe architecture with hemisphere-safe slerp
+- Distance-phased triggering (surveyor wheel pattern)
+- Dual-reference pattern for smooth transitions (landing spring, acceleration tilt, contact weights)
+- Velocity-injection for spring systems
+- Phase reuse over recalculation (locomotion phase drives animation directly)
+- Elastic timing forgiveness (input accessibility without skill ceiling reduction)
+- Debug visualization layer pattern (toggle-driven, zero gameplay coupling)
+
+See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and `implementation_*.md` for specifics
 
 ───────────────────────────────────────────────────────────────────────────
                     CORE GAMEPLAY LAYER (~95% certain)
@@ -153,28 +166,16 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 
 **Status:** Foundation proven through 9 completed iterations
 
-**Completed Stack:**
-- **Skeletal Animation:** Full pipeline from debug → attach → keyframes → primary → secondary → blending ✅
-- **Reactive Animation:** Acceleration tilt, landing spring, walk/run transitions, tuning UI ✅
-- **Procedural Animation:** Air locomotion weights (phase continuity + contact/air blending) ✅
-- **Locomotion/Animation Consolidation:** Animation cycle stride consolidation (surveyor wheel completion) ✅
-- **Input Timing Forgiveness:** Coyote time + jump buffer (elastic timing windows for jump inputs) ✅
-- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels, character axis gizmo, dynamic surveyor wheel ✅
-- **Running Gait Keyframes:** Four-pose run cycle (REACH_LEFT → PASS_RIGHT → REACH_RIGHT → PASS_LEFT) with larger limb extension than walk ✅
+**Architecture Patterns Proven:**
+- Quaternion keyframe with hemisphere-safe slerp
+- Distance-phased triggering (surveyor wheel)
+- Dual-reference smooth transitions
+- Velocity-injection springs
+- Phase reuse (direct consumption vs recalculation)
+- Elastic timing forgiveness (coyote/buffer)
+- Debug layer (zero gameplay coupling)
 
-**Key Patterns Validated:**
-- Quaternion keyframe architecture with hemisphere-safe slerp
-- Distance-phased triggering (surveyor wheel pattern)
-- Position-delta gating for debug visualizations
-- Velocity-injection for spring systems
-- Dual-reference pattern for smooth transitions (proven in landing spring, acceleration tilt, now contact weights)
-- Debug visualization layer pattern (toggle-driven, zero gameplay impact)
-- Gait clarity through silhouette scaling (run vs walk magnitude differentiation)
-- Phase continuity in air (horizontal velocity drives animation without control latency)
-- **Phase reuse over recalculation:** When a system correctly tracks a value (locomotion's phase), reuse it rather than recalculating from different primitives to avoid instability
-- **Elastic timing forgiveness:** Coyote time + jump buffer pattern for input accessibility without skill ceiling reduction
-
-See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `implementation_*.md` files for detailed retrospectives
+**Implementation Details:** See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `PLANS/implementation_*.md` files
 
 ---
 
@@ -274,13 +275,6 @@ P(unchanged) = C^N
 - Only showing **strongest dependencies** (deliberate reduction for focus)
 - Circular dependencies exist but weakest ones ignored
 - Stack will reshape as discoveries happen
-
-**Key learnings embedded in this stack:**
-- **Motion vs. Structure:** Reactive systems need dynamic state sources, not just data structures
-- **Velocity-injection pattern:** Superior to offset manipulation for spring systems
-- **Distance-phased triggering:** Surveyor wheel scales from locomotion to skeletal animation
-- **Data structure validation:** Validate novel representations (quaternions) in isolation first
-- **Graybox discipline:** Parameters over assets; iteration over polish
 
 **Historical snapshots:**
 - Detailed retrospectives in [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md)

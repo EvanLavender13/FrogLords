@@ -25,36 +25,8 @@ Include lightweight metadata to improve selection and planning:
 
 ## Animation & Feel
 
-### Debug Visualization
-
-- **Character Axis Gizmo:** Clearly labeled 3D coordinate axes (RGB = XYZ) attached to character root ✅ COMPLETE
-  - *Prerequisite:* Foundation ✅
-  - *Certainty:* 100%
-  - *Learning:* Debug visualization pattern proven - pure reactive layer with zero gameplay coupling. Key technique: ImGui foreground label projection at arrow endpoints using viewport transform (same approach as skeleton joint labels). Safe normalization with fallback prevents degenerate cases. Pattern now validated for future debug tools: toggle-driven, depth-tested wireframe primitives + viewport-projected labels = fast, zero-risk visualization. Font scaling (1.4x) critical for legibility at typical camera distances.
-  - *Origin:* Identified 2025-10-08 during Static Keyframe Preview iteration when rotation axis confusion required deep investigation of parent-space transforms
-  - *Completed:* 2025-10-12
-
 ### Skeletal Animation (Keyframe Foundation)
 
-- **Run gait pose integration:** Blend between walk and run keyframe poses based on `walk_factor` ✅ COMPLETE
-  - *Prerequisite:* Running gait keyframes ✅, walk/run blend factor computation ✅
-  - *Certainty:* 100%
-  - *Learning:* Bilinear slerp between walk and run poses is a success. The key to a natural feel was adding exponential smoothing to the `walk_factor` to avoid abrupt visual transitions between gaits.
-  - *Complexity:* 1-2 points (~30-50 lines)
-  - *Rationale:* Run keyframes authored but not yet integrated into animation system. Currently only walk poses used regardless of speed.
-  - *Scope:*
-    - Add `run_gait_poses[]` array alongside existing `walk_gait_poses[]`
-    - Modify `animation::update()` to slerp between walk and run poses: `final_pose = slerp(walk_pose, run_pose, 1.0 - walk_factor)`
-    - Expose debug toggle to isolate walk-only vs run-only vs blended
-    - Tune visual transition threshold (currently walk_factor computed from speed)
-  - *Implementation:* ~30-50 lines in `src/character/animation.cpp`
-    - Declare run pose array (4 keyframes: REACH_LEFT, PASS_RIGHT, REACH_RIGHT, PASS_LEFT)
-    - Add second gait phase lookup for run poses
-    - Insert slerp between walk and run results before applying to skeleton
-  - *Validation Loop:* Sprint at different speeds, verify smooth walk→run visual transition; debug UI shows both walk and run contributions
-  - *Success Criteria:* Larger limb extension visible at high speeds; smooth blending across speed range; no pops or discontinuities
-  - *Origin:* Running gait keyframes completed 2025-10-12 but not yet wired into animation pipeline
-  - *Note:* This is the "obvious next step" after running gait authoring - completes the walk/run animation stack
 
 - **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
   - *Prerequisite:* Foundation âœ… (keyframe architecture proven)
@@ -71,17 +43,6 @@ Include lightweight metadata to improve selection and planning:
   - *Rationale:* Completes the "no cycles" guard promised in plan; keeps future authoring honest.
   - *Certainty:* Medium (~50%) - cheap runtime check toggled via debug flag.
 
-- **Tunable tilt velocity scaling:** Expose hardcoded velocity scaling constants (0.5x-1.5x)
-  - *Current:* Velocity scaling automatically applies (faster = more tilt)
-  - *Prerequisite:* Test current feel first (may be unnecessary)
-  - *Certainty:* Low (~30%) - premature optimization until feel requires it
-  - *Note:* Added to backlog from animation_tuning_plan learnings
-
-- **Independent walk/run thresholds:** Decouple from max_speed auto-sync
-  - *Current:* Thresholds procedurally derived (walk = 20% max_speed, run = 100%)
-  - *Risk:* Breaks elegant abstraction, adds parameter complexity
-  - *Certainty:* Very Low (~10%) - only if procedural approach fails
-  - *Note:* Deliberately excluded from tuning UI to preserve simplicity
 
 - **Parameter persistence:** Save/load tuned values between sessions
   - *Current:* Manual adjustment at runtime, no persistence
@@ -89,43 +50,6 @@ Include lightweight metadata to improve selection and planning:
   - *Certainty:* Medium (~50%) - useful but not urgent
   - *Note:* Would require config file system (JSON/TOML)
 
-- **Consolidate animation cycle length with locomotion stride:** Use locomotion's phase directly for gait-specific cadence (GDC "surveyor wheel" principle) ✅ COMPLETE
-  - *Prerequisite:* Run gait blending complete ✅
-  - *Certainty:* 100%
-  - *Learning:* Completed 2025-10-14. Key insight: **Phase reuse beats recalculation**. Initial attempt passed `blended_stride` as cycle length and recalculated phase (`distance_traveled / cycle_length`), causing vibration when stride changed. Root cause: dividing accumulating distance by changing divisor creates phase discontinuities. Solution: Pass locomotion's pre-calculated phase directly. Locomotion already computes phase correctly as `phase += (speed / blended_stride) * dt`, which naturally handles stride changes smoothly. Surveyor wheel principle now fully unified—animation consumes locomotion's phase instead of recalculating from primitives. Bonus: Dynamic surveyor wheel debug visual now scales with blended stride (radius = stride / 2π), providing accurate visual feedback.
-  - *Implementation:* [PLANS/animation_cycle_stride_consolidation_PLAN.md](animation_cycle_stride_consolidation_PLAN.md)
-  - *Pattern Validated:* When a system correctly tracks a value, reuse it rather than recalculating from different primitives. Recalculation can introduce instability, especially when bases/divisors change dynamically.
-  - *Completed:* 2025-10-14
-
-### Procedural Animation Systems
-
-- **Bounce gravity:** Vertical oscillation of character center of mass during locomotion
-  - *Prerequisite:* Running gait keyframes, surveyor wheel locomotion system
-  - *Status:* Concept fleshed out - 2025-10-11
-  - *Certainty:* Medium (~60%) - concept clear, implementation details TBD
-  - *Rationale:* Character behaves like "bouncing ball" (GDC principle). Small upward impulse at footfall + constant gravity creates natural parabolic arcs. Faster gaits = flatter arcs (less airtime), slower gaits = bouncier arcs (more airtime). Pure emergence from physics, zero hand-authored curves.
-  - *Reference:* See [NOTES/bounce_gravity_explained.md](../NOTES/bounce_gravity_explained.md) for full concept breakdown
-  - *Scope:*
-    - Detect footfall events (gait phase crosses 0.0 or 0.5)
-    - Apply small upward velocity impulse (~2.0 m/s, tune by feel)
-    - Gravity continuously pulls down during airborne portions
-    - Redefine "grounded" to include locomoting state (fix pause issue)
-    - Layer additively with existing spring-damper (land/crouch)
-  - *Open Questions:*
-    - Same impulse for walk/run, or per-gait tuning?
-    - How to handle locomotion system pausing during `!is_grounded`?
-    - Does jump need input buffering to feel responsive mid-bounce?
-  - *Success Criteria:* Natural bouncing visible during run; no control interference; smooth interaction with jump/land; feels alive and dynamic (like Overgrowth character)
-  - *Origin:* GDC talk reference (David Rosen - Overgrowth), see [NOTES/Images/bounce.png](../NOTES/Images/bounce.png)
-
-- **Air locomotion weights (phase continuity + contact/air):** Prevent frozen poses in air by reweighting locomotion rather than halting it ✅ COMPLETE
-  - *Prerequisite:* Phase-based gait system ✅; 1D pose slerp blending ✅. Existing landing/secondary motion springs ✅.
-  - *Certainty:* 100%
-  - *Learning:* Dual-reference spring-damper pattern proven for decoupled target/smoothed state. Phase continuity in air (horizontal XZ velocity) maintains animation flow without gameplay compromise. T_POSE blend provides neutral target without content cost. Contact weight scaling (tilt + amplitude) cleanly separates grounded/airborne behaviors. Pattern validates: keep core physics running, layer reactive suppression on top.
-  - *References:*
-    - [NOTES/air_locomotion_explained.md](../NOTES/air_locomotion_explained.md)
-    - [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md)
-    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md), [NOTES/GDC/GDC_TechnicalWhitepaper.md](../NOTES/GDC/GDC_TechnicalWhitepaper.md)
   - *Completed:* 2025-10-13 (feature branch: feature/air_locomotion_weights)
   - *Implementation:* See [PLANS/air_locomotion_weights_PLAN.md](air_locomotion_weights_PLAN.md)
 
@@ -148,30 +72,6 @@ Include lightweight metadata to improve selection and planning:
 
 ### Input & Control Feel
 
-- **Air locomotion weights (phase continuity + contact/air):** Prevent frozen poses in air by reweighting locomotion rather than halting it
-  - *Prerequisite:* Phase-based gait system; 1D pose slerp blending (see pose blending). Existing landing/secondary motion springs.
-  - *Certainty:* Medium-High (~70%) — aligns with GDC “do no harm” and synchronized blending; low risk, small scope.
-  - *Rationale:* Current system freezes pose when airborne, causing visual pops and loss of continuity. Keeping phase advancing in air and reweighting stride amplitude preserves coherence and feel without affecting control.
-  - *References:*
-    - [NOTES/air_locomotion_explained.md](../NOTES/air_locomotion_explained.md)
-    - [NOTES/pose_blending_explained.md](../NOTES/pose_blending_explained.md)
-    - [NOTES/GDC/GDC_DesignPhilosophy.md](../NOTES/GDC/GDC_DesignPhilosophy.md), [NOTES/GDC/GDC_TechnicalWhitepaper.md](../NOTES/GDC/GDC_TechnicalWhitepaper.md)
-  - *Scope:*
-    - Keep gait phase advancing while airborne (distance/velocity-based); do not pause.
-    - Add spring-smoothed weights (dual-reference): `contact_weight` (1→0) and `air_weight` (0→1) with short time constants; include coyote window.
-    - Suppress stride amplitude via `slerp(neutral, gait_blend, contact_weight)`.
-    - Optional: Add `AIR_NEUTRAL` keyframe; blend toward it by `air_weight` for a clear in-air silhouette.
-    - Scale acceleration tilt by `contact_weight` to avoid extreme lean while falling.
-    - Keep footfall bounce impulses ground-only; gravity in air (no “air bounce”).
-  - *Open Questions:*
-    - Ship without `AIR_NEUTRAL` initially (amplitude suppression only) to minimize content?
-    - Parameter defaults for springs and weights; expose in debug UI?
-  - *Dependencies:* 1D slerp pose blending (phase) recommended; uses existing secondary motion + landing springs. No input system changes required.
-  - *Success Criteria:* No frozen pose in air; smooth takeoff/landing without pops; phase continuity prevents foot sliding; input remains fully responsive; works across walk and future run.
-  - *Origin:* Brainstorm 2025-10-12 integrating GDC principles; see added note above.
-
-### Input & Control Feel
-
 - **Mouse delta tracking:** Provide functions to get mouse movement delta between frames.
   - *Certainty:* High
   - *Rationale:* Useful for implementing camera controls and other features that rely on mouse movement.
@@ -179,13 +79,6 @@ Include lightweight metadata to improve selection and planning:
   - *Certainty:* High
   - *Rationale:* Allows for more flexible input options for players.
 
-- **Coyote time + jump buffer:** Elastic timing forgiveness for jumps and micro air gaps ✅ COMPLETE
-  - *Prerequisite:* Basic jump impulse ✅; grounded detection ✅
-  - *Certainty:* 100%
-  - *Learning:* Completed 2025-10-14. Simple timer pattern (coyote accumulates in air, buffer decays each frame) layered cleanly on existing grounded detection. Zero physics changes—pure input layer addition. Feature toggle via zero-value parameters validated design principle of parameter-driven mechanics. Tuning window durations (default 150ms) felt natural without exploits. Pattern proves elastic timing forgiveness improves accessibility without reducing skill expression (DG_Skill "elastic challenges" principle). Key insight: exhausting coyote timer on jump (set to window duration) prevents double-jump exploits while preserving window for fall-off scenarios.
-  - *Implementation:* [PLANS/coyote_jump_buffer_PLAN.md](coyote_jump_buffer_PLAN.md)
-  - *Pattern Validated:* Input-layer timing windows can expand gameplay accessibility without affecting core physics determinism
-  - *Completed:* 2025-10-14 (feature branch: feature/coyote_jump_buffer)
 
 
 ### Advanced Animation (Low Priority)
