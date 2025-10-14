@@ -6,41 +6,7 @@
 
 ---
 
-### 1. Update Improve Backlog
-
-Open `PLANS/IMPROVE_BACKLOG.md`:
-
-#### 1.1. Move Item to Completed
-
-Find the item under its current section (Critical/High/Medium/Low) and:
-1. Cut the entire item entry
-2. Paste into the **Completed** section at the bottom
-3. Add completion date and brief note
-
-```markdown
-## Completed
-
-### [Original Section] / [Subsystem]
-**[Item Name]** ✓
-- *Completed:* October 13, 2025
-- *Files:* `path/to/file.cpp`
-- *Fix:* [Brief summary of what was done]
-- *Learning:* [Key insight, if any]
-- *Document:* `PLANS/IMPROVE_<name>.md`
-```
-
-#### 1.2. Check for Similar Items
-
-Scan backlog for related items that:
-- Affect same files or systems
-- Use similar patterns or techniques
-- Could be batched in future
-
-**If 2+ similar items found:**
-- Add note to backlog: "Batch opportunity: [Item A, Item B, Item C] (similar fix pattern)"
-- Tag items with `#batch-candidate`
-
-#### 1.3. Note New Discoveries
+### 1. Capture New Discoveries
 
 If during execution you discovered:
 - Additional issues not in backlog
@@ -62,6 +28,8 @@ If during execution you discovered:
 - *Tags:* [appropriate tags]
 ```
 
+**Note:** BACKLOG_GROOMING task handles moving completed items, finding batch opportunities, and broader maintenance.
+
 ### 2. Document Learnings
 
 Add final section to `PLANS/IMPROVE_<name>.md`:
@@ -82,16 +50,11 @@ Add final section to `PLANS/IMPROVE_<name>.md`:
 **Impact:**
 [What was achieved - solved problem, removed duplication, fixed architecture violation, etc.]
 
-### Backlog Updates
+### New Items Discovered
 
-**Item Status:** Moved to Completed in IMPROVE_BACKLOG.md
-
-**New Items Discovered:**
+**Added to Backlog:**
 - [Item name] (added to backlog)
 - [Another item] (added to backlog)
-
-**Batch Opportunities Noted:**
-- [Related items that could be batched]
 
 ### Learnings
 
@@ -128,14 +91,11 @@ Files modified: X
 Complexity: Y points
 Path: A (Trivial) | B (Standard)
 
-Backlog updated:
-- Item moved to Completed
-- [N new items added]
-- [Batch opportunities noted]
+New items discovered: [N]
 
 Document: PLANS/IMPROVE_<name>.md
 
-Ready for user to review and commit on branch improve/<name>.
+Ready for user review on branch improve/<name>.
 ```
 
 ---
@@ -145,6 +105,5 @@ Ready for user to review and commit on branch improve/<name>.
 - Concise summary of accomplishment
 - Capture learnings while fresh
 - Be honest about time estimates (builds calibration)
-- Note batch opportunities (reduces future overhead)
-- No git operations (user handles all git workflow)
+- No git operations (user handles all commits/merges)
 - Celebrate completion (improvement work is valuable!)

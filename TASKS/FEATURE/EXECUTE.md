@@ -13,11 +13,16 @@ Read `AGENTS.md` to ensure all actions adhere to development principles and codi
 1.  **Read Feature Description:** Read `PLANS/<feature_name>_FEATURE.md` for high-level goals and context
 2.  **Read Implementation Plan:** Read `PLANS/<feature_name>_PLAN.md` for ordered checklist of tasks
 
-### 4. Execute One Step
+### 4. Execute ONE Step (Then Stop)
 
-1.  **Identify Next Major Step:** Find the first major step in implementation plan with unchecked boxes (e.g., "####" heading)
+**CONSTRAINT: Complete exactly one numbered step from the implementation plan, then stop and report.**
+
+1.  **Identify Next Incomplete Step:** Find the first top-level numbered step (e.g., "### 1.", "### 2.") in the implementation plan with unchecked boxes
 2.  **Analyze Code:** Read relevant source files (`.h` and `.cpp`) to understand current state
-3.  **Perform Actions:** Before taking action, provide concise summary of changes referencing implementation plan. Then execute all actions for that single major step only
+3.  **Perform Actions:** 
+    - Provide concise summary of changes referencing the specific step number
+    - Execute all sub-items for ONLY that numbered step
+    - **STOP** - Do not proceed to the next numbered step
 4.  **Run Quality Gates:** After completing the step, run applicable quality checks:
     - Build/compile the code (if the step touched source files)
     - Format check (run clang-format if applicable)
@@ -27,13 +32,30 @@ Read `AGENTS.md` to ensure all actions adhere to development principles and codi
     - Any obvious violations of `AGENTS.md` principles?
     - System ownership conflicts (duplicates, missing reference updates)?
     - If issues found: fix them before marking complete
-6.  **Mark Complete:**
-    - Propose change to `PLANS/<feature_name>_PLAN.md` marking completed items as `[x]`
-    - Update the implementation plan with a running list of files changed during this step
+6.  **Mark Complete & HALT:**
+    - Update `PLANS/<feature_name>_PLAN.md` marking completed sub-items as `[x]`
+    - Update the plan with files changed during this step
+    - **Report completion using the template below and WAIT for explicit instruction to continue**
 
-### 5. Await Guidance
+**Step Completion Report Template:**
+```
+Completed: [Step number and title]
+Files changed: [list]
+Quality gates: [pass/fail for each]
+Next step: [number and title] - AWAITING INSTRUCTION
+```
 
-Await further instructions before proceeding to next step or committing changes.
+### 5. Explicit Halt
+
+**DO NOT:**
+- Proceed to the next numbered step automatically
+- Continue "while you're at it" changes
+- Anticipate or prepare future steps
+
+**DO:**
+- Stop immediately after completing one numbered step
+- Report what was completed using the template
+- Wait for user to explicitly say "continue" or "next step"
 
 ### Tone & Constraints
 

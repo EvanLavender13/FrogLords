@@ -25,12 +25,11 @@ Read and execute `TASKS/FEATURE/UPDATE_DEPENDENCIES.md` to:
 -   Move `← YOU ARE HERE` marker to next layer
 -   Update `Development Strategy` section
 
-### 5. Update Design Backlog
+### 5. Capture Serendipitous Ideas
 
-Read and execute `TASKS/FEATURE/UPDATE_BACKLOG.md` to:
--   Mark feature as `✅ COMPLETE`
--   Add `Learning:` section documenting key knowledge gained
--   Update certainty scores for newly unblocked dependent features
+If new ideas or insights emerged during implementation:
+-   Add them to `PLANS/DESIGN_BACKLOG.md` (single line + metadata)
+-   Note: BACKLOG_GROOMING task handles pruning completed items and broader maintenance
 
 ### 6. Archive Planning Documents
 
@@ -84,7 +83,7 @@ Add a `## Certainty Calibration` section to end of `PLANS/<feature_name>_FEATURE
 
 ### 7. Propose Next Steps
 
-Recommend running `TASKS/FEATURE/SELECT.md` to identify next work after user handles git operations.
+Recommend running `TASKS/FEATURE/SELECT.md` to identify next work.
 
 ### Tone & Constraints
 
@@ -92,4 +91,4 @@ Recommend running `TASKS/FEATURE/SELECT.md` to identify next work after user han
 -   Verify all prerequisite approvals before proceeding
 -   Document learnings while knowledge is fresh
 -   Ensure dependency stack accurately reflects new certainty
--   Quality gates must pass before merge
+-   No git operations (user handles all commits/merges)
