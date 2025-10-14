@@ -23,6 +23,8 @@ void game_world::init() {
 }
 
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
+    debug_list.clear();
+
     character.apply_input(cam, dt);
     character.update(&world_geometry, dt);
 

@@ -52,6 +52,7 @@ add_executable(FrogLords
     src/main.cpp
     src/app/runtime.cpp
     src/app/game_world.cpp
+    src/app/debug_generation.cpp
     src/camera/camera.cpp
     src/character/controller.cpp
     src/character/orientation.cpp

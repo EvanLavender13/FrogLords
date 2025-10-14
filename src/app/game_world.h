@@ -8,6 +8,7 @@
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
 #include "foundation/collision_primitives.h"
+#include "rendering/debug_primitives.h"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -27,6 +28,8 @@ struct game_world {
     float smoothed_walk_factor = 1.0f;
     float walk_factor_smoothing = 15.0f;
     velocity_trail_state trail_state;
+
+    debug::debug_primitive_list debug_list;
 
     void init();
     void update(float dt, const gui::character_panel_state& panel_state);

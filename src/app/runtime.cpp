@@ -7,6 +7,7 @@
 #include "gui/gui.h"
 #include "gui/character_panel.h"
 #include "rendering/debug_draw.h"
+#include "app/debug_generation.h"
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -143,27 +144,11 @@ void app_runtime::render_world() {
     debug::draw_context debug_ctx{renderer,      world.cam,     aspect,       unit_circle,
                                   unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
-    debug::draw_collision_state(debug_ctx, world.character, world.world_geometry);
-    debug::draw_character_body(debug_ctx, world.character, world.character.orientation);
-    debug::draw_character_state(debug_ctx, world.character, world.locomotion,
-                                world.character.orientation);
-    debug::draw_physics_springs(debug_ctx, world.character, world.locomotion);
-    debug::draw_locomotion_wheel(debug_ctx, world.character, world.locomotion,
-                                 world.character.orientation, world.wheel_spin_angle);
-    debug::draw_foot_positions(debug_ctx, world.character, world.locomotion,
-                               world.character.orientation);
-    if (panel_state.show_velocity_trail) {
-        debug::draw_velocity_trail(debug_ctx, world.trail_state);
-    }
+    // Generate all debug primitives from the current world state.
+    app::generate_debug_primitives(world.debug_list, world, panel_state);
 
-    // Draw skeleton if enabled
-    if (panel_state.show_skeleton) {
-        debug::draw_skeleton(debug_ctx, world.t_pose_skeleton, panel_state.show_joint_labels);
-    }
-
-    if (panel_state.show_axis_gizmo) {
-        debug::draw_axis_gizmo(debug_ctx, world.t_pose_skeleton, 0.6f);
-    }
+    // Pass the populated list to the dumb renderer.
+    debug::draw_primitives(debug_ctx, world.debug_list);
 
     gui::render();
 
