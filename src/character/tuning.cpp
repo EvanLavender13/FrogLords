@@ -2,6 +2,10 @@
 #include <algorithm>
 #include <cmath>
 
+namespace {
+constexpr float FRICTION_RATIO = 0.75f;
+}
+
 namespace character {
 
 void tuning_params::apply_to(controller& c) const {
@@ -10,7 +14,6 @@ void tuning_params::apply_to(controller& c) const {
     }
 
     float desired_accel = c.max_speed / time_to_max_speed;
-    constexpr float FRICTION_RATIO = 0.75f;
     constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
 
     c.ground_accel = desired_accel / NET_FRACTION;
@@ -18,13 +21,12 @@ void tuning_params::apply_to(controller& c) const {
 
     float gravity_mag = std::abs(c.gravity);
     if (gravity_mag > 0.0f) {
-        c.friction = (c.ground_accel * 0.75f) / gravity_mag;
+        c.friction = (c.ground_accel * FRICTION_RATIO) / gravity_mag;
         c.jump_velocity = std::sqrt(2.0f * gravity_mag * jump_height);
     }
 }
 
 void tuning_params::read_from(const controller& c) {
-    constexpr float FRICTION_RATIO = 0.75f;
     constexpr float NET_FRACTION = 1.0f - FRICTION_RATIO;
     if (c.ground_accel > 0.0f) {
         float net_accel = c.ground_accel * NET_FRACTION;

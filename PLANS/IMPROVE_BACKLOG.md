@@ -84,14 +84,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 4 points
 - *Tags:* #pattern-extraction #debug-viz
 
-### Character / Tuning
-**Consolidate Tuning Constants**
-- *Files:* `src/character/tuning.cpp`
-- *Issue:* `FRICTION_RATIO = 0.75f` duplicated in two functions
-- *Fix:* Move to file-level anonymous namespace
-- *Complexity:* 1 point
-- *Tags:* #cleanup #constants
-
 ### Character / Controller
 **Simplify Velocity Clamping**
 - *Files:* `src/character/controller.cpp`
@@ -143,6 +135,14 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Medium / Character / Tuning
+**Consolidate Tuning Constants** ✓
+- *Completed:* October 13, 2025
+- *Files:* `src/character/tuning.cpp`
+- *Fix:* Moved duplicated `FRICTION_RATIO` constant to a file-level anonymous namespace.
+- *Learning:* Simple cleanups like this are quick wins for improving code quality.
+- *Document:* `PLANS/IMPROVE_consolidate_tuning_constants.md`
 
 ### Critical / Rendering
 **Debug Draw Depends on App** ✓
