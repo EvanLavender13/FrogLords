@@ -38,14 +38,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nice-to-have improvements)
 
-### GUI
-**Extract Buffer Pruning Helper**
-- *Files:* `src/gui/gui.cpp` (plots)
-- *Issue:* Identical prune logic in `plot_value()` and `plot_histogram()`
-- *Fix:* Internal helper `prune_plot_buffer(buffer, current_time, max_samples)`
-- *Impact:* -16 LOC
-- *Complexity:* 2 points
-- *Tags:* #pattern-extraction #gui
+
 
 ### Rendering / Debug
 **Extract Speed/Age Gradient Helpers**
@@ -89,6 +82,15 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 ## Completed
 
 (Archive periodically; keep ~1 month for learning capture)
+
+### Medium / GUI
+**Extract Buffer Pruning Helper** ✓
+- *Completed:* October 14, 2025
+- *Files:* `src/gui/gui.cpp`
+- *Fix:* Created static helper function `prune_plot_buffer()` to encapsulate buffer pruning logic used by both `plot_value()` and `plot_histogram()`
+- *Impact:* -14 LOC; eliminated duplicated pruning logic; single source of truth for buffer management
+- *Learning:* Straightforward extraction refactor with no behavior changes; trivial path works well for localized pattern extraction
+- *Document:* `PLANS/IMPROVE_extract_buffer_pruning_helper.md`
 
 ### Medium / Character / Animation
 **Extract Joint Transform Application** ✓
