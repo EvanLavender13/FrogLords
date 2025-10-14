@@ -71,9 +71,12 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     // Update contact/air weight (smooth transition for phase continuity)
     character.animation.update_contact_weight(character.is_grounded, dt);
+
+    // Calculate wheel spin using dynamic radius from blended stride
+    float wheel_radius = locomotion.get_blended_stride() / TWO_PI;
     float angular_speed = 0.0f;
-    if (WHEEL_RADIUS > 0.0001f) {
-        angular_speed = locomotion.current_speed / WHEEL_RADIUS;
+    if (wheel_radius > 0.0001f) {
+        angular_speed = locomotion.current_speed / wheel_radius;
     }
     wheel_spin_angle += angular_speed * dt;
     if (wheel_spin_angle > TWO_PI) {
@@ -103,8 +106,8 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     } else {
         // Apply base animation (manual pose selection or procedural distance-phased animation)
         character.animation.update_skeletal_animation(
-            t_pose_skeleton, locomotion.distance_traveled, applied_walk_factor,
-            panel_state.selected_pose, panel_state.use_manual_pose_selection, dt);
+            t_pose_skeleton, locomotion.phase, applied_walk_factor, panel_state.selected_pose,
+            panel_state.use_manual_pose_selection, dt);
     }
 
     // 2. Apply secondary motion on top of the final pose.

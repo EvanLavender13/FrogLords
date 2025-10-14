@@ -103,16 +103,16 @@ void draw_physics_springs(draw_context& ctx, const controller& character,
 }
 
 void draw_locomotion_wheel(draw_context& ctx, const controller& character,
-                           [[maybe_unused]] const locomotion_system& locomotion,
+                           const locomotion_system& locomotion,
                            const orientation_system& orientation, float wheel_spin_angle) {
-    // Phase information used for foot placement, not wheel center
+    // Calculate wheel radius from blended stride: circumference = stride, radius = stride / (2π)
+    float wheel_radius = locomotion.get_blended_stride() / TWO_PI;
 
     float yaw = orientation.get_yaw();
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
 
-    float wheel_ground_y = character.collision_sphere.center.y - character.collision_sphere.radius;
+    // Center wheel on character position
     glm::vec3 wheel_center = character.position;
-    wheel_center.y = wheel_ground_y + WHEEL_RADIUS;
 
     const int RIM_SEGMENTS = 24;
     const int SPOKE_COUNT = 4;
@@ -126,7 +126,7 @@ void draw_locomotion_wheel(draw_context& ctx, const controller& character,
         float base_angle = static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * TWO_PI;
         float rim_angle = base_angle - wheel_spin_angle;
         glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * math::UP;
-        wheel_mesh.vertices.push_back(wheel_center + offset * WHEEL_RADIUS);
+        wheel_mesh.vertices.push_back(wheel_center + offset * wheel_radius);
     }
 
     for (int i = 0; i < RIM_SEGMENTS; ++i) {

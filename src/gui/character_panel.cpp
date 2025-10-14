@@ -147,10 +147,9 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::text("Current Speed: %.2f m/s", locomotion.current_speed);
         gui::widget::text("Smoothed Speed: %.2f m/s", locomotion.smoothed_speed);
         gui::widget::text("Animation Phase: %.2f", locomotion.phase);
+        gui::widget::text("Stride: %.2fm (auto from locomotion)", locomotion.get_blended_stride());
 
         ImGui::Separator();
-        gui::widget::slider_float("Cycle Length (m)", &character.animation.cycle_length, 0.5f,
-                                  3.0f);
 
         // Current automatic pose display
         const char* pose_name;

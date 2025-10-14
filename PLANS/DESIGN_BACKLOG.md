@@ -89,60 +89,13 @@ Include lightweight metadata to improve selection and planning:
   - *Certainty:* Medium (~50%) - useful but not urgent
   - *Note:* Would require config file system (JSON/TOML)
 
-- **Consolidate animation cycle length with locomotion stride:** Use locomotion's blended stride as animation cycle length for gait-specific cadence (GDC "surveyor wheel" principle)
-  - *Prerequisite:* Run gait blending complete ✅; playtesting shows need for cadence variation
-  - *Certainty:* Medium (~60%) - straightforward consolidation, low risk
-  - *Complexity:* 1-2 points (~10-20 lines)
-  - *Problem:* Animation uses fixed `cycle_length = 2.0f` while locomotion has separate `walk_stride = 1.2m` and `run_stride = 2.0m`. This decoupling breaks the GDC principle of blending "surveyor wheel size" along with poses—locomotion has different wheel sizes per gait, but animation uses a single fixed wheel for phase calculation.
-  - *Current Behavior:*
-    - Locomotion: computes `blended_stride` from walk (1.2m) and run (2.0m) based on speed, uses this as "wheel size" for phase: `phase += (speed / blended_stride) * dt`
-    - Animation: always divides `distance_traveled` by fixed 2.0m to get phase: `phase = (distance % 2.0) / 2.0`
-    - Result: animation phase progression is identical for walk and run despite different stride concepts; only pose extremity differs
-  - *GDC Reference:* "I added a synchronized blend between them so at any intermediate speed it was blend between the two keyframes and also **blend between their stride size**... the character adopts a blended pose and a **blended 'surveyor wheel' size**"
-  - *Goal:* Couple stride and cadence properly—walk (1.2m stride) should complete animation cycles faster per unit distance than run (2.0m stride), matching the locomotion system's surveyor wheel behavior
-  - *Hypothesis:* Using locomotion's `blended_stride` as animation `cycle_length` will create properly coupled stride/cadence relationship where leg turnover frequency scales correctly with speed and stride length (cadence_hz = speed / stride).
-  - *Scope:*
-    - Pass `blended_stride` from locomotion to animation system
-    - Option A: Replace `animation.cycle_length` with parameter in `update_skeletal_animation()`
-    - Option B: Add `locomotion_system::get_blended_stride()` and fetch in `game_world.cpp`
-    - Remove debug UI slider for cycle length (consolidated with locomotion strides)
-  - *Implementation:*
-    ```cpp
-    // In game_world.cpp:
-    float blended_stride = locomotion.get_blended_stride();
-    character.animation.update_skeletal_animation(
-        t_pose_skeleton,
-        locomotion.distance_traveled,
-        blended_stride,  // NEW: pass as cycle length (surveyor wheel size)
-        applied_walk_factor,
-        panel_state.selected_pose,
-        panel_state.use_manual_pose_selection,
-        dt
-    );
-    ```
-  - *Expected Visual Outcome:*
-    - Walk @ 1.5 m/s with 1.2m stride → ~1.25 Hz leg turnover (small, quicker steps)
-    - Run @ 5.0 m/s with 2.0m stride → ~2.5 Hz leg turnover (long, powerful strides)
-    - Actual cadence frequency scales as: `cadence_hz = speed / blended_stride`
-    - Despite run having longer stride (slower phase advancement per meter), higher speed dominates → faster overall leg turnover at run speeds
-  - *Risks:*
-    - May require retuning stride lengths if current animation feel depends on 2.0m cycle
-    - Bounce gravity footfall timing (if implemented) needs same blended stride for phase synchronization
-    - Could expose phase discontinuity if stride blending doesn't match pose blending smoothly
-  - *Alternative:* Keep separate and tune animation `cycle_length` independently (current approach - simpler but breaks GDC principle)
-  - *Validation Loop:* Playtest walk→run transitions; verify leg turnover frequency increases with speed; check that stride distance and cadence feel naturally coupled; no animation pops during blend transitions
-  - *Success Criteria:*
-    - Animation phase uses same surveyor wheel concept as locomotion (single source of truth)
-    - Cadence frequency matches expected formula: `speed / blended_stride`
-    - Smooth blending across speed range; no animation pops
-    - System elegance: stride length controls both locomotion phase AND animation cycle length
-    - Visual distinction: walk feels like smaller, quicker steps; run feels like longer, powerful strides
-  - *Deferred Because:*
-    - Should complete run gait blending first and playtest
-    - Need data on whether current fixed cycle length feels wrong
-    - May be unnecessary if pose extremity differences already sufficient
-  - *When to Revisit:* After run gait blending ships; during playtesting if gait cadence feels mismatched to stride length
-  - *Origin:* Feature request 2025-10-13 during run gait blending feature branch; clarified after examining locomotion/animation disconnect
+- **Consolidate animation cycle length with locomotion stride:** Use locomotion's phase directly for gait-specific cadence (GDC "surveyor wheel" principle) ✅ COMPLETE
+  - *Prerequisite:* Run gait blending complete ✅
+  - *Certainty:* 100%
+  - *Learning:* Completed 2025-10-14. Key insight: **Phase reuse beats recalculation**. Initial attempt passed `blended_stride` as cycle length and recalculated phase (`distance_traveled / cycle_length`), causing vibration when stride changed. Root cause: dividing accumulating distance by changing divisor creates phase discontinuities. Solution: Pass locomotion's pre-calculated phase directly. Locomotion already computes phase correctly as `phase += (speed / blended_stride) * dt`, which naturally handles stride changes smoothly. Surveyor wheel principle now fully unified—animation consumes locomotion's phase instead of recalculating from primitives. Bonus: Dynamic surveyor wheel debug visual now scales with blended stride (radius = stride / 2π), providing accurate visual feedback.
+  - *Implementation:* [PLANS/animation_cycle_stride_consolidation_PLAN.md](animation_cycle_stride_consolidation_PLAN.md)
+  - *Pattern Validated:* When a system correctly tracks a value, reuse it rather than recalculating from different primitives. Recalculation can introduce instability, especially when bases/divisors change dynamically.
+  - *Completed:* 2025-10-14
 
 ### Procedural Animation Systems
 

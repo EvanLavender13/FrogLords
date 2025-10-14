@@ -34,8 +34,10 @@ struct locomotion_system {
     void update(glm::vec3 ground_velocity, float dt);
     simple_pose get_current_pose() const;
     float get_run_blend() const;
+    float get_blended_stride() const;
 
   private:
+    float blended_stride = 2.0f; // Cached surveyor wheel size from last update
     simple_pose lerp(const simple_pose& a, const simple_pose& b, float t) const;
     simple_pose cubic_interp(const simple_pose& a, const simple_pose& b, float t) const;
 };

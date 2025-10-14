@@ -86,24 +86,29 @@ State synthesis for confirmation: **"My understanding is..."**
 
 ### 5. Document Clarifications
 
-Add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/<name>_FEATURE.md`:
+If clarification needed, add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/<name>_FEATURE.md`:
 - All identified ambiguities by category
 - Specific questions needing answers
 - Priority indicators for critical info
 - Examples/options illustrating interpretations
 
-Once answered, update document:
+**Stop here.** Wait for user to provide answers before proceeding.
+
+If no clarification needed (description already clear, concrete, and unambiguous):
+- Document why clarification was skipped
+- Note any assumptions made
+- **Stop here.** Do not proceed to PLAN or other tasks.
+
+### 6. After Receiving Answers (Separate Task)
+
+Once user provides answers, update document:
 - Move items from "Pending" to "Resolved" (or remove section)
 - Add concrete visual references (images, video links)
 - Add specific joint/system names and rotation axes
 - Add exact keyframe descriptions/pose breakdowns
 - Add clear success criteria (e.g., "arms alternate 180° out of phase, pointing down at rest")
 
-This becomes **authoritative reference** for implementation planning.
-
-### 6. Consolidate Feature Description
-
-Once clarifications resolved, perform consistency and redundancy pass:
+Perform consistency and redundancy pass:
 
 **Consistency:**
 - **Ordering:** Lists/sequences maintain identical structure throughout
@@ -124,9 +129,7 @@ Once clarifications resolved, perform consistency and redundancy pass:
 
 **Output:** Terse, zero-redundancy, internally consistent description ready for planning.
 
-### 7. Proceed to Implementation Planning
-
-Once clarity achieved, documented, and consolidated, proceed to PLAN. Reference clarified requirements and visual references as validation checkpoints.
+**Stop here.** User will explicitly request PLAN when ready.
 
 ## Example Clarification Flow
 
@@ -162,7 +165,7 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN. Reference 
 
 **User Confirms:** ✅
 
-**Result:** Clear, unambiguous feature description ready for implementation planning.
+**Result:** Clear, unambiguous feature description. Clarification questions documented in feature plan; task stops here awaiting user answers.
 
 ---
 
@@ -173,6 +176,7 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN. Reference 
 - Challenge assumptions: if vague, push for clarity
 - Respect iteration speed: ambiguity costs time; clarification is investment
 - Document everything: clarity from conversation must be written
+- **Stop after documenting questions:** Do not proceed to PLAN or consolidation automatically
 
 ## When to Skip
 
@@ -180,7 +184,14 @@ Once clarity achieved, documented, and consolidated, proceed to PLAN. Reference 
 - Pure refactor or bug fix with objective criteria
 - Simple parameter tweak with no new behavior
 
-**Next Steps:**
-1. Update feature description with clarifications
-2. Proceed to PLAN with clear requirements
-3. Reference visual materials as validation checkpoints
+**When skipping:** Document why (clear requirements, concrete details, etc.) and stop. Do not proceed to other tasks.
+
+## Expected Outcomes
+
+**If clarification needed:**
+- Clarification questions added to `PLANS/<name>_FEATURE.md` under `## CLARIFICATION QUESTIONS (Pending)`
+- Task stops; awaits user answers
+
+**If clarification not needed:**
+- Document why (e.g., "Feature description includes concrete visual references and specific joint names")
+- Task stops; user explicitly requests PLAN when ready

@@ -23,8 +23,7 @@ void locomotion_system::update(glm::vec3 ground_velocity, float dt) {
     smoothed_speed = smoothed_speed + (current_speed - smoothed_speed) * speed_smoothing * dt;
 
     // Blend stride length with eased blend weight
-    float blended_stride = easing::smooth_mix(
-
+    blended_stride = easing::smooth_mix(
         easing::scalar_span{walk_state.stride_length, run_state.stride_length}, get_run_blend());
     if (blended_stride <= 0.0f) {
         phase = 0.0f;
@@ -69,6 +68,10 @@ float locomotion_system::get_run_blend() const {
         return std::clamp(normalized, 0.0f, 1.0f);
     }
     return smoothed_speed > walk_speed_threshold ? 1.0f : 0.0f;
+}
+
+float locomotion_system::get_blended_stride() const {
+    return blended_stride;
 }
 
 simple_pose locomotion_system::lerp(const simple_pose& a, const simple_pose& b, float t) const {

@@ -151,13 +151,14 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 
 ### Completed Features (100% ✅) 🎉
 
-**Status:** Foundation proven through 8 completed iterations
+**Status:** Foundation proven through 9 completed iterations
 
 **Completed Stack:**
 - **Skeletal Animation:** Full pipeline from debug → attach → keyframes → primary → secondary → blending ✅
 - **Reactive Animation:** Acceleration tilt, landing spring, walk/run transitions, tuning UI ✅
 - **Procedural Animation:** Air locomotion weights (phase continuity + contact/air blending) ✅
-- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels, character axis gizmo ✅
+- **Locomotion/Animation Consolidation:** Animation cycle stride consolidation (surveyor wheel completion) ✅
+- **Debug Tooling:** Velocity trail (with freeze-on-stop), plots, speed ring, camera zoom, unified panels, character axis gizmo, dynamic surveyor wheel ✅
 - **Running Gait Keyframes:** Four-pose run cycle (REACH_LEFT → PASS_RIGHT → REACH_RIGHT → PASS_LEFT) with larger limb extension than walk ✅
 
 **Key Patterns Validated:**
@@ -169,6 +170,7 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and [implementation_*.md](.
 - Debug visualization layer pattern (toggle-driven, zero gameplay impact)
 - Gait clarity through silhouette scaling (run vs walk magnitude differentiation)
 - Phase continuity in air (horizontal velocity drives animation without control latency)
+- **Phase reuse over recalculation:** When a system correctly tracks a value (locomotion's phase), reuse it rather than recalculating from different primitives to avoid instability
 
 See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `implementation_*.md` files for detailed retrospectives
 
@@ -211,6 +213,7 @@ Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to ex
 5. ✅ Debug tooling & polish (trail, ring, transitions, axis gizmo)
 6. ✅ Running gait keyframes (4-pose run cycle)
 7. ✅ Air locomotion weights (phase continuity + contact/air blending)
+8. ✅ Animation cycle stride consolidation (surveyor wheel completion)
 
 **Planning Horizon (Adaptive):**
 
@@ -286,4 +289,4 @@ P(unchanged) = C^N
 
 ---
 
-**Last Updated:** 2025-10-13 (Air Locomotion Weights completed and validated)
+**Last Updated:** 2025-10-14 (Animation Cycle Stride Consolidation completed - surveyor wheel principle now fully unified across locomotion and animation)

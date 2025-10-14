@@ -120,16 +120,15 @@ float animation_state::get_vertical_offset() const {
     return landing_spring.get_position();
 }
 
-void animation_state::update_skeletal_animation(skeleton& skel, float distance_traveled,
-                                                float walk_factor, pose_type manual_override_pose,
+void animation_state::update_skeletal_animation(skeleton& skel, float phase, float walk_factor,
+                                                pose_type manual_override_pose,
                                                 bool use_manual_override, float dt) {
     if (use_manual_override) {
         apply_pose(skel, manual_override_pose);
         return;
     }
 
-    // Calculate phase (0.0-1.0) from distance traveled
-    float phase = std::fmod(distance_traveled, cycle_length) / cycle_length;
+    // Use phase directly from locomotion (already calculated correctly with blended stride)
 
     // Determine blend segment and calculate interpolation factor
     pose_type walk_source_pose;
