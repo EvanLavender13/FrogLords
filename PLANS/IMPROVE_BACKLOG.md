@@ -32,16 +32,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Significant improvements to clarity, maintainability, or extensibility)
 
-### Character / Locomotion
-**Extract Walk/Run Blend Calculation**
-- *Files:* `src/character/locomotion.cpp` (`update()` and `get_current_pose()`)
-- *Issue:* Identical blend factor calculation duplicated
-- *Fix:* Extract `compute_walk_run_blend()` private method
-- *Rationale:* Inevitable third use as locomotion expands; abstract now while system is stable
-- *Impact:* -12 LOC, single source of truth
-- *Complexity:* 3 points
-- *Tags:* #pattern-extraction #locomotion
-
 ---
 
 ## Medium
