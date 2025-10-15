@@ -4,7 +4,6 @@
 #include "character/controller.h"
 #include "character/locomotion.h"
 #include "character/tuning.h"
-#include "character/skeleton.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
 #include "foundation/collision_primitives.h"
@@ -23,7 +22,6 @@ struct game_world {
     controller character;
     locomotion_system locomotion;
     character::tuning_params character_params;
-    character::skeleton t_pose_skeleton;
     float wheel_spin_angle = 0.0f;
     float smoothed_walk_factor = 1.0f;
     float walk_factor_smoothing = 15.0f;

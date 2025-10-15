@@ -25,45 +25,68 @@ Include lightweight metadata to improve selection and planning:
 
 ## Animation & Feel
 
-### Skeletal Animation (Keyframe Foundation)
+### Skeletal Animation System (High Priority - Ground-Up Rebuild)
 
+**Context:** Previous skeletal system removed (2025-10-15) due to fundamentally flawed behavioral assumptions discovered during quaternion math validation. See `NOTES/Math/QuaternionDecomp.md` for detailed analysis.
 
-- **Extended keyframe joint set:** Add spine_upper, left_ankle, right_ankle to keyframe poses (11 joints total)
-  - *Prerequisite:* Foundation âœ… (keyframe architecture proven)
-  - *Certainty:* Medium (~60%) - defer until 8-joint validation reveals specific need
-  - *Rationale:* Torso lean (spine_upper) and grounded foot placement (ankles) may improve visual quality, but 8-joint minimum sufficient for current graybox iteration
-  - *Scope:* Add 3 quaternions to keyframe struct; update hardcoded poses with spine/ankle rotations; verify visual improvement justifies added complexity
-  - *Origin:* Scoped out of Static Keyframe Preview iteration 1 (2025-10-07) per principle review to minimize graybox scope
+**Critical Learnings from Failed Implementation:**
+- Quaternion decomposition requires **stable local coordinate frames** (must validate transform hierarchy first)
+- Per-bone axis-dependent operations expose lack of skeleton tooling/visualization
+- Cannot treat skeleton as black box when implementing joint limits or secondary motion
+- Swing-twist decomposition is mathematically sound but requires prerequisite understanding
+- Must validate novel data representations (quaternions, swing-twist) in **isolation** before integration
 
-- **Skeleton rest-pose reset:** Rehydrate local transforms from reference pose when the debug animation toggle turns off.
-  - *Rationale:* Prevents accumulated offsets from leaving the elbow in a rotated state after probes.
-  - *Certainty:* Medium (~60%) - likely a small helper that copies defaults stored alongside the T-pose.
+**Fresh Start Approach (Bottom-Up):**
 
-- **Skeleton validation hooks:** Optional per-joint debug asserts/visual warnings when parent indices are invalid or hierarchy order breaks.
-  - *Rationale:* Completes the "no cycles" guard promised in plan; keeps future authoring honest.
-  - *Certainty:* Medium (~50%) - cheap runtime check toggled via debug flag.
+1. **Skeleton Visualization & Debugging Tools** (Complexity: 5-6 points)
+   - *Prerequisite:* None - foundation layer
+   - *Certainty:* High (~70%) - established debug draw patterns exist
+   - *Scope:* Debug draw for bones (lines), joints (spheres), local axes (RGB gizmos), bind pose vs. animated pose comparison
+   - *Rationale:* Cannot debug what you cannot see; essential for validating all future skeletal work
+   - *Validation:* Visual confirmation of T-pose, hierarchy traversal, local vs. world transforms
 
+2. **Minimal Skeletal Hierarchy & Forward Kinematics** (Complexity: 4-5 points)
+   - *Prerequisite:* Skeleton debugging tools ✅
+   - *Certainty:* Medium-High (~65%)
+   - *Scope:* Bone struct (parent index, local transform), skeleton struct (bone array), FK update loop (parent-to-child concatenation)
+   - *Rationale:* Irreducible core; master transform hierarchy before adding complexity
+   - *Validation:* Manual joint rotations produce expected world-space results (verified via debug draw)
 
-- **Parameter persistence:** Save/load tuned values between sessions
-  - *Current:* Manual adjustment at runtime, no persistence
-  - *Prerequisite:* Determine if iteration workflow needs it
-  - *Certainty:* Medium (~50%) - useful but not urgent
-  - *Note:* Would require config file system (JSON/TOML)
+3. **Quaternion Math Validation Suite** (Complexity: 3-4 points)
+   - *Prerequisite:* None - parallel to skeleton work
+   - *Certainty:* High (~75%) - isolated math testing
+   - *Scope:* Standalone test file validating: quaternion construction from axis-angle, slerp, conjugate, swing-twist decomposition (with edge cases)
+   - *Rationale:* Validate math in isolation before using in production (principle from QuaternionDecomp.md)
+   - *Validation:* Unit tests with known inputs/outputs; measure angles, extract axes, convert to Euler
 
-  - *Completed:* 2025-10-13 (feature branch: feature/air_locomotion_weights)
-  - *Implementation:* See [PLANS/air_locomotion_weights_PLAN.md](air_locomotion_weights_PLAN.md)
+4. **Static Keyframe Poses** (Complexity: 3-4 points)
+   - *Prerequisite:* FK working ✅, quaternion validation ✅
+   - *Certainty:* Medium (~60%)
+   - *Scope:* Hardcoded T-pose, walk cycle keyframes (quaternion rotations per joint), debug UI toggle
+   - *Rationale:* Simplest use of quaternions; no interpolation complexity yet
+   - *Validation:* Switch between poses via UI, verify visual correctness
 
-- **Secondary motion joint limits (elbow/knee constraints):** **DEFERRED (2025-10-15)** - Enforce anatomical bend limits to prevent unnatural hyperextension
-  - *Status:* **DEFERRED** - Missing prerequisite understanding of skeleton local coordinate frames
-  - *Prerequisite:* Skeleton debugging/visualization tools; transform hierarchy mastery
-  - *Certainty:* Low (~30%) - multiple implementation attempts failed due to quaternion/hierarchy complexity
-  - *Complexity:* Was 1-2 points; revealed to be 5-8 points (needs skeleton tooling first)
-  - *Problem:* Secondary motion spring offsets apply without anatomical limits, causing hyperextension. Attempted fixes revealed fundamental gap in understanding bone local axes - left/right joints not symmetric as expected.
-  - *Deferral Reason:* Small polish effect not worth debugging complex transform hierarchy issues. Multiple attempts (hard clamps, soft limits, axis flipping, absolute angle measurement) all failed due to asymmetric behavior between mirrored joints. Root cause: incomplete understanding of skeleton local coordinate frames.
-  - *Reconsideration Criteria:* After building skeleton visualization tools, implementing IK (forces solving same problems), or when ROI justifies investment
-  - *Key Learning:* Quaternion keyframe blending works treating skeleton as black box; per-bone axis-dependent rotations expose our lack of transform hierarchy mastery
-  - *Review:* See [PLANS/secondary_motion_joint_limits_FEATURE.md](secondary_motion_joint_limits_FEATURE.md) deferral section
-  - *Origin:* Identified 2025-10-13; attempted 2025-10-15; deferred 2025-10-15 after multiple failed approaches
+5. **Keyframe Interpolation (Slerp)** (Complexity: 4-5 points)
+   - *Prerequisite:* Static keyframes working ✅
+   - *Certainty:* Medium (~55%)
+   - *Scope:* Time-based interpolation between two keyframes using slerp; hemisphere check (dot product sign)
+   - *Rationale:* Standard animation technique; validates quaternion pipeline
+   - *Validation:* Smooth transitions, no flipping artifacts
+
+6. **Joint Limits (Swing-Twist Decomposition)** (Complexity: 6-8 points)
+   - *Prerequisite:* Slerp working ✅, local axes fully understood ✅
+   - *Certainty:* Low-Medium (~40%)
+   - *Scope:* Swing-twist decomposition per joint, clamp swing cone angle, clamp twist range, recombine
+   - *Rationale:* Enables anatomical constraints; deferred from previous attempt due to missing prerequisites
+   - *Validation:* Extreme rotations clamp to limits; left/right joints behave symmetrically (critical test)
+
+**Deferred Until Prerequisites Met:**
+- Secondary motion (spring offsets on top of keyframes)
+- IK (requires robust FK and joint limits)
+- Pose blending (multiple animation layers)
+- Procedural gait generation (replace hardcoded poses)
+
+---
 
 ### Input & Control Feel
 

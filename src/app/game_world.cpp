@@ -1,7 +1,4 @@
 #include "app/game_world.h"
-#include "character/t_pose.h"
-#include "character/skeleton.h"
-#include "character/keyframe.h"
 #include "foundation/math_utils.h"
 #include "rendering/wireframe.h"
 #include "gui/character_panel.h"
@@ -19,8 +16,6 @@ void game_world::init() {
     cam.set_mode(camera_mode::FOLLOW);
     scn = scene();
     setup_test_level(*this);
-    create_t_pose(t_pose_skeleton);
-    character::update_global_transforms(t_pose_skeleton);
 }
 
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
@@ -57,8 +52,6 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
             trail_state.time_since_last_sample = 0.0f;
         }
     }
-
-    t_pose_skeleton.joints[0].local_transform = character.get_world_transform();
 
     glm::vec3 horizontal_velocity = math::project_to_horizontal(character.velocity);
 
@@ -99,31 +92,6 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     float applied_walk_factor =
         gui::compute_walk_factor_override(panel_state, smoothed_walk_factor);
-
-    // Update skeletal animation pipeline
-    // 1. Apply base pose (manual with optional overrides, or procedural animation)
-    if (panel_state.use_manual_pose_selection && panel_state.enable_joint_overrides) {
-        // Apply manual pose with joint overrides
-        character::apply_pose_with_overrides(
-            t_pose_skeleton, panel_state.selected_pose, panel_state.left_shoulder_angles,
-            panel_state.left_elbow_angles, panel_state.right_shoulder_angles,
-            panel_state.right_elbow_angles, panel_state.left_hip_angles,
-            panel_state.left_knee_angles, panel_state.right_hip_angles,
-            panel_state.right_knee_angles);
-    } else {
-        // Apply base animation (manual pose selection or procedural distance-phased animation)
-        character.animation.update_skeletal_animation(
-            t_pose_skeleton, locomotion.phase, applied_walk_factor, panel_state.selected_pose,
-            panel_state.use_manual_pose_selection, dt);
-    }
-
-    // 2. Apply secondary motion on top of the final pose.
-    if (panel_state.enable_secondary_motion) {
-        character.animation.update_secondary_motion(t_pose_skeleton, dt);
-    }
-
-    // 3. Propagate all local transform changes to global transforms for rendering.
-    character::update_global_transforms(t_pose_skeleton);
 }
 
 void setup_test_level(game_world& world) {

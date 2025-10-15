@@ -27,8 +27,8 @@ Historical snapshots: See `PLANS/ARCHIVE/`
                          Everything below: <50% certain
                          No dependencies assumed, pull as needed
 ═══════════════════════════════════════════════════════════════════════════
-    [Extended Keyframes] [Running Gait] [Bounce Gravity]
-    [IK Systems] [Wall Detection] [Ragdoll] [Dash] [Terrain] [Combat]
+    [Skeletal System] [IK Systems] [Wall Detection] [Ragdoll] 
+    [Bounce Gravity] [Dash] [Terrain] [Combat]
                     [Audio] [UI Polish] [🐸 Frog Ideas 🐸]
 ═══════════════════════════════════════════════════════════════════════════
                                       ▲
@@ -40,19 +40,15 @@ Historical snapshots: See `PLANS/ARCHIVE/`
 ───────────────────────────────────────────────────────────────────────────
 
 **Foundation Complete:**
-- Skeletal animation pipeline (debug → keyframes → blending → secondary motion)
-- Reactive animation (tilt, landing spring, walk/run transitions, tuning UI)
-- Procedural animation (orientation, locomotion, air weights, phase continuity)
+- Reactive animation (tilt, landing spring, contact/air weight transitions, tuning UI)
+- Procedural locomotion (orientation, surveyor-wheel phase, magnitude scaling)
 - Input timing forgiveness (coyote time + jump buffer)
 - Debug tooling (velocity trail, plots, speed ring, zoom, panels, axis gizmo)
-- Running gait (4-pose cycle with magnitude scaling)
 
 **Key Patterns Validated:**
-- Quaternion keyframe architecture with hemisphere-safe slerp
 - Distance-phased triggering (surveyor wheel pattern)
 - Dual-reference pattern for smooth transitions (landing spring, acceleration tilt, contact weights)
 - Velocity-injection for spring systems
-- Phase reuse over recalculation (locomotion phase drives animation directly)
 - Elastic timing forgiveness (input accessibility without skill ceiling reduction)
 - Debug visualization layer pattern (toggle-driven, zero gameplay coupling)
 
@@ -65,15 +61,16 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and `implementation_*.md` f
 
               ┌────────────────┬────────────────┐
               ▼                ▼                ▼
-    ┌──────────────────┐  ┌──────────────────────┐  ┌──────────────────┐
-    │ Reactive Anim    │  │  Procedural Anim     │  │ Skeletal System  │
-    │ • Accel Tilt     │  │  • Orientation       │  │ • Keyframes      │
-    │ • Landing Spring │  │  • Locomotion        │  │ • Pose Blending  │
-    │ • Tuning UI      │  │  (surveyor wheel)    │  │ • Spring Motion  │
-    └────────┬─────────┘  └──────────┬───────────┘  └────────┬─────────┘
-             │                       │                        │
-             └───────────────────────┴────────────────────────┘
-                                     ▼
+    ┌──────────────────┐  ┌──────────────────────┐
+    │ Reactive Anim    │  │  Procedural Loco     │
+    │ • Accel Tilt     │  │  • Orientation       │
+    │ • Landing Spring │  │  • Locomotion        │
+    │ • Contact Weight │  │  (surveyor wheel)    │
+    │ • Tuning UI      │  │  • Simple Poses      │
+    └────────┬─────────┘  └──────────┬───────────┘
+             │                       │
+             └───────────────────────┘
+                          ▼
                           ┌────────────────────┐
                           │ Character Controller│ 95%
                           │ (physics, input)    │
@@ -144,10 +141,11 @@ See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and `implementation_*.md` f
 
 **Status:** Working physics loop, proven procedural systems
 
-**Why certain?** Core character controller is stable. Procedural locomotion/orientation systems validated through multiple iterations. The game is "playable" at this layer—you can run, jump, and collide.
+**Why certain?** Core character controller is stable. Procedural locomotion/orientation systems validated through multiple iterations. The game is "playable" at this layer—you can run, jump, and collide. Simple pose system (vertical offset + leg phase) provides minimal visual representation.
 
 **Core Gameplay Definition:** Character sphere moving in 3D space with physics-driven control
 - **Irreducible minimum:** Position, velocity, acceleration, collision, input response
+- **Simple visual feedback:** Reactive tilt, landing spring, basic locomotion poses (no skeletal hierarchy)
 - **Already creates meaningful experience:** Run, jump, explore, collide
 
 **Systems:**

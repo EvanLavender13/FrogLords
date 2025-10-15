@@ -5,7 +5,6 @@
 #include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
 #include "character/locomotion.h"
-#include "character/skeleton.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
@@ -216,66 +215,6 @@ void generate_collision_state_primitives(debug::debug_primitive_list& list,
     }
 }
 
-void generate_skeleton_primitives(debug::debug_primitive_list& list,
-                                  const character::skeleton& skel, bool show_labels) {
-    if (skel.joints.empty())
-        return;
-
-    std::vector<glm::vec3> joint_positions;
-    joint_positions.reserve(skel.joints.size());
-
-    for (const auto& joint : skel.joints) {
-        glm::vec3 joint_pos = glm::vec3(joint.model_transform[3]);
-        joint_positions.push_back(joint_pos);
-
-        list.spheres.push_back(debug::debug_sphere{
-            .center = joint_pos,
-            .radius = 0.05f,
-            .color = {1.0f, 1.0f, 0.0f, 1.0f},
-        });
-
-        if (show_labels) {
-            list.texts.push_back(debug::debug_text{
-                .text = joint.name,
-                .position = joint_pos,
-                .color = {1.0f, 1.0f, 0.0f, 1.0f},
-            });
-        }
-    }
-
-    for (size_t i = 0; i < skel.joints.size(); ++i) {
-        if (skel.joints[i].parent_index != character::NO_PARENT) {
-            list.lines.push_back(debug::debug_line{
-                .start = joint_positions[i],
-                .end = joint_positions[skel.joints[i].parent_index],
-                .color = {1.0f, 1.0f, 1.0f, 1.0f},
-            });
-        }
-    }
-}
-
-void generate_axis_gizmo_primitives(debug::debug_primitive_list& list,
-                                    const character::skeleton& skel, float axis_length) {
-    if (skel.joints.empty()) {
-        return;
-    }
-
-    const glm::mat4& root_transform = skel.joints[0].model_transform;
-    glm::vec3 root_position = glm::vec3(root_transform[3]);
-
-    glm::vec3 basis_x = safe_normalize(glm::vec3(root_transform[0]), {1, 0, 0});
-    glm::vec3 basis_y = safe_normalize(glm::vec3(root_transform[1]), {0, 1, 0});
-    glm::vec3 basis_z = safe_normalize(glm::vec3(root_transform[2]), {0, 0, 1});
-
-    list.arrows.push_back({root_position, root_position + basis_x * axis_length, {1, 0, 0, 1}});
-    list.arrows.push_back({root_position, root_position + basis_y * axis_length, {0, 1, 0, 1}});
-    list.arrows.push_back({root_position, root_position + basis_z * axis_length, {0, 0, 1, 1}});
-
-    list.texts.push_back({"X", root_position + basis_x * (axis_length + 0.1f), {1, 0, 0, 1}});
-    list.texts.push_back({"Y", root_position + basis_y * (axis_length + 0.1f), {0, 1, 0, 1}});
-    list.texts.push_back({"Z", root_position + basis_z * (axis_length + 0.1f), {0, 0, 1, 1}});
-}
-
 void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
                                         const velocity_trail_state& trail) {
     if (trail.positions.empty()) {
@@ -317,14 +256,6 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);
-    }
-
-    if (panel_state.show_skeleton) {
-        generate_skeleton_primitives(list, world.t_pose_skeleton, panel_state.show_joint_labels);
-    }
-
-    if (panel_state.show_axis_gizmo) {
-        generate_axis_gizmo_primitives(list, world.t_pose_skeleton, 0.6f);
     }
 }
 

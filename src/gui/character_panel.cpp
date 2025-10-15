@@ -4,21 +4,6 @@
 #include "imgui.h"
 #include <glm/common.hpp>
 
-namespace {
-
-/// Helper to draw joint angle controls with three sliders (X/Y/Z Euler angles)
-void draw_joint_angles_widget(const char* label, glm::vec3& angles, const char* x_label,
-                              const char* y_label, const char* z_label) {
-    if (ImGui::TreeNode(label)) {
-        gui::widget::slider_float(x_label, &angles.x, -180.0f, 180.0f);
-        gui::widget::slider_float(y_label, &angles.y, -180.0f, 180.0f);
-        gui::widget::slider_float(z_label, &angles.z, -180.0f, 180.0f);
-        ImGui::TreePop();
-    }
-}
-
-} // namespace
-
 namespace gui {
 
 void draw_character_panel(character_panel_state& state, controller& character,
@@ -102,91 +87,6 @@ void draw_character_panel(character_panel_state& state, controller& character,
                           character.animation.contact_weight_spring.get_velocity());
     }
 
-    // Secondary motion parameters
-    if (ImGui::CollapsingHeader("Secondary Motion")) {
-        gui::widget::checkbox("Enable Secondary Motion", &state.enable_secondary_motion);
-
-        gui::widget::slider_float("Stiffness (catch-up speed)",
-                                  &character.animation.secondary_motion.stiffness, 10.0f, 20.0f);
-        gui::widget::slider_float("Damping Ratio (bounciness)",
-                                  &character.animation.secondary_motion.damping_ratio, 0.5f, 2.0f);
-        gui::widget::slider_float("Response Scale (wobble amount)",
-                                  &character.animation.secondary_motion.response_scale, 0.0f, 0.1f);
-
-        ImGui::Separator();
-        ImGui::Text("Spring Offset Limits (degrees):");
-
-        // Left elbow limits
-        float left_elbow_min_deg =
-            glm::degrees(character.animation.secondary_motion.left_elbow_min_offset);
-        if (gui::widget::slider_float("Left Elbow Min", &left_elbow_min_deg, -90.0f, 0.0f)) {
-            character.animation.secondary_motion.left_elbow_min_offset =
-                glm::radians(left_elbow_min_deg);
-        }
-        float left_elbow_max_deg =
-            glm::degrees(character.animation.secondary_motion.left_elbow_max_offset);
-        if (gui::widget::slider_float("Left Elbow Max", &left_elbow_max_deg, 0.0f, 90.0f)) {
-            character.animation.secondary_motion.left_elbow_max_offset =
-                glm::radians(left_elbow_max_deg);
-        }
-
-        // Right elbow limits
-        float right_elbow_min_deg =
-            glm::degrees(character.animation.secondary_motion.right_elbow_min_offset);
-        if (gui::widget::slider_float("Right Elbow Min", &right_elbow_min_deg, -90.0f, 0.0f)) {
-            character.animation.secondary_motion.right_elbow_min_offset =
-                glm::radians(right_elbow_min_deg);
-        }
-        float right_elbow_max_deg =
-            glm::degrees(character.animation.secondary_motion.right_elbow_max_offset);
-        if (gui::widget::slider_float("Right Elbow Max", &right_elbow_max_deg, 0.0f, 90.0f)) {
-            character.animation.secondary_motion.right_elbow_max_offset =
-                glm::radians(right_elbow_max_deg);
-        }
-
-        // Left knee limits
-        float left_knee_min_deg =
-            glm::degrees(character.animation.secondary_motion.left_knee_min_offset);
-        if (gui::widget::slider_float("Left Knee Min", &left_knee_min_deg, -90.0f, 0.0f)) {
-            character.animation.secondary_motion.left_knee_min_offset =
-                glm::radians(left_knee_min_deg);
-        }
-        float left_knee_max_deg =
-            glm::degrees(character.animation.secondary_motion.left_knee_max_offset);
-        if (gui::widget::slider_float("Left Knee Max", &left_knee_max_deg, 0.0f, 90.0f)) {
-            character.animation.secondary_motion.left_knee_max_offset =
-                glm::radians(left_knee_max_deg);
-        }
-
-        // Right knee limits
-        float right_knee_min_deg =
-            glm::degrees(character.animation.secondary_motion.right_knee_min_offset);
-        if (gui::widget::slider_float("Right Knee Min", &right_knee_min_deg, -90.0f, 0.0f)) {
-            character.animation.secondary_motion.right_knee_min_offset =
-                glm::radians(right_knee_min_deg);
-        }
-        float right_knee_max_deg =
-            glm::degrees(character.animation.secondary_motion.right_knee_max_offset);
-        if (gui::widget::slider_float("Right Knee Max", &right_knee_max_deg, 0.0f, 90.0f)) {
-            character.animation.secondary_motion.right_knee_max_offset =
-                glm::radians(right_knee_max_deg);
-        }
-
-        // Read-only spring state display
-        gui::widget::text("Left Elbow: %.3f rad (vel: %.3f)",
-                          character.animation.secondary_motion.left_elbow_offset,
-                          character.animation.secondary_motion.left_elbow_velocity);
-        gui::widget::text("Right Elbow: %.3f rad (vel: %.3f)",
-                          character.animation.secondary_motion.right_elbow_offset,
-                          character.animation.secondary_motion.right_elbow_velocity);
-        gui::widget::text("Left Knee: %.3f rad (vel: %.3f)",
-                          character.animation.secondary_motion.left_knee_offset,
-                          character.animation.secondary_motion.left_knee_velocity);
-        gui::widget::text("Right Knee: %.3f rad (vel: %.3f)",
-                          character.animation.secondary_motion.right_knee_offset,
-                          character.animation.secondary_motion.right_knee_velocity);
-    }
-
     // Orientation parameters
     if (ImGui::CollapsingHeader("Orientation")) {
         gui::widget::slider_float("Yaw Smoothing", &orientation.yaw_smoothing, 1.0f, 20.0f);
@@ -205,44 +105,6 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::text("Smoothed Speed: %.2f m/s", locomotion.smoothed_speed);
         gui::widget::text("Animation Phase: %.2f", locomotion.phase);
         gui::widget::text("Stride: %.2fm (auto from locomotion)", locomotion.get_blended_stride());
-
-        ImGui::Separator();
-
-        // Current automatic pose display
-        const char* pose_name;
-        switch (character.animation.current_automatic_pose) {
-        case character::pose_type::T_POSE:
-            pose_name = "T-Pose";
-            break;
-        case character::pose_type::WALK_REACH_LEFT:
-            pose_name = "Walk - Reach Left";
-            break;
-        case character::pose_type::WALK_PASS_RIGHT:
-            pose_name = "Walk - Pass Right";
-            break;
-        case character::pose_type::WALK_REACH_RIGHT:
-            pose_name = "Walk - Reach Right";
-            break;
-        case character::pose_type::WALK_PASS_LEFT:
-            pose_name = "Walk - Pass Left";
-            break;
-        case character::pose_type::RUN_REACH_LEFT:
-            pose_name = "Run - Reach Left";
-            break;
-        case character::pose_type::RUN_PASS_RIGHT:
-            pose_name = "Run - Pass Right";
-            break;
-        case character::pose_type::RUN_REACH_RIGHT:
-            pose_name = "Run - Reach Right";
-            break;
-        case character::pose_type::RUN_PASS_LEFT:
-            pose_name = "Run - Pass Left";
-            break;
-        default:
-            pose_name = "Unknown";
-            break;
-        }
-        gui::widget::text("Current Pose: %s", pose_name);
     }
 
     if (ImGui::CollapsingHeader("Locomotion Blending", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -257,84 +119,6 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::text("Walk Factor (applied): %.3f", applied_walk_factor);
         gui::widget::text("Contact Weight: %.3f",
                           character.animation.contact_weight_spring.get_position());
-    }
-
-    if (ImGui::CollapsingHeader("Skeleton")) {
-        gui::widget::checkbox("Show Skeleton", &state.show_skeleton);
-        gui::widget::checkbox("Show Joint Labels", &state.show_joint_labels);
-        gui::widget::checkbox("Show Velocity Trail", &state.show_velocity_trail);
-        gui::widget::checkbox("Show Axis Gizmo", &state.show_axis_gizmo);
-
-        bool manual_pose_toggled =
-            gui::widget::checkbox("Manual Pose Selection", &state.use_manual_pose_selection);
-
-        if (state.use_manual_pose_selection) {
-            ImGui::Separator();
-            ImGui::Text("Pose Selection:");
-            const char* pose_names[] = {
-                "T-Pose",           "Walk - Reach Left", "Walk - Pass Right", "Walk - Reach Right",
-                "Walk - Pass Left", "Run - Reach Left",  "Run - Pass Right",  "Run - Reach Right",
-                "Run - Pass Left"};
-            int current_pose = static_cast<int>(state.selected_pose);
-            if (ImGui::Combo("Pose", &current_pose, pose_names, 9)) {
-                state.selected_pose = static_cast<character::pose_type>(current_pose);
-                state.reset_joint_overrides(); // Reset on pose change
-                state.gait_blend_mode = character_panel_state::blend_mode::MIXED;
-            }
-
-            ImGui::Separator();
-            bool joint_overrides_toggled =
-                gui::widget::checkbox("Enable Joint Overrides", &state.enable_joint_overrides);
-
-            if (joint_overrides_toggled) {
-                state.reset_joint_overrides();
-            }
-        }
-
-        if (manual_pose_toggled) {
-            state.reset_joint_overrides();
-            state.gait_blend_mode = character_panel_state::blend_mode::MIXED;
-        }
-
-        if (state.enable_joint_overrides && state.use_manual_pose_selection &&
-            ImGui::CollapsingHeader("Joint Overrides")) {
-            ImGui::PushItemWidth(180.0f);
-            ImGui::TextWrapped("Joint Override Offsets (applied on top of selected pose)");
-            ImGui::TextWrapped("Euler angles: Pitch=X-axis, Yaw=Y-axis, Roll=Z-axis");
-            ImGui::Separator();
-
-            // Left shoulder: bone points along -X axis (parent space = character frame)
-            // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
-            draw_joint_angles_widget("Left Shoulder", state.left_shoulder_angles, "X-axis (twist)",
-                                     "Y-axis (fwd/back)", "Z-axis (up/down)");
-
-            draw_joint_angles_widget("Left Elbow", state.left_elbow_angles, "X-axis (twist)",
-                                     "Y-axis (bend)", "Z-axis (rotate)");
-
-            // Right shoulder: bone points along +X axis (parent space = character frame)
-            // X-axis = twist (invisible), Y-axis = fwd/back swing, Z-axis = up/down raise
-            draw_joint_angles_widget("Right Shoulder", state.right_shoulder_angles,
-                                     "X-axis (twist)", "Y-axis (fwd/back)", "Z-axis (up/down)");
-
-            draw_joint_angles_widget("Right Elbow", state.right_elbow_angles, "X-axis (twist)",
-                                     "Y-axis (bend)", "Z-axis (rotate)");
-
-            // Legs point along -Y axis (downward, parent space = character frame)
-            // X-axis = fwd/back swing, Y-axis = twist (invisible), Z-axis = in/out spread
-            draw_joint_angles_widget("Left Hip", state.left_hip_angles, "X-axis (fwd/back)",
-                                     "Y-axis (twist)", "Z-axis (in/out)");
-
-            draw_joint_angles_widget("Left Knee", state.left_knee_angles, "X-axis (bend)",
-                                     "Y-axis (twist)", "Z-axis (rotate)");
-
-            draw_joint_angles_widget("Right Hip", state.right_hip_angles, "X-axis (fwd/back)",
-                                     "Y-axis (twist)", "Z-axis (in/out)");
-
-            draw_joint_angles_widget("Right Knee", state.right_knee_angles, "X-axis (bend)",
-                                     "Y-axis (twist)", "Z-axis (rotate)");
-
-            ImGui::PopItemWidth();
-        }
     }
 }
 

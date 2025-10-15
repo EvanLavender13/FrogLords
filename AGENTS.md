@@ -51,7 +51,9 @@ Dual-Reference Pattern (for smoothed variables)
 - Work bottom-up. Stabilize the irreducible core before adding layers.
 - Maintain a dependency stack with certainty tags. Expect upper layers to churn.
 - Use a liquid design backlog for everything not being worked now (non-interlocking ideas only).
-- Data structure validation: validate novel representations (e.g., quaternions, state formats) in isolation before integrating.
+- **Data structure validation: validate novel representations (e.g., quaternions, state formats) in isolation before integrating.**
+- **Tooling-first for complex systems: cannot debug what you cannot see (visualization tools before production features).**
+- **Black-box vs. white-box: treating a system as a black box works until you need axis-dependent operations (e.g., joint limits require understanding local coordinate frames).**
 
 Iteration Horizon
 - Original/uncertain work: plan 1–3 complexity points ahead.
@@ -88,8 +90,17 @@ Knowledge Creation
 - `PLANS/DESIGN_BACKLOG.md`: liquid, unordered idea pool. Tag priority/certainty/prereqs. Pull only when current layer is 90%+ certain.
 
 ## Development Directives
-- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions; test quaternion decomposition/composition in isolation before integrating (measure angles, extract axes, convert to Euler); analyze mathematical operations causing instability before adding smoothing (division by changing value, redundant calculations); check "what does upstream already give us correctly?" when derived state vibrates unexpectedly.
-- Don't: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); build on uncertain foundations.
+- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions; **validate novel math/data structures in isolation first (unit tests, standalone verification)**; **build visualization/debug tools before production features for complex systems**; analyze mathematical operations causing instability before adding smoothing (division by changing value, redundant calculations); check "what does upstream already give us correctly?" when derived state vibrates unexpectedly.
+- Don't: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); **build on uncertain foundations (if prerequisites aren't met, pause and fill gaps)**; **treat complex hierarchical systems as black boxes when implementing axis-dependent features**.
+
+## Recent Major Learnings
+**Skeletal Animation Removal (2025-10-15):** Entire skeletal system (keyframes, blending, secondary motion, joint limits) removed after discovering fundamental behavioral assumptions were incorrect. Analysis of quaternion swing-twist decomposition (see `NOTES/Math/QuaternionDecomp.md`) revealed:
+- Previous implementation worked "by accident" when treating skeleton as black box (keyframe blending)
+- Per-bone axis-dependent operations (joint limits, secondary motion constraints) exposed lack of understanding of local coordinate frames
+- Asymmetric behavior between mirrored joints indicated missing prerequisite knowledge
+- **Key principle violated:** built production features before validating mathematical primitives in isolation
+- **Key principle violated:** attempted axis-dependent operations without skeleton visualization/debugging tools
+- **Fresh start strategy:** rebuild from bottom up with proper prerequisites (debug tools → FK validation → math validation → keyframes → limits)
 
 ## Communication
 Concise and direct. No preamble/postamble. Detail scales with risk/complexity.
