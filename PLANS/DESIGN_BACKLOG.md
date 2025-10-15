@@ -53,24 +53,17 @@ Include lightweight metadata to improve selection and planning:
   - *Completed:* 2025-10-13 (feature branch: feature/air_locomotion_weights)
   - *Implementation:* See [PLANS/air_locomotion_weights_PLAN.md](air_locomotion_weights_PLAN.md)
 
-- **Secondary motion joint limits (elbow/knee constraints):** Enforce anatomical bend limits to prevent unnatural hyperextension
-  - *Prerequisite:* Secondary motion system ✅
-  - *Certainty:* Medium (~60-70%) - polish item, graybox-acceptable without but increasingly visible with run gait
-  - *Complexity:* 1-2 points (~10-15 lines)
-  - *Problem:* Secondary motion spring offsets apply without anatomical limits. Rapid pose transitions (e.g., swing → T-pose during jumps, run gait transitions) cause elbows/knees to hyperextend backward unnaturally as springs respond to parent velocity reversals. Issue more pronounced with run gait's larger limb extensions.
-  - *Root Cause:* Spring offsets are clamped only by damping, not joint-specific ranges. Elbows/knees are hinge joints (~1 DOF) but current system allows unbounded rotation along fixed axis. Springs are purely "springy" without anatomical awareness.
-  - *Proposed Solution:*
-    - Add `min_offset`/`max_offset` per joint type to `secondary_motion_state`
-    - Clamp spring offset before applying rotation: `offset = clamp(offset, min, max)`
-    - Suggested ranges (tunable via debug UI):
-      - Elbows: `[0°, 150°]` (can't bend backward; typical hinge limit)
-      - Knees: `[0°, 150°]` (similar hinge constraint)
-    - Consider exposing as tuning parameters for iteration
-  - *Alternative (defer):* Full IK constraints with joint limit cones (overkill for current scope; wait for evidence of need)
-  - *Design Question:* Should constraints be hard clamps or soft springs toward limits? Start with hard clamps (simpler, clearer behavior).
-  - *Validation:* Jump mid-stride with T-pose blending; run gait rapid transitions; elbows/knees should not hyperextend during spring catch-up
-  - *Origin:* Identified 2025-10-13 during air locomotion weights visual validation; visibility increased 2025-10-14 during run gait testing
-  - *Deferred Because:* Graybox-acceptable; doesn't break core mechanics. Polish item for animation believability. Foundation stable enough to support (core gameplay 95% certain) but higher-priority features pending.
+- **Secondary motion joint limits (elbow/knee constraints):** **DEFERRED (2025-10-15)** - Enforce anatomical bend limits to prevent unnatural hyperextension
+  - *Status:* **DEFERRED** - Missing prerequisite understanding of skeleton local coordinate frames
+  - *Prerequisite:* Skeleton debugging/visualization tools; transform hierarchy mastery
+  - *Certainty:* Low (~30%) - multiple implementation attempts failed due to quaternion/hierarchy complexity
+  - *Complexity:* Was 1-2 points; revealed to be 5-8 points (needs skeleton tooling first)
+  - *Problem:* Secondary motion spring offsets apply without anatomical limits, causing hyperextension. Attempted fixes revealed fundamental gap in understanding bone local axes - left/right joints not symmetric as expected.
+  - *Deferral Reason:* Small polish effect not worth debugging complex transform hierarchy issues. Multiple attempts (hard clamps, soft limits, axis flipping, absolute angle measurement) all failed due to asymmetric behavior between mirrored joints. Root cause: incomplete understanding of skeleton local coordinate frames.
+  - *Reconsideration Criteria:* After building skeleton visualization tools, implementing IK (forces solving same problems), or when ROI justifies investment
+  - *Key Learning:* Quaternion keyframe blending works treating skeleton as black box; per-bone axis-dependent rotations expose our lack of transform hierarchy mastery
+  - *Review:* See [PLANS/secondary_motion_joint_limits_FEATURE.md](secondary_motion_joint_limits_FEATURE.md) deferral section
+  - *Origin:* Identified 2025-10-13; attempted 2025-10-15; deferred 2025-10-15 after multiple failed approaches
 
 ### Input & Control Feel
 

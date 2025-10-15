@@ -238,7 +238,8 @@ void animation_state::update_skeletal_animation(skeleton& skel, float phase, flo
 /// Child joints lag behind their parent's motion, creating visible wobble.
 void animation_state::update_secondary_motion(skeleton& skel, float dt) {
     auto update_spring = [&](int parent_idx, int joint_idx, float& offset, float& velocity,
-                             glm::quat& prev_parent_rot, const glm::vec3& rotation_axis) {
+                             glm::quat& prev_parent_rot, const glm::vec3& rotation_axis,
+                             float min_limit, float max_limit) {
         // Get parent's current rotation (this is what drives the motion)
         glm::quat current_parent_rot = glm::quat_cast(skel.joints[parent_idx].local_transform);
 
@@ -257,12 +258,8 @@ void animation_state::update_secondary_motion(skeleton& skel, float dt) {
             // Project parent's rotation onto our tracking axis
             float axis_component = glm::dot(axis, rotation_axis);
 
-            // Use full rotation magnitude if axis alignment is weak
-            // This captures rotation even when it's not perfectly aligned with tracking axis
-            float effective_angle =
-                std::abs(axis_component) > 0.1f
-                    ? (angle * axis_component)           // Use projected rotation if well-aligned
-                    : angle * glm::sign(axis_component); // Use full magnitude with sign
+            // Use projected rotation component (preserves sign for direction)
+            float effective_angle = angle * axis_component;
 
             float angular_velocity_change = effective_angle / dt;
 
@@ -281,6 +278,9 @@ void animation_state::update_secondary_motion(skeleton& skel, float dt) {
         velocity += acceleration * dt;
         offset += velocity * dt;
 
+        // Clamp spring offset to reasonable wobble range  
+        offset = glm::clamp(offset, min_limit, max_limit);
+
         // Apply offset to child joint (lag behind parent's motion)
         glm::vec3 position = glm::vec3(skel.joints[joint_idx].local_transform[3]);
         glm::quat child_rot = glm::quat_cast(skel.joints[joint_idx].local_transform);
@@ -295,18 +295,26 @@ void animation_state::update_secondary_motion(skeleton& skel, float dt) {
     };
 
     // Child joints follow parent motion
+    // Elbow hinge: bend axis = math::UP (Y+)
     update_spring(joint_index::LEFT_SHOULDER, joint_index::LEFT_ELBOW,
                   secondary_motion.left_elbow_offset, secondary_motion.left_elbow_velocity,
-                  secondary_motion.prev_left_shoulder, math::UP);
+                  secondary_motion.prev_left_shoulder, math::UP,
+                  secondary_motion.left_elbow_min_offset, secondary_motion.left_elbow_max_offset);
+    // Elbow hinge: bend axis = math::UP (Y+)
     update_spring(joint_index::RIGHT_SHOULDER, joint_index::RIGHT_ELBOW,
                   secondary_motion.right_elbow_offset, secondary_motion.right_elbow_velocity,
-                  secondary_motion.prev_right_shoulder, math::UP);
+                  secondary_motion.prev_right_shoulder, math::UP,
+                  secondary_motion.right_elbow_min_offset, secondary_motion.right_elbow_max_offset);
+    // Knee hinge: bend axis = X+ (side-to-side)
     update_spring(joint_index::LEFT_HIP, joint_index::LEFT_KNEE, secondary_motion.left_knee_offset,
                   secondary_motion.left_knee_velocity, secondary_motion.prev_left_hip,
-                  glm::vec3(1, 0, 0));
+                  glm::vec3(1, 0, 0), secondary_motion.left_knee_min_offset,
+                  secondary_motion.left_knee_max_offset);
+    // Knee hinge: bend axis = X+ (side-to-side)
     update_spring(joint_index::RIGHT_HIP, joint_index::RIGHT_KNEE,
                   secondary_motion.right_knee_offset, secondary_motion.right_knee_velocity,
-                  secondary_motion.prev_right_hip, glm::vec3(1, 0, 0));
+                  secondary_motion.prev_right_hip, glm::vec3(-1, 0, 0),
+                  secondary_motion.right_knee_min_offset, secondary_motion.right_knee_max_offset);
 }
 
 } // namespace character

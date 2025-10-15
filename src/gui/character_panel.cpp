@@ -113,6 +113,65 @@ void draw_character_panel(character_panel_state& state, controller& character,
         gui::widget::slider_float("Response Scale (wobble amount)",
                                   &character.animation.secondary_motion.response_scale, 0.0f, 0.1f);
 
+        ImGui::Separator();
+        ImGui::Text("Spring Offset Limits (degrees):");
+
+        // Left elbow limits
+        float left_elbow_min_deg =
+            glm::degrees(character.animation.secondary_motion.left_elbow_min_offset);
+        if (gui::widget::slider_float("Left Elbow Min", &left_elbow_min_deg, -90.0f, 0.0f)) {
+            character.animation.secondary_motion.left_elbow_min_offset =
+                glm::radians(left_elbow_min_deg);
+        }
+        float left_elbow_max_deg =
+            glm::degrees(character.animation.secondary_motion.left_elbow_max_offset);
+        if (gui::widget::slider_float("Left Elbow Max", &left_elbow_max_deg, 0.0f, 90.0f)) {
+            character.animation.secondary_motion.left_elbow_max_offset =
+                glm::radians(left_elbow_max_deg);
+        }
+
+        // Right elbow limits
+        float right_elbow_min_deg =
+            glm::degrees(character.animation.secondary_motion.right_elbow_min_offset);
+        if (gui::widget::slider_float("Right Elbow Min", &right_elbow_min_deg, -90.0f, 0.0f)) {
+            character.animation.secondary_motion.right_elbow_min_offset =
+                glm::radians(right_elbow_min_deg);
+        }
+        float right_elbow_max_deg =
+            glm::degrees(character.animation.secondary_motion.right_elbow_max_offset);
+        if (gui::widget::slider_float("Right Elbow Max", &right_elbow_max_deg, 0.0f, 90.0f)) {
+            character.animation.secondary_motion.right_elbow_max_offset =
+                glm::radians(right_elbow_max_deg);
+        }
+
+        // Left knee limits
+        float left_knee_min_deg =
+            glm::degrees(character.animation.secondary_motion.left_knee_min_offset);
+        if (gui::widget::slider_float("Left Knee Min", &left_knee_min_deg, -90.0f, 0.0f)) {
+            character.animation.secondary_motion.left_knee_min_offset =
+                glm::radians(left_knee_min_deg);
+        }
+        float left_knee_max_deg =
+            glm::degrees(character.animation.secondary_motion.left_knee_max_offset);
+        if (gui::widget::slider_float("Left Knee Max", &left_knee_max_deg, 0.0f, 90.0f)) {
+            character.animation.secondary_motion.left_knee_max_offset =
+                glm::radians(left_knee_max_deg);
+        }
+
+        // Right knee limits
+        float right_knee_min_deg =
+            glm::degrees(character.animation.secondary_motion.right_knee_min_offset);
+        if (gui::widget::slider_float("Right Knee Min", &right_knee_min_deg, -90.0f, 0.0f)) {
+            character.animation.secondary_motion.right_knee_min_offset =
+                glm::radians(right_knee_min_deg);
+        }
+        float right_knee_max_deg =
+            glm::degrees(character.animation.secondary_motion.right_knee_max_offset);
+        if (gui::widget::slider_float("Right Knee Max", &right_knee_max_deg, 0.0f, 90.0f)) {
+            character.animation.secondary_motion.right_knee_max_offset =
+                glm::radians(right_knee_max_deg);
+        }
+
         // Read-only spring state display
         gui::widget::text("Left Elbow: %.3f rad (vel: %.3f)",
                           character.animation.secondary_motion.left_elbow_offset,

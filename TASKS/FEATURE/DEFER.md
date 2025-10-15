@@ -77,33 +77,7 @@ Prevents repeating failed approaches.
 3. For implementation-phase: add `### Implementation Attempts` subsection
 4. Use archive script to move to `PLANS/ARCHIVE/` with timestamp prefix
 
-### 8. Capture Learnings
-
-1. Open `PLANS/DEFERRAL_LOG.md`
-2. Add entry: date, reason, key learning, principle reinforced, prerequisites, review link
-3. For implementation-phase: emphasize technical blockers/discoveries
-
-**Categorize for retrospectives:**
-- **Phase:** Planning | Implementation
-- **Category:** Premature | Missing Prerequisites | Principle Violation | Blocker | Better Alternative | Invalidated Assumption
-
-Helps identify patterns and improve planning.
-
-### 9. Handle Code Changes (If Attempted)
-
-**Option A - Revert:**
-- If unstable, incomplete, or violates principles
-- Revert commits or discard branch
-- Return to clean main branch
-
-**Option B - Keep Stubs:**
-- If foundational work sound but feature premature
-- Document stubs, disable non-functional code
-- Commit: "feat(deferred): Add infrastructure for <feature> (disabled, pending prerequisites)"
-
-**Criteria:** Revert unless infrastructure has independent value or low maintenance burden.
-
-### 10. Propose Next Steps
+### 8. Propose Next Steps
 
 Recommend SELECT to identify next work based on dependency stack, highest certainty foundations, and test-driven needs.
 
@@ -158,42 +132,4 @@ Recommend SELECT to identify next work based on dependency stack, highest certai
 **Key Insight:** Multiple implementation attempts confirmed the architectural blocker rather than implementation bugs. Static data structure ≠ animated data structure. Reactive layers need motion sources, not just data structures.
 
 **Review:** N/A (discovered during implementation)
-```
-
----
-
-### Example Deferral Log Entry (Planning Phase)
-
-```markdown
-## Speed-Based Animation Scaling (2025-10-06)
-
-**Deferral Phase:** Planning Phase
-**Deferral Category:** Premature Feature
-
-**Reason:** Premature feature without evidence of need
-
-**Key Learning:** Test-first principle applies to features, not just bugs. "May not be necessary" intuitions deserve investigation before planning entire iterations. Current system working well is evidence to preserve, not improve speculatively.
-
-**Principle Reinforced:** "Paradox of quality: accept temporary roughness early to maximize iteration count" and "Test before building"
-
-**Review Document:** `PLANS/speed_animation_scaling.md`
-```
-
-### Example Deferral Log Entry (Implementation Phase)
-
-```markdown
-## Secondary Motion (2025-10-06)
-
-**Deferral Phase:** Implementation Phase
-**Deferral Category:** Missing Prerequisites
-
-**Reason:** Missing critical prerequisite: primary skeletal animation system
-
-**Key Learning:** Dependency analysis failed to identify that "reactive animation layer" requires a stable "primary animation layer" beneath it. Secondary motion needs base motion to react to—a static T-pose has no motion to add wobble on top of. Multiple implementation attempts confirmed the architectural blocker rather than implementation bugs.
-
-**Missing Prerequisites:** Locomotion-driven skeletal animation (walk/run cycles, arm swing synchronized to gait)
-
-**Principle Reinforced:** "Work bottom-up. Stabilize core gameplay before adding layers" and "Dependency = if A changes, B must change. Uncertainty multiplies up the stack."
-
-**Review Document:** N/A (discovered during implementation)
 ```

@@ -17,6 +17,16 @@ struct secondary_motion_state {
     float right_knee_offset = 0.0f;
     float right_knee_velocity = 0.0f;
 
+    // Spring offset limits (radians) - how far spring can wobble from keyframe pose
+    float left_elbow_min_offset = glm::radians(-30.0f);  // -30° wobble range
+    float left_elbow_max_offset = glm::radians(30.0f);   // +30° wobble range
+    float right_elbow_min_offset = glm::radians(-30.0f);
+    float right_elbow_max_offset = glm::radians(30.0f);
+    float left_knee_min_offset = glm::radians(-30.0f);
+    float left_knee_max_offset = glm::radians(30.0f);
+    float right_knee_min_offset = glm::radians(-30.0f);
+    float right_knee_max_offset = glm::radians(30.0f);
+
     // Previous rotations for detecting pose changes (track PARENT rotations)
     glm::quat prev_left_shoulder = glm::quat();
     glm::quat prev_right_shoulder = glm::quat();
@@ -24,9 +34,9 @@ struct secondary_motion_state {
     glm::quat prev_right_hip = glm::quat();
 
     // Tuning parameters
-    float stiffness = 15.0f;      // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
-    float damping_ratio = 2.0f;   // Critically damped by default (range 0.5-2.0)
-    float response_scale = 0.05f; // How much to amplify rotation changes (higher = more wobble)
+    float stiffness = 15.0f;       // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
+    float damping_ratio = 1.0f;    // Critically damped by default (range 0.5-2.0)
+    float response_scale = 0.075f; // How much to amplify rotation changes (higher = more wobble)
 };
 
 struct animation_state {
