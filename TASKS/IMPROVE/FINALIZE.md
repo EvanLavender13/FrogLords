@@ -6,18 +6,14 @@
 
 ---
 
-### 1. Mark Item Complete in Backlog
+### 1. Remove Completed Item from Backlog
 
 Open `PLANS/IMPROVE_BACKLOG.md`:
 
 1. Find the completed item under its current section (Critical/High/Medium/Low)
-2. Mark it complete by appending `✓` to the item name:
+2. Delete the entire item (all lines/bullets)
 
-```markdown
-**[Item Name]** ✓
-```
-
-**Note:** BACKLOG_GROOMING task handles moving completed items to Completed section, finding batch opportunities, and broader maintenance. For now, just mark complete inline.
+**Note:** Learning notes are captured in `PLANS/IMPROVE_<name>.md` (step 3 below). The backlog is for work-to-do only; completed work lives in individual plan docs and git history.
 
 ### 2. Capture New Discoveries
 
