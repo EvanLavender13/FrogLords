@@ -60,6 +60,35 @@ static void reset_to_t_pose(skeleton& skel) {
     }
 }
 
+/// Mirrors a keyframe by swapping its left and right joint rotations and inverting
+/// the appropriate rotation axes.
+/// @note This uses Euler angle conversion, which can be risky (gimbal lock), but it
+/// correctly replicates the manual mirroring logic by negating yaw (Y) and roll (Z)
+/// for the swapped joints. This is necessary because the local coordinate
+/// systems are not perfectly symmetrical for all rotation axes.
+static keyframe mirror_keyframe(const keyframe& kf) {
+    keyframe mirrored;
+
+    auto mirror_quat = [](const glm::quat& q) {
+        glm::vec3 euler = glm::degrees(glm::eulerAngles(q));
+        euler.y = -euler.y;
+        euler.z = -euler.z;
+        return glm::quat(glm::radians(euler));
+    };
+
+    mirrored.left_shoulder = mirror_quat(kf.right_shoulder);
+    mirrored.left_elbow = mirror_quat(kf.right_elbow);
+    mirrored.right_shoulder = mirror_quat(kf.left_shoulder);
+    mirrored.right_elbow = mirror_quat(kf.left_elbow);
+
+    mirrored.left_hip = mirror_quat(kf.right_hip);
+    mirrored.left_knee = mirror_quat(kf.right_knee);
+    mirrored.right_hip = mirror_quat(kf.left_hip);
+    mirrored.right_knee = mirror_quat(kf.left_knee);
+
+    return mirrored;
+}
+
 /// Create identity pose (all quaternions are identity rotations)
 static keyframe create_identity_pose() {
     // Identity quaternion = (w=1, x=0, y=0, z=0) represents no rotation
@@ -111,24 +140,12 @@ static keyframe create_walk_pass_right_pose() {
 
 /// Create WALK_REACH_RIGHT pose: mirror of WALK_REACH_LEFT (swap left/right joints)
 static keyframe create_walk_reach_right_pose() {
-    keyframe walk_reach_left = create_walk_reach_left_pose();
-    return keyframe{
-        glm::quat(glm::radians(
-            glm::vec3(0.0f, 45.0f, 90.0f))), // left_shoulder (swing back via Y-rotation)
-        glm::quat(glm::radians(glm::vec3(0.0f, 15.0f, 0.0f))), // left_elbow (straight)
-        glm::quat(glm::radians(
-            glm::vec3(0.0f, 45.0f, -90.0f))), // right_shoulder (swing forward via Y-rotation)
-        glm::quat(glm::radians(glm::vec3(0.0f, -15.0f, 0.0f))), // right_elbow (slight bend)
-        walk_reach_left.right_hip,                              // left_hip <- right_hip
-        walk_reach_left.right_knee,                             // left_knee <- right_knee
-        walk_reach_left.left_hip,                               // right_hip <- left_hip
-        walk_reach_left.left_knee                               // right_knee <- left_knee
-    };
+    return mirror_keyframe(create_walk_reach_left_pose());
 }
 
 /// Create WALK_PASS_LEFT pose: mirror of WALK_PASS_RIGHT (duplicate for symmetry)
 static keyframe create_walk_pass_left_pose() {
-    return create_walk_pass_right_pose();
+    return mirror_keyframe(create_walk_pass_right_pose());
 }
 
 /// Create RUN_REACH_LEFT pose: exaggerated forward stride for left leg with extended trail leg
@@ -166,32 +183,12 @@ static keyframe create_run_pass_right_pose() {
 
 /// Create RUN_REACH_RIGHT pose: mirror of RUN_REACH_LEFT (swap left/right roles)
 static keyframe create_run_reach_right_pose() {
-    return keyframe{
-        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, 90.0f))),  // left_shoulder (forward reach)
-        glm::quat(glm::radians(glm::vec3(0.0f, 25.0f, 0.0f))),   // left_elbow (pronounced bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, 65.0f, -90.0f))), // right_shoulder (back swing)
-        glm::quat(glm::radians(glm::vec3(0.0f, -25.0f, 0.0f))),  // right_elbow (trailing bend)
-        glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))),   // left_hip (extension)
-        glm::quat(glm::radians(glm::vec3(15.0f, 0.0f, 0.0f))),   // left_knee (near straight)
-        glm::quat(glm::radians(glm::vec3(-75.0f, 0.0f, 0.0f))),  // right_hip (deep flex)
-        glm::quat(glm::radians(glm::vec3(45.0f, 0.0f, 0.0f))) // right_knee (front leg compression)
-    };
+    return mirror_keyframe(create_run_reach_left_pose());
 }
 
 /// Create RUN_PASS_LEFT pose: mirror of RUN_PASS_RIGHT with left leg crossing center
 static keyframe create_run_pass_left_pose() {
-    return keyframe{
-        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, 90.0f))),  // left_shoulder (forward swing)
-        glm::quat(glm::radians(glm::vec3(0.0f, 10.0f, 0.0f))),   // left_elbow (moderate bend)
-        glm::quat(glm::radians(glm::vec3(0.0f, 20.0f, -90.0f))), // right_shoulder (back swing)
-        glm::quat(glm::radians(glm::vec3(0.0f, -10.0f, 0.0f))),  // right_elbow (light bend)
-        glm::quat(
-            glm::radians(glm::vec3(20.0f, 0.0f, 0.0f))), // left_hip (extension as leg passes under)
-        glm::quat(glm::radians(glm::vec3(10.0f, 0.0f, 0.0f))), // left_knee (near straight)
-        glm::quat(
-            glm::radians(glm::vec3(-15.0f, 0.0f, 0.0f))), // right_hip (prepping to drive forward)
-        glm::quat(glm::radians(glm::vec3(25.0f, 0.0f, 0.0f))) // right_knee (soft bend)
-    };
+    return mirror_keyframe(create_run_pass_right_pose());
 }
 
 keyframe get_keyframe_data(pose_type pose) {

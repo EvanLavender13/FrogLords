@@ -50,7 +50,7 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 2 points
 - *Tags:* #pattern-extraction #cleanup #gui
 
-### [Pattern Extraction] Duplicate Pose Mirroring Logic
+### [Pattern Extraction] Duplicate Pose Mirroring Logic ✓
 - *File(s):* `src/character/keyframe.cpp`
 - *Issue:* The file contains boilerplate code for creating mirrored poses. For example, `create_walk_reach_right_pose` is a manual copy-paste of `create_walk_reach_left_pose` with left/right members swapped. This is repeated for the run cycle.
 - *Fix:* Create a `mirror_keyframe(const keyframe& kf)` helper function that takes a keyframe and returns a new one with all left and right joint rotations swapped.

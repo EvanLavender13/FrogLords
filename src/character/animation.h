@@ -24,9 +24,9 @@ struct secondary_motion_state {
     glm::quat prev_right_hip = glm::quat();
 
     // Tuning parameters
-    float stiffness = 15.0f;       // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
-    float damping_ratio = 1.0f;    // Critically damped by default (range 0.5-2.0)
-    float response_scale = 0.075f; // How much to amplify rotation changes (higher = more wobble)
+    float stiffness = 15.0f;      // Spring response speed (Hz, range 10.0-20.0) - lower = more lag
+    float damping_ratio = 2.0f;   // Critically damped by default (range 0.5-2.0)
+    float response_scale = 0.05f; // How much to amplify rotation changes (higher = more wobble)
 };
 
 struct animation_state {
