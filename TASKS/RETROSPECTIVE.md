@@ -35,6 +35,8 @@ For each iteration or improvement in the sample, read through the documents and 
 **Planning:** REVIEW_PLAN outcomes (principle violations, scope issues, dependencies, testing), scope changes, clarification needs  
 **Implementation:** Step velocity, self-verification effectiveness, review feedback, file prediction accuracy  
 **Completion/Deferral:** Success factors, learnings, surprises, deferral phase/category, early warning signs
+  - Example deferral triggers: dependency uncertainty, missing prerequisites, discovered complexity exceeds estimate
+  - Example skeleton coordinate frame understanding gaps: Features requiring per-bone axis-dependent rotations (IK, joint limits, targeted limb control). Missing prerequisites: skeleton debugging/visualization tools, understanding of local→world transform chain. Reconsideration trigger: After building skeleton debugging tools or during IK implementation (forces solving same problems)
 
 ### Improvements
 **Planning:** REVIEW_PLAN outcomes (rule of three, stability gates, scope, risk), complexity estimates, Trivial vs Standard classification accuracy  

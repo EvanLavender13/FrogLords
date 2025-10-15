@@ -88,8 +88,8 @@ Knowledge Creation
 - `PLANS/DESIGN_BACKLOG.md`: liquid, unordered idea pool. Tag priority/certainty/prereqs. Pull only when current layer is 90%+ certain.
 
 ## Development Directives
-- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions.
-- Don’t: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); build on uncertain foundations.
+- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions; test quaternion decomposition/composition in isolation before integrating (measure angles, extract axes, convert to Euler); analyze mathematical operations causing instability before adding smoothing (division by changing value, redundant calculations); check "what does upstream already give us correctly?" when derived state vibrates unexpectedly.
+- Don't: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); build on uncertain foundations.
 
 ## Communication
 Concise and direct. No preamble/postamble. Detail scales with risk/complexity.
