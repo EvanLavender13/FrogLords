@@ -11,14 +11,6 @@
 
 namespace {
 
-auto safe_normalize = [](const glm::vec3& v, const glm::vec3& fallback) {
-    float len = glm::length(v);
-    if (len > 0.0001f) {
-        return v / len;
-    }
-    return fallback;
-};
-
 void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wireframe_mesh& mesh,
                          const glm::vec4& color) {
     glm::mat4 transform = mesh.get_model_matrix();
@@ -109,7 +101,7 @@ void generate_locomotion_wheel_primitives(debug::debug_primitive_list& list,
                                           const orientation_system& orientation,
                                           float wheel_spin_angle) {
 
-    float wheel_radius = locomotion.get_blended_stride() / TWO_PI;
+    float wheel_radius = locomotion.get_blended_stride() / glm::two_pi<float>();
 
     if (wheel_radius <= 0.0f)
         return;
@@ -128,7 +120,8 @@ void generate_locomotion_wheel_primitives(debug::debug_primitive_list& list,
 
     for (int i = 0; i < RIM_SEGMENTS; ++i) {
 
-        float base_angle = static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * TWO_PI;
+        float base_angle =
+            static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * glm::two_pi<float>();
 
         float rim_angle = base_angle - wheel_spin_angle;
 

@@ -29,26 +29,36 @@ inline glm::vec3 yaw_to_right(float yaw) {
 
 /// Wrap angle in radians to the range [-π, π].
 inline float wrap_angle_radians(float angle) {
-    while (angle > glm::pi<float>())
-        angle -= 2.0f * glm::pi<float>();
-    while (angle < -glm::pi<float>())
-        angle += 2.0f * glm::pi<float>();
-    return angle;
+    float two_pi = glm::two_pi<float>();
+    float wrapped = std::fmod(angle + glm::pi<float>(), two_pi);
+    if (wrapped < 0.0f) {
+        wrapped += two_pi;
+    }
+    return wrapped - glm::pi<float>();
 }
 
 /// Wrap angle in degrees to the range [-180, 180].
 inline float wrap_angle_degrees(float angle) {
-    while (angle > 180.0f)
-        angle -= 360.0f;
-    while (angle < -180.0f)
-        angle += 360.0f;
-    return angle;
+    float wrapped = std::fmod(angle + 180.0f, 360.0f);
+    if (wrapped < 0.0f) {
+        wrapped += 360.0f;
+    }
+    return wrapped - 180.0f;
 }
 
 /// Calculate the shortest difference between two angles in radians.
 inline float angle_difference_radians(float target, float current) {
     float delta = target - current;
     return wrap_angle_radians(delta);
+}
+
+/// Safely normalize a vector, returning a fallback if the length is close to zero.
+inline glm::vec3 safe_normalize(const glm::vec3& v, const glm::vec3& fallback) {
+    float len = glm::length(v);
+    if (len > 0.0001f) {
+        return v / len;
+    }
+    return fallback;
 }
 
 } // namespace math

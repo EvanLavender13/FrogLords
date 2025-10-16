@@ -70,14 +70,14 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     character.animation.update_contact_weight(character.is_grounded, dt);
 
     // Calculate wheel spin using dynamic radius from blended stride
-    float wheel_radius = character.locomotion.get_blended_stride() / TWO_PI;
+    float wheel_radius = character.locomotion.get_blended_stride() / glm::two_pi<float>();
     float angular_speed = 0.0f;
     if (wheel_radius > 0.0001f) {
         angular_speed = character.locomotion.current_speed / wheel_radius;
     }
     wheel_spin_angle += angular_speed * dt;
-    if (wheel_spin_angle > TWO_PI) {
-        wheel_spin_angle = std::fmod(wheel_spin_angle, TWO_PI);
+    if (wheel_spin_angle > glm::two_pi<float>()) {
+        wheel_spin_angle = std::fmod(wheel_spin_angle, glm::two_pi<float>());
     }
 
     if (cam.get_mode() == camera_mode::FOLLOW) {
@@ -87,8 +87,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     float walk_factor = 1.0f - character.locomotion.get_run_blend();
     smoothed_walk_factor += (walk_factor - smoothed_walk_factor) * walk_factor_smoothing * dt;
 
-    float applied_walk_factor =
-        gui::compute_walk_factor_override(panel_state, smoothed_walk_factor);
+
 }
 
 void setup_test_level(game_world& world) {

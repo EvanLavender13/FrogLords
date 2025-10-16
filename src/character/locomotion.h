@@ -2,7 +2,6 @@
 #include <glm/glm.hpp>
 
 constexpr float WHEEL_RADIUS = 0.45f;
-constexpr float TWO_PI = 6.28318530718f;
 
 struct simple_pose {
     glm::vec3 root_offset;

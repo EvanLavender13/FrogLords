@@ -54,14 +54,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 2 points
 - *Tags:* #simplification #character #animation
 
-### [Performance] Inefficient angle wrapping in `math_utils.h`
-- *File(s):* `src/foundation/math_utils.h`
-- *Issue:* The `wrap_angle_radians` and `wrap_angle_degrees` functions use `while` loops, which can be inefficient for large angles.
-- *Fix:* Use `fmod` to perform the wrapping in a single operation.
-- *Rationale:* Improves performance, especially for large input values.
-- *Complexity:* 1 point
-- *Tags:* #performance #foundation #math
-
 ### [Constants] Proliferation of magic numbers
 - *File(s):* `src/app/debug_generation.cpp`, `src/character/tuning.cpp`, and others.
 - *Issue:* Numerous magic numbers are used for colors, sizes, and physics constants.
@@ -116,30 +108,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Rationale:* Improves readability.
 - *Complexity:* 1 point
 - *Tags:* #simplification #character #input
-
-### [Consistency] Use of `atan2f` in `orientation.cpp`
-- *File(s):* `src/character/orientation.cpp`
-- *Issue:* `atan2f` is used instead of `glm::atan`.
-- *Fix:* Use `glm::atan` for consistency with the rest of the codebase.
-- *Rationale:* Improves code consistency.
-- *Complexity:* 1 point
-- *Tags:* #consistency #character
-
-### [Consistency] Redefinition of `TWO_PI`
-- *File(s):* `src/character/locomotion.h`, `src/app/debug_generation.cpp`, `src/app/game_world.cpp`
-- *Issue:* `TWO_PI` is redefined in multiple places.
-- *Fix:* Use `glm::two_pi<float>()` for consistency.
-- *Rationale:* Improves code consistency and avoids potential issues with multiple definitions.
-- *Complexity:* 1 point
-- *Tags:* #consistency #cleanup
-
-### [Refactoring] `safe_normalize` lambda
-- *File(s):* `src/app/debug_generation.cpp`
-- *Issue:* The `safe_normalize` lambda is a useful utility that could be used in other places.
-- *Fix:* Move the lambda to `foundation/math_utils.h` as a free function.
-- *Rationale:* Promotes code reuse.
-- *Complexity:* 1 point
-- *Tags:* #refactoring #foundation #math
 
 ### [Data] Hardcoded test level in `game_world.cpp`
 - *File(s):* `src/app/game_world.cpp`
