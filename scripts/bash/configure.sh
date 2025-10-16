@@ -20,12 +20,14 @@ WIN_BUILD_DIR="$(to_win_path "$BUILD_DIR")"
 
 cd "$REPO_ROOT"
 
+# Forward any additional arguments to cmake (e.g., -DENABLE_QUATERNION_TESTS=ON)
 cmake.exe \
     -S "$WIN_REPO_ROOT" \
     -B "$WIN_BUILD_DIR" \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    "$@"
 
 EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
