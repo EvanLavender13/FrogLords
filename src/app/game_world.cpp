@@ -1,6 +1,6 @@
 #include "app/game_world.h"
 #include "foundation/math_utils.h"
-#include "rendering/wireframe.h"
+
 #include "gui/character_panel.h"
 #include "rendering/velocity_trail.h"
 #include <glm/gtc/matrix_transform.hpp>

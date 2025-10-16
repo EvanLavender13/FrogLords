@@ -40,22 +40,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 5 points
 - *Tags:* #performance #rendering
 
-### [Cleanup] Dead files `wireframe.cpp` and `wireframe.h`
-- *File(s):* `src/rendering/wireframe.cpp`, `src/rendering/wireframe.h`
-- *Issue:* These files are empty and only contain comments indicating that their content has been moved. They are dead code.
-- *Fix:* Delete both files from the project.
-- *Rationale:* Removes dead code, simplifying the codebase and preventing confusion.
-- *Complexity:* 1 point
-- *Tags:* #cleanup #rendering
-
-### [Pattern Extraction] Duplicate Logic in GUI Plotting
-- *File(s):* `src/gui/gui.cpp:133`, `src/gui/gui.cpp:171`
-- *Issue:* The functions `gui::plot_value` and `gui::plot_histogram` contain identical logic for managing and pruning the rolling data buffer. This is a direct violation of the "Don't Repeat Yourself" (DRY) principle.
-- *Fix:* Extract the buffer management logic into a private static helper function (e.g., `update_plot_buffer`). Both `plot_value` and `plot_histogram` would then call this helper before their respective ImGui plot calls.
-- *Rationale:* Consolidates duplicated code, reducing maintenance overhead and risk of inconsistent changes.
-- *Complexity:* 2 points
-- *Tags:* #pattern-extraction #cleanup #gui
-
 ---
 
 ## Medium

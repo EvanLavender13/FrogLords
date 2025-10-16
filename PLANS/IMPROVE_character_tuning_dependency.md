@@ -22,7 +22,7 @@
 
 **Risk Level:** Low. The change is a straightforward refactoring that clarifies ownership and does not alter behavior.
 
-**Tags:** #architecture, #character, #locomotion
+**Augmentations:** architecture_boundary, signature_change
 
 ---
 

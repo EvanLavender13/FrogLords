@@ -110,9 +110,8 @@ static void prune_plot_buffer(plot_buffer& buffer, float current_time, size_t ma
     }
 }
 
-void plot_value(const char* label, float current_value, float time_window, float min_value,
-                float max_value, size_t max_samples) {
-    auto& buffer = plot_buffers[label];
+static void update_plot_buffer(plot_buffer& buffer, float current_value, float time_window,
+                               size_t max_samples) {
     if (buffer.time_window == 0.0f) {
         buffer.time_window = time_window;
     }
@@ -122,6 +121,12 @@ void plot_value(const char* label, float current_value, float time_window, float
     buffer.timestamps.push_back(current_time);
 
     prune_plot_buffer(buffer, current_time, max_samples);
+}
+
+void plot_value(const char* label, float current_value, float time_window, float min_value,
+                float max_value, size_t max_samples) {
+    auto& buffer = plot_buffers[label];
+    update_plot_buffer(buffer, current_value, time_window, max_samples);
 
     // Render plot with axis labels
     if (!buffer.values.empty()) {
@@ -152,15 +157,7 @@ void plot_value(const char* label, float current_value, float time_window, float
 void plot_histogram(const char* label, float current_value, float time_window, float min_value,
                     float max_value, size_t max_samples) {
     auto& buffer = plot_buffers[label];
-    if (buffer.time_window == 0.0f) {
-        buffer.time_window = time_window;
-    }
-
-    float current_time = static_cast<float>(ImGui::GetTime());
-    buffer.values.push_back(current_value);
-    buffer.timestamps.push_back(current_time);
-
-    prune_plot_buffer(buffer, current_time, max_samples);
+    update_plot_buffer(buffer, current_value, time_window, max_samples);
 
     // Render histogram with axis labels
     if (!buffer.values.empty()) {

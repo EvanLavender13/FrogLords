@@ -1,1 +1,0 @@
-// This file's content has been moved to src/foundation/procedural_mesh.cpp
