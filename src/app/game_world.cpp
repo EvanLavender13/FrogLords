@@ -86,8 +86,6 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     float walk_factor = 1.0f - character.locomotion.get_run_blend();
     smoothed_walk_factor += (walk_factor - smoothed_walk_factor) * walk_factor_smoothing * dt;
-
-
 }
 
 void setup_test_level(game_world& world) {

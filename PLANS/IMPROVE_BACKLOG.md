@@ -62,14 +62,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 3 points
 - *Tags:* #constants #cleanup
 
-### [State Management] Static variables in `gui/camera_panel.cpp`
-- *File(s):* `src/gui/camera_panel.cpp`
-- *Issue:* The `draw_camera_panel` function uses `static` variables for `min_dist` and `max_dist`. This makes the function non-reentrant and can lead to unexpected behavior if the panel is used in multiple places.
-- *Fix:* Move the state into the `camera_panel_state` struct.
-- *Rationale:* Improves state management and makes the GUI more robust and predictable.
-- *Complexity:* 1 point
-- *Tags:* #gui #state-management
-
 ### [Build] Local `#define GLM_ENABLE_EXPERIMENTAL`
 - *File(s):* `src/character/animation.cpp`
 - *Issue:* `#define GLM_ENABLE_EXPERIMENTAL` is defined locally. This can lead to inconsistent behavior and ODR violations if other files include the same GLM headers without this define.
