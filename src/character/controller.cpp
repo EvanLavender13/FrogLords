@@ -119,6 +119,9 @@ void controller::update(const collision_world* world, float dt) {
     // Apply smoothed speed cap
     clamp_horizontal_speed(velocity, max_speed);
 
+    // Sync locomotion targets after speed update
+    sync_locomotion_targets();
+
     // Integrate position
     position += velocity * dt;
 
@@ -147,6 +150,19 @@ void controller::update(const collision_world* world, float dt) {
 
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
+}
+
+void controller::sync_locomotion_targets() {
+    float rs = std::max(run_speed, 0.0f);
+    float ws = std::clamp(walk_speed, 0.0f, rs);
+
+    locomotion.run_speed_threshold = rs;
+    locomotion.walk_speed_threshold = ws;
+
+    float walk_stride = std::max(ws, 0.1f);
+    float run_stride = std::max(rs * 0.8f, walk_stride);
+    locomotion.walk_state.stride_length = walk_stride;
+    locomotion.run_state.stride_length = run_stride;
 }
 
 glm::mat4 controller::get_world_transform() const {

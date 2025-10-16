@@ -2,7 +2,6 @@
 
 #include "camera/camera.h"
 #include "character/controller.h"
-#include "character/locomotion.h"
 #include "character/tuning.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
@@ -20,7 +19,6 @@ struct game_world {
     scene scn;
     collision_world world_geometry;
     controller character;
-    locomotion_system locomotion;
     character::tuning_params character_params;
     float wheel_spin_angle = 0.0f;
     float smoothed_walk_factor = 1.0f;

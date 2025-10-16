@@ -13,9 +13,4 @@ struct tuning_params {
     void read_from(const controller& c);
 };
 
-/// Synchronizes tunable controller parameters with the locomotion system's internal state.
-/// This ensures that changes made in the tuning UI (e.g., to run_speed) are propagated
-/// to the locomotion system's thresholds and stride lengths.
-void sync_locomotion_targets(const controller& c, locomotion_system& loco);
-
 } // namespace character

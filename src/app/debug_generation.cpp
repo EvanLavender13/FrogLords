@@ -247,10 +247,10 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
                                const gui::character_panel_state& panel_state) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
-    generate_character_state_primitives(list, world.character, world.locomotion,
+    generate_character_state_primitives(list, world.character, world.character.locomotion,
                                         world.character.orientation);
     generate_physics_springs_primitives(list, world.character);
-    generate_locomotion_wheel_primitives(list, world.character, world.locomotion,
+    generate_locomotion_wheel_primitives(list, world.character, world.character.locomotion,
                                          world.character.orientation, world.wheel_spin_angle);
     generate_character_body_primitives(list, world.character);
 

@@ -9,9 +9,7 @@
 
 void game_world::init() {
     character = controller();
-    locomotion = locomotion_system();
     character_params.read_from(character);
-    character::sync_locomotion_targets(character, locomotion);
     cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
     cam.set_mode(camera_mode::FOLLOW);
     scn = scene();
@@ -66,17 +64,16 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
                                                  character.run_speed,
                                                  character.orientation.get_yaw(), dt);
 
-    character::sync_locomotion_targets(character, locomotion);
-    locomotion.update(horizontal_velocity, dt);
+    character.locomotion.update(horizontal_velocity, dt);
 
     // Update contact/air weight (smooth transition for phase continuity)
     character.animation.update_contact_weight(character.is_grounded, dt);
 
     // Calculate wheel spin using dynamic radius from blended stride
-    float wheel_radius = locomotion.get_blended_stride() / TWO_PI;
+    float wheel_radius = character.locomotion.get_blended_stride() / TWO_PI;
     float angular_speed = 0.0f;
     if (wheel_radius > 0.0001f) {
-        angular_speed = locomotion.current_speed / wheel_radius;
+        angular_speed = character.locomotion.current_speed / wheel_radius;
     }
     wheel_spin_angle += angular_speed * dt;
     if (wheel_spin_angle > TWO_PI) {
@@ -87,7 +84,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         cam.follow_update(character.position, dt);
     }
 
-    float walk_factor = 1.0f - locomotion.get_run_blend();
+    float walk_factor = 1.0f - character.locomotion.get_run_blend();
     smoothed_walk_factor += (walk_factor - smoothed_walk_factor) * walk_factor_smoothing * dt;
 
     float applied_walk_factor =

@@ -98,14 +98,7 @@ Create concrete success criteria:
 - [ ] clang-tidy passes
 ```
 
-### 6. Identify Rollback Strategy
-
-Document how to undo if issues discovered:
-- Git branch allows clean rollback
-- Are there intermediate commits possible?
-- What's the abort condition? (e.g., "If compilation fails after stage 3")
-
-### 7. Append Plan to Document
+### 6. Append Plan to Document
 
 Add to `PLANS/IMPROVE_<name>.md`:
 
@@ -151,30 +144,19 @@ Add to `PLANS/IMPROVE_<name>.md`:
 ### Validation Checklist
 
 [Copy checklist from step 5]
-
-### Rollback Strategy
-
-**Abort Conditions:**
-- Condition that triggers rollback
-
-**Rollback Steps:**
-1. Discard changes
-2. Return to main branch
-3. Document learnings in backlog
 ````
 
-### 8. Verify Plan Completeness
+### 7. Verify Plan Completeness
 
 **Checklist:**
 - [ ] All affected files identified
 - [ ] Impact and risk documented
 - [ ] Solution designed with clear stages
 - [ ] Each stage has validation criteria
-- [ ] Rollback strategy defined
 - [ ] Follows architecture principles (check `AGENTS.md`)
 - [ ] Plan appended to `PLANS/IMPROVE_<name>.md`
 
-### 9. Document Plan Completion
+### 8. Document Plan Completion
 
 State clearly:
 - Plan appended to `PLANS/IMPROVE_<name>.md`

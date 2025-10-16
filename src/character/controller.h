@@ -3,6 +3,7 @@
 #include "foundation/collision_primitives.h"
 #include "character/animation.h"
 #include "character/orientation.h"
+#include "character/locomotion.h"
 
 struct collision_world;
 
@@ -74,9 +75,15 @@ struct controller {
     // Orientation system
     orientation_system orientation;
 
+    // Locomotion system
+    locomotion_system locomotion;
+
     controller();
 
     void apply_input(const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
     glm::mat4 get_world_transform() const;
+
+  private:
+    void sync_locomotion_targets();
 };

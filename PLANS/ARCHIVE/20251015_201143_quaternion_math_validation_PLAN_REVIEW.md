@@ -19,7 +19,7 @@ Plans appear well-aligned. The only minor risk is the potential for bugs in the 
 
 ### Actionable Items
 
-Ready to proceed with implementation as outlined in `PLANS/quaternion_math_validation_PLAN.md`.
+Ready to proceed with implementation as outlined in `PLANS/ARCHIVE/20251015_201143_quaternion_math_validation_PLAN.md`.
 
 ### Recommendation
 

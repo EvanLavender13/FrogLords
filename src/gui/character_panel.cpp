@@ -41,7 +41,6 @@ void draw_character_panel(character_panel_state& state, controller& character,
 
         if (changed) {
             params.apply_to(character);
-            character::sync_locomotion_targets(character, locomotion);
         }
     }
 

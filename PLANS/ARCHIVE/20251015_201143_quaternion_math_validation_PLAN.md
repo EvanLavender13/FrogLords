@@ -325,7 +325,7 @@ This feature validates the **validator** (meta-validation):
 
 - **Mathematical theory:** `NOTES/Math/QuaternionDecomp.md` (Section 1.2: Quaternion Algebra, Section 2.2: Swing-Twist Algorithm)
 - **Implementation guidance:** `NOTES/Math/RealTimeProcedural.md` (Swing-Twist Decomposition section with GLM code examples)
-- **Feature description:** `PLANS/quaternion_math_validation_FEATURE.md`
+- **Feature description:** `PLANS/ARCHIVE/20251015_201143_quaternion_math_validation_FEATURE.md`
 - **GLM documentation:** https://github.com/g-truc/glm (quaternion operations in `gtc/quaternion.hpp` and `gtx/quaternion.hpp`)
 
 ---
