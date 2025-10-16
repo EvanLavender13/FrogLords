@@ -21,6 +21,8 @@ if(ENABLE_QUATERNION_TESTS)
     add_compile_definitions(ENABLE_QUATERNION_TESTS)
 endif()
 
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
+
 # Add include directories
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/sokol)

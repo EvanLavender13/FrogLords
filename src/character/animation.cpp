@@ -4,7 +4,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/common.hpp>
 #include <glm/gtc/quaternion.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/gtx/quaternion.hpp>
 
 namespace character {
@@ -34,10 +34,11 @@ void animation_state::update_acceleration_tilt(glm::vec3 acceleration, glm::vec3
     if (accel_magnitude > 0.01f) {
         // Transform world-space acceleration to character-local space
         // Rotate acceleration vector by -yaw to get it in character's frame of reference
-        float cos_yaw = std::cos(-orientation_yaw);
-        float sin_yaw = std::sin(-orientation_yaw);
-        float local_forward = horizontal_accel.z * cos_yaw - horizontal_accel.x * sin_yaw;
-        float local_right = horizontal_accel.x * cos_yaw + horizontal_accel.z * sin_yaw;
+        glm::mat2 rot = glm::mat2(cos(-orientation_yaw), -sin(-orientation_yaw),
+                                  sin(-orientation_yaw), cos(-orientation_yaw));
+        glm::vec2 local_accel = rot * glm::vec2(horizontal_accel.x, horizontal_accel.z);
+        float local_forward = local_accel.y;
+        float local_right = local_accel.x;
 
         // Normalize local acceleration direction (tilt should show direction, not magnitude)
         float local_accel_magnitude =

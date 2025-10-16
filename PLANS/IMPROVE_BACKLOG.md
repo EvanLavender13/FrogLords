@@ -46,14 +46,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 
 (Nice-to-have improvements)
 
-### [Simplification] Manual space transformation in `animation.cpp`
-- *File(s):* `src/character/animation.cpp`
-- *Issue:* `update_acceleration_tilt` performs a manual 2D rotation using `sin` and `cos` to transform world-space acceleration to local space.
-- *Fix:* Use a 2x2 rotation matrix or a quaternion to perform the transformation. This is more readable and less error-prone.
-- *Rationale:* Improves code clarity and robustness.
-- *Complexity:* 2 points
-- *Tags:* #simplification #character #animation
-
 ### [Constants] Proliferation of magic numbers
 - *File(s):* `src/app/debug_generation.cpp`, `src/character/tuning.cpp`, and others.
 - *Issue:* Numerous magic numbers are used for colors, sizes, and physics constants.
@@ -61,14 +53,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Rationale:* Improves readability and maintainability. Makes it easier to tune and adjust values.
 - *Complexity:* 3 points
 - *Tags:* #constants #cleanup
-
-### [Build] Local `#define GLM_ENABLE_EXPERIMENTAL`
-- *File(s):* `src/character/animation.cpp`
-- *Issue:* `#define GLM_ENABLE_EXPERIMENTAL` is defined locally. This can lead to inconsistent behavior and ODR violations if other files include the same GLM headers without this define.
-- *Fix:* Move the define to a global build flag in the `CMakeLists.txt` file.
-- *Rationale:* Ensures consistent compilation and avoids hard-to-debug issues.
-- *Complexity:* 1 point
-- *Tags:* #build #dependencies
 
 ### Rendering / Debug
 **Extract Speed/Age Gradient Helpers**

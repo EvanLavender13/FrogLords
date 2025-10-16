@@ -88,6 +88,53 @@ Include lightweight metadata to improve selection and planning:
 
 ---
 
+## Foundation & Testing
+
+### Mathematical Primitive Testing Pattern (High Priority)
+
+**Context:** Quaternion validation suite (24/24 tests passing) proved value of isolated math testing. Skeletal animation removal revealed that visual validation misses subtle mathematical errors—code can "look okay" but be fundamentally wrong.
+
+**Problem:** Pure mathematical functions with objective correctness are hard to validate visually. Refactoring stable math is risky without regression detection.
+
+**Hypothesis:** Extending the quaternion validation pattern to other pure math prevents "works by accident" scenarios and enables confident refactoring.
+
+**Scope Boundaries (Critical):**
+- ✅ Pure math with objectively correct outputs (springs, easing, collision, orientation math, acceleration tilt)
+- ✅ Foundation layer primitives (stable code, low churn)
+- ❌ Game feel/mechanics requiring playtesting
+- ❌ Reactive systems where "correct" is subjective
+
+**Target Modules for Validation:**
+
+1. **Acceleration Tilt Math** (Complexity: 2-3 points) — *PROTOTYPE CANDIDATE*
+   - *Prerequisite:* None - foundation layer
+   - *Certainty:* High (~80%) - pattern proven with quaternions
+   - *Scope:* Test acceleration vector → tilt quaternion conversion, edge cases (zero acceleration, vertical acceleration), numerical stability
+   - *Rationale:* Pure math function; bugs would be subtle angle errors hard to spot visually
+   - *Validation:* Known inputs produce expected tilt angles; extreme values handled gracefully
+
+2. **Spring-Damper System** (Complexity: 2-3 points)
+   - *Scope:* Validate critically damped, underdamped, overdamped behaviors; oscillation frequency; settling time
+   - *Rationale:* Core primitive used everywhere; numerical stability critical
+
+3. **Collision Math** (Complexity: 2-3 points)
+   - *Scope:* Sphere-AABB resolution, penetration depth calculation, edge cases (corner contacts, zero overlap)
+   - *Rationale:* Physics foundation; errors cascade to all movement
+
+4. **Orientation Math** (Complexity: 2 points)
+   - *Scope:* Velocity-to-facing conversion, smooth rotation interpolation, degenerate cases (zero velocity)
+   - *Rationale:* Already stable, but no regression protection
+
+**Pattern Guidelines:**
+- Not violating "no automated tests" principle—this is the **exception** for mathematical primitives
+- Tests live in isolation (e.g., `src/foundation/tests/` or similar)
+- Run manually when refactoring math (not CI/CD overhead)
+- Focus on edge cases and numerical stability, not exhaustive coverage
+
+**Origin:** Identified 2025-10-16 after quaternion validation success and skeletal animation learnings
+
+---
+
 ### Input & Control Feel
 
 - **Mouse delta tracking:** Provide functions to get mouse movement delta between frames.
