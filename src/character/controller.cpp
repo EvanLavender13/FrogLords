@@ -49,15 +49,10 @@ void controller::apply_input(const camera_input_params& cam_params, float dt) {
 
     // Read WASD input
     glm::vec2 move_direction(0.0f, 0.0f);
-
-    if (input::is_key_down(SAPP_KEYCODE_W))
-        move_direction.y += 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_S))
-        move_direction.y -= 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_A))
-        move_direction.x -= 1.0f;
-    if (input::is_key_down(SAPP_KEYCODE_D))
-        move_direction.x += 1.0f;
+    move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
+    move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
+    move_direction.x -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
+    move_direction.x += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
 
     if (glm::length(move_direction) > 0.0f) {
         move_direction = glm::normalize(move_direction);

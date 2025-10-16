@@ -77,14 +77,6 @@ Track code quality issues, architectural violations, tech debt, pattern extracti
 - *Complexity:* 1 point
 - *Tags:* #conventions #cleanup
 
-### [Simplification] Verbose WASD input handling in `controller.cpp`
-- *File(s):* `src/character/controller.cpp`
-- *Issue:* The WASD input handling is verbose and can be simplified.
-- *Fix:* Use a more compact form to check the keys and build the `move_direction` vector.
-- *Rationale:* Improves readability.
-- *Complexity:* 1 point
-- *Tags:* #simplification #character #input
-
 ### [Data] Hardcoded test level in `game_world.cpp`
 - *File(s):* `src/app/game_world.cpp`
 - *Issue:* The test level is hardcoded in the `setup_test_level` function.
