@@ -10,8 +10,18 @@
 namespace {
 // Single-sphere collision configuration (experiment branch)
 // Primary sphere handles all collision resolution
-constexpr float BUMPER_RADIUS = 0.50f;
-constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // Spawn with sphere resting on ground
+
+// TUNED: Collision sphere radius (character physical size)
+// World scale: 0.5m radius = 1.0m diameter sphere (human-scale)
+// Defines capsule/sphere collision volume for all character interactions
+// Used in: controller constructor (line 35) to initialize collision_sphere.radius
+constexpr float BUMPER_RADIUS = 0.50f; // meters
+
+// CALCULATED: Initial spawn height for sphere resting on ground plane
+// Geometric derivation: Sphere resting on Y=0 has center at Y = radius
+// Contact point: center.y - radius = 0 → center.y = radius
+// Used in: controller constructor (line 29) to set initial position.y
+constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // meters (= 0.5m)
 
 void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
     glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);

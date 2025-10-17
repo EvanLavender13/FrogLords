@@ -22,5 +22,13 @@ void spring_damper::reset(float pos) {
 }
 
 float critical_damping(float stiffness, float mass) {
-    return 2.0f * sqrtf(stiffness * mass);
+    // DERIVED: Critical damping formula from harmonic oscillator theory
+    // Equation: c = 2√(k·m)
+    // Derivation:
+    //   - Spring-damper ODE: mẍ + cẋ + kx = 0
+    //   - Characteristic equation: mλ² + cλ + k = 0
+    //   - Critical damping (ζ=1): Discriminant = 0 → c² = 4km → c = 2√(km)
+    // Coefficient: 2.0 is the mathematical constant from the derivation
+    // Result: Fastest return to equilibrium without overshoot
+    return 2.0f * sqrtf(stiffness * mass); // DERIVED coefficient: 2.0 (dimensionless)
 }

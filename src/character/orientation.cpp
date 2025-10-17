@@ -6,7 +6,11 @@
 void orientation_system::update(glm::vec3 velocity, float dt) {
     float speed = glm::length(velocity);
 
-    if (speed > 0.01f) {
+    // TUNED: Minimum speed threshold to update yaw orientation
+    // Purpose: Prevent jitter/chatter when velocity is near-zero
+    // Value: 0.01 m/s (1 cm/s) is well below perceptual threshold
+    // Ensures character maintains orientation when effectively stationary
+    if (speed > 0.01f) { // m/s
         target_yaw = glm::atan(velocity.x, velocity.z);
 
         // Handle angle wrapping (shortest path)

@@ -7,8 +7,17 @@
 namespace character {
 
 animation_state::animation_state() {
-    landing_spring.stiffness = 400.0f;
-    landing_spring.damping = critical_damping(landing_spring.stiffness);
+    // TUNED: Landing spring stiffness (controls oscillation frequency)
+    // Natural frequency: ω = √(k/m) = √(400/1) = 20 rad/s ≈ 3.18 Hz
+    // With critical damping: Settles in ~2τ = 2/(ζω) = 2/20 = 0.1s (fast, snappy)
+    // Used in: spring force calculation F = -k·(x - target)
+    landing_spring.stiffness = 400.0f; // 1/s² (unitless spring, assumes mass=1)
+
+    // DERIVED: Critical damping coefficient (prevents overshoot/oscillation)
+    // Formula: c = 2√(k·m) with k=400, m=1 → c = 2√400 = 40.0
+    // Damping ratio ζ = 1.0 (critically damped, no overshoot)
+    // Result: Landing crouch settles smoothly to rest without bounce
+    landing_spring.damping = critical_damping(landing_spring.stiffness); // 1/s (= 40.0)
 }
 
 void animation_state::update_landing_spring(bool just_landed,

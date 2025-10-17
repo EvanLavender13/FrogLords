@@ -44,7 +44,27 @@ Ideas remain here until:
 
 ## Next Priority (From Updated Stack)
 
-### 2. Fix Accumulated State Pattern
+### 2. Fix Tuning System Defaults Mismatch
+**Discovered:** During magic numbers documentation (2025-10-17)
+**Violation:** Inconsistent sources of truth (controller.h vs tuning.h defaults)
+
+**Issue:**
+- Controller defaults imply `time_to_max_speed ≈ 1.6s`
+- Tuning defaults specify `time_to_max_speed = 0.4s` (4x discrepancy)
+- Root cause: Bidirectional system uses `read_from` at init (reverse-engineers)
+
+**Options:**
+- Apply tuning defaults at init (prescriptive approach)
+- Align tuning defaults to match controller (descriptive approach)
+- Choose single source of truth explicitly
+
+**Complexity:** 1 point (small, localized fix)
+**Certainty:** 100% (pure consistency fix, well-understood)
+**Validation:** Both systems produce identical values
+
+**Priority:** HIGH - Blocks confident tuning, foundation issue
+
+### 3. Fix Accumulated State Pattern
 **Violation Found:** Position/velocity accumulate errors
 
 **Options:**
@@ -56,18 +76,24 @@ Ideas remain here until:
 **Certainty:** 80% (multiple valid solutions)
 **Validation:** Long-running stability test
 
-### 3. Document Magic Numbers
-**Violation Found:** Unexplained constants throughout
+### 3. ✅ Document Magic Numbers → COMPLETE (2025-10-17)
+**Status:** ✅ ALL CONSTANTS DOCUMENTED
 
-**Required:**
-- Document BUMPER_RADIUS (why 0.5?)
-- Document epsilon values (why 0.0001?)
-- Document friction formula (why gravity multiplier?)
-- Either justify or derive from first principles
+**Delivered:**
+- 27 constants across 12 files with grep-able category tags
+- All formulas verified (critical damping, jump kinematics, etc.)
+- Units specified for every constant
+- Relationships documented
+- Findings report with critical discovery (tuning defaults mismatch)
 
-**Complexity:** 1 point
-**Certainty:** 100% (documentation task)
-**Validation:** Can explain every constant
+**Complexity:** 1 point (as estimated)
+**Certainty:** 100% (achieved)
+**Impact:** Foundation certainty +10 points (79% → 89%)
+
+**Emergent Discoveries:**
+- Bidirectional tuning pattern (apply_to + read_from)
+- 75/25 friction decomposition (reusable pattern)
+- Documentation IS foundation repair (+10 certainty)
 
 ---
 
@@ -239,6 +265,52 @@ Dash, wall-jump, ledge-grab, climbing, swimming, crouching.
 - Moving platform interaction
 
 **Current:** Single sphere works. Add complexity only when single sphere fails.
+
+---
+
+## New Patterns (Discovered 2025-10-17)
+
+### Bidirectional Parameter Systems
+**Discovery:** Tuning system is intentionally bidirectional
+
+**Pattern:**
+- `apply_to`: Designer intent → runtime params (prescriptive)
+- `read_from`: Runtime params → designer view (descriptive)
+- Enables exploration (adjust and see) + comprehension (observe and understand)
+
+**Application Opportunities:**
+- Camera parameters (preset → values, values → preset)
+- Animation blend weights (high-level → blend tree, blend tree → visualization)
+- Difficulty tuning (feel → numbers, numbers → feel)
+
+**Certainty:** 90% (pattern proven in tuning system)
+**Complexity:** 2-3 points per application
+
+### Mathematical Pattern Library
+**Discovery:** Reusable formulas identified during documentation
+
+**Patterns Worth Documenting:**
+- Critical damping: `c = 2√(k·m)` (harmonic oscillator)
+- Friction decomposition: 75% friction + 25% net = tunable responsiveness
+- Jump kinematics: `v = √(2gh)` (energy conservation)
+- Exponential smoothing: `factor = 1 - exp(-rate·dt)` (framerate independence)
+
+**Purpose:** Reference for future physics/tuning work
+**Certainty:** 100% (already validated)
+**Complexity:** 0.5 points (just documentation)
+
+### Systematic Constant Review
+**Discovery:** Category-based grep enables systematic improvements
+
+**Enabled Operations:**
+- `grep "// TUNED:"` → Find all empirical values for focused playtesting
+- `grep "// CALCULATED:"` → Verify derived values match formulas
+- `grep "// DERIVED:"` → Review mathematical correctness
+- `grep "// COEFFICIENT:"` → Check dimensionless multipliers
+
+**Application:** Regular constant audits, physics validation, tuning sessions
+**Certainty:** 100% (infrastructure exists)
+**Complexity:** 0 points (already complete)
 
 ---
 

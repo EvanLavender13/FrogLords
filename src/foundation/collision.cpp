@@ -35,8 +35,12 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
 void resolve_box_collisions(sphere& collision_sphere, const collision_world& world,
                             glm::vec3& position, glm::vec3& velocity, bool& is_grounded,
                             glm::vec3& ground_normal, float& ground_height, float max_slope_angle) {
-    // Multi-pass collision resolution to handle corner cases
-    for (int pass = 0; pass < 3; ++pass) {
+    // TUNED: Multi-pass collision resolution iteration limit
+    // Purpose: Handle corner/edge cases where single pass insufficient (sliding along edges)
+    // Common range: 2-4 passes (trade-off: accuracy vs performance)
+    // Assessment: 3 passes handles most multi-collision scenarios in practice
+    // Used in: Loop iterations for resolving multiple simultaneous collisions
+    for (int pass = 0; pass < 3; ++pass) { // iterations (dimensionless)
         bool any_collision = false;
 
         for (const auto& box : world.boxes) {

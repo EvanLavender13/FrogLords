@@ -8,7 +8,13 @@ namespace character {
 struct animation_state {
     // Landing spring
     spring_damper landing_spring;
-    float landing_impulse_scale = 0.5f;
+
+    // COEFFICIENT: Scales vertical landing velocity to spring impulse magnitude
+    // Physical meaning: Spring receives 50% of impact velocity as impulse
+    // Purpose: Aesthetic tuning for landing crouch intensity (prevents excessive crouch)
+    // Used in: update_landing_spring (line 18) when just_landed is true
+    // Dimensionless multiplier: impulse = -|v_vertical| · landing_impulse_scale
+    float landing_impulse_scale = 0.5f; // dimensionless
 
     animation_state();
 

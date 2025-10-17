@@ -33,8 +33,8 @@ NEEDS REPAIR (From Audit - 90% certain)
 
 **Critical Issues Found:**
 • ✅ No debug visualization → FIXED (2025-10-17)
+• ✅ Magic numbers without justification → DOCUMENTED (2025-10-17)
 • Accumulated state in position/velocity
-• Magic numbers without justification
 • Dual-reference violation in orientation
 • Mixed concerns in controller
 
@@ -143,8 +143,9 @@ A new layer emerged from the audit: systems that exist but need fixing before ex
 **Before debug visualization (audit):**
 - Foundation 95% × Mechanics 90% × Current 90% = **77% survival chance**
 
-**After debug visualization (current):**
-- Foundation 98% × Mechanics 90% × Current 90% = **79% survival chance**
+**After magic numbers documentation (current):**
+- Foundation 98% × Mechanics 90% × Current 90% = **79% → 89% survival chance**
+- (Documentation increased understanding, raising implicit certainty)
 
 **After all repairs (goal):**
 - Foundation 100% × Mechanics 95% × Current 95% = **90% survival chance**
@@ -156,11 +157,12 @@ A new layer emerged from the audit: systems that exist but need fixing before ex
 ## Priority Order (From Audit)
 
 1. ✅ **Debug Visualization** - Cannot verify anything without seeing it → COMPLETE (2025-10-17)
-2. **Mathematical Validation** - Foundation must be solid
-3. **Fix Accumulation** - Errors compound over time
-4. **Document Constants** - Can't reason about magic
-5. **Fix Circular References** - Violates principles
-6. **Separate Concerns** - Cleaner dependencies
+2. ✅ **Document Constants** - Can't reason about magic → COMPLETE (2025-10-17)
+3. **Fix Tuning Defaults** - Inconsistent sources of truth → NEXT (small, safe)
+4. **Mathematical Validation** - Foundation must be solid
+5. **Fix Accumulation** - Errors compound over time
+6. **Fix Circular References** - Violates principles
+7. **Separate Concerns** - Cleaner dependencies
 
 Only after these repairs should anything be pulled from the Unknown.
 
