@@ -62,6 +62,13 @@ void setup_test_level(game_world& world) {
     foundation::wireframe_mesh floor = foundation::generate_grid_floor(40.0f, 40);
     world.scn.add_object(floor);
 
+    // Ground collision plane (replaces special-case ground at y=0)
+    aabb ground_plane;
+    ground_plane.center = glm::vec3(0.0f, -0.1f, 0.0f);
+    ground_plane.half_extents = glm::vec3(100.0f, 0.1f, 100.0f);
+    world.scn.add_collision_box(ground_plane);
+    world.world_geometry.boxes.push_back(ground_plane);
+
     for (int i = 0; i < 5; ++i) {
         float height = 1.0f + static_cast<float>(i) * 1.5f;
         aabb platform;

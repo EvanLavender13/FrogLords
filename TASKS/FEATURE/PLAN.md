@@ -89,7 +89,6 @@ Each stage must:
 **Change:** [Specific modification]
 **Validation:** [How we verify correctness]
 **Debug:** [What we need to see]
-**Rollback:** [How to undo if wrong]
 
 Files:
 - `path/file.cpp`: [Specific change]
@@ -156,7 +155,6 @@ Before implementation:
 - [ ] Mathematical validation strategy
 - [ ] Debug visualization plan
 - [ ] Each stage independently testable
-- [ ] Rollback strategy for each stage
 - [ ] Clear composition points
 
 ### Must Not Have

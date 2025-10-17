@@ -39,15 +39,7 @@ Only track violations that:
 
 ## High Priority
 
-### Special-Case Ground Plane Collision
-**Principle Violated:** Consistency, Radical Simplicity
-**File:** `src/foundation/collision.cpp:60`, `src/foundation/collision.cpp:113`
-**Current:** Hardcoded ground plane at y=0 with special-case `resolve_ground_collision()` function
-**Problem:** Ground is treated as special case separate from box collision, creating ordering dependency and inconsistency. Special cases violate simplicity.
-**Solution:** Remove `resolve_ground_collision()` entirely. Add ground as large AABB to `setup_test_level()` like any other collision object.
-**Complexity:** 3 points (remove function, add ground AABB to level setup)
-**Why High:** Consistency principle violation. System simpler without special cases.
-**Tags:** #consistency #simplification #batch-candidate
+**NONE.** Special-case ground plane removed (2025-10-17).
 
 ---
 
@@ -128,6 +120,13 @@ Only track violations that:
 
 ## Recently Completed (Learn From)
 
+**2025-10-17 Remove Special-Case Ground Plane (3 points):**
+- Pattern: Special-case collision handling with ordering dependency
+- Fixed: Deleted `resolve_ground_collision()` function, added ground as regular AABB
+- Solution: Unified collision system - ground is just another box
+- Result: -31 lines net, 1 special case eliminated, 2 → 1 collision systems
+- Lesson: Special cases break consistency. Unified systems are simpler. Delete special-case code, not migrate it.
+
 **2025-10-16 Fix Framerate-Dependent Yaw Smoothing (2 points):**
 - Pattern: Framerate-dependent mathematical formula
 - Fixed: Linear lerp replaced with exponential smoothing using exp()
@@ -196,16 +195,16 @@ Adding is last resort.
 
 ## Current Status
 
-**Foundation Certainty:** 93% (Post-Mathematical-Fix - 2025-10-16)
+**Foundation Certainty:** 94% (Post-Consistency-Fix - 2025-10-17)
 **Critical Violations:** 0 (1 deferred - renderer needs redesign)
-**High Priority:** 1 (consistency violation)
+**High Priority:** 0 (all violations resolved)
 **Medium Priority:** 2 (architectural simplifications)
 **Low Priority:** 1 (documentation only)
 
-**Assessment:** Mathematical correctness restored. Special-case ground plane remains as consistency violation.
+**Assessment:** Consistency principle restored. No special cases remain. Unified collision system in place.
 
 **Next Actions (Priority Order):**
-1. Remove special-case ground plane (3 points) - Consistency + Simplification
+1. Consider: Unify camera distance state (3 points) - Simplification
 3. Consider: Unify camera distance state (3 points) - Simplification
 4. Consider: Deduplicate world geometry (5 points) - Architectural (complex)
 5. Batch cleanup: Remove unused includes (1 point)

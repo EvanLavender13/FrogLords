@@ -75,13 +75,6 @@ Can we at least explain it?
 - Behavioral tests
 - Performance metrics
 
-### Rollback Strategy
-Every change must be reversible:
-- Git commits at each stage
-- Clear reversion points
-- No irreversible deletions
-- Backup complex logic
-
 ---
 
 ## Phase 4: Staged Simplification
@@ -162,7 +155,6 @@ Before each stage:
 - [ ] Current behavior documented
 - [ ] Simplification identified
 - [ ] Validation method clear
-- [ ] Rollback possible
 - [ ] No new complexity introduced
 
 ### Red Flags

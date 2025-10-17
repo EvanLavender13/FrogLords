@@ -251,7 +251,6 @@ Proceed to FINALIZE.
 
 ### If REJECT:
 The improvement made things worse.
-Rollback all changes.
 [Explanation of failure]
 ```
 

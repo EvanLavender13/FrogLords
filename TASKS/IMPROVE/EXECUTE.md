@@ -24,7 +24,6 @@ Read `AGENTS.md` - internalize the Six Pillars
 - Violation clearly identified
 - Simplification strategy chosen
 - AGENTS.md principles internalized
-- Rollback strategy prepared
 
 ---
 
@@ -118,7 +117,6 @@ Read `PLANS/IMPROVE_<name>.md`:
 - All stages and sequence
 - Validation per stage
 - Risk assessment
-- Rollback points
 
 #### Principle Alignment
 For each stage, verify:
@@ -183,8 +181,6 @@ Follow the hierarchy:
 **Validation:** Build ✓ Behavior ✓ Principle ✓
 ```
 
-**If stage fails, STOP and rollback.**
-
 ### Phase 3: Full System Validation
 
 After all stages:
@@ -247,7 +243,7 @@ Principles strengthened.
 
 ## Abort Conditions
 
-Stop immediately and rollback if:
+Stop immediately if:
 
 ### Complexity Increases
 - More lines than removed

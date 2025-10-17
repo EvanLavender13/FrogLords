@@ -34,7 +34,6 @@ Read `AGENTS.md` - internalize the Six Pillars
 - [ ] Plan approved and stages clear
 - [ ] Dependencies at required certainty
 - [ ] Debug tools available or buildable
-- [ ] Rollback strategy understood
 
 ### Principle Check
 Before writing any code, confirm:
@@ -59,7 +58,6 @@ Work through stages sequentially, validating each before proceeding.
 - [ ] Previous stage validated and stable
 - [ ] Foundation remains solid
 - [ ] Dependencies still satisfied
-- [ ] Rollback point established
 
 #### 2. Implement the Mathematics
 - Write the core equations first

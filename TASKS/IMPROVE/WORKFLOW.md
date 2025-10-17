@@ -104,7 +104,6 @@ Each task serves the goal of simplification:
 - Staged simplification approach
 - Complexity reduction metrics
 - Risk assessment
-- Rollback strategy
 
 **Philosophy:** The best plan removes code. The second best simplifies it. Adding is failure.
 
