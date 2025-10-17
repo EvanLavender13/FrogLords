@@ -12,7 +12,9 @@ void orientation_system::update(glm::vec3 velocity, float dt) {
         // Handle angle wrapping (shortest path)
         float delta = math::angle_difference_radians(target_yaw, current_yaw);
 
-        current_yaw += delta * yaw_smoothing * dt;
+        // Framerate-independent exponential smoothing
+        float smoothing_factor = 1.0f - std::exp(-yaw_smoothing * dt);
+        current_yaw += delta * smoothing_factor;
 
         // Normalize to [-π, π]
         current_yaw = math::wrap_angle_radians(current_yaw);

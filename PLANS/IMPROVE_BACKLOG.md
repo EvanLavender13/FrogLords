@@ -39,16 +39,6 @@ Only track violations that:
 
 ## High Priority
 
-### Framerate-Dependent Yaw Smoothing
-**Principle Violated:** Mathematical Foundations (framerate dependency)
-**File:** `src/character/orientation.cpp:13`
-**Current:** `current_yaw += delta * yaw_smoothing * dt;`
-**Problem:** Linear interpolation over time is not mathematically correct for framerate-independent smoothing. Convergence rate depends on framerate, leading to inconsistent behavior at different dt values.
-**Solution:** Use exponential smoothing: `float smoothing_factor = 1.0f - exp(-yaw_smoothing * dt); current_yaw += delta * smoothing_factor;`
-**Complexity:** 2 points (single-line mathematical fix)
-**Why High:** Mathematical correctness is critical. Affects player experience consistency.
-**Tags:** #math #framerate-independence
-
 ### Special-Case Ground Plane Collision
 **Principle Violated:** Consistency, Radical Simplicity
 **File:** `src/foundation/collision.cpp:60`, `src/foundation/collision.cpp:113`
@@ -138,6 +128,13 @@ Only track violations that:
 
 ## Recently Completed (Learn From)
 
+**2025-10-16 Fix Framerate-Dependent Yaw Smoothing (2 points):**
+- Pattern: Framerate-dependent mathematical formula
+- Fixed: Linear lerp replaced with exponential smoothing using exp()
+- Solution: `float smoothing_factor = 1.0f - std::exp(-yaw_smoothing * dt);`
+- Result: Mathematically correct, framerate-independent orientation smoothing
+- Lesson: Mathematical violations are easy to miss but critical for consistency. Exponential smoothing is the correct formula for framerate-independent behavior.
+
 **2025-10-16 Gemini-Assisted Deep Review:**
 - Method: Gemini CLI analyzed entire src/ directory against Six Lenses
 - Found: 7 violations (1 deferred, 3 accepted, 3 rejected as debug-only)
@@ -199,17 +196,16 @@ Adding is last resort.
 
 ## Current Status
 
-**Foundation Certainty:** 92% (Post-Encapsulation - 2025-10-16)
+**Foundation Certainty:** 93% (Post-Mathematical-Fix - 2025-10-16)
 **Critical Violations:** 0 (1 deferred - renderer needs redesign)
-**High Priority:** 2 (mathematical + consistency violations)
+**High Priority:** 1 (consistency violation)
 **Medium Priority:** 2 (architectural simplifications)
 **Low Priority:** 1 (documentation only)
 
-**Assessment:** Gemini deep review found real but subtle violations. Mathematical correctness (framerate-independent smoothing) should be addressed soon. Special-case ground plane breaks consistency principle.
+**Assessment:** Mathematical correctness restored. Special-case ground plane remains as consistency violation.
 
 **Next Actions (Priority Order):**
-1. Fix framerate-dependent yaw smoothing (2 points) - Mathematical correctness
-2. Remove special-case ground plane (3 points) - Consistency + Simplification
+1. Remove special-case ground plane (3 points) - Consistency + Simplification
 3. Consider: Unify camera distance state (3 points) - Simplification
 4. Consider: Deduplicate world geometry (5 points) - Architectural (complex)
 5. Batch cleanup: Remove unused includes (1 point)
