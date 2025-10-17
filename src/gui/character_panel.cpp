@@ -7,8 +7,7 @@
 namespace gui {
 
 void draw_character_panel(character_panel_state& state, controller& character,
-                          orientation_system& orientation,
-                          character::tuning_params& params) {
+                          orientation_system& orientation, character::tuning_params& params) {
     if (!state.show)
         return;
 
