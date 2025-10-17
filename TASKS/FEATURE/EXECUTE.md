@@ -12,6 +12,8 @@ Implement validated stages from the approved plan, confirming principle adherenc
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - Approved plan from REVIEW_PLAN

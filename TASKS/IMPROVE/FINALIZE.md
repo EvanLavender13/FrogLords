@@ -12,6 +12,8 @@ Every improvement reveals patterns of complexity. The question is: do we recogni
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - Code review approved (Path B) or validation passed (Path A)

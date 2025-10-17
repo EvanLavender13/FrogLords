@@ -12,6 +12,8 @@ Every feature teaches us about the principles. The question is: did we listen?
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - Code review complete with approval

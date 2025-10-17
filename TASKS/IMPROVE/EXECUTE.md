@@ -12,6 +12,8 @@ Execution is not refactoring—it's the disciplined removal of complexity.
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 ### Path Selection

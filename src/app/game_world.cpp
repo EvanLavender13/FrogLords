@@ -51,13 +51,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         }
     }
 
-    glm::vec3 intended_velocity = character.input_direction * character.max_speed;
-
-    character.orientation.update(intended_velocity, dt);
-
-    character.animation.update_landing_spring(character.just_landed,
-                                              character.vertical_velocity_on_land, dt);
-    character.just_landed = false;
+    character.update_reactive_systems(dt);
 
     if (cam.get_mode() == camera_mode::FOLLOW) {
         cam.follow_update(character.position, dt);

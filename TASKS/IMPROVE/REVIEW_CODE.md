@@ -12,6 +12,8 @@ A review that approves added complexity has failed its purpose.
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - Improvement execution complete

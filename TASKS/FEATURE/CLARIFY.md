@@ -12,6 +12,8 @@ Clarification is not gathering requirements—it's philosophical interrogation. 
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - Feature request received (from REQUEST)

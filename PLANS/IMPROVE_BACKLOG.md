@@ -2,7 +2,7 @@
 
 **A record of principle violations awaiting simplification.**
 
-**Last Review:** 2025-10-16 22:43 (Post-Radical Simplification)
+**Last Review:** 2025-10-16 23:15 (Gemini-Assisted Deep Review)
 
 ---
 
@@ -16,17 +16,18 @@ Only track violations that:
 
 ---
 
-## Review Summary (2025-10-16 Post-Simplification)
+## Review Summary (2025-10-16 Gemini Deep Review)
 
-**Result:** Codebase is remarkably clean after radical simplification.
+**Method:** Gemini CLI full-codebase analysis with Claude interpretation
+**Result:** Foundation is solid. Found 3 principle violations requiring attention.
 
-**Files Scanned:** 21 .cpp files, 25 .h files (46 total)
-**Critical Violations:** 0
-**High Priority:** 0
-**Medium Priority:** 2 (minor simplifications)
-**Low Priority:** 0
+**Files Scanned:** All files in src/ (complete codebase)
+**Critical Violations:** 0 (1 deferred - renderer redesign out of scope)
+**High Priority:** 2 (mathematical correctness violations)
+**Medium Priority:** 1 (architectural simplification)
+**Low Priority:** 1 (documentation)
 
-**Key Finding:** The simplification was effective. Most violations from previous audit were addressed by deletion.
+**Key Finding:** Post-simplification baseline is clean. New violations are subtle but real - mathematical correctness (framerate dependency) and consistency (special-case ground plane).
 
 ---
 
@@ -38,33 +39,49 @@ Only track violations that:
 
 ## High Priority
 
-**NONE.**
+### Framerate-Dependent Yaw Smoothing
+**Principle Violated:** Mathematical Foundations (framerate dependency)
+**File:** `src/character/orientation.cpp:13`
+**Current:** `current_yaw += delta * yaw_smoothing * dt;`
+**Problem:** Linear interpolation over time is not mathematically correct for framerate-independent smoothing. Convergence rate depends on framerate, leading to inconsistent behavior at different dt values.
+**Solution:** Use exponential smoothing: `float smoothing_factor = 1.0f - exp(-yaw_smoothing * dt); current_yaw += delta * smoothing_factor;`
+**Complexity:** 2 points (single-line mathematical fix)
+**Why High:** Mathematical correctness is critical. Affects player experience consistency.
+**Tags:** #math #framerate-independence
+
+### Special-Case Ground Plane Collision
+**Principle Violated:** Consistency, Radical Simplicity
+**File:** `src/foundation/collision.cpp:60`, `src/foundation/collision.cpp:113`
+**Current:** Hardcoded ground plane at y=0 with special-case `resolve_ground_collision()` function
+**Problem:** Ground is treated as special case separate from box collision, creating ordering dependency and inconsistency. Special cases violate simplicity.
+**Solution:** Remove `resolve_ground_collision()` entirely. Add ground as large AABB to `setup_test_level()` like any other collision object.
+**Complexity:** 3 points (remove function, add ground AABB to level setup)
+**Why High:** Consistency principle violation. System simpler without special cases.
+**Tags:** #consistency #simplification #batch-candidate
 
 ---
 
 ## Medium Priority
 
-### Game World Direct Orientation Update
-**Principle Violated:** Composable Functions (leaky abstraction)
-**File:** `src/app/game_world.cpp:56`
-**Current:** `game_world::update()` directly calls `character.orientation.update(intended_velocity, dt)`
-**Problem:** Game world reaches into character's orientation subsystem
-**Solution:** Move to `controller::update()` or create `controller::update_orientation()` wrapper
-**Complexity:** 2 points
-**Why Medium:** Works but violates encapsulation - controller should manage its own subsystems
-**Tags:** #architecture #encapsulation
+### Duplicated World Geometry Representation
+**Principle Violated:** Radical Simplicity, Composable Functions
+**File:** `src/app/game_world.h:16`, `src/app/game_world.cpp:76-108`
+**Current:** Maintains both `scene scn` (rendering) and `collision_world world_geometry` (physics) with manual duplication in `setup_test_level()`
+**Problem:** Two sources of truth for same information. Every collision box added twice: `scn.add_collision_box()` and `world_geometry.boxes.push_back()`. Violates simplicity and composability.
+**Solution:** Remove `collision_world` from `game_world`. Make `scene` single source of truth. Physics receives reference to `scene` collision shapes.
+**Complexity:** 5 points (architectural change affecting multiple systems)
+**Why Medium:** Works correctly now, purely architectural improvement. Requires careful refactoring of physics dependencies.
+**Tags:** #architecture #simplification
 
-### Game World Direct Animation Update
-**Principle Violated:** Composable Functions (leaky abstraction)
-**File:** `src/app/game_world.cpp:58-60`
-**Current:** `game_world::update()` directly calls `character.animation.update_landing_spring()` and manages `just_landed` flag
-**Problem:** Game world reaches into character's animation subsystem
-**Solution:** Move to `controller::update()` or create `controller::update_animation()` wrapper
-**Complexity:** 2 points
-**Why Medium:** Works but violates encapsulation - controller should manage its own subsystems
-**Tags:** #architecture #encapsulation #batch-candidate
-
-**NOTE:** These two items could be batched - both involve game_world reaching into controller subsystems. Consider single "Encapsulate Controller Subsystems" improvement.
+### Redundant Camera Distance State
+**Principle Violated:** Radical Simplicity
+**File:** `src/camera/camera.h:70-75`
+**Current:** Separate variables for ORBIT mode (`distance`, `min_distance`, `max_distance`) and FOLLOW mode (`follow_distance`, `min_follow_distance`, `max_follow_distance`)
+**Problem:** Duplicates state. Mode switch and zoom logic must handle both sets. Unnecessary complexity.
+**Solution:** Unify to single `distance` variable with one set of min/max limits. Mode only affects how `center` is updated, not distance management.
+**Complexity:** 3 points (refactor camera state and zoom logic)
+**Why Medium:** Camera working correctly, simplification not urgent.
+**Tags:** #simplification
 
 ---
 
@@ -96,13 +113,6 @@ Only track violations that:
 
 ## Batch Opportunities
 
-### Encapsulate Controller Subsystems (2 items)
-**Combines:** Game World Direct Orientation Update + Game World Direct Animation Update
-**Rationale:** Both are game_world reaching into controller subsystems
-**Solution:** Create `controller::update_reactive_systems(bool just_landed, float vertical_velocity, float dt)` to encapsulate orientation and animation updates
-**Complexity:** 3 points (combined)
-**Tags:** #batch #architecture
-
 ### Post-Simplification Cleanup (1 item)
 **Item:** Unused GLM Headers in Animation System
 **Rationale:** Leftover includes from deleted acceleration tilt code
@@ -112,7 +122,34 @@ Only track violations that:
 
 ---
 
-## Recently Removed (Learn From)
+## Deferred Violations (Foundation Not Ready)
+
+### Per-Draw Buffer Creation in Renderer
+**Principle Violated:** Radical Simplicity (performance is simplicity)
+**File:** `src/rendering/renderer.cpp:78`
+**Current:** Creates and destroys vertex/index buffers every draw call with `sg_make_buffer()` and `sg_destroy_buffer()`
+**Problem:** Critical performance issue. `sg_make_buffer` is heavyweight resource creation, not per-draw operation. Severely degrades with object count.
+**Solution:** Implement batching renderer with single dynamic vertex/index buffer per frame. Standard technique.
+**Complexity:** 8 points (renderer redesign)
+**Why Deferred:** Requires complete renderer architecture change. Out of current scope. Performance acceptable for current object counts.
+**Tags:** #performance #architecture #deferred
+
+---
+
+## Recently Completed (Learn From)
+
+**2025-10-16 Gemini-Assisted Deep Review:**
+- Method: Gemini CLI analyzed entire src/ directory against Six Lenses
+- Found: 7 violations (1 deferred, 3 accepted, 3 rejected as debug-only)
+- Lesson: Gemini excellent for bulk analysis. Claude essential for gate filtering and priority assessment.
+- Pattern: Mathematical violations (framerate dependency) easy to miss in manual review
+
+**2025-10-16 Encapsulate Controller Subsystems (3 points):**
+- Pattern: Leaky abstraction / responsibility diffusion
+- Fixed: game_world reaching into controller internals (orientation, animation, flags)
+- Solution: Created `controller::update_reactive_systems(float dt)`
+- Result: 83% coupling reduction (6 internals → 1 interface)
+- Lesson: Reactive systems should be owned by the entity they react to, not orchestrated externally
 
 **2025-10-16 Radical Simplification removed:**
 - Acceleration tilt system (80 lines, coordinate confusion, false validation)
@@ -162,18 +199,21 @@ Adding is last resort.
 
 ## Current Status
 
-**Foundation Certainty:** 90% (Post-Radical Simplification)
-**Critical Violations:** 0
-**High Priority:** 1 (unused includes from incomplete cleanup)
-**Medium Priority:** 2 (encapsulation leaks in game_world)
+**Foundation Certainty:** 92% (Post-Encapsulation - 2025-10-16)
+**Critical Violations:** 0 (1 deferred - renderer needs redesign)
+**High Priority:** 2 (mathematical + consistency violations)
+**Medium Priority:** 2 (architectural simplifications)
 **Low Priority:** 1 (documentation only)
 
-**Assessment:** Codebase is clean. Simplification was effective.
+**Assessment:** Gemini deep review found real but subtle violations. Mathematical correctness (framerate-independent smoothing) should be addressed soon. Special-case ground plane breaks consistency principle.
 
-**Next Actions:**
-1. Batch cleanup: Remove unused includes (1 point)
-2. Consider: Encapsulate controller subsystems if game_world complexity increases (3 points)
-3. Document: Add comments to math constants when time permits (1 point)
+**Next Actions (Priority Order):**
+1. Fix framerate-dependent yaw smoothing (2 points) - Mathematical correctness
+2. Remove special-case ground plane (3 points) - Consistency + Simplification
+3. Consider: Unify camera distance state (3 points) - Simplification
+4. Consider: Deduplicate world geometry (5 points) - Architectural (complex)
+5. Batch cleanup: Remove unused includes (1 point)
+6. Document: Add comments to math constants when time permits (1 point)
 
 **No blockers to new feature development.** Foundation is solid.
 

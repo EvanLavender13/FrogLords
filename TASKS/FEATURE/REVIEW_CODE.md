@@ -12,6 +12,8 @@ A review is not approval—it's philosophical validation that the code deserves 
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Prerequisites
 
 - All plan stages executed and marked complete

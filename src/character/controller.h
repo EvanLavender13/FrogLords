@@ -69,5 +69,6 @@ struct controller {
 
     void apply_input(const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
+    void update_reactive_systems(float dt);
     glm::mat4 get_world_transform() const;
 };

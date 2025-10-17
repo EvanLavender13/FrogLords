@@ -12,6 +12,8 @@ A plan is not permission to refactor—it's proof that simplification is possibl
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## Phase 1: Violation Analysis
 
 ### Identify the Principle Violated

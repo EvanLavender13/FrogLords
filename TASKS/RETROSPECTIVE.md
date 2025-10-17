@@ -12,6 +12,8 @@ Every retrospective asks: **What did the principles teach us?**
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## The Six Examinations
 
 ### 1. Radical Simplicity

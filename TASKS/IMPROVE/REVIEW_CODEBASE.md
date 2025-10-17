@@ -12,6 +12,8 @@ Every line of code must trace back to a principle. Every system must justify its
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## The Six Lenses of Review
 
 ### 1. Radical Simplicity

@@ -12,6 +12,8 @@ The best feature is the simplest system with the richest possibilities.
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## The Six Questions
 
 Before selecting any feature, ask:

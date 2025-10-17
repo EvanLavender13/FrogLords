@@ -12,6 +12,8 @@ The best improvement is deletion. The second best is simplification. Adding is l
 
 ---
 
+Read `AGENTS.md` - internalize the Six Pillars
+
 ## The Six Questions
 
 Before selecting any improvement, ask:
