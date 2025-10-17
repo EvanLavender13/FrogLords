@@ -1,188 +1,127 @@
-# FrogLords Development Guide
+# FrogLords: Principles of Development
 
-Solo experimental project. Optimize for learning speed. No automated tests (mechanics change too fast).
+A philosophical framework for creating emergent gameplay through radical simplicity.
 
-## Quick Start
-- Clarity over cleverness; simplicity over sophistication.
-- Iterate, don’t speculate. Short plan -> build -> test -> repeat.
-- Graybox first and long. Polish only to get better test data.
-- Keep core physics/rules inviolable; layer reactivity and polish on top.
-- Prefer multi-role tools with distinct, non-overlapping purposes.
-- Avoid content restrictions that limit future level/art freedom.
+## The Six Pillars
 
-## What We’re Building
-- Elegant systems: simple rules that compound into rich play (emergence beats authored variety).
-- Multi-use tools: offensive and defensive roles; avoid single-purpose gimmicks.
-- Distinct roles: no overlap; every tool should unlock new play, not repeat old.
-- Million-repetition thinking: mechanics must hold up on the 1,000th use.
-- Matched scales: time, space, speeds, and counts should convert naturally.
-- No content restrictions: don’t add mechanics that force level/art constraints (e.g., 20 ft jump).
+### 1. Radical Simplicity
+Every element must justify its existence. Complexity is not added—it emerges from the interaction of simple parts. When faced with two solutions, choose the simpler one. When the simple solution seems insufficient, question the problem itself.
 
-## Layered Architecture
-1) Core logic (physics, rules) — inviolable
-2) Reactive systems (interpret state)
-3) Polish (visual/audio feedback)
+### 2. Fundamental Composable Functions
+Build from orthogonal primitives. Each piece does exactly one thing, does it perfectly, and combines cleanly with others. Like mathematical functions that compose into equations, game systems must compose into experiences without special cases or exceptions.
 
-Defaults
-- Use spring-damper transitions and cubic interpolation for velocity continuity.
-- Drive locomotion by distance traveled (surveyor-wheel phase).
-- Add secondary motion via softness; use IK for targeted world interaction.
-- Avoid manual animation variants, linear lerps for organic motion, and any reactive layer overriding core logic.
+### 3. Solid Mathematical Foundations
+Mathematics is truth. Physics is law. Every behavior must be mathematically correct before it can be aesthetically pleasing. A beautiful lie is still a lie, and lies compound into chaos.
 
-Dual-Reference Pattern (for smoothed variables)
-- Keep an immutable target: e.g., `run_speed`, `max_jump_height`.
-- Maintain a smoothed state derived from the target: e.g., `max_speed`, `current_jump_height`.
-- Rationale: prevent circular dependencies where the smoothed value references itself.
+### 4. Emergent Behavior
+We are not authors of experiences—we are designers of systems that generate experiences. The magic happens in the space between rules, not in the rules themselves. Design the physics, not the outcomes.
 
-## Procedural Animation (Gameplay-First)
-- Do no harm: input maps to acceleration; animation never steals control or adds latency.
-- Physics-first core: simple, predictable controller; rotate model to velocity (not input); add acceleration-tilt.
-- Synchronized locomotion: gait driven by distance; blend walk/run poses; gravity-aware bounce that flattens at speed.
-- Interpolation: cubic for velocity continuity; spring-damper for pose/state transitions; prefer rotational springs to accent impacts.
-- IK: targeted 2-bone IK for hands/feet and look-targets; build ledge shimmy/climbs from few poses + IK (avoid bespoke trees).
-- Secondary motion: per-bone softness and simple cloth/appendage physics when valuable.
-- Active ragdolls: pose/animation matching with contextual reactions (brace, curl, flail) instead of instant limp.
-- Interruptibility: decompose actions into small steps; transitions stay interruptible.
-- Polish workflow: “profile the stupidest” visual; fix locally with small systems (e.g., swap slide-on-wall for wall-run).
-- Efficiency: minimal keyframes + procedural reuse; equipment variants swap a small pose set, not an animation tree.
+### 5. Consistency
+A system that behaves predictably builds trust. A system that betrays expectations destroys it. Every input must produce the same output given the same state. No exceptions, no special cases, no "just this once."
 
-## Dependencies and Planning
-- Dependencies: if A changes, B must change. Uncertainty multiplies up the stack.
-- Work bottom-up. Stabilize the irreducible core before adding layers.
-- Maintain a dependency stack with certainty tags. Expect upper layers to churn.
-- Use a liquid design backlog for everything not being worked now (non-interlocking ideas only).
-- **Data structure validation: validate novel representations (e.g., quaternions, state formats) in isolation before integrating.**
-- **Tooling-first for complex systems: cannot debug what you cannot see (visualization tools before production features).**
-- **Black-box vs. white-box: treating a system as a black box works until you need axis-dependent operations (e.g., joint limits require understanding local coordinate frames).**
+### 6. Principled Development
+Every decision must trace back to these principles. When principles conflict, simplicity wins. When outcomes surprise, examine which principle was violated. These principles are not guidelines—they are laws.
 
-Iteration Horizon
-- Original/uncertain work: plan 1–3 complexity points ahead.
-- Derivative/certain work: plan larger chunks (3–8 points).
-- Lower test cost -> shorter horizon. Build tools to shorten loops.
-- Big leaps are allowed to escape local maxima; take them intentionally, then return to tight loops.
+## The Prime Directive
 
-Graybox and Testing
-- Graybox expensive things: levels, creatures, UI, cutscenes, SFX.
-- Don’t reject good systems because they’re ugly; graybox ≈ screenplay.
-- Self-test early; then over-the-shoulder testing. Stay silent—don’t coach.
-- Sample size: watch enough to see patterns (6–12+ per beat).
-- Mix first-time “Kleenex” testers with experienced; use metrics when helpful for small effects/edge cases.
+**Do No Harm to Gameplay**
 
-Knowledge Creation
-- Use the full deck: rumination, research, previz, brainstorming, analysis, debate, playtests, metrics, invented methods.
-- Communicate intent; empower the closest person to the work. Avoid micromanagement.
-- Capture serendipity: notice strange results and reorganize around discoveries.
+Control is sacred. The player's intent must flow unimpeded from thought to action. Every frame of latency, every moment of lost control, every unpredictable response is a betrayal of this sacred trust.
 
-## Interface and Input
-- Mapping: physical control should resemble effect (spatial, color, handedness).
-- Exclusivity: exclusive controls map to exclusive actions.
-- Control feel: design for intent synchronization (dead zones, buffering, momentum, assisted arcs).
-- Assistance: aim/jump/drive assists tuned by context and ideally unnoticed.
-- Interruptibility: never lock input behind transitions; animation follows physics/core.
-- Latency: responsiveness matters; prefer higher frame rates when loops demand precision.
+## The Nature of Systems
 
-## Decision Impacts (before you commit)
-- Consider: implementation cost, immaturity burden, critical failure risk, process burden, political/cultural effects, and decision cost.
-- Make a few low-risk knowledge moves before large commitments when uncertainty is high.
+### Systems Are Not Features
+A feature is something added. A system is something fundamental. Features multiply complexity. Systems divide it. Build systems that make features unnecessary.
 
-## Planning Docs
-- `PLANS/DEPENDENCY_STACK.md`: single source of truth for dependencies and certainty. Update after iterations and before changes.
-- `PLANS/DESIGN_BACKLOG.md`: liquid, unordered idea pool. Tag priority/certainty/prereqs. Pull only when current layer is 90%+ certain.
+### Emergence Over Authorship
+The measure of a system is not what it does, but what it allows. A good system surprises even its creator. If you can predict all outcomes, the system is too simple or too rigid.
 
-## Development Directives
-- Do: start at the bottom, stabilize, then build up; abstract repeating patterns into systems; prefer parameters over assets; maximize mechanic interactions; test until patterns repeat; capture ideas to backlog; challenge future-restricting assumptions; **validate novel math/data structures in isolation first (unit tests, standalone verification)**; **build visualization/debug tools before production features for complex systems**; analyze mathematical operations causing instability before adding smoothing (division by changing value, redundant calculations); check "what does upstream already give us correctly?" when derived state vibrates unexpectedly.
-- Don't: over-engineer for imagined futures (wait for the third use to abstract); polish before structure is proven; let reactive layers control core logic; create content restrictions casually (e.g., jump heights that break worlds); **build on uncertain foundations (if prerequisites aren't met, pause and fill gaps)**; **treat complex hierarchical systems as black boxes when implementing axis-dependent features**.
+### The Dependency Hierarchy
+Truth flows upward, uncertainty multiplies upward. A 90% reliable foundation supporting 90% reliable mechanics yields 81% reliability. Build from certainty toward uncertainty, never the reverse.
 
-## Recent Major Learnings
-**Skeletal Animation Removal (2025-10-15):** Entire skeletal system (keyframes, blending, secondary motion, joint limits) removed after discovering fundamental behavioral assumptions were incorrect. Analysis of quaternion swing-twist decomposition (see `NOTES/Math/QuaternionDecomp.md`) revealed:
-- Previous implementation worked "by accident" when treating skeleton as black box (keyframe blending)
-- Per-bone axis-dependent operations (joint limits, secondary motion constraints) exposed lack of understanding of local coordinate frames
-- Asymmetric behavior between mirrored joints indicated missing prerequisite knowledge
-- **Key principle violated:** built production features before validating mathematical primitives in isolation
-- **Key principle violated:** attempted axis-dependent operations without skeleton visualization/debugging tools
-- **Fresh start strategy:** rebuild from bottom up with proper prerequisites (debug tools → FK validation → math validation → keyframes → limits)
+## The Philosophy of Control
 
-## Communication
-Concise and direct. No preamble/postamble. Detail scales with risk/complexity.
+### Input Is Intent
+When a player provides input, they are expressing intent. That intent is sacred. To delay it, modify it, or ignore it is to break the fundamental contract between player and game.
 
-## Code and Repo
-- See `CONVENTIONS.md` for coordinate, rotation, camera, animation, and debug visualization conventions.
-- See `SCRIPTS.md` for build, quality, and git workflow scripts (all in `scripts/bash/`).
-- File organization
-```
-src/
-  app/         # Runtime/lifecycle
-  camera/      # Camera control and view matrices
-  character/   # Movement, orientation, locomotion, tuning
-  foundation/  # Procedural primitives (easing, springs, collision)
-  rendering/   # Renderers, composition, pipelines, debug draw
-  input/       # Keyboard, mouse, gamepad
-  gui/         # Interface systems, panels
-  main.cpp     # Entry point
-shaders/       # .glsl
-generated/     # Build artifacts (e.g., shader headers)
-```
-- Dependency flow: Foundation -> Character -> Rendering -> App. Avoid sideways includes at higher layers.
+### Physics Drives Animation
+Animation is the interpretation of physics, never its master. A character's visual representation follows their physical state like a shadow follows its owner—inseparable but never controlling.
 
-Naming (uniform snake_case for user code)
-```cpp
-// Types
-class camera_system { };
-struct mesh_data { };
+### Predictability Is Power
+When players understand a system perfectly, they don't feel constrained—they feel empowered. Mastery comes not from memorizing exceptions but from understanding rules.
 
-// Enums
-enum class camera_mode { FOLLOW, ORBIT, FREE };
-enum class pose_type { T_POSE, STEP_LEFT, STEP_RIGHT };
+## The Calculus of Decisions
 
-// Functions/methods
-void update_state();
-mat4 get_view_matrix();
+### Addition by Subtraction
+Before adding anything, ask what can be removed. The best solution to a problem might be removing the thing that created the problem. Elegance is achieved not when there is nothing left to add, but when there is nothing left to remove.
 
-// Variables
-float delta_time;
-int vertex_count;
+### Validation Before Integration
+An untested component is a time bomb. A mathematically unverified system is a foundation of sand. Validate in isolation, integrate with confidence, or suffer the compound interest of technical debt.
 
-// Constants
-const int MAX_ENTITIES = 1000;
-constexpr float GRAVITY = -9.8f;
+### Orthogonality as Virtue
+When systems overlap, they create dark corners where bugs hide. When systems are orthogonal, they create clear spaces where creativity thrives. Seek orthogonality in all things.
 
-// Namespaces
-namespace rendering { }
-```
+## The Patterns of Truth
 
-Types
-```cpp
-struct edge { int v0, v1; }; // POD data
-class wireframe_renderer {
-public:
-    void init();
-    void draw(const mesh& m);
-private:
-    pipeline pipe;
-};
-```
+### The Dual Reference
+Never let a smoothed value reference itself. Keep the target separate from the current state. The intent must remain pure while the expression can be filtered. This pattern appears everywhere once you see it.
 
-Documentation
-- Brief comments for non-obvious public API; skip the obvious.
-```cpp
-/// Orbit camera around center point
-/// delta_x: horizontal rotation (screen space)
-/// delta_y: vertical rotation (screen space)
-void orbit(float delta_x, float delta_y);
+### The Spring-Damper
+Nature uses springs because they provide continuity through both position and velocity. When something must change smoothly, the spring-damper is not just a solution—it is *the* solution proven by physics itself.
 
-float radius = width * 0.5f;  // Half-extent
-```
+### Pure Functions Over Accumulated State
+State that accumulates drifts toward chaos. State that is calculated remains true. When possible, derive state from inputs rather than maintaining it through time.
 
-Formatting
-- 4-space indent; braces on same line; soft 100-char limit; consistent operator spacing.
+## The Warning Signs
 
-## References (deep dives)
-- Development scripts: `SCRIPTS.md`.
-- Code conventions: `CONVENTIONS.md`.
-- Designing Games notes: `NOTES/DesigningGames/DG_Dependencies.md`, `NOTES/DesigningGames/DG_Planning.md`, `NOTES/DesigningGames/DG_Interface.md`, `NOTES/DesigningGames/DG_Skill.md`, `NOTES/DesigningGames/DG_Elegance.md`.
-- Procedural animation philosophy: `NOTES/GDC/GDC_DesignPhilosophy.md`, `NOTES/GDC/GDC_TechnicalWhitepaper.md`.
+When these appear, principles have been violated:
 
----
+**Lost Responsiveness**: Animation has seized control from physics.
 
-Build, play, learn, adapt. Elegance from simple, interactive systems; discovery over prediction.
+**Behavioral Drift**: Accumulated state has departed from truth.
 
+**Combinatorial Explosion**: Systems are not orthogonal.
+
+**Debugging Blindness**: Complex behavior lacks visualization.
+
+**Special Cases**: Consistency has been sacrificed for convenience.
+
+**Surprising Instability**: Mathematical foundations were not validated.
+
+## The Process of Creation
+
+### Bottom-Up Construction
+Begin with the irreducible core. Make it perfect. Only then add the next layer. A tower built on sand will fall regardless of how carefully the upper floors are constructed.
+
+### The Horizon of Certainty
+Never plan beyond what you can see clearly. In unfamiliar territory, take small steps and look around. In familiar territory, stride confidently. But never mistake the unfamiliar for the familiar.
+
+### Test Until Patterns Emerge
+A single test reveals nothing. A hundred tests reveal patterns. Test not to validate what you believe but to discover what you don't know.
+
+## The Measure of Success
+
+Success is not measured in features delivered or graphics rendered. Success is measured in:
+
+- **Trust**: Does the player trust the system to behave consistently?
+- **Mastery**: Can the player develop true expertise?
+- **Emergence**: Does the system surprise even its creator?
+- **Elegance**: Could anything be removed without losing the essence?
+- **Joy**: Does interacting with the system bring satisfaction?
+
+## The Final Truth
+
+We are not building software. We are building **engines of experience**—machines that take human intent as input and produce emotion as output. Every line of code, every design decision, every mathematical formula is just a gear in this machine.
+
+The machine must be built from truth (mathematics), it must be simple (reducible to primitives), it must be consistent (predictable in behavior), and it must be honest (never betraying player intent).
+
+When faced with any decision, ask:
+1. Does this serve the player's direct control?
+2. Can this emerge from simpler rules?
+3. Is this mathematically correct?
+4. Will this behave consistently?
+5. Can anything be removed?
+
+If the answer to any is "no," the design is not yet complete.
+
+**This is the way.**

@@ -1,105 +1,384 @@
-# Perform Code Review
+# Review Code
 
-### 1. Review Development Principles
-
-Read `AGENTS.md` for development principles and coding standards:
-- snake_case naming conventions
-- 4-space indent, braces on same line
-- Dependency flow (Foundation → Character → Rendering → App)
-- Gameplay-first principles (input→acceleration, interruptible)
-
-### 2. Gather Context
-
-Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
-
-1.  **Read Planning Documents:** Read `PLANS/<feature_name>_FEATURE.md` and `PLANS/<feature_name>_PLAN.md`
-2.  **Verify Implementation Completeness:** Check if all checklist items in `PLANS/<feature_name>_PLAN.md` are marked as complete (`[x]`). If not, report this and stop; a review cannot be performed on incomplete work.
-3.  **Read Implemented Code:** Read the contents of all source files (`.h` and `.cpp`) that were modified as part of the implementation plan.
-
-### 3. Perform Code Review
-
-Cross-reference the implemented code against the principles from `AGENTS.md` and the goals from the iteration plan.
-
--   **Code Standards:** Does the code adhere to naming conventions (snake_case), formatting, and file organization?
--   **Gameplay-First Principles:** Does the implementation respect the "do no harm" rule? (input maps to acceleration, interruptible transitions, physics-first, etc.)
--   **Simplicity & Clarity:** Is the code clear and simple? Are there overly clever or complex solutions where simpler ones would suffice?
--   **Systemic Design:** Does the implementation favor reusable systems over one-off solutions? Does it align with the goal of emergence?
--   **Dependency Flow:** Does the code respect the dependency flow outlined in `AGENTS.md`? (e.g., no sideways includes at high layers).
-
-### 4. Save and Propose
-
-Generate a new markdown document summarizing the findings.
-
--   **Filename:** `PLANS/<feature_name>_CODE_REVIEW.md`
--   **Content:** Use the template below
--   Propose the document to the user for review
-
-### 5. Approve (If Review Passes)
-
-If the review is successful and the implementation is complete:
-
-1.  Propose adding an `## Approval` section to `PLANS/<feature_name>_PLAN.md`
-
-The approval section should contain reviewer signature and timestamp.
-
-### Tone & Constraints
-
--   Concise and direct; no preamble or postamble
--   Detail scales with risk and complexity
--   Cite specific principles and code locations
--   Focus on actionable fixes over opinions
+**Validate that implementation upholds principles and enables emergence.**
 
 ---
 
-### Code Review Template
+## The Purpose
+
+Verify the executed code embodies the Six Pillars, not just that it works. Code that functions but violates principles is technical debt incarnate.
+
+A review is not approval—it's philosophical validation that the code deserves to exist.
+
+---
+
+## Prerequisites
+
+- All plan stages executed and marked complete
+- Mathematical validation performed
+- Debug visualization functional
+- Emergence observed (or lack thereof noted)
+
+---
+
+## Phase 1: Principle Validation
+
+### The Six Lenses of Review
+
+#### 1. Radical Simplicity
+**Is this the simplest possible implementation?**
+
+Review for:
+- Unnecessary abstractions
+- Over-engineered solutions
+- Code that could be deleted
+- Features that could emerge instead
+
+Red flags:
+- "Manager" classes
+- Abstract base classes
+- Template metaprogramming
+- "Just in case" code
+
+#### 2. Fundamental Composable Functions
+**Does each piece do exactly one thing perfectly?**
+
+Review for:
+- Mixed responsibilities
+- Hidden dependencies
+- Special cases for composition
+- Orthogonality violations
+
+Red flags:
+- Functions with "and" in the name
+- Circular dependencies
+- Friend classes
+- Global state
+
+#### 3. Solid Mathematical Foundations
+**Is the math correct and validated?**
+
+Review for:
+- Unvalidated formulas
+- Magic numbers without derivation
+- Coordinate system confusion
+- Numerical instabilities
+
+Red flags:
+- "Seems to work" comments
+- Undocumented constants
+- No debug visualization
+- Missing unit verification
+
+#### 4. Emergent Behavior
+**Does it enable more than intended?**
+
+Review for:
+- Prescribed behaviors
+- Hard-coded outcomes
+- Artificial limitations
+- Missed emergence opportunities
+
+Red flags:
+- Switch statements for behavior
+- Explicit state machines
+- "Only works for" comments
+- Feature-specific code
+
+#### 5. Consistency
+**Is behavior predictable and control preserved?**
+
+Review for:
+- Special cases
+- Conditional behavior
+- Input delays or buffering
+- Animation overriding physics
+
+Red flags:
+- "Except when" logic
+- Mode-dependent responses
+- Frame-dependent behavior
+- Lost player control
+
+#### 6. Principled Development
+**Can every decision be justified?**
+
+Review for:
+- Unjustified complexity
+- Unexplained choices
+- Missing documentation
+- Unclear intent
+
+Red flags:
+- "Don't know why this works"
+- Copy-pasted code
+- No comments on complex logic
+- Inconsistent patterns
+
+---
+
+## Phase 2: Technical Validation
+
+### Code Quality Standards
+
+Beyond principles, verify basics:
+
+#### Naming and Style
+- [ ] snake_case throughout
+- [ ] 4-space indentation
+- [ ] Same-line braces
+- [ ] Meaningful names
+
+#### Architecture
+- [ ] Foundation → Character → Rendering → App flow
+- [ ] No sideways dependencies
+- [ ] No circular includes
+- [ ] Proper file placement
+
+#### Cleanliness
+- [ ] No dead code
+- [ ] No commented experiments
+- [ ] No debug prints left in
+- [ ] No TODO comments (fix or remove)
+
+---
+
+## Phase 3: Emergence Assessment
+
+### What Emerged?
+
+Document unexpected behaviors discovered during implementation:
+
+```markdown
+## Emergent Discoveries
+- [Behavior that surprised us]
+- [System interaction we didn't plan]
+- [Player possibility we didn't foresee]
+```
+
+### What Was Prescribed?
+
+Identify where we authored instead of enabled:
+
+```markdown
+## Prescribed Behaviors (Issues)
+- [Specific outcome we forced]
+- [Limitation we imposed]
+- [Possibility we prevented]
+```
+
+**Prescribed behaviors must be justified or removed.**
+
+---
+
+## Phase 4: Mathematical Verification
+
+### Formula Review
+For each mathematical implementation:
+- [ ] Formula documented with derivation
+- [ ] Units verified for consistency
+- [ ] Numerical stability analyzed
+- [ ] Edge cases tested
+- [ ] Debug visualization shows correctness
+
+### Coordinate System Verification
+- [ ] Consistent use of Y-up, Z-forward
+- [ ] No confusion between spaces
+- [ ] Transformations validated
+- [ ] Vectors normalized where needed
+
+---
+
+## Phase 5: Simplification Opportunities
+
+Before approving, identify what could be simpler:
+
+### Could Be Removed
+- Unnecessary validation
+- Redundant state
+- Unused parameters
+- Dead code paths
+
+### Could Be Simplified
+- Complex conditions
+- Nested structures
+- Multi-step processes
+- Special cases
+
+### Could Emerge
+- Hard-coded behaviors
+- Explicit configurations
+- Prescribed limits
+- Feature-specific code
+
+**If significant simplification is possible, request revision.**
+
+---
+
+## Phase 6: Document Review
+
+Create `PLANS/<feature>_CODE_REVIEW.md`:
 
 ```markdown
 # Code Review: [Feature Name]
 
 **Date:** [YYYY-MM-DD]
-**Status:** APPROVED | FIX_ISSUES | ROLLBACK
+**Decision:** APPROVED | REVISE | ROLLBACK
 
-### Summary
+## Principle Validation
+1. Radical Simplicity: [PASS/FAIL] - [Details]
+2. Composable Functions: [PASS/FAIL] - [Details]
+3. Mathematical Foundations: [PASS/FAIL] - [Details]
+4. Emergent Behavior: [PASS/FAIL] - [Details]
+5. Consistency: [PASS/FAIL] - [Details]
+6. Principled Development: [PASS/FAIL] - [Details]
 
-[One paragraph: Is implementation approved? Major issues? Recommendation?]
+## Mathematical Verification
+**Formulas:** [Validated/Issues]
+**Coordinates:** [Consistent/Confused]
+**Stability:** [Verified/Uncertain]
+**Debug Vis:** [Adequate/Missing]
 
-### Violations (Must Fix)
+## Emergent Discoveries
+[Unexpected behaviors that emerged]
 
-- **[Category]:** [Issue]
-  - **File:** [src/path/to/file.cpp:line]
-  - **Principle:** [Which principle violated]
-  - **Fix:** [How to address]
+## Prescribed Behaviors
+[Outcomes we forced instead of enabled]
 
-**If none:** No violations found.
+## Simplification Opportunities
+[What could be removed or simplified]
 
-### Suggestions (Consider)
+## Technical Quality
+- Naming: [✓/✗] snake_case throughout
+- Architecture: [✓/✗] Proper dependencies
+- Cleanliness: [✓/✗] No dead code
+- Documentation: [✓/✗] Decisions explained
 
-- **[Description]:** [Why helpful]
-  - **File:** [src/path/to/file.cpp:line]
-  - **Impact:** [How much better]
+## Critical Issues
+[Violations that must be fixed]
 
-**If none:** Implementation looks solid.
+## Recommendation
 
-### Code Quality Checks
+### If APPROVED:
+The implementation upholds all principles.
+Proceed to FINALIZE.
 
-- [ ] Naming: snake_case
-- [ ] Formatting: 4-space indent, braces on same line
-- [ ] Dependency flow respected
-- [ ] Gameplay-first principles (input→acceleration, interruptible, physics-first)
-- [ ] Simplicity over sophistication
+### If REVISE:
+Fix [specific violations] before approval.
+[Detailed fixes required]
 
-### Actionable Items
+### If ROLLBACK:
+Fundamental principle violations require fresh approach.
+[Why implementation failed]
 
-- [ ] [Specific action needed]
+## The Test
+Can we say: "This code enables [behavior] through [simple rules],
+validated by [mathematics], maintaining [all six principles]"?
 
-**If none:** Ready to proceed with finalization.
-
-### Recommendation
-
-**Reasoning:** [Brief justification for status]
-
-**Next Steps:**
-- If APPROVED: Proceed to FINALIZE
-- If FIX_ISSUES: Address items, re-review
-- If ROLLBACK: Defer feature, update backlog
+Answer: [YES/NO] - [Explanation]
 ```
+
+---
+
+## Decision Criteria
+
+### APPROVE only if:
+- All six principles validated
+- Mathematics verified correct
+- Debug visualization adequate
+- Enables more than intended
+- No simpler implementation exists
+- Every line justified
+
+### REVISE if:
+- Minor principle violations
+- Missing documentation
+- Simplification opportunities
+- Mathematical uncertainty
+- Debug visibility gaps
+
+### ROLLBACK if:
+- Major principle violations
+- Mathematical incorrectness
+- Prescribes instead of enables
+- Adds unjustified complexity
+- Breaks player control
+- Cannot be debugged
+
+---
+
+## Review Questions
+
+For every file changed:
+
+1. **Could this be simpler?**
+2. **Is the math validated?**
+3. **Can we see what it does?**
+4. **Does it enable emergence?**
+5. **Is control preserved?**
+6. **Can we justify every line?**
+
+Count the "yes" answers. Need 6 to approve.
+
+---
+
+## Anti-Patterns to Reject
+
+### The Clever Solution
+Code that's "elegant" but not simple. Reject complexity disguised as sophistication.
+
+### The Framework
+Abstraction for hypothetical reuse. Reject generalization without need.
+
+### The Black Box
+Code without debug visibility. Reject what cannot be seen.
+
+### The Prescriptor
+Code that dictates outcomes. Reject authorship of behavior.
+
+### The Betrayer
+Code that delays or modifies input. Reject violations of player trust.
+
+---
+
+## Special Considerations
+
+### For Physics Systems
+- Verify forces are visible
+- Confirm conservation laws
+- Check numerical stability
+- Validate coordinate systems
+
+### For Control Systems
+- Confirm immediate response
+- Verify no input buffering
+- Check physics drives animation
+- Validate player intent preserved
+
+### For Mathematical Systems
+- Review formula derivations
+- Check unit consistency
+- Verify edge case handling
+- Confirm debug visualization
+
+---
+
+## The Commitment
+
+Approve code that:
+- Embodies all six principles
+- Enables unexpected emergence
+- Can be mathematically validated
+- Can be visually debugged
+- Preserves player control
+
+Never approve code that:
+- Violates principles for convenience
+- Hides complexity in abstraction
+- Cannot be validated or seen
+- Prescribes specific outcomes
+- Betrays player trust
+
+**The best review rejects code that works but violates principles. The second best demands simplification. Approval means the code deserves to exist.**
+
+**This is the way.**

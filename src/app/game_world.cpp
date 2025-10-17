@@ -51,8 +51,6 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         }
     }
 
-    glm::vec3 horizontal_velocity = math::project_to_horizontal(character.velocity);
-
     glm::vec3 intended_velocity = character.input_direction * character.max_speed;
 
     character.orientation.update(intended_velocity, dt);
@@ -60,32 +58,10 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     character.animation.update_landing_spring(character.just_landed,
                                               character.vertical_velocity_on_land, dt);
     character.just_landed = false;
-    character.animation.update_acceleration_tilt(character.last_acceleration, character.velocity,
-                                                 character.run_speed,
-                                                 character.orientation.get_yaw(), dt);
-
-    character.locomotion.update(horizontal_velocity, dt);
-
-    // Update contact/air weight (smooth transition for phase continuity)
-    character.animation.update_contact_weight(character.is_grounded, dt);
-
-    // Calculate wheel spin using dynamic radius from blended stride
-    float wheel_radius = character.locomotion.get_blended_stride() / glm::two_pi<float>();
-    float angular_speed = 0.0f;
-    if (wheel_radius > 0.0001f) {
-        angular_speed = character.locomotion.current_speed / wheel_radius;
-    }
-    wheel_spin_angle += angular_speed * dt;
-    if (wheel_spin_angle > glm::two_pi<float>()) {
-        wheel_spin_angle = std::fmod(wheel_spin_angle, glm::two_pi<float>());
-    }
 
     if (cam.get_mode() == camera_mode::FOLLOW) {
         cam.follow_update(character.position, dt);
     }
-
-    float walk_factor = 1.0f - character.locomotion.get_run_blend();
-    smoothed_walk_factor += (walk_factor - smoothed_walk_factor) * walk_factor_smoothing * dt;
 }
 
 void setup_test_level(game_world& world) {

@@ -1,321 +1,306 @@
-﻿# Design Backlog
+# Design Backlog
 
-**Purpose:** Unordered, liquid reservoir of ideas not being worked on soon. Most ideas go here until the foundation solidifies enough to support them.
+**A liquid pool of unordered ideas. Pull only when foundation is certain.**
 
-**Status:** Living document (updated continuously)
+## The Rule
 
-**Historical Snapshots:** Completed items archived in [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md). Implementation details in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`.
-
----
-
-## Item Fields (recommended)
-
-Include lightweight metadata to improve selection and planning:
-- **Complexity (points):** 1–2 simple, 3–5 medium, 6–8 complex. If >8, consider splitting.
-- **Intended validation loop:** How you’ll verify success quickly (e.g., debug panel toggle, smoke test path).
-
-## Triggers to Update
-- After playtests or reviews surface new ideas, constraints, or patterns worth capturing.
-- When an item is pulled into active work (move/link it to the dependency stack; mark prerequisites and certainty).
-- When an item is deferred or deprecated (tag status, rationale, and any blockers discovered).
-- After changes to the dependency stack that affect prerequisites or certainty tags.
-- When a small “knowledge move” creates a new avenue (capture while it’s fresh; keep items non-interlocking).
-- After building tools that shorten test loops (reassess priorities/certainty for related items).
-- When items start to interlock or grow in scope (split into independent, pullable slices).
-
-## Animation & Feel
-
-### Skeletal Animation System (High Priority - Ground-Up Rebuild)
-
-**Context:** Previous skeletal system removed (2025-10-15) due to fundamentally flawed behavioral assumptions discovered during quaternion math validation. See `NOTES/Math/QuaternionDecomp.md` for detailed analysis.
-
-**Critical Learnings from Failed Implementation:**
-- Quaternion decomposition requires **stable local coordinate frames** (must validate transform hierarchy first)
-- Per-bone axis-dependent operations expose lack of skeleton tooling/visualization
-- Cannot treat skeleton as black box when implementing joint limits or secondary motion
-- Swing-twist decomposition is mathematically sound but requires prerequisite understanding
-- Must validate novel data representations (quaternions, swing-twist) in **isolation** before integration
-
-**Fresh Start Approach (Bottom-Up):**
-
-1. **Skeleton Visualization & Debugging Tools** (Complexity: 5-6 points)
-   - *Prerequisite:* None - foundation layer
-   - *Certainty:* High (~70%) - established debug draw patterns exist
-   - *Scope:* Debug draw for bones (lines), joints (spheres), local axes (RGB gizmos), bind pose vs. animated pose comparison
-   - *Rationale:* Cannot debug what you cannot see; essential for validating all future skeletal work
-   - *Validation:* Visual confirmation of T-pose, hierarchy traversal, local vs. world transforms
-
-2. **Minimal Skeletal Hierarchy & Forward Kinematics** (Complexity: 4-5 points)
-   - *Prerequisite:* Skeleton debugging tools ✅
-   - *Certainty:* Medium-High (~65%)
-   - *Scope:* Bone struct (parent index, local transform), skeleton struct (bone array), FK update loop (parent-to-child concatenation)
-   - *Rationale:* Irreducible core; master transform hierarchy before adding complexity
-   - *Validation:* Manual joint rotations produce expected world-space results (verified via debug draw)
-
-3. **Quaternion Math Validation Suite** (Complexity: 3-4 points)
-   - *Prerequisite:* None - parallel to skeleton work
-   - *Certainty:* High (~75%) - isolated math testing
-   - *Scope:* Standalone test file validating: quaternion construction from axis-angle, slerp, conjugate, swing-twist decomposition (with edge cases)
-   - *Rationale:* Validate math in isolation before using in production (principle from QuaternionDecomp.md)
-   - *Validation:* Unit tests with known inputs/outputs; measure angles, extract axes, convert to Euler
-
-4. **Static Keyframe Poses** (Complexity: 3-4 points)
-   - *Prerequisite:* FK working ✅, quaternion validation ✅
-   - *Certainty:* Medium (~60%)
-   - *Scope:* Hardcoded T-pose, walk cycle keyframes (quaternion rotations per joint), debug UI toggle
-   - *Rationale:* Simplest use of quaternions; no interpolation complexity yet
-   - *Validation:* Switch between poses via UI, verify visual correctness
-
-5. **Keyframe Interpolation (Slerp)** (Complexity: 4-5 points)
-   - *Prerequisite:* Static keyframes working ✅
-   - *Certainty:* Medium (~55%)
-   - *Scope:* Time-based interpolation between two keyframes using slerp; hemisphere check (dot product sign)
-   - *Rationale:* Standard animation technique; validates quaternion pipeline
-   - *Validation:* Smooth transitions, no flipping artifacts
-
-6. **Joint Limits (Swing-Twist Decomposition)** (Complexity: 6-8 points)
-   - *Prerequisite:* Slerp working ✅, local axes fully understood ✅
-   - *Certainty:* Low-Medium (~40%)
-   - *Scope:* Swing-twist decomposition per joint, clamp swing cone angle, clamp twist range, recombine
-   - *Rationale:* Enables anatomical constraints; deferred from previous attempt due to missing prerequisites
-   - *Validation:* Extreme rotations clamp to limits; left/right joints behave symmetrically (critical test)
-
-**Deferred Until Prerequisites Met:**
-- Secondary motion (spring offsets on top of keyframes)
-- IK (requires robust FK and joint limits)
-- Pose blending (multiple animation layers)
-- Procedural gait generation (replace hardcoded poses)
+Ideas remain here until:
+1. The foundation below them is 90%+ certain
+2. They serve a clear gameplay need (not speculation)
+3. They can be validated in isolation
+4. They embody radical simplicity
 
 ---
 
-## Foundation & Testing
+## Immediate Priority (From Audit)
 
-### Mathematical Primitive Testing Pattern (High Priority)
+### 1. Debug Visualization System
+**Status:** CRITICAL - Root cause of coordinate confusion crisis
 
-**Context:** Quaternion validation suite (24/24 tests passing) proved value of isolated math testing. Skeletal animation removal revealed that visual validation misses subtle mathematical errors—code can "look okay" but be fundamentally wrong.
+**Required:**
+- RGB axes for orientation (XYZ = RGB)
+- Velocity vector arrows (green)
+- Acceleration vector arrows (yellow)
+- Ground normal indicator (blue)
+- Collision sphere wireframe (always visible)
+- Input direction indicator (white)
 
-**Problem:** Pure mathematical functions with objective correctness are hard to validate visually. Refactoring stable math is risky without regression detection.
+**Complexity:** 3-4 points
+**Certainty:** 95% (proven patterns exist)
+**Validation:** Can see and understand all physics state visually
+**Why First:** Cannot debug what cannot be seen. This caused the crisis.
 
-**Hypothesis:** Extending the quaternion validation pattern to other pure math prevents "works by accident" scenarios and enables confident refactoring.
+### 2. Fix Accumulated State Pattern
+**Violation Found:** Position/velocity accumulate errors
 
-**Scope Boundaries (Critical):**
-- ✅ Pure math with objectively correct outputs (springs, easing, collision, orientation math, acceleration tilt)
-- ✅ Foundation layer primitives (stable code, low churn)
-- ❌ Game feel/mechanics requiring playtesting
-- ❌ Reactive systems where "correct" is subjective
+**Options:**
+- Document and accept the accumulation (simplest)
+- Calculate velocity from input each frame (harder)
+- Use Verlet integration (position-based)
 
-**Target Modules for Validation:**
+**Complexity:** 2-3 points
+**Certainty:** 80% (multiple valid solutions)
+**Validation:** Long-running stability test
 
-1. **Acceleration Tilt Math** (Complexity: 2-3 points) — *PROTOTYPE CANDIDATE*
-   - *Prerequisite:* None - foundation layer
-   - *Certainty:* High (~80%) - pattern proven with quaternions
-   - *Scope:* Test acceleration vector → tilt quaternion conversion, edge cases (zero acceleration, vertical acceleration), numerical stability
-   - *Rationale:* Pure math function; bugs would be subtle angle errors hard to spot visually
-   - *Validation:* Known inputs produce expected tilt angles; extreme values handled gracefully
+### 3. Document Magic Numbers
+**Violation Found:** Unexplained constants throughout
 
-2. **Spring-Damper System** (Complexity: 2-3 points)
-   - *Scope:* Validate critically damped, underdamped, overdamped behaviors; oscillation frequency; settling time
-   - *Rationale:* Core primitive used everywhere; numerical stability critical
+**Required:**
+- Document BUMPER_RADIUS (why 0.5?)
+- Document epsilon values (why 0.0001?)
+- Document friction formula (why gravity multiplier?)
+- Either justify or derive from first principles
 
-3. **Collision Math** (Complexity: 2-3 points)
-   - *Scope:* Sphere-AABB resolution, penetration depth calculation, edge cases (corner contacts, zero overlap)
-   - *Rationale:* Physics foundation; errors cascade to all movement
-
-4. **Orientation Math** (Complexity: 2 points)
-   - *Scope:* Velocity-to-facing conversion, smooth rotation interpolation, degenerate cases (zero velocity)
-   - *Rationale:* Already stable, but no regression protection
-
-**Pattern Guidelines:**
-- Not violating "no automated tests" principle—this is the **exception** for mathematical primitives
-- Tests live in isolation (e.g., `src/foundation/tests/` or similar)
-- Run manually when refactoring math (not CI/CD overhead)
-- Focus on edge cases and numerical stability, not exhaustive coverage
-
-**Origin:** Identified 2025-10-16 after quaternion validation success and skeletal animation learnings
+**Complexity:** 1 point
+**Certainty:** 100% (documentation task)
+**Validation:** Can explain every constant
 
 ---
 
-### Input & Control Feel
+## Foundation Repairs (Next Priority)
 
-- **Mouse delta tracking:** Provide functions to get mouse movement delta between frames.
-  - *Certainty:* High
-  - *Rationale:* Useful for implementing camera controls and other features that rely on mouse movement.
-- **Gamepad support:** Add support for gamepads.
-  - *Certainty:* High
-  - *Rationale:* Allows for more flexible input options for players.
+### Verify Yaw Sign Convention
+**Suspicion:** Right vector has negative X component
 
+**Required:**
+- Mathematical verification of yaw_to_right function
+- Visual test with debug axes
+- Unit test for rotation consistency
 
+**Complexity:** 2 points
+**Certainty:** 90% (math verification)
+**Validation:** Visual and mathematical agreement
 
-### Advanced Animation (Low Priority)
-- **Wall slide/run detection:** "Solving for stupid" - when face-first into wall, transition to wall run
-- **Active ragdoll:** Spring-driven pose matching for dynamic reactions
-- **Contextual poses:** Different arm positions for climbing, hanging, bracing
-- **Flip/roll animations:** Manufactured momentum with anticipation curves
-- **IK for interactions:** Hands reach for ledges, feet step on obstacles
+### Fix Dual-Reference Violation
+**Violation Found:** Orientation smoothing references itself
 
-## Movement & Physics
+**Required:**
+- Ensure target_yaw never depends on current_yaw
+- Implement proper dual-reference pattern
+- Test for stability
 
-### Character Abilities (Medium Priority)
-- **Dash/dodge:** Short burst of velocity in input direction
-- **Wall jump:** Jump off walls when grounded against them
-- **Ledge grab:** Detect ledge collision, IK hands to edge
-- **Climbing:** Vertical movement on climbable surfaces
-- **Swimming:** Buoyancy, drag, different movement rules
-- **Crouching:** Lower collision height, slower movement
+**Complexity:** 1-2 points
+**Certainty:** 95% (pattern is known)
+**Validation:** No circular dependencies
 
-### Physics Enhancements (Low Priority)
-- **Velocity inheritance:** Jumping off moving platform adds platform velocity
-- **Slope physics:** Slide down steep slopes, gain speed
-- **Wind/current forces:** Environmental forces affecting movement
-- **Momentum preservation:** Bunny hopping, air strafing
-- **Dual-sphere experiment:** Restore bumper + weightlifter system (currently single sphere)
+### Separate Controller Concerns
+**Violation Found:** Controller does physics + animation state
 
-## Combat & Interaction
+**Consider:**
+- Move landing detection to animation system
+- Animation queries physics, not vice versa
+- Pure physics in controller
 
-### Combat Mechanics (Uncertain - Defer)
-- **Melee attacks:** Punch, kick, grapple
-- **Ranged attacks:** Throw objects, projectiles
-- **Enemy AI:** Patrol, chase, attack patterns
-- **Damage/health:** Hit points, death state
-- **Impact reactions:** Knockback, stagger, ragdoll on death
-
-### Interaction Systems (Uncertain - Defer)
-- **Object pickup:** Grab and carry physics objects
-- **Throwing:** Apply velocity to held objects
-- **Doors/buttons:** Simple triggered interactions
-- **Inventory:** Hold multiple items
-
-## World & Environment
-
-### Terrain (Low-Medium Priority)
-- **Heightmap terrain:** Procedural ground with elevation
-- **Uneven surfaces:** IK foot placement becomes necessary here
-- **Moving platforms:** Elevators, rotating platforms
-- **Destructible objects:** Break on impact
-- **Water volumes:** Swimming areas
-
-### Level Elements (Medium Priority)
-- **Ramps and stairs:** Traversal structures
-- **Obstacles:** Walls, barriers, holes
-- **Jump puzzles:** Platforms requiring precise movement
-- **Collectibles:** Items to gather (if game needs them)
-
-### World Building (Low Priority - Content Driven)
-- **Art style:** Currently graybox/wireframe (intentional for iteration)
-- **Lighting:** Basic directional light exists, could enhance
-- **Skybox:** Environment backdrop
-- **Props:** Visual detail objects (no mechanical meaning = noise)
-
-## Camera & Controls
-
-### Camera Enhancements (Low Priority)
-- **Camera collision:** Prevent clipping through walls
-- **Smart framing:** Keep character and target both visible
-- **Camera shake:** Impact feedback
-- **Follow smoothing:** Lag/lead based on velocity
-
-### Input Refinements (Low Priority)
-- **Gamepad support:** Already have sokol support, just wire it
-- **Input buffering:** Queue commands during animations
-- **Sensitivity curves:** Configurable response curves
-- **Rebindable keys:** Let player remap controls
-
-## Audio & Feedback
-
-### Audio System (Uncertain - Defer)
-- **Footstep sounds:** Distance-phased triggering (matches surveyor wheel)
-- **Impact sounds:** Landing, collision, attack
-- **Ambient audio:** Environmental loops
-- **Music system:** Dynamic music based on state
-- **3D audio:** Spatial sound positioning
-
-### Feedback (Medium Priority)
-- **Screen effects:** Chromatic aberration on impact, vignette
-- **Particle systems:** Dust on landing, trail on dash
-- **Screen shake:** Camera impulse on impacts
-- **Time effects:** Slow motion, freeze frames
-
-## UI & Menus
-
-### Debug UI (Partially Complete)
-
-- **Debug panel layout improvements:** Reduce visual clutter, hide "settled" parameters
-  - *Problem:* As features accumulate, character panel becomes dense with spring frequencies, damping ratios, and other tuned-once parameters that rarely change
-  - *Potential solutions:*
-    - Collapsible "Advanced" subsections within each header (e.g., "Landing Spring" shows position/velocity, hides stiffness/damping behind "Advanced" toggle)
-    - "Lock" icon next to settled parameters to visually indicate "don't touch unless re-tuning"
-    - Separate "Read-Only State" vs "Tunable Parameters" tabs
-    - Auto-collapse sections that haven't been modified recently
-  - *Validation:* Can tune new features without scrolling past 10+ irrelevant sliders
-  - *Complexity:* 2-3 points (ImGui layout exploration, state persistence for collapsed sections)
-  - *Certainty:* Low (~40%) - UX problem exists, but solution unclear without experimentation
-  - *Priority:* Medium - quality-of-life improvement that becomes more valuable as system count grows
-  - *Origin:* Identified 2025-10-13 during air locomotion weights planning (concern about adding another spring frequency slider)
-
-- **Debug visualization:** Draw acceleration vectors, tilt angles, velocity
-  - *Status:* Tilt visualization complete via character body box
-  - *Potential additions:* Acceleration vector arrows, velocity trails, ground normal visualization
-  - *Certainty:* High (~90%) - straightforward debug draw additions
-  - *Priority:* Low - current visualization sufficient for tuning
-  
-- **Performance stats:** Frame time, draw calls, memory usage
-  - *Status:* FPS display exists in character panel
-  - *Potential additions:* Frame time graph, draw call count, memory profiling
-  - *Priority:* Low - premature optimization
-  
-- **State display:** Grounded, velocity magnitude, collision contacts
-  - *Status:* Partial - some state visible in locomotion/orientation sections
-  - *Potential additions:* Physics state panel, collision debug info
-  - *Priority:* Medium - useful for debugging physics edge cases
-
-### Game UI (Uncertain - Defer)
-- **Main menu:** Start, options, quit
-- **Pause menu:** Resume, restart, quit
-- **HUD elements:** Health, stamina, whatever game needs
-- **Settings menu:** Graphics, audio, controls
-
-## Content & Polish
-
-### Visual Polish (Low Priority - Premature)
-- **Character mesh:** Replace sphere with visible body
-  - *Note:* Currently sphere is intentional (graybox iteration)
-  - *When:* After core feel proven through playtesting
-  - *Risk:* Art hides mechanical problems
-- **Texture/materials:** PBR materials, surface detail
-- **Post-processing:** Bloom, color grading, anti-aliasing
-- **Animation polish:** Secondary motion, anticipation, follow-through
-
-### Game Loop (Uncertain - Core Unclear)
-- **Win/lose conditions:** What is player trying to do?
-- **Objectives:** What are the goals?
-- **Progression:** How does game evolve?
-- **Scoring:** How is player performance measured?
-- **Replayability:** What brings player back?
-
-*Note: These are therapeutic planning - written to reduce anxiety, not coordinate work. Actual game design will emerge through iteration and serendipity capture.*
-
-## Frogs Rule! ðŸ¸
-
-### Frog-Specific Ideas (Wild Speculation)
-- **Tongue grapple:** Long-range grab mechanic
-- **Hop charge:** Hold jump for bigger leap
-- **Sticky surfaces:** Walk on walls/ceilings
-- **Water advantage:** Move faster in water than on land
-- **Fly catching:** Projectile tongue attacks
-- **Inflation:** Puff up for defense or floating
-- **Spawn eggs:** Lay eggs that hatch into allies?
-- **Croak communication:** Audio signals affect environment
-- **Metamorphosis:** Tadpole â†’ frog progression system
-- **Lily pad platforms:** Environmental interaction
-
-*Certainty: ~0% - Pure creative exploration. Most will be cut. Kept here for inspiration.*
+**Complexity:** 3-4 points
+**Certainty:** 70% (refactor risk)
+**Validation:** Clean dependency flow
 
 ---
 
-**Notes:**
-- Ideas here are deliberately non-interlocking and liquid
-- No assumed certainty about implementation
-- Pull from backlog only when foundation reaches 90%+ certainty
-- Most items will never be implemented (feature, not bug)
+## Mathematical Validation Suite
 
+### Spring-Damper Validation
+**From Audit:** Verify critical damping formula
 
+**Tests:**
+- Convergence time
+- Overshoot behavior
+- Stability at various dt
+- Energy conservation
+
+**Complexity:** 2-3 points
+**Certainty:** 90% (math is known)
+
+### Friction Formula Verification
+**Suspicion:** friction * abs(gravity) seems arbitrary
+
+**Required:**
+- Derive from first principles
+- Or find physical justification
+- Or simplify to direct friction
+
+**Complexity:** 2 points
+**Certainty:** 70% (physics research needed)
+
+---
+
+## Removed Systems (Learn From)
+
+### What Failed (2025-10-16)
+- **Acceleration Tilt:** Coordinate confusion, sign errors
+- **Contact Springs:** Complexity without purpose
+- **Locomotion System:** Over-engineered for current needs
+- **Walk/Run Blending:** Unnecessary state multiplication
+
+### Why They Failed
+Not because the ideas were bad, but because:
+1. Mathematical foundation wasn't validated
+2. Complexity preceded necessity
+3. Couldn't debug what couldn't be seen
+4. Built on assumptions, not verified truth
+
+### Lessons
+These may return when:
+- Debug visualization exists
+- Mathematical foundations are proven
+- Simpler versions prove insufficient
+- Never before
+
+---
+
+## Character Systems (Deferred)
+
+### Skeletal Animation Prerequisites
+**Cannot build without:**
+1. Debug visualization (see bones, joints, axes) ← REQUIRED FIRST
+2. Forward kinematics validation
+3. Isolated rotation tests
+4. Clear parent-child conventions
+
+**Current Status:** Foundation exists (quaternions validated) but visualization missing.
+
+### Movement Abilities
+Dash, wall-jump, ledge-grab, climbing, swimming, crouching.
+
+**Deferred because:** Current single-speed sphere is sufficient. Complexity must be earned.
+
+---
+
+## Physics Extensions (Deferred)
+
+### Frame-Independent Physics
+**From Audit:** Current integration accumulates errors
+
+**Options:**
+- Fixed timestep with interpolation
+- Verlet integration
+- RK4 integration
+- Or document and accept current state
+
+**Complexity:** 4-6 points
+**Certainty:** 60% (significant change)
+
+### Collision Evolution
+- Dual-sphere (bumper + weightlifter)
+- Slope handling
+- Moving platform interaction
+
+**Current:** Single sphere works. Add complexity only when single sphere fails.
+
+---
+
+## Code Quality Improvements
+
+### Explicit State Machine
+**From Audit:** Grounded/airborne state is implicit
+
+**Consider:**
+- Explicit state enum
+- Clear transitions
+- State-specific behavior
+
+**Complexity:** 2-3 points
+**Certainty:** 70% (may add complexity without benefit)
+
+### Constants Configuration
+**From Audit:** Magic numbers scattered
+
+**Consider:**
+- Central constants file
+- Runtime tuning for all values
+- Save/load tuning presets
+
+**Complexity:** 2-3 points
+**Certainty:** 80% (improves iteration speed)
+
+---
+
+## Camera & Input (Working)
+
+### Potential Refinements
+- Wall collision prevention
+- Smoother follow modes
+- Gamepad support (already in sokol)
+- Rebindable keys
+
+**Priority:** Low. Current systems work and don't violate principles.
+
+---
+
+## World Systems (Graybox)
+
+### Terrain
+- Heightmaps
+- Uneven surfaces
+- Moving geometry
+- Water volumes
+
+**Current:** Flat boxes sufficient for testing movement. Defer complexity.
+
+---
+
+## Polish Layer (Premature)
+
+### Audio
+Footsteps, impacts, ambience, music, 3D positioning.
+
+### Visual Effects
+Particles, screen shake, post-processing, time dilation.
+
+**Status:** Polish serves proven mechanics. Current mechanics not proven.
+
+---
+
+## UI Systems
+
+### Debug UI Improvements
+**From Audit:** Need better visibility
+
+**Consider:**
+- Physics state panel (grounded, velocity, etc.)
+- Coordinate system indicator
+- Performance profiler
+- State history graph
+
+**Complexity:** 3-4 points
+**Priority:** Medium-High (tools accelerate everything)
+
+---
+
+## Frog Concepts 🐸
+
+**Pure speculation, kept for inspiration:**
+
+Tongue grapple, hop charging, sticky surfaces, water advantages, fly catching, inflation mechanics, egg spawning, croak communication, metamorphosis, lily pads.
+
+**Certainty:** ~0%. Most will never exist.
+
+---
+
+## Selection Criteria
+
+Before pulling from backlog, ask:
+
+1. **Does it serve immediate gameplay?** (Not hypothetical future gameplay)
+2. **Can it be validated in isolation?** (Test before integration)
+3. **Is it the simplest solution?** (Complexity must justify itself)
+4. **Are its dependencies certain?** (Don't build on sand)
+5. **Can we explain why it exists?** (Purpose must be clear)
+
+If any answer is "no," leave it in the pool.
+
+---
+
+## The Discipline
+
+This backlog is deliberately:
+- **Unordered:** No false priorities (except critical fixes)
+- **Liquid:** Ideas can merge, split, die
+- **Mostly wrong:** Most ideas won't survive contact with reality
+- **Always growing:** Capture everything, build almost nothing
+
+The backlog is not a todo list. It is a pool of possibilities waiting for the right foundation.
+
+**Update when:** Ideas emerge, items pulled, systems removed, lessons learned.
+
+**Never:** Create dependencies between backlog items. Plan beyond the foundation's certainty.

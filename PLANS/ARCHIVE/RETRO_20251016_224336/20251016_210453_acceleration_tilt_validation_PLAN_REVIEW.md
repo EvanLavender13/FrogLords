@@ -14,7 +14,7 @@ The plan to create an isolated validation suite for the acceleration tilt math i
   - **Mitigation:** The plan's quality gates are sufficient.
 
 ## Actionable Items
-- [ ] Proceed with implementation as outlined in `PLANS/acceleration_tilt_validation_PLAN.md`.
+- [ ] Proceed with implementation as outlined in `PLANS/ARCHIVE/20251016_210453_acceleration_tilt_validation_PLAN.md`.
 
 ## Recommendation
 **Reasoning:** The plan is a textbook example of applying established, successful patterns to improve codebase quality and developer confidence. It is a direct, low-cost, high-value implementation of the project's core principles.

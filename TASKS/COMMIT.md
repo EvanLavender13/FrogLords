@@ -1,33 +1,49 @@
 # Commit Staged Changes
 
-### 1. Analyze Changes
+**Purpose:** Create well-formed git commits with clear messages.
 
-Run `bash scripts/bash/review_staged_changes.sh` to confirm staged files and review changes.
+**Prerequisites:** Changes staged and ready to commit
 
-### 2. Draft Commit Message
+---
 
-Use the exact format below.
+## 1. Analyze Changes
 
-### 3. Propose for Review
+Run `bash scripts/bash/review_staged_changes.sh` to review staged files.
 
-Post the drafted message for approval. Do not commit until approved.
+## 2. Draft Commit Message
 
-### 4. Commit
+Format:
+```
+<Domain>: <Brief imperative description>
 
-After approval, commit with the message:
+<Why paragraph explaining intent>
 
-```bash
-bash scripts/bash/commit_changes.sh -m "<Domain>: <Brief description>
+- <User-visible change 1>
+- <User-visible change 2>
 
-<Why paragraph>
-
-- <Change 1>
-- <Change 2>
-
-<Outcome sentence>"
+<Outcome sentence>
 ```
 
-**Example:**
+## 3. Propose for Review
+
+Post drafted message for approval. Do not commit until approved.
+
+## 4. Execute Commit
+
+After approval:
+```bash
+bash scripts/bash/commit_changes.sh -m "<message>"
+```
+
+Or for complex messages:
+```bash
+bash scripts/bash/commit_changes.sh -f commit_msg.txt
+```
+
+---
+
+## Example
+
 ```bash
 bash scripts/bash/commit_changes.sh -m "character: add dash tuning
 
@@ -40,33 +56,12 @@ Introduces initial dash mechanic with basic timing and distance parameters.
 Dash now functional in graybox form."
 ```
 
-**For complex multi-line messages, use a temporary file:**
-```bash
-# Create commit_msg.txt with your message
-bash scripts/bash/commit_changes.sh -f commit_msg.txt
-```
-
-### Tone & Constraints
-
--   Concise and specific; lead with the "why"
--   Use imperative mood and present tense (e.g., "character: add dash tuning")
--   Scope prefix matches code domain (e.g., `character`, `rendering`, `gui`)
--   List only user‑visible effects
--   Avoid noise: exclude pure refactors unless they change behavior or APIs
-
 ---
 
-### Commit Message Format
+## Tone & Constraints
 
-```
-<Domain>: <Brief, imperative description>
-
-<Short "why" paragraph explaining intent and effect.>
-
-- <Bulleted list of concrete, user-facing changes>
-- <...>
-
-<Concluding outcome sentence>
-
-<Co-authored-by line if applicable. If you are the author, use your identity.>
-```
+- Lead with "why" not "what"
+- Imperative mood, present tense
+- Domain prefix matches code area
+- Only user-visible effects
+- Exclude pure refactors unless API changes

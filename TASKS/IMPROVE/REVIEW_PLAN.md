@@ -1,171 +1,322 @@
-# Review Improvement Plan (Standard Path Only)
+# Review Plan
 
-**Prerequisites:** Completed PLAN; plan appended to `PLANS/IMPROVE_<name>.md`
+**Validate that the improvement simplifies, not complicates.**
 
 ---
 
-### 1. Review Development Principles
+## The Purpose
 
-Read `AGENTS.md` to ensure alignment with:
-- "Clarity over cleverness"
-- "Simplicity over sophistication"
-- Bottom-up dependency flow
-- "Wait for third use" (rule of three)
-- Graybox before polish
+Verify the plan truly fixes a principle violation through simplification. A review is not permission to refactor—it's validation that simplification is achieved.
 
-### 2. Gather Context
+The best review rejects unnecessary changes. The second best demands more deletion. Approval means true simplification.
 
-Extract improvement name from branch (`improve/<name>`):
+---
 
-1. Read `PLANS/IMPROVE_<name>.md`:
-   - Initial description (severity, issue, proposed fix)
-   - Full plan (impact analysis, stages, validation checklist)
-   - Verify plan addresses original issue completely
-2. Read `PLANS/DEPENDENCY_STACK.md` to check system stability
-3. Read affected source files to understand current state
+## Phase 1: Violation Verification
 
-### 3. Perform Analysis
+### Confirm the Violation Exists
+- Which principle is actually violated?
+- Can we measure the violation?
+- Is this a real problem or opinion?
+- Does it affect gameplay?
 
-Cross-reference the plan against development principles. Identify violations, misalignments, and risks.
+**If no clear violation, reject immediately.**
 
-**Verify Against Principles:**
-- **Clarity & Simplicity:** Solution is simplest approach that works; no unnecessary abstraction or over-engineering; names follow conventions (snake_case, descriptive)
-- **Architecture:** Respects layering (Foundation → Character → Rendering → App); no reverse dependencies introduced; dependencies flow one direction only
-- **Rule of Three:** Pattern verified to appear 3+ times OR canonical data justification documented; not extracting prematurely
-- **Stability Gate:** Affected systems ≥70% certainty (check `DEPENDENCY_STACK.md`); no active feature work on these systems; OR Critical severity bypasses this check
+### Validate the Measurement
+- Current complexity: [Quantified]
+- Target simplicity: [Quantified]
+- Net reduction: [Must be negative]
 
-**Check for Scope Creep:**
-- Plan does more than backlog item described
-- "While we're here" additions
-- Opportunistic improvements bundled in
-- Mixing multiple backlog items
-- **If found:** Note new improvements in `IMPROVE_BACKLOG.md`; keep current plan focused on single item
+**If complexity increases, reject immediately.**
 
-**Assess Risk vs Reward:**
+---
 
-Risk Indicators:
-- Files affected: 1-2 (Low) | 3-5 (Medium) | 6+ (High)
-- Systems touched: 1 (Low) | 2-3 (Medium) | 4+ (High)  
-- Certainty: 90%+ (Low) | 70-90% (Medium) | <70% (High)
-- Behavioral change: None (Low) | Minor (Medium) | Significant (High)
+## Phase 2: Strategy Validation
 
-Reward Indicators:
-- Fixes architectural violation (High)
-- Enables future work (Medium-High)
-- Improves code clarity (Medium)
-- Reduces duplication (Low-Medium)
-- Cosmetic cleanup (Low)
+### The Three Approaches (in order)
 
-Decision Matrix:
-- High Risk + Low Reward → Defer (not worth it)
-- High Risk + High Reward → Proceed with caution
-- Low Risk + Any Reward → Proceed
-- Medium Risk + Medium+ Reward → Proceed
+#### 1. Deletion Assessment
+- Was deletion attempted first?
+- What prevents complete removal?
+- Can something else handle this?
+- **If not tried:** Demand deletion attempt
 
-**Verify Stage Breakdown:**
-- Each stage should be independently buildable
-- Clear validation criteria per stage
-- Takes <30 minutes to implement
-- Leaves codebase in working state
-- Progresses logically toward goal
-- **If stages too large:** Request decomposition
+#### 2. Simplification Verification
+- Does it actually simplify?
+- Are special cases removed?
+- Are dependencies reduced?
+- **If adds complexity:** Reject
 
-**Check Validation Checklist:**
-Must include:
-- Build & compile verification
-- Behavioral correctness checks
-- Architecture principle compliance
-- Code quality standards (formatting, linting)
-- Edge case handling (if applicable)
-- **If incomplete:** Request specific additional validation criteria
+#### 3. Documentation Justification
+- Are magic numbers derived?
+- Is complexity now justified?
+- Is intent clarified?
+- **If still unclear:** Revise
 
-**Review Rollback Strategy:**
-Must have:
-- Clear abort conditions defined
-- Rollback steps documented
-- Branch strategy allows clean revert
-- Intermediate commit points identified (for multi-stage work)
+---
 
-### 4. Append Review to Planning Document
+## Phase 3: Stage Analysis
 
-Add review analysis to `PLANS/IMPROVE_<name>.md` using template below.
+### Each Stage Must:
+- [ ] Fix one specific violation
+- [ ] Be measurably simpler
+- [ ] Be independently reversible
+- [ ] Build confidence for next stage
+- [ ] Not introduce new complexity
 
-**Decision Options:**
-- **APPROVED:** Plan is sound; all principles satisfied; risk/reward acceptable → Proceed to EXECUTE
-- **REVISE:** Minor issues found; small clarifications required; stage decomposition needed; validation checklist incomplete → Return to PLAN with specific feedback
-- **DEFER:** Major issues; risk too high for reward; scope creep significant; stability gate not met (and not Critical); architectural concerns require design discussion → Update backlog with deferral reason
+### Red Flags in Stages:
+- "While we're here..." additions
+- Abstraction layer creation
+- "Clever" solutions
+- Complexity migration
+- Feature additions
 
-### Tone & Constraints
+**Any red flag = automatic revision.**
 
-### 5. Append to Planning Document
+---
 
-If decision is made, append review summary to `PLANS/IMPROVE_<name>.md`:
+## Phase 4: Principle Impact
+
+### Test Against All Six
+
+#### 1. Radical Simplicity
+- Is the result simpler?
+- Was everything unnecessary removed?
+- Is this the minimal fix?
+
+#### 2. Fundamental Composable Functions
+- Are responsibilities clearer?
+- Is coupling reduced?
+- Are systems more orthogonal?
+
+#### 3. Solid Mathematical Foundations
+- Is math now validated?
+- Are formulas documented?
+- Is correctness provable?
+
+#### 4. Emergent Behavior
+- Are prescribed behaviors removed?
+- Is the system more open?
+- Can more behaviors emerge?
+
+#### 5. Consistency
+- Is behavior more predictable?
+- Are special cases eliminated?
+- Is control preserved?
+
+#### 6. Principled Development
+- Can we now trace decisions?
+- Is the fix principled?
+- Is validation improved?
+
+**Net principle improvement must be positive.**
+
+---
+
+## Phase 5: Risk Assessment
+
+### Deletion Risks
+- What might break?
+- Hidden dependencies?
+- Undocumented uses?
+
+### Simplification Risks
+- Performance impacts?
+- Behavioral changes?
+- Integration issues?
+
+### Documentation Risks
+- Still unclear?
+- Wrong derivation?
+- Incomplete explanation?
+
+**For each risk:** Is the simplification worth it? If not, defer.
+
+---
+
+## Phase 6: Document Review
+
+Append to `PLANS/IMPROVE_<name>.md`:
 
 ```markdown
 ---
-
 ## PLAN REVIEW
 
 **Date:** [YYYY-MM-DD]
-**Status:** APPROVED | REVISE | DEFER
+**Decision:** APPROVED | REVISE | REJECT | DEFER
 
-### Summary
+## Violation Confirmation
+**Principle Violated:** [Which one]
+**Measured:** [Current complexity]
+**Target:** [Desired simplicity]
+**Valid:** [YES/NO]
 
-[One paragraph: Is plan aligned with principles? Major concerns? Recommendation?]
+## Strategy Assessment
+**Approach:** [Delete | Simplify | Document]
+**Deletion Attempted:** [YES/NO]
+**Net Simplification:** [Positive/Negative]
 
-### Violations (Must Fix)
+## Stage Quality
+Each stage:
+- [ ] Fixes specific violation
+- [ ] Measurably simpler
+- [ ] Independently reversible
+- [ ] No new complexity
 
-- **[Category]:** [Issue] in [source]
-  - **Principle:** [Violated principle from AGENTS.md]
-  - **Fix:** [How to address]
+## Principle Impact
+1. Simplicity: [Improved/Same/Worse]
+2. Composability: [Improved/Same/Worse]
+3. Mathematics: [Improved/Same/Worse]
+4. Emergence: [Improved/Same/Worse]
+5. Consistency: [Improved/Same/Worse]
+6. Development: [Improved/Same/Worse]
 
-**If none:** No violations found.
+**Net Impact:** [Must be positive]
 
-### Risks & Concerns
+## Risk Analysis
+**Risk Level:** [Low/Medium/High]
+**Worth It:** [YES/NO]
+**Mitigation:** [Strategy if yes]
 
-- **[Description]:** [Why risky/concerning] in [source]
-  - **Mitigation:** [How to reduce risk]
+## Recommendation
 
-**If none:** Plan appears well-aligned.
+### If APPROVED:
+Proceed with [N] stages of simplification.
 
-### Risk Assessment
+### If REVISE:
+- [ ] Try deletion first
+- [ ] Remove new complexity
+- [ ] Simplify stages further
 
-**Risk Level:** Low | Medium | High
-**Reward Level:** Low | Medium | High
-**Decision:** Proceed | Proceed with Caution | Defer
+### If REJECT:
+[Why this doesn't simplify]
 
-### Stage Quality
+### If DEFER:
+[What must happen first]
 
-**Stage Breakdown:** ✓ | Needs Decomposition
-[Notes if stages too large]
+## The Test
+Can we say: "This removes [complexity] by [method],
+fixing [principle violation] through [N] reversible stages,
+with net simplification of [measurement]"?
 
-**Validation Checklist:** ✓ | Incomplete
-[Missing items if incomplete]
-
-### Actionable Items
-
-- [ ] [Specific action needed]
-
-**If none:** Ready to proceed with implementation.
-
-### Recommendation
-
-**Reasoning:** [Brief justification for status]
-
-**Next Steps:**
-- If APPROVED: Proceed to EXECUTE
-- If REVISE: Address items, re-review
-- If DEFER: Update IMPROVE_BACKLOG with findings
+Answer: [YES/NO]
 ```
 
 ---
 
-### Tone & Constraints
+## Decision Criteria
 
-- Concise and direct; no preamble or postamble
-- Detail scales with risk and complexity
-- Cite specific principles from `AGENTS.md`
-- Focus on actionable recommendations
-- Be objective and principle-driven
-- Balance risk aversion with pragmatism (perfect is enemy of good)
-- Defer only when truly necessary
+### APPROVE only if:
+- Real violation exists
+- Net complexity reduced
+- Deletion attempted
+- All stages reversible
+- No new violations
+- Measurable simplification
+
+### REVISE if:
+- Deletion not attempted
+- Stages too complex
+- New complexity added
+- Unclear simplification
+- Missing measurements
+
+### REJECT if:
+- No real violation
+- Complexity increases
+- Abstraction added
+- Principles worsened
+- Can't measure improvement
+
+### DEFER if:
+- Foundation unstable (<85%)
+- Higher priority violations exist
+- Dependencies unclear
+- Risk exceeds reward
+
+---
+
+## The Simplification Test
+
+For every change, ask:
+
+1. **Does this remove code?**
+2. **Does this remove complexity?**
+3. **Does this remove special cases?**
+4. **Does this remove dependencies?**
+5. **Does this remove confusion?**
+
+Count the "yes" answers. Need at least 3 to proceed.
+
+---
+
+## Anti-Patterns to Catch
+
+### The Grand Refactor
+Changing everything "while we're at it." Reject scope creep.
+
+### The Abstraction Addition
+"Simplifying" by adding layers. Reject complexity hiding.
+
+### The Lateral Move
+Moving complexity elsewhere. Demand actual removal.
+
+### The Perfect Solution
+Over-engineering the fix. Demand minimal change.
+
+### The Feature Sneak
+Adding capabilities during cleanup. Reject immediately.
+
+---
+
+## Special Considerations
+
+### For Mathematical Fixes
+- Is isolation testing included?
+- Is formula derivation shown?
+- Is numerical validation planned?
+- Is debug visualization added?
+
+### For Dependency Untangling
+- Is each cut independent?
+- Are stages truly reversible?
+- Is orthogonality achieved?
+- Are systems simpler after?
+
+### For Documentation
+- Are magic numbers explained?
+- Are formulas derived?
+- Is complexity justified?
+- Or should we just delete it?
+
+---
+
+## The Ultimate Question
+
+After reviewing the entire plan:
+
+> "Is the codebase simpler after this change?"
+
+If you cannot answer "yes" with certainty, do not approve.
+
+---
+
+## The Commitment
+
+Reviews must:
+- Protect simplicity
+- Demand deletion
+- Measure improvement
+- Ensure reversibility
+- Prevent complexity
+
+Never approve plans that:
+- Add abstraction
+- Hide complexity
+- Increase line count
+- Create dependencies
+- Serve hypothetical needs
+
+**The best review prevents unnecessary changes. The second best demands more deletion.**
+
+**This is the way.**

@@ -4,6 +4,17 @@
 	// Scripts run in WSL and call Windows executables, maintaining full performance.
 	"tasks": [
 		{
+			"label": "Clean",
+			"type": "shell",
+			"command": "wsl",
+			"args": [
+				"bash",
+				"scripts/bash/clean.sh"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
 			"label": "Configure",
 			"type": "shell",
 			"command": "wsl",

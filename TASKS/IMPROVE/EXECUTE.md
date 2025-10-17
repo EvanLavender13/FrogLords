@@ -1,231 +1,372 @@
 # Execute Improvement
 
-**Prerequisites:**
-- **Trivial Path:** Completed SELECT; created `PLANS/IMPROVE_<name>.md`; on `improve/<name>` branch
-- **Standard Path:** Completed SELECT, PLAN, REVIEW_PLAN (approved); on `improve/<name>` branch
+**Remove complexity, restore principles, validate continuously.**
 
 ---
 
-## Common Steps (Both Paths)
+## The Purpose
 
-### Format and Lint
+Transform violations into simplifications through careful, validated execution. Every change must make the system simpler, clearer, or more correct—preferably all three.
 
-After making changes, always run the formatter and linter tasks.
-
-Fix any formatting or linting issues introduced.
-
-### Build Verification
-
-Run the build task.
-
-Verify build succeeds with no new errors or warnings.
+Execution is not refactoring—it's the disciplined removal of complexity.
 
 ---
 
-## Path A: Trivial Execution (1-2 points)
+## Prerequisites
 
-### 1. Read Item Description
+### Path Selection
+- **Path A (Trivial - 1-2 points):** Direct from SELECT, obvious fix
+- **Path B (Standard - 3-8 points):** From REVIEW_PLAN with staged approach
 
-Open `PLANS/IMPROVE_<name>.md` and confirm:
-- Exact files and line numbers
-- Specific change to make
-- No ambiguity in scope
+### Required Foundation
+- Violation clearly identified
+- Simplification strategy chosen
+- AGENTS.md principles internalized
+- Rollback strategy prepared
 
-### 2. Make the Change
-
-Execute the fix directly:
-- Edit file(s) as described
-- Keep changes minimal and focused
-- No opportunistic additions
-
-### 3. Verify Correctness
-
-**Quick checks:**
-- [ ] Change matches description exactly
-- [ ] No unintended side effects
-- [ ] File still readable and sensible
-
-### 4. Format, Lint, and Build
-
-Run common steps above (Format and Lint, Build Verification).
-
-### 5. Append Execution Notes
-
-Add to `PLANS/IMPROVE_<name>.md`:
-
-````markdown
 ---
 
-## EXECUTION (Trivial Path)
+## Path A: Trivial Improvements (1-2 points)
 
+For violations so obvious they insult our principles.
+
+### Phase 1: Validate Violation
+
+Read `PLANS/IMPROVE_<name>.md`:
+```markdown
+## The Violation
+**Principle:** [Which is violated]
+**Evidence:** [Specific file:line]
+**Fix:** [Exact change]
+```
+
+Confirm:
+- [ ] Violation exists as described
+- [ ] Fix is truly trivial
+- [ ] No hidden complexity
+- [ ] Will actually simplify
+
+**If any doubt, switch to Path B.**
+
+### Phase 2: Execute Deletion/Simplification
+
+The Three Approaches (in order):
+
+1. **Delete It**
+   - Remove the entire thing
+   - Verify nothing breaks
+   - Celebrate the reduction
+
+2. **Simplify It**
+   - Remove special cases
+   - Eliminate conditions
+   - Reduce to essence
+
+3. **Document It**
+   - Derive magic numbers
+   - Explain unavoidable complexity
+   - Justify what remains
+
+### Phase 3: Validate Improvement
+
+Before:
+- Lines of code: [N]
+- Cyclomatic complexity: [N]
+- Dependencies: [N]
+
+After:
+- Lines of code: [N] (must be less)
+- Cyclomatic complexity: [N] (must be less)
+- Dependencies: [N] (must be less or same)
+
+### Phase 4: Principle Check
+- [ ] Simpler than before?
+- [ ] Principle restored?
+- [ ] No new violations?
+- [ ] Build succeeds?
+- [ ] Format clean?
+
+### Phase 5: Document
+
+Append to `PLANS/IMPROVE_<name>.md`:
+```markdown
+## EXECUTION
+
+**Path:** Trivial
 **Executed:** [Date/Time]
+**Change:** [Exact modification]
+**Reduction:** [Lines removed, complexity eliminated]
+**Principle Restored:** [Which one]
 
-### Changes Made
+Verified: Build ✓ Format ✓ Behavior ✓
+```
 
-**File:** `path/to/file.cpp`
-- Line X: [Specific change]
-
-### Verification
-
-- [x] Build succeeds
-- [x] clang-format passed
-- [x] clang-tidy clean
-- [x] No new warnings
-
-### Notes
-
-[Any observations, complications, or learning points]
-````
-
-Proceed to FINALIZE.
+→ Proceed to FINALIZE
 
 ---
 
-## Path B: Standard Execution (3-8 points)
+## Path B: Standard Improvements (3-8 points)
 
-### 1. Read the Plan
+For violations requiring staged simplification.
 
-Open `PLANS/IMPROVE_<name>.md` and review:
-- All stages and their sequence
-- Validation criteria for each stage
-- Rollback strategy
+### Phase 1: Pre-Execution Validation
 
-### 2. Execute Stage-by-Stage
+#### Review Plan
+Read `PLANS/IMPROVE_<name>.md`:
+- All stages and sequence
+- Validation per stage
+- Risk assessment
+- Rollback points
 
-**For each stage:**
+#### Principle Alignment
+For each stage, verify:
+1. **Simplicity:** Will this stage reduce complexity?
+2. **Composability:** Will systems become more orthogonal?
+3. **Mathematics:** Is correctness maintained/improved?
+4. **Emergence:** Are we removing prescription?
+5. **Consistency:** Are we eliminating special cases?
+6. **Development:** Can we justify this change?
 
-#### 2.1. Make Changes
-- Follow plan exactly for this stage
-- Keep changes minimal and focused
-- No deviation from planned scope
+**If any stage fails these tests, abort.**
 
-#### 2.2. Validate Incrementally
-- Build the project (see Build Verification in common steps)
-- Check validation criteria for this stage
-- Verify no regressions
+### Phase 2: Execute Stages
 
-#### 2.3. Format and Lint
-Run common steps above (Format and Lint) after each stage.
+For each stage:
 
-#### 2.4. Document Stage Completion
-Append notes to `PLANS/IMPROVE_<name>.md` after each stage:
+#### 1. Measure Before
+Document current state:
+- Line count in affected files
+- Cyclomatic complexity
+- Number of special cases
+- Dependencies
 
-````markdown
-**Stage N Completed:** [Date/Time]
-- Changes: [What was modified]
-- Validation: ✓ Build clean, ✓ Criteria met
-- Duration: [Actual time taken]
-- Issues: [Any complications or deviations from plan]
-````
+#### 2. Execute Change
+Follow the hierarchy:
+1. **Try Deletion First**
+   - Can we remove entirely?
+   - What actually breaks?
+   - Is the break acceptable?
 
-### 3. Run Full Validation Checklist
+2. **Then Simplification**
+   - Remove special cases
+   - Eliminate branches
+   - Reduce parameters
+   - Clarify responsibility
 
-After all stages complete, execute full validation from PLAN:
+3. **Finally Documentation**
+   - Only if complexity is essential
+   - Derive all magic numbers
+   - Explain why it can't be simpler
 
-````markdown
-## Validation Checklist
+#### 3. Validate Stage
+- [ ] Build succeeds
+- [ ] Tests pass (if any)
+- [ ] Behavior unchanged (or acceptably changed)
+- [ ] Complexity reduced
+- [ ] Principle improved
 
-### Build & Compile
-- [ ] Clean build succeeds (see Build Verification in common steps)
-- [ ] No compilation errors
-- [ ] No new warnings
+#### 4. Measure After
+- Line count: [Must be less]
+- Complexity: [Must be less]
+- Special cases: [Must be fewer]
+- Dependencies: [Must be same or fewer]
 
-### Correctness
-- [ ] Behavior unchanged (or changed as intended)
-- [ ] Edge cases handled
-- [ ] No regressions observed
+#### 5. Document Stage
+```markdown
+### Stage [N]: [Title] ✓
+**Completed:** [Time]
+**Approach:** [Delete|Simplify|Document]
+**Changes:** [What was modified]
+**Reduction:** [Measurable improvement]
+**Validation:** Build ✓ Behavior ✓ Principle ✓
+```
 
-### Architecture
-- [ ] Dependency flow correct (verify with file includes)
-- [ ] No reverse dependencies
-- [ ] Follows conventions (`CONVENTIONS.md`)
+**If stage fails, STOP and rollback.**
 
-### Code Quality
-- [ ] clang-format clean (see Format and Lint in common steps)
-- [ ] clang-tidy clean (see Format and Lint in common steps)
-- [ ] No duplicated logic remains
-- [ ] Comments accurate and helpful
-````
+### Phase 3: Full System Validation
 
-### 4. Handle Discovery Issues
+After all stages:
 
-**If abort condition met during execution:**
+#### Complexity Metrics
+- Total lines removed: [N]
+- Total lines added: [N]
+- Net reduction: [Must be negative]
+- Special cases eliminated: [N]
+- Dependencies removed: [N]
 
-1. **Stop immediately**
-2. Document what was attempted and why it failed
-3. Rollback changes (discard or stash working changes)
-4. Append to `PLANS/IMPROVE_<name>.md`:
+#### Principle Validation
+For each of the Six Pillars:
+- [ ] Improved or maintained?
+- [ ] No new violations?
+- [ ] Measurable benefit?
 
-````markdown
+#### Behavioral Validation
+- [ ] System still functions correctly
+- [ ] No performance regression
+- [ ] No new edge cases
+- [ ] Player control preserved
+
+### Phase 4: Document Completion
+
+Append to `PLANS/IMPROVE_<name>.md`:
+```markdown
+## EXECUTION
+
+**Path:** Standard
+**Duration:** [Total time]
+**Stages Completed:** [N of N]
+
+### Complexity Reduction
+- Lines removed: [N]
+- Lines added: [N]
+- Net change: [N] (negative is good)
+- Special cases removed: [N]
+- Dependencies eliminated: [N]
+
+### Principle Restoration
+1. Simplicity: [How improved]
+2. Composability: [How improved]
+3. Mathematics: [How improved]
+4. Emergence: [How improved]
+5. Consistency: [How improved]
+6. Development: [How improved]
+
+### Validation
+All stages completed successfully.
+No regressions detected.
+Principles strengthened.
+
+**The system is simpler.**
+```
+
+→ Proceed to REVIEW_CODE
+
 ---
 
+## Abort Conditions
+
+Stop immediately and rollback if:
+
+### Complexity Increases
+- More lines than removed
+- New abstractions added
+- Additional special cases
+- More dependencies created
+
+### Principles Violated
+- Simplicity compromised
+- Orthogonality broken
+- Mathematics incorrect
+- Consistency lost
+
+### System Degraded
+- Performance regression
+- Functionality broken
+- Player control affected
+- Debug visibility lost
+
+When aborting:
+```markdown
 ## EXECUTION ABORTED
 
-**Aborted:** [Date/Time]
+**Stage:** [Where stopped]
+**Reason:** [Specific violation]
+**Discovered:** [What went wrong]
+**Recommendation:** [Defer|Redesign|Abandon]
 
-**Reason:** [Why we stopped - abort condition triggered]
-
-**Stages Completed:** [Which stages were done before abort]
-
-**Learning:** [What was discovered that caused abort]
-
-**Recommendation:** [Defer, redesign, or escalate?]
-````
-
-5. Update backlog (move item to Deferred with reason)
-6. Return to SELECT for next item
-
-### 5. Append Complete Execution Notes
-
-Add to `PLANS/IMPROVE_<name>.md`:
-
-````markdown
----
-
-## EXECUTION (Standard Path)
-
-**Started:** [Date/Time]
-**Completed:** [Date/Time]
-**Total Duration:** [Actual time]
-
-### Stage-by-Stage Summary
-
-**Stage 1:** [Description]
-- Completed: [Time]
-- Issues: None | [Describe]
-
-**Stage 2:** [Description]
-- Completed: [Time]
-- Issues: None | [Describe]
-
-[... for all stages]
-
-### Full Validation Results
-
-[Paste completed validation checklist]
-
-### Deviations from Plan
-
-[Any differences from original plan and why]
-
-### Learning Points
-
-[What worked well, what was harder than expected, insights gained]
-````
-
-### 6. Proceed to Next Step
-
-- **Trivial Path:** Proceed to FINALIZE
-- **Standard Path:** Proceed to REVIEW_CODE
+The cure was worse than the disease.
+```
 
 ---
 
-## Tone & Constraints
+## The Philosophy of Improvement
 
-- Follow plan strictly; no improvisation
-- Validate continuously (every stage builds and works)
-- Stop at first abort condition (don't push through problems)
-- Document everything (deviations, issues, timings)
-- Keep changes focused (resist "while we're here" temptation)
-- Preserve intermediate states (don't lose work if late stage fails)
-- Build after every file edit (catch errors early)
+### Deletion Is Victory
+Every line removed is a bug that can't happen, a confusion that can't occur, a maintenance burden lifted. Celebrate deletion.
+
+### Simplification Is Clarity
+Complex code hides bugs. Simple code reveals truth. When code becomes simple, bugs become obvious and fixes become trivial.
+
+### Documentation Is Acceptance
+Sometimes complexity is essential. When it is, document why. But first, try very hard to make it non-essential.
+
+---
+
+## Anti-Patterns to Avoid
+
+### The Refactor
+"Let me reorganize this..." - No. Remove or simplify. Organization is not improvement.
+
+### The Abstraction
+"Let me generalize this..." - No. Specificity is clarity. Abstraction is complexity.
+
+### The Optimization
+"Let me make this faster..." - No. Make it simpler. Speed follows simplicity.
+
+### The Feature Addition
+"While fixing this, let me add..." - Never. Improvement removes. Features add.
+
+---
+
+## Quality Standards
+
+### Every Change Must
+- Reduce total complexity
+- Restore a principle
+- Be independently reversible
+- Have measurable improvement
+- Leave code simpler
+
+### No Change May
+- Add new abstractions
+- Create new dependencies
+- Introduce special cases
+- Hide complexity elsewhere
+- Serve hypothetical needs
+
+---
+
+## Special Considerations
+
+### For Mathematical Corrections
+1. Validate current formula is wrong
+2. Derive correct formula
+3. Build test to prove correctness
+4. Replace with validation
+5. Document the derivation
+
+### For Dependency Untangling
+1. Map all connections
+2. Find weakest link
+3. Break one connection
+4. Verify still works
+5. Repeat until orthogonal
+
+### For Magic Number Documentation
+1. Find the source of the number
+2. Derive from first principles
+3. Replace with named constant
+4. Document the derivation
+5. Or delete if possible
+
+---
+
+## The Commitment
+
+Execute improvements that:
+- Make code disappear
+- Restore violated principles
+- Reduce measurable complexity
+- Can be validated and reversed
+- Leave the system simpler
+
+Never execute improvements that:
+- Add abstraction layers
+- Increase line count
+- Create new dependencies
+- Move complexity around
+- Complicate the simple
+
+**The best improvement deletes entire files. The second best deletes entire functions. The third best deletes entire branches.**
+
+**This is the way.**

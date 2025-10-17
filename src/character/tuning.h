@@ -1,7 +1,6 @@
 #pragma once
 
 #include "character/controller.h"
-#include "character/locomotion.h"
 
 namespace character {
 

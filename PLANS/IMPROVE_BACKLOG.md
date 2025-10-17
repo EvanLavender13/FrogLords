@@ -1,151 +1,138 @@
 # Improve Backlog
 
-Track code quality issues, architectural violations, tech debt, pattern extraction opportunities, and cleanup items.
-
-**Status:** Living document (updated after reviews and feature work)
-
-**Last Review:** October 15, 2025
+**A record of principle violations awaiting simplification.**
 
 ---
 
-## Guidance
+## The Rule
 
-**Severity/Priority Guide**:
-- **Critical**: Architectural violations, correctness bugs, blocking issues
-- **High**: Significant tech debt, pattern extraction ready for use
-- **Medium**: Quality improvements, minor inconsistencies
-- **Low**: Nitpicks, polish
-
-**Rule of Three**: Pattern extraction requires 3+ occurrences unless establishing canonical data source (document exception).
-
-**Stability Gate**: Only improve systems ≥70% certainty (check `DEPENDENCY_STACK.md`).
+Only track violations that:
+1. Break one of the six principles
+2. Can be fixed by removal or simplification
+3. Have been verified through audit
+4. Make the codebase simpler when fixed
 
 ---
 
-## Critical
+## Critical Violations (From Audit 2025-10-16)
 
-(Architectural violations, bugs, blocking issues requiring immediate attention)
+### Missing Debug Visualization
+**Principle Violated:** Mathematical Foundations (can't validate what can't see)
+**Current:** No visual debugging for physics state, orientation, forces
+**Problem:** This caused the coordinate confusion crisis
+**Solution:** Add RGB axes, velocity vectors, collision spheres
+**Complexity:** 3-4 points
+**Why Critical:** Cannot verify any other fixes without seeing them
 
----
-
-## High
-
-(Significant improvements to clarity, maintainability, or extensibility)
-
-### [Performance] Inefficient rendering in `renderer.cpp`
-- *File(s):* `src/rendering/renderer.cpp`
-- *Issue:* Vertex and index buffers are created and destroyed for every draw call in `wireframe_renderer::draw`. This is highly inefficient and will cause performance bottlenecks as the number of objects in the scene grows.
-- *Fix:* Implement a strategy for buffer reuse. For static geometry, create buffers once and reuse them. For dynamic geometry, use dynamic buffers that can be updated or resized.
-- *Rationale:* Drastically improves rendering performance and reduces CPU overhead.
-- *Complexity:* 5 points
-- *Tags:* #performance #rendering
-
----
-
-## Medium
-
-(Nice-to-have improvements)
-
-### [Constants] Proliferation of magic numbers
-- *File(s):* `src/app/debug_generation.cpp`, `src/character/tuning.cpp`, and others.
-- *Issue:* Numerous magic numbers are used for colors, sizes, and physics constants.
-- *Fix:* Replace magic numbers with named constants, grouped in a relevant header or namespace.
-- *Rationale:* Improves readability and maintainability. Makes it easier to tune and adjust values.
-- *Complexity:* 3 points
-- *Tags:* #constants #cleanup
-
-### Rendering / Debug
-**Extract Speed/Age Gradient Helpers**
-- *Files:* `src/rendering/debug_draw.cpp:42-55` (speed ring), `src/rendering/debug_draw.cpp:393-403` (trail age)
-- *Issue:* Two hand-coded gradient evaluations: 4-stop gradient (blue→green→yellow→red) for speed ring and 2-stop lerp (scale + alpha) for trail age
-- *Fix:* Add `evaluate_gradient()` helper to `foundation/easing.h` with multi-stop support and presets
-- *Rationale:* Parameters over assets; 2 occurrences found, likely 3rd+ use coming in future debug visualizations
-- *Complexity:* 4 points
-- *Tags:* #pattern-extraction #debug-viz
+### Accumulated State Pattern
+**Principle Violated:** Mathematical Foundations
+**Current:** `velocity += acceleration * dt; position += velocity * dt;`
+**Problem:** Errors compound over time, drift inevitable
+**Solution:** Document and accept OR implement frame-independent physics
+**Complexity:** 2-3 points if documented, 5-6 if fixed
+**Why Critical:** Mathematical incorrectness compounds
 
 ---
 
-## Low
+## Principle Violations
 
-(Nitpicks and polish)
+### Dual-Reference Violation
+**Principle Violated:** Consistency
+**File:** `src/character/orientation.h`
+**Current:** `current_yaw` references itself during smoothing
+**Solution:** Implement proper dual-reference pattern
+**Complexity:** 1-2 points
 
-### [Conventions] Naming convention violations in `quaternion_validation.cpp`
-- *File(s):* `src/foundation/quaternion_validation.cpp`
-- *Issue:* Functions in this test file do not follow the `snake_case` convention.
-- *Fix:* Rename the functions to follow the `snake_case` convention.
-- *Rationale:* Improves code consistency.
-- *Complexity:* 1 point
-- *Tags:* #conventions #cleanup
+### Mixed Responsibilities
+**Principle Violated:** Composable Functions
+**File:** `src/character/controller.cpp`
+**Current:** Controller manages physics + animation state
+**Solution:** Move animation concerns to animation system
+**Complexity:** 3-4 points
 
-### [Data] Hardcoded test level in `game_world.cpp`
-- *File(s):* `src/app/game_world.cpp`
-- *Issue:* The test level is hardcoded in the `setup_test_level` function.
-- *Fix:* Move the level data to an external file (e.g., JSON, XML) and load it at runtime.
-- *Rationale:* Decouples data from code, making it easier to create and modify levels.
-- *Complexity:* 3 points
-- *Tags:* #data #architecture
-
-### [Refactoring] Mouse input handling in `runtime.cpp`
-- *File(s):* `src/app/runtime.cpp`
-- *Issue:* Mouse input for the camera is handled directly in the `app_runtime`.
-- *Fix:* Move the mouse input handling to the `input` system.
-- *Rationale:* Centralizes input handling, making the code cleaner and easier to maintain.
-- *Complexity:* 2 points
-- *Tags:* #refactoring #input #app
-
-### [Performance] Inefficient color comparison in `debug_draw.cpp`
-- *File(s):* `src/rendering/debug_draw.cpp`
-- *Issue:* Color comparison for line batching is done component-by-component.
-- *Fix:* Pack the `glm::vec4` color into a `uint32_t` and compare the integers for faster sorting and comparison.
-- *Rationale:* Improves performance of debug drawing.
-- *Complexity:* 1 point
-- *Tags:* #performance #rendering #debug-viz
+### Magic Numbers
+**Principle Violated:** Mathematical Foundations
+**Files:** Throughout codebase
+**Current:** Unexplained constants (BUMPER_RADIUS = 0.5, epsilon = 0.0001)
+**Solution:** Document derivation or remove if arbitrary
+**Complexity:** 1 point
 
 ---
 
-## Deferred
+## Suspicious Patterns (Need Investigation)
 
-(Tracked but not ready; needs prerequisites or more data)
+### Friction Formula
+**File:** `src/character/controller.cpp:89-96`
+**Suspicion:** `friction * abs(gravity)` - why multiply by gravity?
+**Action:** Derive from physics or simplify
 
-### Foundation / Math
-**Consider Rotation Matrix Helper**
-- *Files:* `src/character/controller.cpp:138`, `src/rendering/debug_draw.cpp:242`
-- *Occurrences:* 2 uses of `glm::rotate(transform, yaw, math::UP)`
-- *Defer Reason:* Rule of three not met; wait for 3rd use
-- *Proposed:* `math::rotation_y(float)` helper in `foundation/math_utils.h`
-- *Tags:* #deferred #rule-of-three
+### Yaw to Right Vector
+**File:** `src/foundation/math_utils.h:26`
+**Suspicion:** Negative X component for right vector
+**Action:** Verify mathematically with debug visualization
 
 ---
 
-## Tags Reference
+## Deferred (Foundation Not Ready)
 
-- `#architecture` - Layering, dependency flow, structural issues
-- `#pattern-extraction` - Repeated code ready for abstraction
-- `#cleanup` - Remove dead code, unused includes, etc.
-- `#simplification` - Reduce complexity without changing behavior
-- `#constants` - Consolidate or reorganize constant definitions
-- `#includes` - Include dependency management
-- `#conventions` - Coding style and naming consistency
-- `#layers` - Specific to layer architecture violations
-- `#collision` - Collision system
-- `#locomotion` - Character locomotion
-- `#skeleton` - Skeleton and joint transforms
-- `#gui` - GUI systems
-- `#debug-viz` - Debug visualization
-- `#controller` - Character controller
-- `#deferred` - Not ready yet
-- `#rule-of-three` - Waiting for third occurrence
-- `#performance` - Performance improvements
-- `#state-management` - State management issues
-- `#build` - Build system issues
-- `#dependencies` - Dependency issues
-- `#character` - Character subsystem
-- `#animation` - Animation subsystem
-- `#foundation` - Foundation subsystem
-- `#math` - Math utilities
-- `#rendering` - Rendering subsystem
-- `#input` - Input subsystem
-- `#app` - Application layer
-- `#refactoring` - Refactoring opportunities
-- `#data` - Data-driven design
-- `#consistency` - Consistency improvements
+These violations exist but cannot be fixed until foundation is stable:
+
+- Rendering buffer inefficiency (wait for stable render pipeline)
+- Hardcoded test level (premature to extract)
+- Mouse input location (works, don't touch)
+
+---
+
+## Recently Removed (Learn From)
+
+**2025-10-16 Radical Simplification removed:**
+- Acceleration tilt system (coordinate confusion)
+- Contact weight springs (unnecessary complexity)
+- Locomotion system (over-engineered)
+- Walk/run blending (unnecessary states)
+
+**Lesson:** Complexity without mathematical validation always fails.
+
+---
+
+## Selection Criteria
+
+Before pulling from this backlog:
+
+1. **Is foundation ≥85% certain?** (Check DEPENDENCY_STACK.md)
+2. **Will fixing make things simpler?** (Not just different)
+3. **Can we test the fix in isolation?**
+4. **Does it serve immediate gameplay?**
+
+If any answer is no, do not select.
+
+---
+
+## The Discipline
+
+This backlog tracks violations, not improvements.
+Every item here represents complexity to remove, not features to add.
+The best fix is deletion.
+The second best is simplification.
+Adding is last resort.
+
+**Update when:**
+- Audit finds new violations
+- Violations are fixed (remove them)
+- Foundation certainty changes
+
+**Never add:**
+- Feature requests
+- "Nice to haves"
+- Performance optimizations without proof
+- Anything that adds complexity
+
+---
+
+## Current Status
+
+**Foundation Certainty:** 85% (Repair Mode)
+**Action:** Fix critical violations before anything else
+**Next:** Debug visualization (cannot verify other fixes without it)
+
+**This is the way.**

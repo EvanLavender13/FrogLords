@@ -3,7 +3,6 @@
 #include "foundation/collision_primitives.h"
 #include "character/animation.h"
 #include "character/orientation.h"
-#include "character/locomotion.h"
 
 struct collision_world;
 
@@ -51,23 +50,14 @@ struct controller {
     float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
 
     // Tunable parameters
-    float ground_accel = 20.0f; // m/s^2
-    float air_accel = 10.0f;    // m/s^2
-    float run_speed = 8.0f;     // m/s (reference run speed - tunable parameter)
-    float max_speed = 8.0f;     // m/s (smoothed current speed limit - modified each frame)
-    float target_max_speed =
-        8.0f;                // m/s (target speed based on walk/run input, smoothly interpolated)
-    float walk_speed = 2.0f; // m/s (shift key speed limit)
-    float walk_transition_rate =
-        10.0f;             // How quickly max_speed transitions between walk/run (larger = faster)
-    float gravity = -9.8f; // m/s^2
+    float ground_accel = 20.0f;       // m/s^2
+    float air_accel = 10.0f;          // m/s^2
+    float max_speed = 8.0f;           // m/s (movement speed cap)
+    float gravity = -9.8f;            // m/s^2
     float max_slope_angle = 45.0f;    // degrees
     float jump_velocity = 5.0f;       // m/s
     float coyote_window = 0.15f;      // seconds (150ms default - window after leaving ground)
     float jump_buffer_window = 0.15f; // seconds (150ms default - window for buffered jump input)
-
-    // Input modifiers
-    bool is_walking = false; // True when shift key held
 
     // Reactive animation layer
     character::animation_state animation;
@@ -75,15 +65,9 @@ struct controller {
     // Orientation system
     orientation_system orientation;
 
-    // Locomotion system
-    locomotion_system locomotion;
-
     controller();
 
     void apply_input(const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
     glm::mat4 get_world_transform() const;
-
-  private:
-    void sync_locomotion_targets();
 };

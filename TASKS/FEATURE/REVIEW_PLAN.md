@@ -1,115 +1,265 @@
-# Check Plans Against Principles
+# Review Plan
 
-### 1. Review Development Principles
-
-Read `AGENTS.md` to synthesize core principles:
-- "Clarity over cleverness"
-- "Simplicity over sophistication"
-- "Graybox first and long"
-- Bottom-up dependency flow
-- "Million-repetition thinking"
-
-### 2. Gather Context
-
-Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
-
-1.  **Planning Documents:** Read the following files:
-    *   `PLANS/<feature_name>_FEATURE.md` (feature description and rationale)
-    *   `PLANS/<feature_name>_PLAN.md` (must exist)
-    *   `PLANS/DEPENDENCY_STACK.md` (check tree visualization for dependencies and certainty)
-    *   `PLANS/DESIGN_BACKLOG.md`
-
-### 3. Perform Analysis
-
-Cross-reference the feature description, feature description, and implementation plan against the synthesized principles. The goal is to identify any contradictions, misalignments, or unaddressed risks.
-
--   **Verify System Ownership (Architecture Check):** Does the implementation plan correctly identify where systems currently live and where they need to be? Check for duplicate system instances (e.g., locomotion in both game_world and controller). Does the plan include migration steps if systems need to move? Are all references (rendering, debug, GUI) accounted for?
--   **Check for Contradictions:** Does any part of the feature, iteration, or implementation plan directly violate a directive from `AGENTS.md`? (e.g., planning polish before graybox, letting reactive layers control core logic, creating content restrictions)
--   **Verify Scope Alignment:** Does the feature description appropriately scope the feature description? Does it correctly identify the "stupid simple core" from the broader feature concept? Is anything essential missing or unnecessarily included?
--   **Verify Dependency & Certainty:** Does the feature's placement in the DEPENDENCY_STACK.md tree seem correct? Are the certainty scores realistic? Are the plans building on an unstable foundation?
--   **Assess Design Rationale:** Does the feature and feature description align with core principles like "Elegance Through Emergence" and "Multi-use tools"? Is the "stupid simple core" truly minimal?
--   **Verify Implementation Decomposition:** Does the implementation plan correctly break down the graybox scope into atomic, ordered steps? Are all necessary systems and files identified?
--   **Check Consistency:** Do the feature description, feature description, and implementation plan align? Does the implementation actually build what the feature description describes? Does the feature description deliver the core of what the feature description promises?
--   **Review Process:** Does the feature description reflect a tight feedback loop? Is the planning horizon appropriate for the stated uncertainty?
-
-#### Additional Checks for Specific Feature Types
-
-**For Reactive Animation Layers (acceleration tilt, landing spring, secondary motion, etc.):**
--   **Motion Source Verification:** Does the prerequisite system provide **motion or state changes over time** (not just data structures)?
-    -   Example: Secondary motion requires skeletal joints that move each frame, not just a static skeleton data structure
-    -   Example: Acceleration tilt requires velocity changes, not just a velocity value
-    -   **Yellow Flag:** If dependency analysis only mentions "system X exists" without confirming "system X changes/updates each frame"
--   **Checklist Question:** "What motion/change does this reactive layer respond to? Does that motion source exist and update regularly?"
-
-**For Novel Data Structures (quaternions, new state representations, etc.):**
--   **Data Structure Validation Check:** Does the plan propose validating the data structure in isolation before integrating it into complex features?
-    -   Example: Single-float keyframes were architecturally insufficient for 3D rotation (primary_skeletal_animation v1 deferral)
-    -   Example: Static_keyframe_preview validated quaternion keyframes before primary_skeletal_animation attempted locomotion integration
-    -   **Recommendation:** If a feature introduces novel data representation, suggest a "validation iteration" to prove the representation works before building larger features on it
--   **Checklist Question:** "Does this data structure have sufficient degrees of freedom for the problem domain? Should we validate it in isolation first?"
-
-### 4. Save and Propose
-
-Generate a new markdown document summarizing the findings.
-
--   **Filename:** `PLANS/<feature_name>_PLAN_REVIEW.md`
--   **If the review file already exists:**
-    -   Prepend a changelog entry at the top noting the re-review date and reason (e.g., "Plan modified via REVISE")
-    -   Update the analysis sections (Summary, Violations, Misalignments, Actionable Items) with current findings
-    -   Preserve the overall structure and previous context where relevant
--   **Content:** Use the template below
--   Propose the document to the user for review
-
-### Tone & Constraints
-
--   Concise and direct; no preamble or postamble
--   Detail scales with risk and complexity
--   Cite specific principles from `AGENTS.md`
--   Focus on actionable recommendations
+**Validate that the system enables emergence, not prescribes outcomes.**
 
 ---
 
-### Review Document Template
+## The Purpose
+
+Verify the plan upholds all six principles before allowing implementation. A review is not approval to proceed—it's validation that we should proceed.
+
+The best review rejects the plan. The second best demands simplification. Approval is last resort.
+
+---
+
+## Phase 1: Principle Validation
+
+### Test Each Principle
+
+#### 1. Radical Simplicity
+- Is this the minimal version?
+- Can anything be removed?
+- Are we building the irreducible primitive?
+- **Red flag:** "We might need this later"
+
+#### 2. Fundamental Composable Functions
+- Will it compose without special cases?
+- Is it orthogonal to existing systems?
+- Does it do exactly one thing?
+- **Red flag:** "It also handles..."
+
+#### 3. Solid Mathematical Foundations
+- Is the math validated in isolation?
+- Can we prove correctness?
+- Is debug visualization planned?
+- **Red flag:** "It seems to work"
+
+#### 4. Emergent Behavior
+- Does it enable more than intended?
+- Are outcomes discovered, not designed?
+- Will it surprise us?
+- **Red flag:** "It will do exactly..."
+
+#### 5. Consistency
+- Is behavior predictable?
+- Does physics drive animation?
+- Is player control preserved?
+- **Red flag:** "Except when..."
+
+#### 6. Principled Development
+- Can we trace every decision?
+- Is it built bottom-up?
+- Are stages independently validated?
+- **Red flag:** "Trust me"
+
+**If any principle fails, reject or revise.**
+
+---
+
+## Phase 2: Plan Quality Assessment
+
+### Stage Validation
+Each stage must:
+- [ ] Have single, clear purpose
+- [ ] Be mathematically validatable
+- [ ] Include debug visualization
+- [ ] Be independently reversible
+- [ ] Build on validated foundation
+
+### Dependency Check
+- [ ] Foundation is ≥90% certain
+- [ ] No circular dependencies
+- [ ] Clear composition points
+- [ ] Bottom-up construction
+
+### Emergence Potential
+- [ ] System enables multiple behaviors
+- [ ] Not prescribing specific outcomes
+- [ ] Allows for surprises
+- [ ] Multiplies possibilities
+
+---
+
+## Phase 3: Risk Analysis
+
+### Mathematical Risks
+- Unvalidated formulas
+- Numerical instabilities
+- Coordinate confusions
+- Accumulated errors
+
+### Integration Risks
+- Hidden dependencies
+- State corruption
+- Performance impacts
+- Composition failures
+
+### Principle Risks
+- Complexity creep
+- Feature prescription
+- Control betrayal
+- Debug blindness
+
+**For each risk:** Can we mitigate? If not, reject.
+
+---
+
+## Phase 4: Simplification Opportunities
+
+Before approving, identify:
+
+### What Can Be Removed?
+- Unnecessary stages
+- Redundant validation
+- Over-specified behavior
+- Premature optimization
+
+### What Can Be Deferred?
+- Polish elements
+- Edge cases
+- Performance tuning
+- Nice-to-haves
+
+### What Can Emerge?
+- Behaviors we're prescribing
+- Systems we're duplicating
+- Features that could compose
+
+**If simplification is possible, demand it.**
+
+---
+
+## Phase 5: Document Review
+
+Create `PLANS/<feature>_PLAN_REVIEW.md`:
 
 ```markdown
-# Principle Review: [Feature Name]
+# Plan Review: [System Name]
 
 **Date:** [YYYY-MM-DD]
-**Status:** APPROVED | REVISE | DEFER
+**Decision:** APPROVED | REVISE | REJECT
 
-### Summary
+## Principle Validation
+1. Radical Simplicity: [PASS/FAIL] - [Reason]
+2. Composable Functions: [PASS/FAIL] - [Reason]
+3. Mathematical Foundations: [PASS/FAIL] - [Reason]
+4. Emergent Behavior: [PASS/FAIL] - [Reason]
+5. Consistency: [PASS/FAIL] - [Reason]
+6. Principled Development: [PASS/FAIL] - [Reason]
 
-[One paragraph: Are plans aligned with principles? Major concerns? Recommendation?]
+## Critical Issues
+[Principle violations that must be fixed]
 
-### Violations (Must Fix)
+## Simplification Required
+[What must be removed or deferred]
 
-**NOTE:** Categorize for retrospectives (Premature Polish | Missing Prerequisites | Scope Creep | Reactive Control | System Duplication | Other)
+## Mathematical Validation
+[How math will be proven correct]
 
-- **[Category]:** [Issue] in [source]
-  - **Principle:** [Violated principle from AGENTS.md]
-  - **Fix:** [How to address]
+## Emergence Assessment
+[What behaviors will emerge vs prescribed]
 
-**If none:** No violations found.
+## Risk Analysis
+**Mathematical:** [Issues and mitigation]
+**Integration:** [Issues and mitigation]
+**Principle:** [Issues and mitigation]
 
-### Risks & Concerns
+## Recommendation
 
-- **[Description]:** [Why concerning] in [source]
-  - **Mitigation:** [How to reduce risk]
+### If APPROVED:
+Proceed with [N] stages, validating [principles] at each stage.
 
-**If none:** Plans appear well-aligned.
+### If REVISE:
+Fix [violations] before resubmitting.
 
-### Actionable Items
+### If REJECT:
+[Why this shouldn't be built]
 
-- [ ] [Specific action needed]
+## The Test
+Can we say: "This [system] will [do one thing] through [mathematical validation],
+enabling [emergent behaviors] while maintaining [all six principles]"?
 
-**If none:** Ready to proceed with implementation.
-
-### Recommendation
-
-**Reasoning:** [Brief justification for status]
-
-**Next Steps:**
-- If APPROVED: Proceed to EXECUTE
-- If REVISE: Address items, re-review
-- If DEFER: Update DESIGN_BACKLOG with findings
+Answer: [YES/NO] - [Explanation]
 ```
+
+---
+
+## Decision Criteria
+
+### APPROVE only if:
+- All six principles validated
+- Math can be proven correct
+- Stages are reversible
+- Debug visualization included
+- Enables emergence
+- Nothing can be removed
+
+### REVISE if:
+- Minor principle violations
+- Simplification possible
+- Math needs validation strategy
+- Stages too complex
+- Missing debug visibility
+
+### REJECT if:
+- Major principle violations
+- Cannot validate mathematically
+- Prescribes instead of enables
+- Adds unnecessary complexity
+- Foundation uncertain (<90%)
+- Violates player control
+
+---
+
+## The Review Questions
+
+For every stage in the plan:
+
+1. **Can it be simpler?**
+2. **Can it be validated?**
+3. **Can it be seen?**
+4. **Can it be reversed?**
+5. **Does it compose?**
+
+If any answer is "no," that stage must be revised.
+
+---
+
+## Anti-Patterns to Catch
+
+### The Kitchen Sink Plan
+Too many features in one system. Demand decomposition.
+
+### The Black Box Plan
+No debug visualization. Demand visibility.
+
+### The Prescriptive Plan
+Specifies exact outcomes. Demand emergence.
+
+### The Top-Down Plan
+Builds before foundation. Demand bottom-up.
+
+### The Faith-Based Plan
+Cannot be validated. Demand proof.
+
+---
+
+## The Commitment
+
+Reviews must:
+- Protect principles above features
+- Demand simplification
+- Require validation
+- Ensure reversibility
+- Enable emergence
+
+Never approve plans that:
+- Violate principles
+- Cannot be validated
+- Hide complexity
+- Prescribe outcomes
+- Build on uncertainty
+
+**The best review prevents bad systems from being built.**
+
+**This is the way.**

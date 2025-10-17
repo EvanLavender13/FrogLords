@@ -1,179 +1,521 @@
-# Task Workflows
+# Development Workflows
 
-This document provides an overview of all task workflows and how backlogs feed into each workflow.
+**Build systems that enable. Remove complexity that constrains. Serve principles always.**
 
-## Workflow Overview
+---
+
+## The Purpose
+
+This is not project management—it's a philosophical framework for principled development. Two complementary workflows serve the Six Pillars: FEATURE builds systems from certainty, IMPROVE removes complexity through simplification.
+
+**Together, they create a cycle of growth and refinement guided by principles.**
+
+---
+
+## The Philosophy
+
+### The Dance of Building and Simplifying
+
+Development has two movements:
+
+**FEATURE (Growth):**
+- Build new systems from validated foundations
+- Enable emergence through simple primitives
+- Strengthen certainty upward
+
+**IMPROVE (Refinement):**
+- Remove accumulated complexity
+- Restore violated principles
+- Simplify continuously
+
+**Neither dominates. Both serve the principles. The codebase breathes—growing systems, removing complexity.**
+
+### Why Two Workflows?
+
+They serve different purposes with different constraints:
+
+**FEATURE:**
+- Requires high foundation certainty (≥90%)
+- Builds upward from solid ground
+- Adds capability through systems
+- Longer cycle, more validation
+
+**IMPROVE:**
+- Requires moderate stability (≥70%)
+- Works within existing code
+- Removes unnecessary complexity
+- Shorter cycle, focused changes
+
+**The distinction reflects the risk profile and philosophical intent.**
+
+### The Role of Backlogs
+
+Backlogs are not task lists—they're philosophical inventories:
+
+**DESIGN_BACKLOG:**
+- Systems waiting for foundation certainty
+- Ideas maturing with understanding
+- Dependencies mapped and tracked
+
+**IMPROVE_BACKLOG:**
+- Principle violations to restore
+- Complexity to remove
+- Patterns to recognize
+
+**Both organize work by principles, not features or deadlines.**
+
+---
+
+## System Overview
 
 ```mermaid
 graph TB
-    subgraph Backlogs["PLANS/ - Backlogs"]
-        DB[DESIGN_BACKLOG]
-        IB[IMPROVE_BACKLOG]
+    subgraph Principles["AGENTS.md - The Six Pillars"]
+        P[Radical Simplicity<br/>Composable Functions<br/>Mathematical Foundations<br/>Emergent Behavior<br/>Consistency<br/>Principled Development]
     end
 
-    subgraph FeatureTasks["FEATURE/ - Feature Workflow"]
-        RF[REQUEST]
-        NF[SELECT]
-        FW[Feature Tasks<br/>PLAN → REVIEW_PLAN<br/>EXECUTE → REVIEW_CODE<br/>FINALIZE]
-        UB[UPDATE_BACKLOG]
-        UD[UPDATE_DEPENDENCIES]
+    subgraph Backlogs["PLANS/ - Philosophical Inventories"]
+        DB[DESIGN_BACKLOG<br/>Systems waiting for certainty]
+        IB[IMPROVE_BACKLOG<br/>Violations to restore]
     end
 
-    subgraph ImproveTasks["IMPROVE/ - Improve Workflow"]
-        RC[REVIEW_CODEBASE]
-        SI[SELECT]
-        IW[Improve Tasks<br/>PLAN → REVIEW → EXECUTE<br/>REVIEW → FINALIZE]
+    subgraph Feature["FEATURE/ - Build Systems"]
+        FS[SELECT → CLARIFY → PLAN<br/>REVIEW_PLAN → EXECUTE<br/>REVIEW_CODE → FINALIZE]
     end
 
-    %% Feature workflow flows
-    RF -->|add new ideas| DB
-    DB -->|select next| NF
-    NF --> FW
-    FW --> UB
-    FW --> UD
-    UB -->|update status| DB
+    subgraph Improve["IMPROVE/ - Remove Complexity"]
+        IS[SELECT → PLAN → REVIEW_PLAN<br/>EXECUTE → REVIEW_CODE<br/>FINALIZE]
+        RC[REVIEW_CODEBASE<br/>Find violations]
+    end
 
-    %% Improve workflow flows
-    RC -->|populate items| IB
-    IB -->|select item| SI
-    SI --> IW
-    IW -->|mark complete| IB
+    P -.->|Guides| DB
+    P -.->|Guides| IB
+    P -.->|Validates| FS
+    P -.->|Validates| IS
 
-    style DB fill:#e1f5ff
+    DB -->|Foundation ready| FS
+    FS -->|Strengthen foundation| DB
+    FS -->|May discover violations| IB
+
+    RC -->|Populate| IB
+    IB -->|Violation selected| IS
+    IS -->|Remove from backlog| IB
+
+    style P fill:#e1f5ff
+    style DB fill:#d4edda
     style IB fill:#fff3cd
-    style FW fill:#d4edda
-    style IW fill:#d4edda
-    style NF fill:#b8e6b8
-    style SI fill:#b8e6b8
-    style RF fill:#e1f5ff
-    style RC fill:#fff3cd
-    style UB fill:#e1f5ff
+    style FS fill:#b8e6b8
+    style IS fill:#ffd4b8
 ```
 
-## Document Naming Conventions
+---
 
-Workflow documents follow distinct naming patterns optimized for their usage:
+## The Two Workflows
 
-### Feature Documents (Feature-First)
-**Pattern:** `PLANS/<feature_name>_<WORKFLOW>.md`  
-**Archive:** `YYYYMMDD_HHMMSS_<feature_name>_<WORKFLOW>.md`
+### FEATURE Workflow (`TASKS/FEATURE/`)
 
-- `<feature_name>_FEATURE.md` - Feature description and rationale
-- `<feature_name>_PLAN.md` - Detailed implementation steps
-- `<feature_name>_CODE_REVIEW.md` - Implementation review findings
-- `<feature_name>_PLAN_REVIEW.md` - Planning review findings
+**Purpose:** Build systems that enable emergence
 
-**Rationale:** Features involve multi-phase iterative work. Grouping by feature name clusters all related documents together alphabetically, making it easy to see the complete arc of a feature at a glance (planning → implementation → reviews).
+**Tasks:**
+1. **SELECT** - Choose from backlog based on foundation
+2. **CLARIFY** - Transform features into systems (optional)
+3. **PLAN** - Prove system should be built
+4. **REVIEW_PLAN** - Validate against all principles
+5. **EXECUTE** - Build validated stages
+6. **REVIEW_CODE** - Verify principles maintained
+7. **FINALIZE** - Capture learning, update foundation
 
-### Improve Documents (Workflow-First)
-**Pattern:** `PLANS/IMPROVE_<description>.md`  
-**Archive:** `YYYYMMDD_HHMMSS_IMPROVE_<description>.md`
+**Philosophy:** Build from certainty toward uncertainty. Each system strengthens the foundation for what comes next.
 
-**Rationale:** Improvements (maintenance, refactors, architectural fixes) are typically one-off enhancements. Grouping by workflow type (IMPROVE_) clusters all improvement work together, aiding pattern recognition and retrospective analysis of code quality evolution.
+**When to use:** When adding new capabilities, building primitives, enabling new behaviors.
 
-### Feature Development Workflow
-- **Location:** `TASKS/FEATURE/`
-- **Purpose:** Complete feature development workflow for implementing new features
-- **Entry Point:** SELECT
-- **Input Backlog:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
-- **Details:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
-- **Document Approach:** Multi-file with feature-first naming (`PLANS/<name>_FEATURE.md`, `<name>_PLAN.md`, `<name>_CODE_REVIEW.md`, `<name>_PLAN_REVIEW.md`)
- - **Common Checkpoints:** Gate Mechanism Review (prefer geometric deltas over thresholds for reactive/debug gating), UI Ordering Verified (enum order matches UI for cycle-based lists)
-
-### Improve Workflow
-- **Location:** `TASKS/IMPROVE/`
-- **Purpose:** Code quality improvements, architectural fixes, tech debt, and pattern extraction
-- **Entry Point:** SELECT
-- **Input Backlog:** [PLANS/IMPROVE_BACKLOG.md](../PLANS/IMPROVE_BACKLOG.md)
-- **Details:** [IMPROVE/WORKFLOW.md](IMPROVE/WORKFLOW.md)
-- **Document Approach:** Single document per improvement (`PLANS/IMPROVE_<name>.md`) accumulates all phases
-- **Paths:** Trivial (1-2 pts, skip planning/review) or Standard (3-8 pts, full workflow)
+**See:** `TASKS/FEATURE/WORKFLOW.md` for details
 
 ---
 
-## Backlog-to-Workflow Mapping
+### IMPROVE Workflow (`TASKS/IMPROVE/`)
 
-### Design Backlog → Feature Workflow
-**Source:** [PLANS/DESIGN_BACKLOG.md](../PLANS/DESIGN_BACKLOG.md)
-**Workflow:** [FEATURE/WORKFLOW.md](FEATURE/WORKFLOW.md)
-**Process:**
-1. Items mature in DESIGN_BACKLOG with certainty scores and prerequisites
-2. SELECT task selects ready items based on dependency stack
-3. Feature flows through planning → implementation → finalization
-4. UPDATE_BACKLOG marks items complete/deferred with learnings
+**Purpose:** Remove complexity, restore principles
 
-**Key Tasks:**
-- REQUEST (add new items)
-- SELECT (select from backlog)
-- UPDATE_BACKLOG (mark complete/deferred)
+**Tasks:**
+1. **SELECT** - Choose violation, classify complexity
+2. **PLAN** - Plan simplification (Path B only)
+3. **REVIEW_PLAN** - Validate simplification (Path B only)
+4. **EXECUTE** - Delete or simplify (both paths)
+5. **REVIEW_CODE** - Verify reduction (Path B only)
+6. **FINALIZE** - Measure and document (both paths)
 
-### Improve Backlog → Improve Workflow
-**Source:** [PLANS/IMPROVE_BACKLOG.md](../PLANS/IMPROVE_BACKLOG.md)
-**Workflow:** [IMPROVE/WORKFLOW.md](IMPROVE/WORKFLOW.md)
-**Process:**
-1. REVIEW_CODEBASE populates IMPROVE_BACKLOG with code quality items, architectural violations, tech debt, and pattern extraction opportunities
-2. Items prioritized by severity/priority (Critical → High → Medium → Low)
-3. Items must meet stability gate (≥70% certainty) and rule of three (for pattern extractions)
-4. SELECT chooses appropriate improvements based on complexity and readiness
-5. Trivial items (1-2 pts) skip planning/review; Standard items (3-8 pts) get full workflow
+**Special:** **REVIEW_CODEBASE** - Find violations to populate backlog
 
-**Key Tasks:**
-- REVIEW_CODEBASE (populate backlog)
-- SELECT (select from backlog)
-- PLAN (Standard path only - create detailed approach)
-- REVIEW_PLAN (Standard path only - verify against principles)
-- EXECUTE (implement changes in stages)
-- REVIEW_CODE (Standard path only - comprehensive review)
-- FINALIZE (update backlog, document learnings, prepare commit)
+**Philosophy:** Always try deletion first. Simplification second. Documentation last. Most improvements should remove code.
+
+**When to use:** Between features, when violations accumulate, when foundation stable enough (≥70%).
+
+**See:** `TASKS/IMPROVE/WORKFLOW.md` for details
 
 ---
 
-## Shared Utility Tasks
+## How They Work Together
 
-**Location:** `TASKS/` (root)
+### The Development Cycle
 
-These tasks support all workflows:
+```
+1. Build feature (FEATURE workflow)
+   ↓
+2. Foundation strengthened, possibly introduced violations
+   ↓
+3. Review codebase (REVIEW_CODEBASE)
+   ↓
+4. Remove complexity (IMPROVE workflow)
+   ↓
+5. Foundation cleaner and stronger
+   ↓
+6. Ready for next feature (repeat)
+```
 
-- **COMMIT**: Format and create git commits following project conventions
+**This cycle never ends. Building and simplifying are continuous.**
 
-## Workflow-Specific Tasks
+### When to Use Each
 
-### Feature Workflow (`TASKS/FEATURE/`)
-- **UPDATE_DEPENDENCIES**: Update DEPENDENCY_STACK.md with new certainty scores
-- **UPDATE_BACKLOG**: Mark features complete/deferred in DESIGN_BACKLOG, document learnings
+**Use FEATURE when:**
+- Foundation certain enough (≥90%)
+- Building new capability
+- Adding primitives
+- Enabling emergence
+- Dependencies satisfied
 
-### Improve Workflow (`TASKS/IMPROVE/`)
-- **REVIEW_CODEBASE**: Systematic review of src/ to populate IMPROVE_BACKLOG.md with code quality items, architectural violations, tech debt, and pattern extraction opportunities
+**Use IMPROVE when:**
+- Foundation stable enough (≥70%)
+- Between features
+- Violations accumulating
+- Technical debt visible
+- No active feature work
+
+**Use neither when:**
+- Foundation too uncertain
+- Major changes in progress
+- Better to stabilize first
 
 ---
 
-## Meta-Process Tasks
+## The Principles in Action
 
-- **RETROSPECTIVE**: Review last N iterations to identify workflow patterns, extract learnings, and propose process improvements (run every 5-10 iterations)
-- **UNDERSTAND_CONCEPT**: Build conceptual knowledge through discussion, research, and documentation. Create intellectual capital that informs future problem-solving (run anytime to eliminate uncertainty)
-- **ALIGN_TASKS**: Ensure all workflow tasks maintain consistent structure, tone, format, and principle alignment. Prevents drift when individual tasks are updated (run when tasks are modified, principles change, or during periodic audits)
-- **SYNC_PRINCIPLES**: Keep `AGENTS.md` and principle guidance aligned with live architecture and curated NOTES references; verify PLANS trigger sections; optionally normalize encodings (run after architectural changes, notes updates, or periodically)
+### 1. Radical Simplicity
+**FEATURE:** Build minimal primitives, not feature sets
+**IMPROVE:** Delete first, simplify second, document last
+**Result:** Codebase stays simple despite growth
 
-## Workflow Complexity Comparison
+### 2. Fundamental Composable Functions
+**FEATURE:** Each system orthogonal to others
+**IMPROVE:** Untangle dependencies, separate concerns
+**Result:** Systems compose without special cases
 
-### IMPROVE (Low to Medium Complexity)
-- **Complexity:** 1-8 points (two paths)
-- **Trivial Path (1-2 pts):** Single-file, mechanical changes; skip planning/review
-- **Standard Path (3-8 pts):** Multi-file, architectural changes; full workflow with planning and review
-- **Purpose:** Code quality improvements, architectural fixes, tech debt, pattern extraction
-- **Gates:** Stability requirement (≥70% certainty), rule of three verification (for pattern extractions)
+### 3. Solid Mathematical Foundations
+**FEATURE:** Validate math before integration
+**IMPROVE:** Derive magic numbers, prove correctness
+**Result:** Every behavior mathematically sound
 
-### FEATURE (High Complexity)
-- **Complexity:** 8+ points (or split into smaller iterations)
-- **Scope:** Full system implementation
-- **Review:** Multi-stage (plan, step, implementation)
-- **Purpose:** New mechanics and behaviors
+### 4. Emergent Behavior
+**FEATURE:** Enable outcomes, don't prescribe them
+**IMPROVE:** Remove prescribed behaviors
+**Result:** Systems surprise even creators
+
+### 5. Consistency
+**FEATURE:** Predictable behavior, preserved control
+**IMPROVE:** Eliminate special cases
+**Result:** Player trust maintained
+
+### 6. Principled Development
+**FEATURE:** Every decision justified
+**IMPROVE:** Every change restores a principle
+**Result:** Can trace all code to principles
 
 ---
 
-## Potential Future Tasks
+## Key Operational Principles
 
-- **BUILD_TEST**: Formalized quality gate execution (build, lint, format, smoke test)
-- **PLAYTEST_GRAYBOX**: Execute testing protocol with target sample size and metrics
-- **TUNE_PARAMETERS**: Real-time parameter tuning session to achieve desired feel
+### Build From Certainty
 
+The dependency stack guides what to build:
+- Foundation ≥90% → Safe to build on
+- Foundation <90% → Wait or improve foundation first
+- Truth flows upward, never down
+
+**Never build on sand. Always strengthen the foundation.**
+
+### Validate Continuously
+
+Both workflows require validation at gates:
+- Mathematical correctness proven
+- Debug visualization functional
+- Principle adherence verified
+- No regressions introduced
+
+**Validation is not optional. It's how we build truth.**
+
+### Exit Freely
+
+Deferral available at any point in either workflow:
+- Learn we shouldn't proceed
+- Foundation too uncertain
+- Principles can't be maintained
+- Better to defer and learn
+
+**Deferral is learning, not failure.**
+
+### Document Learning
+
+Every cycle teaches:
+- What emerged (FEATURE)
+- What patterns recur (IMPROVE)
+- How to calibrate certainty
+- Where principles guide us
+
+**Learning compounds. Document it.**
+
+### Measure Everything
+
+Objective metrics prevent self-deception:
+- Foundation certainty (%)
+- Complexity reduction (lines, dependencies)
+- Principle adherence (1-10 per pillar)
+- Emergence events (count)
+
+**What gets measured gets improved.**
+
+---
+
+## Backlog Integration
+
+### DESIGN_BACKLOG (`PLANS/DESIGN_BACKLOG.md`)
+
+**Purpose:** Systems awaiting foundation certainty
+
+**Structure:**
+- Organized by certainty required
+- Tracks dependencies
+- Includes emergence opportunities
+- Notes when foundation ready
+
+**Philosophy:** Ideas are cheap. Implementation is expensive. Wait for certainty before building.
+
+**Populated by:**
+- Feature completion (new possibilities discovered)
+- External inspiration (REQUEST)
+- Emergence during development
+
+**Selected by:** FEATURE/SELECT based on foundation state
+
+---
+
+### IMPROVE_BACKLOG (`PLANS/IMPROVE_BACKLOG.md`)
+
+**Purpose:** Principle violations to restore
+
+**Structure:**
+- Organized by principle violated
+- Prioritized by severity
+- Includes pattern notes
+- Complexity estimation
+
+**Philosophy:** Violations accumulate silently. Audits make them visible.
+
+**Populated by:**
+- REVIEW_CODEBASE audits
+- Discoveries during FEATURE work
+- Code reviews
+
+**Selected by:** IMPROVE/SELECT based on priority and foundation stability
+
+---
+
+## Complexity Guidelines
+
+### FEATURE Complexity
+
+All features follow full workflow:
+- Requires ≥90% foundation certainty
+- Full validation at every gate
+- Mathematical proof required
+- Debug visualization mandatory
+
+**No shortcuts in system building.**
+
+### IMPROVE Complexity
+
+Two paths based on risk:
+
+**Path A: Trivial (1-2 points)**
+- SELECT → EXECUTE → FINALIZE
+- Obvious fixes
+- Low risk
+- Fast cycle
+
+**Path B: Standard (3-8 points)**
+- SELECT → PLAN → REVIEW_PLAN → EXECUTE → REVIEW_CODE → FINALIZE
+- Complex simplification
+- Higher risk
+- Careful approach
+
+**Path selection based on risk, not effort.**
+
+---
+
+## Document Organization
+
+### Task Files
+
+```
+TASKS/
+├── WORKFLOW.md              - This document
+├── AGENTS.md                - The Six Pillars (principles)
+├── RETROSPECTIVE.md         - Reflection and learning
+├── ALIGN_TASKS.md          - Task consistency maintenance
+├── SYNC_PRINCIPLES.md      - Principle alignment checks
+├── UNDERSTAND_CONCEPT.md   - Research and learning
+│
+├── FEATURE/
+│   ├── WORKFLOW.md         - Feature workflow details
+│   ├── SELECT.md
+│   ├── CLARIFY.md
+│   ├── PLAN.md
+│   ├── REVIEW_PLAN.md
+│   ├── EXECUTE.md
+│   ├── REVIEW_CODE.md
+│   └── FINALIZE.md
+│
+└── IMPROVE/
+    ├── WORKFLOW.md         - Improve workflow details
+    ├── SELECT.md
+    ├── PLAN.md
+    ├── REVIEW_PLAN.md
+    ├── EXECUTE.md
+    ├── REVIEW_CODE.md
+    ├── FINALIZE.md
+    └── REVIEW_CODEBASE.md
+```
+
+### Plan Files
+
+```
+PLANS/
+├── DESIGN_BACKLOG.md           - Systems to build
+├── IMPROVE_BACKLOG.md          - Violations to fix
+├── DEPENDENCY_STACK.md         - Foundation state
+│
+├── <feature>_FEATURE.md        - Feature description & reflection
+├── <feature>_PLAN.md           - Implementation stages
+├── <feature>_PLAN_REVIEW.md    - Plan approval
+├── <feature>_CODE_REVIEW.md    - Code approval
+│
+└── IMPROVE_<name>.md           - All improvement phases
+```
+
+---
+
+## Getting Started
+
+### New to the Project?
+
+1. **Read AGENTS.md** - Understand the Six Pillars
+2. **Read this document** - Understand the workflows
+3. **Read FEATURE/WORKFLOW.md** - Understand system building
+4. **Read IMPROVE/WORKFLOW.md** - Understand simplification
+
+### Starting Feature Work?
+
+1. Check `PLANS/DEPENDENCY_STACK.md` for foundation state
+2. Review `PLANS/DESIGN_BACKLOG.md` for available systems
+3. Start with `TASKS/FEATURE/SELECT.md`
+4. Follow workflow in `TASKS/FEATURE/WORKFLOW.md`
+
+### Starting Improvement Work?
+
+1. Check foundation stability (≥70%)
+2. Review `PLANS/IMPROVE_BACKLOG.md` for violations
+3. Start with `TASKS/IMPROVE/SELECT.md`
+4. Follow workflow in `TASKS/IMPROVE/WORKFLOW.md`
+
+### Need to Audit?
+
+1. Run `TASKS/IMPROVE/REVIEW_CODEBASE.md`
+2. Populates `PLANS/IMPROVE_BACKLOG.md`
+3. Then proceed with IMPROVE workflow
+
+---
+
+## Meta-Processes
+
+Beyond the two main workflows, occasional meta-processes maintain the system:
+
+### RETROSPECTIVE (`TASKS/RETROSPECTIVE.md`)
+**When:** Every 5-10 completed cycles
+**Purpose:** Reflect on patterns, celebrate emergence, learn from violations
+**Philosophy:** Each cycle teaches. Retrospectives capture the wisdom.
+
+### ALIGN_TASKS (`TASKS/ALIGN_TASKS.md`)
+**When:** After principle updates
+**Purpose:** Ensure all tasks embody current principles
+**Philosophy:** Process must serve principles, not traditions.
+
+### SYNC_PRINCIPLES (`TASKS/SYNC_PRINCIPLES.md`)
+**When:** After major architectural changes
+**Purpose:** Ensure AGENTS.md reflects reality
+**Philosophy:** Principles should describe truth, not wishes.
+
+### UNDERSTAND_CONCEPT (`TASKS/UNDERSTAND_CONCEPT.md`)
+**When:** Need to learn before building
+**Purpose:** Research topics before implementation
+**Philosophy:** Understanding precedes building.
+
+---
+
+## The Commitment
+
+This development system exists to:
+
+- **Serve the Six Pillars** - Every workflow validates principles
+- **Build from certainty** - Foundation guides what's possible
+- **Enable emergence** - Systems enable, don't prescribe
+- **Remove complexity** - Continuous simplification
+- **Capture learning** - Wisdom compounds over time
+- **Measure objectively** - Truth over intuition
+
+This development system never:
+
+- Prescribes outcomes over enabling possibilities
+- Rushes through gates to "ship it"
+- Skips validation to save time
+- Adds complexity for convenience
+- Builds on uncertain foundations
+- Ignores principle violations
+
+---
+
+## The Vision
+
+This is not a game development process. This is **principled system building** that happens to create gameplay.
+
+The workflows exist to:
+1. Protect principles throughout development
+2. Build systems that surprise their creators
+3. Remove complexity continuously
+4. Strengthen foundations iteratively
+5. Enable emergence at every level
+6. Make every decision traceable
+
+**When faced with any choice, return to AGENTS.md. The Six Pillars guide everything.**
+
+---
+
+## The Truth
+
+We are building engines of experience—machines that transform player intent into emotion through mathematically correct, radically simple, emergent systems.
+
+Every feature we build serves this purpose.
+Every improvement we make serves this purpose.
+Every principle we uphold serves this purpose.
+
+**The workflows are not the goal. Principle-aligned emergent gameplay is the goal. The workflows serve the principles. The principles serve the players.**
+
+**This is the way.**

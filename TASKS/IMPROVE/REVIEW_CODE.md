@@ -1,182 +1,367 @@
-# Review Improvement Code (Standard Path Only)
+# Review Code
 
-**Prerequisites:** Completed EXECUTE (Standard Path); full validation checklist passed; execution notes appended to `PLANS/IMPROVE_<name>.md`
-
----
-
-### 1. Review Development Principles
-
-Read `AGENTS.md` for development principles and coding standards:
-- snake_case naming conventions
-- 4-space indent, braces on same line
-- Dependency flow (Foundation → Character → Rendering → App)
-- "Clarity over cleverness" and "Simplicity over sophistication"
-
-### 2. Gather Context
-
-Extract improvement name from branch (`improve/<name>`):
-
-1. Read `PLANS/IMPROVE_<name>.md`:
-   - Original issue and proposed fix
-   - Plan stages and approach
-   - Execution notes for each stage
-   - Any deviations or complications
-2. Identify all modified files from execution notes
-3. Read changed code and surrounding context
-
-### 3. Perform Code Review
-
-Cross-reference implemented code against principles and plan goals.
-
-**For Each Modified File:**
-
-Check Correctness:
-- Change solves stated problem
-- Logic is sound
-- No off-by-one errors or typos
-- Edge cases handled appropriately
-
-Verify Principles Adherence:
-- **Naming:** snake_case for all user code; descriptive, clear names; consistent with surrounding code
-- **Structure:** Appropriate placement (right file, right scope); minimal changes (no unnecessary refactoring); comments updated if behavior/intent changed
-- **Architecture:** Dependency flow correct (Foundation → Character → Rendering → App); no reverse dependencies introduced; follows layered architecture
-
-**Check for Side Effects:**
-
-Unintended Changes:
-- No scope creep (only what was planned changed)
-- No "while we're here" additions
-- No unrelated formatting changes (beyond clang-format)
-
-Behavioral Impact:
-- Behavior preserved (or intentionally changed as planned)
-- No new bugs introduced
-- Performance not degraded
-
-Dependency Impact:
-- All `#include` statements necessary and minimal
-- No circular dependencies created
-- Check callers/users of changed functions/types still work correctly
-
-**Validate Against Checklist:**
-
-Re-verify the validation checklist from PLAN was properly executed:
-- Build output reviewed (no errors, no warnings)
-- Behavior matches intent
-- Architecture principles followed
-- Code quality tools clean (clang-format, clang-tidy)
-- Learnings captured in execution notes
-
-### 4. Append Review to Planning Document
-
-Add review analysis to `PLANS/IMPROVE_<name>.md` using template below.
-
-**Decision Options:**
-- **APPROVED:** All checks passed; principles followed; no side effects; quality standards met → Proceed to FINALIZE
-- **FIX_ISSUES:** Specific problems found (missed edge case, naming violation, unintended behavior change, missing comment update) → Return to EXECUTE with fix list
-- **ROLLBACK:** Fundamental issues with approach; unintended complexity revealed; risk too high for reward → Rollback changes, update backlog with learnings
-
-### Tone & Constraints
-
-- Concise and direct; no preamble or postamble
-- Detail scales with risk and complexity
-- Cite specific file:line references
-- Focus on actionable fixes over opinions
-- Be thorough but not pedantic
-- Distinguish between "must fix" and "nice to have"
-- Approve good work; don't block on trivial preferences
+**Verify simplification achieved and principles restored.**
 
 ---
 
-### Code Review Template
+## The Purpose
 
-**Append to `PLANS/IMPROVE_<name>.md`:**
+Confirm the improvement made the codebase simpler, not just different. Validate that violated principles were restored, not just that the code still works.
+
+A review that approves added complexity has failed its purpose.
+
+---
+
+## Prerequisites
+
+- Improvement execution complete
+- Complexity metrics documented
+- Principle violations addressed
+- Build and validation passed
+
+---
+
+## Phase 1: Simplification Verification
+
+### Measure the Reduction
+
+Compare before and after:
+
+#### Line Count
+```markdown
+Before: [N lines]
+After: [N lines]
+Reduction: [N lines] (MUST be negative)
+```
+
+#### Complexity Metrics
+```markdown
+Cyclomatic Complexity:
+- Before: [N]
+- After: [N]
+- Reduction: [N] (MUST be negative)
+
+Dependencies:
+- Before: [N]
+- After: [N]
+- Reduction: [N] (MUST be ≤0)
+
+Special Cases:
+- Before: [N]
+- After: [N]
+- Eliminated: [N] (MUST be >0 if any existed)
+```
+
+**If complexity increased, REJECT immediately.**
+
+### The Three Questions
+
+For every change made:
+
+1. **Did we delete first?**
+   - Was removal attempted?
+   - What prevented deletion?
+   - Is the reason valid?
+
+2. **Did we simplify second?**
+   - Are there fewer branches?
+   - Are there fewer parameters?
+   - Are responsibilities clearer?
+
+3. **Did we document only as last resort?**
+   - Is remaining complexity essential?
+   - Are magic numbers derived?
+   - Is intent now clear?
+
+---
+
+## Phase 2: Principle Restoration
+
+### Verify Violation Fixed
+
+From `PLANS/IMPROVE_<name>.md`, confirm:
+
+#### The Original Violation
+- **Principle:** [Which was violated]
+- **Evidence:** [What showed violation]
+- **Status:** [FIXED/PARTIALLY FIXED/UNFIXED]
+
+#### How It Was Restored
+
+For the violated principle, verify:
+
+1. **Radical Simplicity**
+   - Complexity removed, not moved
+   - No new abstractions added
+   - Fewer lines, not more
+
+2. **Fundamental Composable Functions**
+   - Responsibilities separated
+   - Dependencies reduced
+   - Orthogonality improved
+
+3. **Solid Mathematical Foundations**
+   - Formulas validated
+   - Magic numbers derived
+   - Debug visualization added
+
+4. **Emergent Behavior**
+   - Prescriptions removed
+   - Possibilities opened
+   - Flexibility increased
+
+5. **Consistency**
+   - Special cases eliminated
+   - Predictability improved
+   - Control preserved
+
+6. **Principled Development**
+   - Decisions now justified
+   - Code now explainable
+   - Intent now clear
+
+**The violated principle MUST show improvement.**
+
+---
+
+## Phase 3: Side Effect Analysis
+
+### Check for New Violations
+
+While fixing one principle, did we violate another?
+
+For each of the Six Pillars:
+- [ ] Not made worse
+- [ ] No new violations introduced
+- [ ] Net improvement positive
+
+### Check for Scope Creep
+
+Did we stay focused?
+- [ ] Only planned changes made
+- [ ] No "while we're here" additions
+- [ ] No feature additions
+- [ ] No unrelated fixes
+
+### Check for Regressions
+
+Did we break anything?
+- [ ] Existing functionality preserved
+- [ ] Performance not degraded
+- [ ] No new bugs introduced
+- [ ] Player control maintained
+
+---
+
+## Phase 4: Code Quality Validation
+
+### Technical Standards
+- [ ] snake_case naming throughout
+- [ ] Proper indentation (4 spaces)
+- [ ] Dependency flow correct
+- [ ] No circular includes
+
+### Cleanliness
+- [ ] No commented-out code
+- [ ] No debug prints remaining
+- [ ] No TODO comments (address or remove)
+- [ ] No experimental code
+
+### Documentation
+- [ ] Complex logic explained
+- [ ] Derivations documented
+- [ ] Decisions justified
+- [ ] Intent clear
+
+---
+
+## Phase 5: The Simplification Test
+
+For the entire improvement, answer:
+
+1. **Does less code exist?** [YES/NO]
+2. **Is complexity reduced?** [YES/NO]
+3. **Are special cases removed?** [YES/NO/N/A]
+4. **Are dependencies fewer?** [YES/NO]
+5. **Is intent clearer?** [YES/NO]
+
+**Need at least 4 YES answers to approve.**
+
+---
+
+## Phase 6: Document Review
+
+Append to `PLANS/IMPROVE_<name>.md`:
 
 ```markdown
----
-
 ## CODE REVIEW
 
 **Date:** [YYYY-MM-DD]
-**Status:** APPROVED | FIX_ISSUES | ROLLBACK
+**Decision:** APPROVED | REVISE | REJECT
 
-### Summary
+## Simplification Achieved
+- Lines removed: [N]
+- Complexity reduced: [N points]
+- Special cases eliminated: [N]
+- Dependencies removed: [N]
 
-[One paragraph: Is implementation approved? Major issues? Recommendation?]
+**Net Simplification:** [YES/NO]
 
-### Violations (Must Fix)
+## Principle Restoration
+**Violated Principle:** [Which one]
+**Status:** RESTORED | PARTIALLY RESTORED | NOT RESTORED
+**Evidence:** [How it's better]
 
-- **[Category]:** [Issue]
-  - **File:** `src/path/to/file.cpp:line`
-  - **Principle:** [Which principle violated]
-  - **Fix:** [How to address]
+## Other Principles
+1. Simplicity: [Improved/Maintained/Degraded]
+2. Composability: [Improved/Maintained/Degraded]
+3. Mathematics: [Improved/Maintained/Degraded]
+4. Emergence: [Improved/Maintained/Degraded]
+5. Consistency: [Improved/Maintained/Degraded]
+6. Development: [Improved/Maintained/Degraded]
 
-**If none:** No violations found.
+**Net Impact:** [Positive/Neutral/Negative]
 
-### Concerns (Consider)
+## Quality Checks
+- Naming: ✓ snake_case
+- Dependencies: ✓ Proper flow
+- Side effects: ✓ None
+- Regressions: ✓ None
 
-- **[Description]:** [Why concerning]
-  - **File:** `src/path/to/file.cpp:line`
-  - **Impact:** [Potential issues]
+## The Test
+Can we say: "This improvement removed [N lines] by [method],
+fixing [principle violation] with net simplification of [measurement]"?
 
-**If none:** Implementation looks solid.
+Answer: [YES/NO]
 
-### Code Quality Checks
+## Recommendation
 
-- Naming: snake_case
-- Formatting: 4-space indent, braces on same line
-- Dependency flow respected
-- No scope creep
-- Comments accurate
-- No side effects
+### If APPROVED:
+The codebase is measurably simpler.
+Principle [X] has been restored.
+Proceed to FINALIZE.
 
-### Files Reviewed
+### If REVISE:
+[Specific issues to fix]
+- Simplification insufficient
+- New violations introduced
+- Scope creep detected
 
-**`path/to/file.cpp`:**
-- Changes: [Brief summary]
-- Correctness: ✓ [or issues]
-- Principles: ✓ [or issues]
-- Side Effects: None [or describe]
-
-[Repeat for each file]
-
-### Actionable Items
-
-- [ ] [Specific action needed]
-
-**If none:** Ready to proceed with finalization.
-
-### Recommendation
-
-**Reasoning:** [Brief justification for status]
-
-**Next Steps:**
-- If APPROVED: Proceed to FINALIZE
-- If FIX_ISSUES: Address items, re-review
-- If ROLLBACK: Defer improvement, update backlog
+### If REJECT:
+The improvement made things worse.
+Rollback all changes.
+[Explanation of failure]
 ```
 
 ---
 
-## Common Issues to Watch For
+## Decision Criteria
 
-**Architectural:**
-- Higher layer depending on lower layer (okay)
-- Lower layer depending on higher layer (NOT okay)
-- Rendering including App headers (violation)
+### APPROVE only if:
+- Net complexity reduced (measurable)
+- Original violation fixed
+- No new violations introduced
+- No scope creep
+- Build and tests pass
+- Code cleaner than before
 
-**Naming:**
-- camelCase instead of snake_case
-- Abbreviations or unclear names
-- Inconsistent with surrounding code
+### REVISE if:
+- Minor issues found
+- Small scope creep
+- Documentation missing
+- Standards not met
+- Opportunity for more deletion
 
-**Scope Creep:**
-- Extra refactoring not in plan
-- Opportunistic improvements
-- Fixed unrelated issues "while here"
+### REJECT if:
+- Complexity increased
+- Violation not fixed
+- New violations created
+- Major scope creep
+- Functionality broken
+- Made things worse
 
-**Quality:**
-- Stale comments after code change
-- Missing const where appropriate
-- Unnecessary includes added
-- Formatting not applied
+---
+
+## Anti-Patterns to Reject
+
+### The Lateral Move
+Complexity moved, not removed. Same problems, different place.
+
+### The Abstraction Addition
+"Simplified" by adding layers. More code pretending to be less.
+
+### The Refactor Disguise
+Reorganization without simplification. Different but not simpler.
+
+### The Feature Sneak
+Improvements that add capabilities. Scope creep in disguise.
+
+### The Over-Engineering
+Solution more complex than the problem. Cure worse than disease.
+
+---
+
+## Special Cases
+
+### For Trivial Improvements (Path A)
+Focus on:
+- Change matches plan exactly
+- No scope expansion
+- Measurable simplification
+- Quick approval or rejection
+
+### For Mathematical Fixes
+Verify:
+- Formula now correct
+- Derivation documented
+- Validation tests added
+- Debug visualization present
+
+### For Dependency Untangling
+Confirm:
+- Coupling actually reduced
+- Systems more orthogonal
+- No new dependencies added
+- Cleaner interfaces
+
+### For Magic Number Documentation
+Check:
+- Numbers properly derived
+- Constants well-named
+- Derivation documented
+- Or better: deleted entirely
+
+---
+
+## The Philosophy
+
+### Deletion Is Success
+Every line removed is a victory. Celebrate the code that no longer exists.
+
+### Simplification Is Clarity
+When code becomes simple, bugs become obvious, maintenance becomes trivial.
+
+### Complexity Is Debt
+Every line added must pay for itself. Most can't afford the interest.
+
+---
+
+## The Commitment
+
+Approve improvements that:
+- Make measurable reductions
+- Restore violated principles
+- Leave code simpler
+- Can justify their changes
+- Focus on one problem
+
+Never approve improvements that:
+- Add more than they remove
+- Create new violations
+- Include scope creep
+- Hide complexity elsewhere
+- Pretend reorganization is simplification
+
+**The best review celebrates deletion. The second best demands more removal. Approval confirms true simplification.**
+
+**This is the way.**

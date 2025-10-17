@@ -15,12 +15,6 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_compile_definitions(_DEBUG)
 endif()
 
-# Optional quaternion validation test suite (foundation layer)
-option(ENABLE_QUATERNION_TESTS "Enable quaternion validation test suite" OFF)
-if(ENABLE_QUATERNION_TESTS)
-    add_compile_definitions(ENABLE_QUATERNION_TESTS)
-endif()
-
 add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 
 # Add include directories
@@ -64,14 +58,12 @@ add_executable(FrogLords
     src/camera/camera.cpp
     src/character/controller.cpp
     src/character/orientation.cpp
-    src/character/locomotion.cpp
     src/character/animation.cpp
     src/character/tuning.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp
     src/foundation/procedural_mesh.cpp
-    src/foundation/quaternion_validation.cpp
     src/rendering/scene.cpp
     src/rendering/renderer.cpp
     src/rendering/debug_draw.cpp

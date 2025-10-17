@@ -4,7 +4,6 @@
 #include "rendering/debug_primitives.h"
 #include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
-#include "character/locomotion.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
@@ -25,7 +24,6 @@ void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wi
 
 void generate_character_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
-                                         const locomotion_system& locomotion,
                                          const orientation_system& orientation) {
     // Collision sphere
     list.spheres.push_back(debug::debug_sphere{
@@ -93,61 +91,6 @@ void generate_physics_springs_primitives(debug::debug_primitive_list& list,
         spring_color = glm::vec4(0.6f, 0.6f, 0.6f, 0.25f);
     }
     mesh_to_debug_lines(list, spring_mesh, spring_color);
-}
-
-void generate_locomotion_wheel_primitives(debug::debug_primitive_list& list,
-                                          const controller& character,
-                                          const locomotion_system& locomotion,
-                                          const orientation_system& orientation,
-                                          float wheel_spin_angle) {
-
-    float wheel_radius = locomotion.get_blended_stride() / glm::two_pi<float>();
-
-    if (wheel_radius <= 0.0f)
-        return;
-
-    float yaw = orientation.get_yaw();
-
-    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-
-    glm::vec3 wheel_center = character.position;
-
-    const int RIM_SEGMENTS = 24;
-
-    std::vector<glm::vec3> points;
-
-    points.reserve(RIM_SEGMENTS);
-
-    for (int i = 0; i < RIM_SEGMENTS; ++i) {
-
-        float base_angle =
-            static_cast<float>(i) / static_cast<float>(RIM_SEGMENTS) * glm::two_pi<float>();
-
-        float rim_angle = base_angle - wheel_spin_angle;
-
-        glm::vec3 offset = std::cos(rim_angle) * forward_dir + std::sin(rim_angle) * math::UP;
-
-        points.push_back(wheel_center + offset * wheel_radius);
-    }
-
-    // Add rim lines
-
-    for (int i = 0; i < RIM_SEGMENTS; ++i) {
-
-        list.lines.push_back(
-            {points[i], points[(i + 1) % RIM_SEGMENTS], {0.85f, 0.85f, 0.85f, 1.0f}});
-    }
-
-    // Add spoke lines
-
-    const int SPOKE_COUNT = 4;
-
-    for (int i = 0; i < SPOKE_COUNT; ++i) {
-
-        int rim_index = (i * RIM_SEGMENTS) / SPOKE_COUNT;
-
-        list.lines.push_back({wheel_center, points[rim_index], {0.85f, 0.85f, 0.85f, 1.0f}});
-    }
 }
 
 void generate_character_body_primitives(debug::debug_primitive_list& list,
@@ -240,11 +183,8 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
                                const gui::character_panel_state& panel_state) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
-    generate_character_state_primitives(list, world.character, world.character.locomotion,
-                                        world.character.orientation);
+    generate_character_state_primitives(list, world.character, world.character.orientation);
     generate_physics_springs_primitives(list, world.character);
-    generate_locomotion_wheel_primitives(list, world.character, world.character.locomotion,
-                                         world.character.orientation, world.wheel_spin_angle);
     generate_character_body_primitives(list, world.character);
 
     if (panel_state.show_velocity_trail) {

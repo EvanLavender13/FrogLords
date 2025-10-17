@@ -1,177 +1,282 @@
-# Plan Improvement (Standard Path Only)
+# Plan Improvement
 
-**Prerequisites:** Completed SELECT; created `PLANS/IMPROVE_<name>.md`; on `improve/<name>` branch
+**Simplify what exists, don't complicate what works.**
 
 ---
 
-### 1. Analyze Current State
+## The Purpose
 
-Read all affected files completely:
-- Understand existing patterns and dependencies
-- Identify all code that will change
-- Note any edge cases or special handling
-- Document file/line references in plan
+Transform a violation into stages of simplification. Every stage must make the code simpler, clearer, or more correct.
 
-**For pattern extractions:** Verify code structure shows genuine duplication before planning:
-- Cite specific line numbers for each occurrence
-- Confirm logic is duplicated (not reuse of existing abstractions)
-- Example: "Lines 238-244, 319-323 in keyframe.cpp and 197-203 in animation.cpp all contain identical `apply_joint` lambda logic"
-- Prevents false premise plans where assumed duplication doesn't exist
+A plan is not permission to refactor—it's proof that simplification is possible.
 
-### 2. Assess Impact & Risk
+---
 
-**Impact Analysis:**
-- Which systems depend on the code being changed?
-- Are there indirect callers or consumers?
-- Will changes propagate to other files?
-- Check `#include` statements for dependency chains
+## Phase 1: Violation Analysis
 
-**Risk Assessment:**
-| Risk Level | Indicators |
-|------------|------------|
-| Low | Single system, well-tested, clear pattern, behavior-preserving |
-| Medium | Multi-system, complex logic, some edge cases |
-| High | Core architecture, many dependents, subtle behavior changes |
+### Identify the Principle Violated
+Which of the six is broken?
+1. **Simplicity:** Unnecessary complexity exists
+2. **Composability:** Systems are entangled
+3. **Mathematics:** Correctness is unproven
+4. **Emergence:** Behavior is over-prescribed
+5. **Consistency:** Responses are unpredictable
+6. **Development:** Decisions lack justification
 
-Document risk factors and mitigation strategies.
+### Measure the Violation
+- **Current complexity:** [Lines, dependencies, special cases]
+- **Ideal simplicity:** [What it should be]
+- **Delta:** [What can be removed]
 
-### 3. Design the Solution
+**If no clear violation, do not plan.**
 
-**For Pattern Extraction:**
-- Function signature (parameters, return type)
-- Placement (which file/namespace?)
-- Visibility (public API or internal helper?)
-- Name (follows conventions in `CONVENTIONS.md`)
+---
 
-**For Architectural Changes:**
-- New structure/organization
-- Data flow after change
-- Which headers move where?
-- Updated `#include` dependencies
+## Phase 2: Simplification Strategy
 
-**For Cleanup:**
-- Exactly what gets removed/simplified
-- Validation that removed code is truly unused
+### The Three Approaches
 
-### 4. Break Into Stages
+#### 1. Deletion (Best)
+Can we remove it entirely?
+- What breaks if deleted?
+- What still works without it?
+- Can something else handle this?
 
-Decompose work into logical, verifiable stages:
+#### 2. Simplification (Good)
+Can we make it simpler?
+- Remove special cases
+- Reduce dependencies
+- Clarify responsibilities
+- Eliminate state
 
-**Example (Decouple Layers):**
-1. Create new shared header with extracted type
-2. Update original file to include new header
-3. Update consuming file to include new header
-4. Remove old dependency
-5. Verify build and test
+#### 3. Documentation (Acceptable)
+Can we at least explain it?
+- Derive the magic numbers
+- Justify the complexity
+- Clarify the intent
 
-**Each stage should:**
-- Be independently verifiable
-- Build successfully
-- Leave codebase in working state
-- Take <30 min to implement
+**Always try deletion first.**
 
-### 5. Write Validation Checklist
+---
 
-Create concrete success criteria:
+## Phase 3: Risk Assessment
 
+### What Could Break?
+- Systems depending on this
+- Hidden assumptions
+- Undocumented behaviors
+- Performance implications
+
+### How to Validate?
+- Mathematical proofs
+- Visual confirmation
+- Behavioral tests
+- Performance metrics
+
+### Rollback Strategy
+Every change must be reversible:
+- Git commits at each stage
+- Clear reversion points
+- No irreversible deletions
+- Backup complex logic
+
+---
+
+## Phase 4: Staged Simplification
+
+### Stage Principles
+Each stage must:
+- **Simplify one thing** (single focus)
+- **Be verifiable** (can prove correctness)
+- **Be reversible** (can undo cleanly)
+- **Build confidence** (each success enables next)
+
+### Stage Template
 ```markdown
-## Validation Checklist
+### Stage [N]: [Single Simplification]
 
-### Build & Compile
-- [ ] Clean build succeeds (no errors, no warnings)
-- [ ] All affected files compile
+**Violation Fixed:** [Which principle]
+**Current:** [What exists]
+**Simplified:** [What remains]
+**Removed:** [What disappears]
 
-### Correctness
-- [ ] Behavior unchanged (or changed as intended)
-- [ ] No new compiler warnings
-- [ ] Edge cases handled
+Changes:
+- `file.cpp:line`: [Specific change]
 
-### Architecture
-- [ ] Dependency flow correct (Foundation → Character → Rendering → App)
-- [ ] No reverse dependencies introduced
-- [ ] Follows naming conventions (snake_case)
-
-### Code Quality
-- [ ] No duplicated logic remains
-- [ ] Comments updated if needed
-- [ ] clang-format applied
-- [ ] clang-tidy passes
+Validation:
+- [ ] Still works correctly
+- [ ] Simpler than before
+- [ ] No regressions
+- [ ] Principle restored
 ```
 
-### 6. Append Plan to Document
-
-Add to `PLANS/IMPROVE_<name>.md`:
-
-````markdown
 ---
 
+## Phase 5: Document Plan
+
+Append to `PLANS/IMPROVE_<name>.md`:
+
+```markdown
+---
 ## PLAN
 
-**Created:** [Date/Time]
+## The Violation
+**Principle:** [Which was violated]
+**Measurement:** [Current complexity]
+**Target:** [Desired simplicity]
 
-**Branch:** `improve/<name>`
+## The Strategy
+**Approach:** [Delete | Simplify | Document]
+**Risk:** [Low | Medium | High]
+**Validation:** [How we'll verify]
 
-### Impact Analysis
+## The Stages
 
-**Affected Systems:**
-- System A (file1.cpp, file2.h)
-- System B (file3.cpp)
+### Stage 1: [First Simplification]
+**Remove:** [What goes away]
+**Verify:** [How to test]
 
-**Dependencies:**
-[What depends on this code? Who calls it?]
+### Stage 2: [Next Simplification]
+**Simplify:** [What becomes cleaner]
+**Verify:** [How to test]
 
-**Risk Level:** [Low | Medium | High]
+## Success Criteria
+- [ ] Principle violation resolved
+- [ ] Code is simpler
+- [ ] No functionality lost
+- [ ] No new complexity added
 
-**Risk Factors:**
-- Factor 1
-- Factor 2
-
-**Mitigation:**
-- How we'll reduce risk
-
-### Proposed Changes
-
-**Stage 1:** [Description]
-- Change X in file.cpp
-- Update Y in header.h
-- Validation: Build succeeds, no new warnings
-
-**Stage 2:** [Description]
-- ...
-
-[Continue for all stages]
-
-### Validation Checklist
-
-[Copy checklist from step 5]
-````
-
-### 7. Verify Plan Completeness
-
-**Checklist:**
-- [ ] All affected files identified
-- [ ] Impact and risk documented
-- [ ] Solution designed with clear stages
-- [ ] Each stage has validation criteria
-- [ ] Follows architecture principles (check `AGENTS.md`)
-- [ ] Plan appended to `PLANS/IMPROVE_<name>.md`
-
-### 8. Document Plan Completion
-
-State clearly:
-- Plan appended to `PLANS/IMPROVE_<name>.md`
-- Number of stages
-- Estimated time per stage
-- Risk level and mitigation approach
-- Ready for REVIEW_PLAN (will be appended to same document)
+Complexity: [1-8 points]
+Confidence: [% certain of success]
+```
 
 ---
 
-## Tone & Constraints
+## Quality Gates
 
-- Be concrete: line numbers, file paths, exact changes
-- Stage size: <30 min per stage for tight validation loops
-- Validate often: every stage should build and work
-- Conservative: favor small, safe changes over large rewrites
-- Follow conventions: check `CONVENTIONS.md` for naming, formatting, structure
-- Document trade-offs: if multiple approaches considered, explain choice
+Before each stage:
+
+### Must Verify
+- [ ] Current behavior documented
+- [ ] Simplification identified
+- [ ] Validation method clear
+- [ ] Rollback possible
+- [ ] No new complexity introduced
+
+### Red Flags
+- Adding abstraction layers
+- Creating new dependencies
+- Introducing special cases
+- Hiding complexity elsewhere
+- Making code "clever"
+
+---
+
+## Anti-Patterns to Avoid
+
+### The Grand Refactor
+Changing everything at once. Instead: small, verified stages.
+
+### The Abstraction Trap
+Adding layers to "simplify." Instead: remove layers.
+
+### The Clever Solution
+Complex but "elegant" code. Instead: simple and obvious.
+
+### The Migration
+Moving problems elsewhere. Instead: eliminate them.
+
+### The Perfect Fix
+Over-engineering the solution. Instead: minimum viable simplification.
+
+---
+
+## When Not to Plan
+
+Do not create a plan if:
+
+1. **No violation exists** - Don't fix what works
+2. **Deletion isn't tried** - Always attempt removal first
+3. **Complexity increases** - That's not improvement
+4. **Dependencies multiply** - That's not simplification
+5. **Can't measure success** - That's not verifiable
+
+Sometimes the best improvement is no improvement.
+
+---
+
+## The Test
+
+After planning, you should be able to say:
+
+> "We will fix the [principle] violation by [deleting/simplifying] in [N] stages,
+> reducing complexity from [current] to [target], validated by [method],
+> with each stage independently reversible."
+
+If you can't say this clearly, don't proceed.
+
+---
+
+## Special Cases
+
+### Mathematical Corrections
+When fixing math violations:
+1. Isolate the mathematical operation
+2. Validate correct formula
+3. Build visualization first
+4. Replace incrementally
+5. Verify numerically
+
+### Debug Visualization
+When adding missing visualization:
+1. Identify what needs to be seen
+2. Choose minimal representation
+3. Add controls for debugging
+4. Ensure no performance impact
+5. Document what it shows
+
+### Dependency Untangling
+When separating coupled systems:
+1. Map all connections
+2. Find the weakest link
+3. Break one connection per stage
+4. Verify functionality preserved
+5. Continue until orthogonal
+
+---
+
+## Output
+
+After planning, state:
+
+```
+Improvement Plan: [Name]
+Violation: [Which principle]
+Strategy: [Delete | Simplify | Document]
+Stages: [N]
+Complexity Reduction: [Current → Target]
+Risk: [Low | Medium | High]
+Confidence: [%]
+```
+
+---
+
+## The Commitment
+
+Plan improvements that:
+- Make code disappear
+- Reduce total complexity
+- Fix principle violations
+- Can be validated
+- Can be reversed
+
+Never plan improvements that:
+- Add abstraction layers
+- Increase line count
+- Create dependencies
+- Hide complexity
+- Serve hypothetical needs
+
+**The best plan removes code. The second best simplifies it. Adding is last resort.**
+
+**This is the way.**

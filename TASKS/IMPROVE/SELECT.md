@@ -1,161 +1,217 @@
-# Select Improvement Item
+# Select Improvement
 
-### 1. Review Development Principles
+**Choose what to remove, not what to add.**
 
-Read `AGENTS.md` to synthesize core project principles:
-- "Clarity over cleverness; simplicity over sophistication"
-- "Wait for third use" (rule of three for pattern extraction)
-- Layered architecture (Foundation → Character → Rendering → App)
-- Code quality standards and naming conventions
+---
 
-### 2. Review Improve Backlog
+## The Selection Philosophy
 
-1. Open `PLANS/IMPROVE_BACKLOG.md`
-2. Scan sections in priority order: Critical → High → Medium → Low
-3. Look for items that:
-   - Have clear, actionable descriptions
-   - Affect stable, well-understood code (≥70% certainty)
-   - Can be completed independently
-   - Meet stability and rule-of-three requirements
+Every improvement must make the codebase simpler. If it doesn't reduce complexity, it's not an improvement—it's decoration.
 
-### 2.5. Scan for Batching Opportunities
+The best improvement is deletion. The second best is simplification. Adding is last resort.
 
-**Before selecting, check if multiple similar items can be batched:**
+---
 
-1. **Identify patterns:** Do multiple items share the same file, category, or fix type?
-   - Example: Multiple unused includes across different files
-   - Example: Several constant extractions in same system
-   - Example: Related enum/naming violations
+## The Six Questions
 
-2. **Evaluate batching criteria:**
-   - Same file: Can all be fixed in one pass
-   - Same category: Similar rationale and fix approach (check tags: #cleanup, #architecture, etc.)
-   - Low interdependence: Fixes don't depend on each other
-   - Same complexity tier: All trivial (1-2 pts) or all standard (3-5 pts)
-   - Can complete same session: Realistic to finish in one sitting
+Before selecting any improvement, ask:
 
-3. **If multiple similar items found:**
-   - Create unified backlog item: "Cleanup: Remove Unused Includes" or "Extract Locomotion Constants"
-   - Document all batched items with unified rationale
-   - Implement as single improvement session (reduces commit overhead)
-   - Tag batch item: #batch
+1. **Does this make things simpler?** (Not just different)
+2. **Can we remove something instead?** (Deletion over modification)
+3. **Does it serve immediate gameplay?** (Not hypothetical futures)
+4. **Is the foundation stable?** (≥85% certainty)
+5. **Will this prevent future complexity?** (Systems over patches)
+6. **Can we explain why it exists?** (Traceable to principles)
 
-4. **If no batch opportunity:**
-   - Proceed with single-item selection
+If any answer is "no," do not select.
 
-**Purpose:** Reduces commit overhead for related fixes; prevents multiple separate commits for items that share context and can be validated together.
+---
 
-### 3. Selection Criteria
+## Selection Process
 
-#### Must-Have
-- **Stability Gate:** System at ≥70% certainty in `DEPENDENCY_STACK.md` (unless Critical severity)
-- **Clear Definition:** Current state and proposed fix concrete
-- **No Blockers:** No missing prerequisites or active feature work on affected systems
-- **Rule of Three:** (For pattern extractions) Pattern appears 3+ times, OR is canonical data consolidation with documented rationale
+### Phase 1: Identify the Truth
 
-#### Tie-Breakers
-- Higher severity/priority (Critical > High > Medium > Low)
-- Higher impact (affects multiple systems, prevents bugs, enables future work)
-- Lower complexity (prefer 1-3 points when learning or testing workflow)
-- Better isolation (single file > multi-file; independent > coupled)
+Review `PLANS/DEPENDENCY_STACK.md`:
+- What is the current certainty level?
+- Are we in repair mode (<90%)?
+- What layer are we working in?
 
-### 4. Verify Stability & Prerequisites
+**If in Repair Mode:** Only select fixes for principle violations.
+**If stable (≥90%):** Can select complexity reductions.
 
-**Stability Check:**
-1. Read `PLANS/DEPENDENCY_STACK.md` and locate affected systems in dependency tree
-2. Verify all affected systems show ≥70% certainty
-3. Confirm no active feature development on these systems (check tree connections and Layer Details)
-4. **Critical items bypass this check** (architectural violations must be fixed regardless)
+### Phase 2: Review Violations
 
-**Rule of Three Check (for pattern extractions tagged #pattern-extraction):**
-1. Read files mentioned in backlog item
-2. Confirm pattern appears 3+ times
-3. Verify pattern is identical (not just similar)
-4. **OR verify canonical data justification** (e.g., joint indices, global constants)
+Open `PLANS/IMPROVE_BACKLOG.md`
 
-**If checks fail:** Skip to next candidate or defer until conditions met.
+**Priority Order:**
+1. **Mathematical Violations** - Wrong math compounds into chaos
+2. **Control Violations** - Anything that betrays player intent
+3. **Visibility Violations** - Can't debug what can't be seen
+4. **Simplicity Violations** - Unnecessary complexity
+5. **Convention Violations** - Style issues (batch these)
 
-### 5. Classify Complexity
+### Phase 3: Apply the Filters
 
-**Path A: Trivial (1-2 points)**
-- Single file, <10 lines changed
-- Mechanical, no behavior change
-- Examples: Remove unused include, fix typo, extract file-scope constant
+**The Stability Filter**
+- System must be ≥85% certain
+- Exception: Mathematical violations (always fix)
 
-**Path B: Standard (3-8 points)**
-- Multi-file or architectural changes
-- Behavior-preserving refactors
-- Pattern extraction with 3+ uses
-- Examples: Decouple layers, extract helper function, consolidate duplicates
+**The Simplicity Filter**
+- Solution must be simpler than problem
+- Prefer deletion over modification
+- Prefer documentation over code change
 
-### 6. Create Improvement Document
+**The Emergence Filter**
+- Will this enable new behaviors?
+- Or just patch a symptom?
 
-Create description and save to `PLANS/IMPROVE_<item_name>.md`:
+---
+
+## Batching Opportunities
+
+Group only when all items:
+- Share the same pattern
+- Have the same solution
+- Can be understood together
+- Are equally simple
+
+**Rule:** If understanding one helps understand all, batch them.
+
+---
+
+## Complexity Classification
+
+### Trivial (1-2 points)
+- Documentation only
+- Deletion only
+- Single constant change
+- Naming fixes
+
+### Simple (3-4 points)
+- Single-file simplification
+- Pattern extraction (3+ uses)
+- Mathematical validation
+- Debug visualization
+
+### Complex (5-8 points)
+- Multi-file refactoring
+- Dependency restructuring
+- System separation
+- Should rarely be selected
+
+**Prefer trivial. Accept simple. Question complex.**
+
+---
+
+## Document the Selection
+
+Create `PLANS/IMPROVE_<name>.md`:
 
 ```markdown
-# [Item Name]
+# [Improvement Name]
 
-**Severity/Priority:** [Critical | High | Medium | Low]
+## The Violation
+**Principle:** [Which of the six was violated]
+**File:** `src/path/file.cpp:line`
+**Current:** [What exists]
+**Problem:** [Why it violates the principle]
 
-**Current Issue:** [What problem exists today? 1-2 sentences]
+## The Solution
+**Approach:** [Delete | Simplify | Document]
+**Change:** [Specific modification]
+**Result:** [How it becomes simpler]
 
-**Files Affected:**
-- `path/to/file.cpp`
-- `path/to/other.h`
+## The Justification
+**Why Now:** [Why this over other improvements]
+**Dependencies:** [What must remain stable]
+**Risk:** [What could go wrong]
 
-**Proposed Fix:** [What improvement will be made? 1-2 sentences]
+## The Measure
+**Before:** [Current complexity metric]
+**After:** [Expected simplification]
+**Test:** [How to verify improvement]
 
-**Rationale:** [Why this improves the codebase - cite principles from AGENTS.md]
-
-**Workflow Path:** Path A (Trivial) | Path B (Standard)
-
-**Estimated Complexity:** [1-8 points]
-
-**Risk Level:** Low | Medium | High [with brief justification]
-
-**Tags:** [From backlog: #architecture, #cleanup, #pattern-extraction, etc.]
+Complexity: [1-8 points]
+Certainty: [% confidence in solution]
 ```
 
-### 7. Create Branch
+---
 
-**ALWAYS create a branch for all improvements:**
-```bash
-bash scripts/bash/create_branch.sh improve <item_name>
-```
+## Selection Criteria
 
-This provides:
-- Clean isolation of changes
-- Easy rollback if issues arise
-- Clear history of improvement work
-- Consistent workflow regardless of complexity
+### Must Have
+- Makes codebase simpler
+- Fixes real violation (not opinion)
+- Solution understood completely
+- Can be tested in isolation
 
-### 8. Document Selection
-
-State clearly:
-- Item name/description
-- Severity/priority level
-- Files affected
-- Workflow path (A or B)
-- Document created: `PLANS/IMPROVE_<item_name>.md`
-- Branch created: `improve/<item_name>`
+### Tie Breakers
+1. Enables most deletion
+2. Fixes mathematical incorrectness
+3. Improves debug visibility
+4. Removes special cases
+5. Reduces line count
 
 ---
 
 ## When Nothing Qualifies
 
-If no items meet selection criteria:
-1. Document why (stability gates, missing prerequisites, rule violations)
-2. Suggest conditions needed for viability
-3. Consider running REVIEW_CODEBASE to populate backlog
-4. Return to other workflows (FEATURE or handle lower-priority improvements)
+If no improvements meet criteria:
+
+1. **Check certainty** - Are we stable enough?
+2. **Run audit** - Do we know our violations?
+3. **Question necessity** - Is the codebase simple enough?
+4. **Return to features** - Build something to learn
+
+Sometimes the best improvement is to stop improving.
 
 ---
 
-## Tone & Constraints
+## The Anti-Patterns
 
-- Concise and direct
-- Prefer Critical/High severity when stable
-- Avoid uncertain or actively-changing systems (unless Critical architectural violation)
-- Respect "rule of three" discipline for pattern extractions
-- Select one item at a time (or one batch)
-- Skip items requiring major architectural decisions (escalate to design discussion)
+### The Perfection Trap
+"This could be better" is not a reason. Only "this violates a principle" is.
+
+### The Abstraction Addiction
+Wait for the third use. Then wait some more. Abstraction is complexity debt.
+
+### The Refactor Rabbit Hole
+One improvement at a time. Complete it. Test it. Then consider the next.
+
+### The Feature in Disguise
+If it adds capability, it's not an improvement—it's a feature.
+
+---
+
+## Output
+
+After selection, state clearly:
+
+```
+Selected: [Name]
+Principle Violated: [Which one]
+Current Complexity: [Measure]
+Expected Simplicity: [Measure]
+Approach: [Delete | Simplify | Document]
+Risk: [Low | Medium | High]
+```
+
+---
+
+## The Commitment
+
+Select improvements that:
+- Make code disappear
+- Make systems simpler
+- Make principles clearer
+- Make debugging easier
+
+Never select improvements that:
+- Add abstraction layers
+- Create special cases
+- Increase line count
+- Serve hypothetical needs
+
+**The best improvement makes future improvements unnecessary.**
+
+**This is the way.**

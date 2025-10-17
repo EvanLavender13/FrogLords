@@ -1,33 +1,72 @@
 # Improve Workflow
 
-This diagram shows the unified improvement workflow for code quality, architectural violations, tech debt, and pattern extraction from IMPROVE_BACKLOG.md.
+**Remove complexity, restore principles, simplify continuously.**
+
+---
+
+## The Purpose
+
+This workflow is not refactoring—it's principled simplification. Every improvement must make the codebase simpler, restore a violated principle, and be measurably better.
+
+**The improvement workflow exists to remove complexity, not reorganize it.**
+
+---
+
+## The Philosophy
+
+### Why Improve?
+
+Code degrades. Complexity accumulates. Principles get violated under pressure. The improvement workflow is continuous housekeeping—finding violations and restoring principles through simplification.
+
+**Improvements make code disappear. Features make code appear.**
+
+### Why Two Paths?
+
+Not all violations require planning:
+
+**Path A (Trivial):** Obvious fixes that insult our principles. Delete immediately.
+
+**Path B (Standard):** Complex entanglements requiring careful untangling. Plan stages.
+
+**The distinction is not bureaucratic—it's respect for risk vs efficiency.**
+
+### The Hierarchy of Improvement
+
+1. **Delete first** - Remove entirely if possible
+2. **Simplify second** - Reduce complexity if deletion impossible
+3. **Document last** - Explain essential complexity
+
+**Most improvements should be deletions. The best improvement removes entire files.**
+
+---
+
+## Workflow Diagram
 
 ```mermaid
 graph TD
-    A[SELECT] --> B{Complexity?}
+    BACKLOG[Backlog] --> A[SELECT]
+    A --> B{Complexity?}
     B -->|Trivial<br/>1-2 pts<br/>Path A| C[EXECUTE]
     B -->|Standard<br/>3-8 pts<br/>Path B| D[PLAN]
     D --> E[REVIEW_PLAN]
-    E --> F{Issues?}
-    F -->|Major| G[Defer to Backlog]
-    F -->|Minor| H[Revise Plan]
-    H --> D
-    F -->|No| C
-    C --> I{Review?}
-    I -->|Path A Skip| J[FINALIZE]
-    I -->|Path B Review| K[REVIEW_CODE]
-    K --> L{Issues?}
-    L -->|Yes| M[Fix Code]
-    M --> C
-    L -->|No| J
-    J --> N[Manual Git]
-    N --> A
-    G --> O[Update Backlog]
-    O --> A
+    E --> F{Approved?}
+    F -->|No - Major| DEFER[Document & Defer]
+    F -->|No - Minor| D
+    F -->|Yes| C
+    C --> I{Path?}
+    I -->|Path A<br/>Skip Review| J[FINALIZE]
+    I -->|Path B<br/>Must Review| K[REVIEW_CODE]
+    K --> L{Approved?}
+    L -->|No| C
+    L -->|Yes| J
+    J --> N[Git Commit]
+    N --> BACKLOG
+    DEFER --> O[Git Commit]
+    O --> BACKLOG
 
-    %% Abort path from execution
-    C -.->|Too Risky| G
-    K -.->|Too Complex| G
+    %% Can abort if too risky
+    C -.->|Too Complex| DEFER
+    K -.->|Can't Fix| DEFER
 
     style A fill:#e1f5ff
     style D fill:#e1f5ff
@@ -35,115 +74,425 @@ graph TD
     style C fill:#e1f5ff
     style K fill:#e1f5ff
     style J fill:#e1f5ff
-    style G fill:#ffe1e1
+    style DEFER fill:#ffe1e1
 ```
 
-## Tasks
+---
 
-### Primary Workflow
-- **SELECT**: Choose one item from IMPROVE_BACKLOG.md based on severity/priority and stability; classify as Trivial or Standard
-- **PLAN**: (Standard only) Create branch; analyze impact and risk; write detailed plan with validation checklist
-- **REVIEW_PLAN**: (Standard only) Verify plan against principles; check for scope creep and risk vs reward
-- **EXECUTE**: Implement the change in logical stages; validate at checkpoints
-- **REVIEW_CODE**: (Standard only) Comprehensive code review for correctness, principle alignment, and side effects
-- **FINALIZE**: Update IMPROVE_BACKLOG.md (move to Completed section); document learnings; prepare commit message
+## The Tasks
 
-### Supporting Tasks (Shared)
-- **COMMIT**: Format and create git commits following project conventions
-- **REVIEW_CODEBASE**: Scan codebase for quality issues to populate IMPROVE_BACKLOG.md
+Each task serves the goal of simplification:
+
+### SELECT (`SELECT.md`)
+**Purpose:** Choose violation to fix, classify complexity
+
+**Output:**
+- Improvement branch created
+- `PLANS/IMPROVE_<name>.md` with violation description
+- Path determination: A (trivial) or B (standard)
+
+**Philosophy:** Not all violations need planning. Obvious deletions should be fast.
+
+**Decides:** Path A or Path B
+
+---
+
+### PLAN (`PLAN.md`) — Path B Only
+**Purpose:** Prove simplification is possible through deletion/reduction
+
+**Output:**
+- Staged simplification approach
+- Complexity reduction metrics
+- Risk assessment
+- Rollback strategy
+
+**Philosophy:** The best plan removes code. The second best simplifies it. Adding is failure.
+
+**Next:** REVIEW_PLAN
+
+---
+
+### REVIEW_PLAN (`REVIEW_PLAN.md`) — Path B Only
+**Purpose:** Verify simplification will be achieved
+
+**Output:**
+- Decision: APPROVED | REVISE | REJECT
+- Simplification metrics validated
+- Risk/reward assessment
+
+**Philosophy:** If complexity doesn't decrease, reject immediately.
+
+**Next:**
+- APPROVED → EXECUTE
+- REVISE → back to PLAN
+- REJECT → defer
+
+---
+
+### EXECUTE (`EXECUTE.md`) — Both Paths
+**Purpose:** Transform violation into simplification
+
+**Path A (Trivial):**
+- Make obvious change
+- Verify improvement
+- Skip to FINALIZE
+
+**Path B (Standard):**
+- Execute staged simplification
+- Validate each stage
+- Continue to REVIEW_CODE
+
+**Philosophy:** Deletion is victory. Every line removed is celebrated.
+
+**Path A Next:** FINALIZE
+**Path B Next:** REVIEW_CODE
+
+---
+
+### REVIEW_CODE (`REVIEW_CODE.md`) — Path B Only
+**Purpose:** Verify simplification achieved and principles restored
+
+**Output:**
+- Decision: APPROVED | REVISE | REJECT
+- Complexity reduction confirmed
+- Principle restoration validated
+
+**Philosophy:** If net complexity increased, we failed. Reflect why.
+
+**Next:**
+- APPROVED → FINALIZE
+- REVISE → back to EXECUTE
+- REJECT → defer
+
+---
+
+### FINALIZE (`FINALIZE.md`) — Both Paths
+**Purpose:** Measure simplification, capture pattern, remove from backlog
+
+**Output:**
+- Complexity metrics (before/after)
+- Pattern identification
+- Principle restoration confirmed
+- Item removed from backlog
+- Learnings captured
+
+**Philosophy:** Every improvement teaches pattern recognition. Name patterns to recognize them.
+
+**Next:** Git commit, then SELECT new violation
+
+---
+
+### REVIEW_CODEBASE (`REVIEW_CODEBASE.md`) — Separate
+**Purpose:** Find principle violations and populate backlog
+
+**When to use:** Between features, periodically, after major changes
+
+**Output:** `PLANS/IMPROVE_BACKLOG.md` updated with violations
+
+**Philosophy:** Violations accumulate. Regular audits find them before they compound.
+
+---
 
 ## Workflow Paths
 
-### Path A: Trivial (1-2 points, single file, mechanical)
-1. SELECT → Create branch, classify as Trivial
-2. EXECUTE → Make the fix
-3. FINALIZE → Update backlog, prepare commit
-4. Manual Git → SELECT
+### Path A: Trivial (1-2 points)
+```
+Backlog → SELECT → EXECUTE → FINALIZE → Git → Backlog
+```
 
-### Path B: Standard (3-8 points, multi-file or architectural)
-1. SELECT → Create branch, classify as Standard
-2. PLAN → Detail the approach
-3. REVIEW_PLAN (pass) → EXECUTE
-4. EXECUTE → Implement in stages
-5. REVIEW_CODE (pass) → FINALIZE
-6. Manual Git → SELECT
+**Use when:**
+- Single file change
+- Obvious fix
+- No dependencies affected
+- Risk is minimal
 
-### Revision Path (Planning Phase)
-1. REVIEW_PLAN identifies minor issues → Revise Plan → Re-plan
-2. REVIEW_PLAN identifies major issues → Defer to Backlog → SELECT
+**Examples:**
+- Remove unused include
+- Delete dead code
+- Fix naming violation
+- Extract magic number
 
-### Revision Path (Execution Phase)
-1. REVIEW_CODE identifies issues → Fix Code → Re-execute
-2. REVIEW_CODE (pass) → FINALIZE
+**Philosophy:** Speed matters for trivial fixes. Don't over-process deletion.
 
-### Abort Path (Discovery Phase)
-1. During EXECUTE or REVIEW_CODE, discover change is too risky/complex
-2. Document learnings → Defer to Backlog → SELECT
+---
 
-## Notes
+### Path B: Standard (3-8 points)
+```
+Backlog → SELECT → PLAN → REVIEW_PLAN →
+EXECUTE → REVIEW_CODE → FINALIZE → Git → Backlog
+```
 
-- **Dual-tier complexity**: Trivial (1-2 pts) skips planning/review; Standard (3-8 pts) gets full workflow
-- **Stability requirement**: Only improve systems at ≥70% certainty (check DEPENDENCY_STACK.md tree visualization)
-- **Rule of three**: For pattern extraction, need 3+ occurrences unless establishing canonical data source (document exception in plan)
-- **No scope creep**: Fix only what's described; track new discoveries separately
-- **Stage verification**: Standard changes execute in logical stages with validation between each
-- **Manual progression**: Each task initiated manually; user decides when to proceed (except automated trivial path)
-- **Learning capture**: Document insights in Completed section (what worked, what to avoid, patterns discovered)
-- **Single document**: All improvement phases append to `PLANS/IMPROVE_<name>.md` (description → plan → review → execution → code review → finalization) for complete history; no separate REVIEW documents
-- **Always branch**: Create `improve/<name>` branch for ALL improvements (trivial and standard) to isolate work and enable clean rollback
-- **Batch opportunity**: FINALIZE notes similar items for future batch processing
+**Use when:**
+- Multiple files affected
+- Dependencies must be untangled
+- Risk of breaking things
+- Simplification strategy needed
+
+**Examples:**
+- Dependency untangling
+- Accumulated state removal
+- Magic number derivation
+- Responsibility separation
+
+**Philosophy:** Complex simplification requires planning. Haste creates more complexity.
+
+---
+
+### The Deferral Path
+```
+SELECT → [PLAN] → REVIEW_PLAN → REJECT →
+Document reason → Git → Backlog
+```
+
+**Why this happens:**
+- Violation can't be fixed without breaking things
+- Simplification would increase complexity elsewhere
+- Foundation too unstable
+- Better to defer and learn
+
+**This is success:** We learned before making things worse.
+
+---
+
+## The Principles of This Workflow
+
+### 1. Radical Simplicity
+**In workflow:** Two paths—simple for trivial, staged for complex
+**Why:** Process overhead is complexity. Minimize where possible.
+**Result:** Fast for simple, safe for complex
+
+### 2. Fundamental Composable Functions
+**In workflow:** Each task has clear input/output
+**Why:** Improvements compose. Small fixes compound into simplification.
+**Result:** Can chain improvements safely
+
+### 3. Solid Mathematical Foundations
+**In workflow:** Measure complexity before and after
+**Why:** Can't prove improvement without measurement
+**Result:** Objective validation of simplification
+
+### 4. Emergent Behavior
+**In workflow:** Capture patterns that emerge from violations
+**Why:** Violations repeat. Patterns help recognize them.
+**Result:** Faster identification of future violations
+
+### 5. Consistency
+**In workflow:** Same process every time for each path
+**Why:** Consistent process produces consistent results
+**Result:** Reliable simplification
+
+### 6. Principled Development
+**In workflow:** Every fix restores a principle
+**Why:** Improvements without principle guidance are just change
+**Result:** Codebase aligns with principles over time
+
+---
 
 ## Complexity Classification
 
-**Trivial (Path A: 1-2 points)**
-- Remove redundant include
-- Fix typo or naming case
-- Adjust formatting (single location)
-- Remove commented-out code
-- Add missing const qualifier (no behavior change)
-- Extract file-scope constant (single file)
+### Path A: Trivial (1-2 points)
 
-**Standard (Path B: 3-8 points)**
-| Points | Scope | Examples |
-|--------|-------|----------|
-| 3-4 | Multi-file, simple pattern | Extract helper function used 3+ times, consolidate duplicates |
-| 5-6 | Cross-system, architectural | Move type to proper layer, extract interface |
-| 7-8 | Complex refactor | Decouple layers, restructure data flow, major pattern extraction |
+**Characteristics:**
+- Single file or closely related files
+- Obvious what to do
+- Low risk of breakage
+- Quick to verify
 
-## Usage
+**Examples:**
+```
+1 point:
+- Remove unused #include
+- Delete commented code
+- Fix snake_case violation
 
-**Entry Point:** User invokes SELECT (e.g., "pick an improvement", "work on tech debt", "fix architecture issue")
+2 points:
+- Remove unused function
+- Extract single magic number
+- Delete dead code path
+```
 
-**Automated Flow (Trivial):** SELECT → EXECUTE → FINALIZE
+**Decision:** If it's obvious and safe, use Path A.
 
-**Manual Flow (Standard):** User advances through each stage
+---
 
-**Exit Point:** Agent stops after FINALIZE; user handles git commit
+### Path B: Standard (3-8 points)
 
-## Integration with Other Workflows
+**Characteristics:**
+- Multiple files or systems
+- Requires analysis
+- Risk of breaking things
+- Needs staged approach
 
-- **From FEATURE workflow**: During feature work, populate IMPROVE_BACKLOG with discovered issues/patterns
-- **Interleave improvements**: Run between feature iterations when systems reach stability threshold
-- **Prerequisite for features**: Some features may require architectural improvements first (check dependency notes)
-- **Batch similar**: Group related trivial fixes for single commit
+**Examples:**
+```
+3-4 points:
+- Untangle small dependency
+- Remove accumulated state pattern
+- Document magic numbers with derivation
 
-## Stability Gates
+5-6 points:
+- Separate mixed responsibilities
+- Remove dual-reference violation
+- Untangle circular dependency
 
-Before selecting an improvement, verify from DEPENDENCY_STACK.md tree structure:
-- **70%+ certainty**: System is mature enough to improve safely
-- **No active development**: System isn't currently being modified by feature work
-- **Proven patterns**: For extractions, "rule of three" verified (3+ uses)
+7-8 points:
+- Major dependency untangling
+- Large subsystem simplification
+- Remove entire abstraction layer
+```
 
-Defer improvements on unstable or actively-changing systems.
+**Decision:** If it requires thought or has risk, use Path B.
 
-## Automation Guidelines
+---
 
-**Path A (Trivial) - Recommended for automation:**
-- User invokes SELECT
-- Agent auto-progresses: SELECT → EXECUTE → FINALIZE
-- User reviews prepared commit, then commits manually
+## Key Operational Guidelines
 
-**Path B (Standard) - Manual progression:**
-- User explicitly advances each stage
-- Allows for thought/planning between phases
-- Safer for complex architectural changes
+### Always Try Deletion First
+- Can we remove it entirely?
+- What breaks if deleted?
+- Is the break acceptable?
+
+**Only if deletion fails, try simplification.**
+
+### Measure Complexity Reduction
+- Lines before and after
+- Dependencies before and after
+- Special cases before and after
+
+**If metrics don't improve, reject the change.**
+
+### Restore Principles
+- Which pillar was violated?
+- Is it now restored?
+- Did we violate others fixing it?
+
+**Net principle impact must be positive.**
+
+### Capture Patterns
+- What caused this violation?
+- How do we recognize it?
+- Where else might it exist?
+
+**Pattern recognition prevents future violations.**
+
+### Remove from Backlog
+- Delete the item when fixed
+- Add new violations found
+- Keep backlog current
+
+**Best backlog item is one removed from code.**
+
+---
+
+## When to Use Each Path
+
+### Use Path A When:
+- Fix is obvious
+- Single file or tightly coupled files
+- No risk of cascade
+- Can verify immediately
+
+### Use Path B When:
+- Multiple systems involved
+- Risk of breaking things
+- Needs staged approach
+- Complexity reduction unclear
+
+### Defer When:
+- Foundation too unstable
+- Would increase complexity elsewhere
+- Can't measure improvement
+- Better to wait and learn
+
+---
+
+## Workflow Metrics
+
+### Healthy Indicators
+- High Path A usage (catching violations early)
+- Positive complexity reduction in all fixes
+- Patterns being identified and documented
+- Backlog shrinking or stable
+- Principle adherence improving
+
+### Warning Signs
+- No deletions (only moving complexity)
+- Complexity increasing despite "improvements"
+- Same violations recurring
+- Backlog growing uncontrollably
+- No patterns being recognized
+
+---
+
+## Integration with Feature Workflow
+
+### When to Improve
+
+**Between features:**
+- Foundation stable
+- No active development
+- Clear violations in backlog
+
+**During features:**
+- Only if blocking progress
+- Keep separate branch
+- Don't mix feature and improvement work
+
+**After major changes:**
+- Run REVIEW_CODEBASE
+- Update backlog
+- Plan improvement work
+
+### Stability Requirements
+
+Only improve when foundation ≥70% certain:
+- Too unstable: improvements might get reverted
+- Too active: changes conflict with improvements
+- Just right: safe to simplify
+
+---
+
+## Task Files Reference
+
+All task files are in `TASKS/IMPROVE/`:
+
+```
+TASKS/IMPROVE/
+├── SELECT.md           - Choose violation, classify
+├── PLAN.md             - Plan simplification (Path B)
+├── REVIEW_PLAN.md      - Validate plan (Path B)
+├── EXECUTE.md          - Remove complexity (both paths)
+├── REVIEW_CODE.md      - Verify simplification (Path B)
+├── FINALIZE.md         - Measure and document (both paths)
+├── REVIEW_CODEBASE.md  - Find violations (separate)
+└── WORKFLOW.md         - This document
+```
+
+Documentation in `PLANS/`:
+```
+PLANS/
+├── IMPROVE_<name>.md    - All phases appended to one file
+└── IMPROVE_BACKLOG.md   - Principle violations to fix
+```
+
+---
+
+## The Commitment
+
+This workflow exists to:
+- **Remove complexity** over reorganizing it
+- **Restore principles** over changing code
+- **Measure improvement** over assuming it
+- **Capture patterns** over fixing symptoms
+- **Simplify continuously** over accumulating debt
+
+Never use this workflow to:
+- Add abstractions or layers
+- Move complexity to different files
+- "Clean up" without reducing lines
+- Fix without measuring improvement
+- Skip validation to move faster
+
+**The improvement workflow is not refactoring. It's principled deletion.**
+
+**This is the way.**

@@ -33,10 +33,6 @@ controller::controller()
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
-
-    // Initialize speed state from run_speed tunable parameter
-    max_speed = run_speed;
-    target_max_speed = run_speed;
 }
 
 void controller::apply_input(const camera_input_params& cam_params, float dt) {
@@ -63,10 +59,6 @@ void controller::apply_input(const camera_input_params& cam_params, float dt) {
     glm::vec3 right = cam_params.right;
 
     input_direction = forward * move_direction.y + right * move_direction.x;
-
-    // Walk speed lock (shift key)
-    is_walking =
-        input::is_key_down(SAPP_KEYCODE_LEFT_SHIFT) || input::is_key_down(SAPP_KEYCODE_RIGHT_SHIFT);
 
     // Direct acceleration (instant response)
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
@@ -103,19 +95,8 @@ void controller::update(const collision_world* world, float dt) {
         }
     }
 
-    // Smooth walk/run speed transition
-    // Set target based on walk input (clamp walk_speed to never exceed run_speed)
-    target_max_speed = is_walking ? std::min(walk_speed, run_speed) : run_speed;
-
-    // Smooth current max_speed toward target (exponential decay)
-    float alpha = std::min(walk_transition_rate * dt, 1.0f);
-    max_speed = glm::mix(max_speed, target_max_speed, alpha);
-
-    // Apply smoothed speed cap
+    // Apply speed cap
     clamp_horizontal_speed(velocity, max_speed);
-
-    // Sync locomotion targets after speed update
-    sync_locomotion_targets();
 
     // Integrate position
     position += velocity * dt;
@@ -147,19 +128,6 @@ void controller::update(const collision_world* world, float dt) {
     acceleration = glm::vec3(0, 0, 0);
 }
 
-void controller::sync_locomotion_targets() {
-    float rs = std::max(run_speed, 0.0f);
-    float ws = std::clamp(walk_speed, 0.0f, rs);
-
-    locomotion.run_speed_threshold = rs;
-    locomotion.walk_speed_threshold = ws;
-
-    float walk_stride = std::max(ws, 0.1f);
-    float run_stride = std::max(rs * 0.8f, walk_stride);
-    locomotion.walk_state.stride_length = walk_stride;
-    locomotion.run_state.stride_length = run_stride;
-}
-
 glm::mat4 controller::get_world_transform() const {
     glm::mat4 transform = glm::mat4(1.0f);
 
@@ -172,9 +140,6 @@ glm::mat4 controller::get_world_transform() const {
 
     // Apply landing spring vertical offset (crouch effect)
     transform *= animation.get_vertical_offset_matrix();
-
-    // Apply acceleration tilt
-    transform *= animation.get_tilt_matrix();
 
     return transform;
 }

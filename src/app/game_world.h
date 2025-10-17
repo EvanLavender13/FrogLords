@@ -20,9 +20,6 @@ struct game_world {
     collision_world world_geometry;
     controller character;
     character::tuning_params character_params;
-    float wheel_spin_angle = 0.0f;
-    float smoothed_walk_factor = 1.0f;
-    float walk_factor_smoothing = 15.0f;
     velocity_trail_state trail_state;
 
     debug::debug_primitive_list debug_list;

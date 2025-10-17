@@ -1,291 +1,215 @@
 # Dependency Stack
 
-**Purpose:** Identify key dependencies to determine work order and reduce cascading uncertainty.
+**Living document tracking cascading uncertainty through system dependencies.**
 
-**Status:** Living document (updated as design solidifies)
+## The Fundamental Truth
 
-Historical snapshots: See `PLANS/ARCHIVE/`
+Uncertainty multiplies upward: **P(survival) = C^N**
 
-**Visualization Philosophy:** Inspired by Tynan Sylvester's *Designing Games* (Part Three: Dependencies). The tree structure makes cascading uncertainty viscerally obvious—changes at the bottom ripple upward through all dependent systems.
+Where C = certainty of each layer, N = number of dependent layers.
 
 ---
 
-## Triggers to Update
-- After changes to core logic/rules/physics that can ripple upward (e.g., `src/foundation/*`, `src/character/controller.*`).
-- When introducing a new system or changing a public interface between modules.
-- When certainty of any node meaningfully shifts (±10–20%) due to playtests or metrics.
-- When pulling a backlog item into active work (add it, connect dependencies, tag certainty).
-- After refactors that change data representations (e.g., quaternion formats, keyframe structures).
-- When external dependencies change constraints (toolchain, libraries, platforms).
-- Before starting a feature that depends on nodes <90% certain—reassess ordering and risk.
-
-## Dependency Tree
+## Current Stack
 
 ```
-═══════════════════════════════════════════════════════════════════════════
-                          DESIGN BACKLOG (LIQUID POOL)
-                         Everything below: <50% certain
-                         No dependencies assumed, pull as needed
-═══════════════════════════════════════════════════════════════════════════
-    [Skeletal System] [IK Systems] [Wall Detection] [Ragdoll] 
-    [Bounce Gravity] [Dash] [Terrain] [Combat]
-                    [Audio] [UI Polish] [🐸 Frog Ideas 🐸]
-═══════════════════════════════════════════════════════════════════════════
-                                      ▲
-                                      │
-                              ← YOU ARE HERE (pull next feature)
-                                      │
-───────────────────────────────────────────────────────────────────────────
-                         COMPLETED FEATURES (100%) ✅
-───────────────────────────────────────────────────────────────────────────
+THE UNKNOWN (<50% certain)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Liquid pool - no dependencies assumed:
 
-**Foundation Complete:**
-- Reactive animation (tilt, landing spring, contact/air weight transitions, tuning UI)
-- Procedural locomotion (orientation, surveyor-wheel phase, magnitude scaling)
-- Input timing forgiveness (coyote time + jump buffer)
-- Debug tooling (velocity trail, plots, speed ring, zoom, panels, axis gizmo)
-- **Quaternion math validation (isolated test suite for skeletal animation prerequisites)**
+[Skeletal System] [IK Systems] [Wall Detection] [Ragdoll]
+[Bounce Gravity] [Dash] [Terrain] [Combat] [Audio] [UI]
+[Acceleration Tilt] [Contact Springs] [Locomotion System]
+[Walk/Run Blending] [Surveyor Wheel] [Stride Calculations]
+[Frame-Independent Physics] [Explicit State Machine]
 
-**Key Patterns Validated:**
-- Distance-phased triggering (surveyor wheel pattern)
-- Dual-reference pattern for smooth transitions (landing spring, acceleration tilt, contact weights)
-- Velocity-injection for spring systems
-- Elastic timing forgiveness (input accessibility without skill ceiling reduction)
-- Debug visualization layer pattern (toggle-driven, zero gameplay coupling)
-- **Mathematical primitive validation (test novel data structures in isolation before integration)**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                            ↑
+                     PULL BOUNDARY
+                            ↓
+────────────────────────────────────────────────────────
+NEEDS REPAIR (From Audit - 85% certain)
+────────────────────────────────────────────────────────
 
-See [ARCHIVE/](ARCHIVE/) for detailed retrospectives and `implementation_*.md` for specifics
+**Critical Issues Found:**
+• No debug visualization (can't see physics state)
+• Accumulated state in position/velocity
+• Magic numbers without justification
+• Dual-reference violation in orientation
+• Mixed concerns in controller
 
-───────────────────────────────────────────────────────────────────────────
-                    CORE GAMEPLAY LAYER (~95% certain)
-                    Stable foundation, proven patterns
-───────────────────────────────────────────────────────────────────────────
+**Must Fix Before Expansion**
 
-              ┌────────────────┬────────────────┐
-              ▼                ▼                ▼
-    ┌──────────────────┐  ┌──────────────────────┐
-    │ Reactive Anim    │  │  Procedural Loco     │
-    │ • Accel Tilt     │  │  • Orientation       │
-    │ • Landing Spring │  │  • Locomotion        │
-    │ • Contact Weight │  │  (surveyor wheel)    │
-    │ • Tuning UI      │  │  • Simple Poses      │
-    └────────┬─────────┘  └──────────┬───────────┘
-             │                       │
-             └───────────────────────┘
-                          ▼
-                          ┌────────────────────┐
-                          │ Character Controller│ 95%
-                          │ (physics, input)    │
-                          └──────────┬──────────┘
-                                     │
-                   ┌─────────────────┼─────────────────┐
-                   ▼                 ▼                 ▼
-         ┌─────────────┐    ┌──────────────┐    ┌──────────┐
-         │ Collision   │    │ Camera System│    │  Input   │
-         │ (sphere-box)│    │ (orbit+zoom) │    │ (WASD)   │
-         └─────────────┘    └──────────────┘    └──────────┘
-                95%                95%                95%
+────────────────────────────────────────────────────────
+                            ↓
+────────────────────────────────────────────────────────
+CURRENT STATE (90% certain)
+────────────────────────────────────────────────────────
 
-─────────────────────────────────────────────────────────────────────────── 
-                     FOUNDATION LAYER (90-100% certain)
-                     Derivative systems, proven tech
-───────────────────────────────────────────────────────────────────────────
+What exists (and mostly works):
+• Physics sphere with WASD movement
+• Single max_speed (no state complexity)
+• Yaw orientation toward input (has issues)
+• Landing spring (vertical compression)
+• Jump with timing forgiveness
+• Orbit/follow camera
+• Debug trails (partial visualization)
 
-              ┌────────────────┴────────────────┐
-              ▼                                 ▼
-    ┌──────────────────┐            ┌──────────────────────┐
-    │ Foundation Utils │ 100%       │   Rendering Layer    │ 90%
-    │ • Spring-Damper  │            │   • Scene            │
-    │ • Easing Curves  │            │   • Debug Draw       │
-    │ • Collision Math │            │   • Wireframe        │
-    └──────────────────┘            └──────────┬───────────┘
-                                               │
-                                               ▼
-                                    ┌──────────────────────┐
-                                    │   Runtime/App        │ 100% ✅
-                                    │   (main loop, frame) │
-                                    └──────────────────────┘
+Visual: Oriented box + collision sphere + spring offset
+
+────────────────────────────────────────────────────────
+                            ↓
+────────────────────────────────────────────────────────
+THE MECHANICS (90% certain)
+────────────────────────────────────────────────────────
+
+              ┌─────────────────┐
+              │ Character State │ 90%
+              │ • Landing Spring│
+              │ • Yaw Rotation  │ ← Issues found
+              └────────┬────────┘
+                       │
+              ┌────────▼────────┐
+              │ Physics Control │ 90%
+              │ (sphere + force)│ ← Accumulation issue
+              └────────┬────────┘
+                       │
+         ┌─────────────┼─────────────┐
+         ▼             ▼             ▼
+   ┌──────────┐ ┌──────────┐ ┌──────────┐
+   │Collision │ │  Camera  │ │  Input   │
+   │  (AABB)  │ │  System  │ │  (WASD)  │
+   └──────────┘ └──────────┘ └──────────┘
+       95%          95%           95%
+
+────────────────────────────────────────────────────────
+                            ↓
+────────────────────────────────────────────────────────
+THE FOUNDATION (95% certain)
+────────────────────────────────────────────────────────
+
+         ┌─────────────────────────┐
+         │   Mathematical Truth    │ 95%
+         │ • Spring-damper math    │ ← Needs validation
+         │ • Collision primitives  │
+         │ • Quaternion operations │ ✓ Validated
+         │ • Vector mathematics    │
+         │ • Coordinate system     │ ✓ Documented
+         └────────────┬────────────┘
+                      │
+         ┌────────────▼────────────┐
+         │    Rendering Core       │ 100%
+         │ • Scene graph           │
+         │ • Debug visualization   │ ← Incomplete
+         └────────────┬────────────┘
+                      │
+         ┌────────────▼────────────┐
+         │    Runtime Loop         │ 100%
+         │ • Frame timing          │
+         │ • Event handling        │
+         └─────────────────────────┘
 ```
 
-## Reading the Tree
+---
 
-**Arrows flow bottom → top**: Lower systems are dependencies; upper systems depend on them.
+## Post-Audit Status
 
-**Cascading uncertainty**: A change in any box forces changes in ALL boxes above it that connect via arrows. Example: If `Character Controller` changes, it could cascade through `Reactive Anim`, `Skeletal Animation`, and `Pose Blending`.
+### What Changed
+The audit revealed the stack is mostly solid but has critical gaps:
 
-**Parallel branches**: Systems on separate branches can develop independently until they merge. Example: `Debug Visual Overhaul` and `Pose Blending` could be worked on simultaneously—they don't block each other.
+1. **Debug Visualization Missing** - The lack of visual debugging caused the coordinate confusion crisis. This is the highest priority fix.
 
-**Certainty levels**: 
-- **100% ✅**: Completed and validated through iteration
-- **90-95%**: Working but may need tuning based on playtesting
-- **<50%**: Design Backlog—premature to build until foundation stabilizes
+2. **Mathematical Issues** - Some operations aren't validated (spring-damper, friction), some accumulate error (position/velocity).
+
+3. **Certainty Adjustments**:
+   - Foundation: 100% → 95% (math needs validation)
+   - Mechanics: 95% → 90% (issues found)
+   - Current State: 95% → 90% (repairs needed)
+
+### The Repair Layer
+A new layer emerged from the audit: systems that exist but need fixing before expansion. These aren't in the Unknown because they're implemented, but they block progress until repaired.
 
 ---
 
-## Layer Details
+## Cascade Impact
 
-### Foundation Layer (90-100% certain) 🟢
+Current cascade with repairs needed:
+- Foundation 95% × Mechanics 90% × Current 90% = **77% survival chance**
 
-**Status:** Stable, derivative systems based on proven tech
+After repairs:
+- Foundation 100% × Mechanics 95% × Current 95% = **90% survival chance**
 
-**Why certain?** These are implementations of well-understood patterns from other games/engines. Risk is low because we're not inventing anything novel here.
-
-**Systems:**
-- **Runtime/App (100% ✅):** Main loop, frame timing, window management — bedrock of everything
-- **Rendering Layer (90%):** Scene management, debug draw, wireframe visualization
-- **Foundation Utils (100%):** Spring-damper, easing curves, collision primitives — reusable math
-- **Quaternion Math Validation (100% ✅):** Isolated test suite validating quaternion operations (construction, slerp, conjugate, swing-twist decomposition) before skeletal animation integration — 24/24 tests passing
-
-**Cascading Risk:** Changes here would devastate everything above. Fortunately, these are complete and stable.
+**Implication**: Fix the foundation before building anything new.
 
 ---
 
-### Core Gameplay Layer (95% certain) 🟢
+## Priority Order (From Audit)
 
-**Status:** Working physics loop, proven procedural systems
+1. **Debug Visualization** - Cannot verify anything without seeing it
+2. **Mathematical Validation** - Foundation must be solid
+3. **Fix Accumulation** - Errors compound over time
+4. **Document Constants** - Can't reason about magic
+5. **Fix Circular References** - Violates principles
+6. **Separate Concerns** - Cleaner dependencies
 
-**Why certain?** Core character controller is stable. Procedural locomotion/orientation systems validated through multiple iterations. The game is "playable" at this layer—you can run, jump, and collide. Simple pose system (vertical offset + leg phase) provides minimal visual representation.
-
-**Core Gameplay Definition:** Character sphere moving in 3D space with physics-driven control
-- **Irreducible minimum:** Position, velocity, acceleration, collision, input response
-- **Simple visual feedback:** Reactive tilt, landing spring, basic locomotion poses (no skeletal hierarchy)
-- **Already creates meaningful experience:** Run, jump, explore, collide
-
-**Systems:**
-- **Character Controller (95%):** Single-sphere physics, grounded state, jump, friction
-- **Input (95%):** WASD keyboard, mouse camera control
-- **Camera (95%):** Orbit + follow modes, zoom, camera-relative movement
-- **Collision (95%):** Sphere-AABB resolution, multi-pass stability
-- **Procedural Orientation (95%):** Velocity-based facing with smooth rotation
-- **Procedural Locomotion (95%):** Distance-phased surveyor wheel, speed blending
-
-**Dependency Risk:** Changes in core gameplay would cascade through reactive animation, skeletal systems, and all completed features above. But risk is low—this layer has been tested and works.
+Only after these repairs should anything be pulled from the Unknown.
 
 ---
 
-### Completed Features (100% ✅) 🎉
+## When Dependencies Change
 
-**Status:** Foundation proven through 9 completed iterations
+### The Audit Revealed
+- Coordinate system IS documented (good)
+- But can't be verified without visualization (bad)
+- Mathematical operations seem correct (good)
+- But aren't validated in isolation (bad)
 
-**Architecture Patterns Proven:**
-- Quaternion keyframe with hemisphere-safe slerp
-- Distance-phased triggering (surveyor wheel)
-- Dual-reference smooth transitions
-- Velocity-injection springs
-- Phase reuse (direct consumption vs recalculation)
-- Elastic timing forgiveness (coyote/buffer)
-- Debug layer (zero gameplay coupling)
-
-**Implementation Details:** See [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md) and `PLANS/implementation_*.md` files
-
----
-
-### Design Backlog (<50% certain) ⚠️
-
-**Status:** Liquid pool of ideas—most will be cut or redesigned
-
-**Why uncertain?** These ideas haven't been tested. They sound good on paper, but cascading uncertainty from changes in foundation layers means detailed planning is premature and likely wasteful.
-
-**Philosophy:** Keep backlog non-interlocking and liquid. Pull features only when foundation stabilizes to 90%+ certainty and actual gameplay needs become clear through iteration.
-
-**Categories:**
-- **Debug Visualization:** Freeze velocity trail on stop, character axis gizmo
-- **Extended Animation:** Running gait keyframes, extended joint sets, IK systems
-- **Movement Abilities:** Dash, wall jump, ledge grab, climbing
-- **Combat:** Melee, ranged, enemy AI (uncertain—game design unclear)
-- **Environment:** Terrain, moving platforms, destructibles
-- **Polish:** Art, audio, particles, post-processing (premature—graybox iteration first)
-- **🐸 Frog Ideas:** Tongue grapple, hop charge, sticky surfaces, fly catching (wild speculation)
-
-See [DESIGN_BACKLOG.md](DESIGN_BACKLOG.md) for full list with rationale.
-
-**Cascading Risk:** Building these now = high probability of wasted work when foundation shifts.
+### The Response
+1. **Build visualization first** (see the truth)
+2. **Validate mathematics** (verify the truth)
+3. **Fix violations** (establish the truth)
+4. **Then expand** (build on truth)
 
 ---
 
-## Development Strategy
+## The Planning Horizon
 
-**Current Focus:** ← **YOU ARE HERE** — Pull next feature from Design Backlog
+| Certainty | Horizon | Why |
+|-----------|---------|-----|
+| 100% | 3-8 points | Truth permits confident steps |
+| 90% | 1-2 points | Minor adjustments only |
+| 85% | Repair only | Fix before expanding |
+| <70% | Do not build | Foundation too uncertain |
 
-Foundation is stable (90-100% certainty). Core gameplay loop proven. Ready to expand based on actual playtesting needs rather than speculative planning.
-
-**Completed Work Order:**
-1. ✅ Foundation (primitives, rendering, runtime)
-2. ✅ Core gameplay (physics, procedural systems)
-3. ✅ Skeletal animation pipeline (8-feature stack)
-4. ✅ Reactive animation (tilt, spring, tuning)
-5. ✅ Debug tooling & polish (trail, ring, transitions, axis gizmo)
-6. ✅ Running gait keyframes (4-pose run cycle)
-7. ✅ Air locomotion weights (phase continuity + contact/air blending)
-8. ✅ Animation cycle stride consolidation (surveyor wheel completion)
-9. ✅ Input timing forgiveness (coyote time + jump buffer)
-10. ✅ Quaternion math validation (isolated test suite for skeletal prerequisites)
-
-**Planning Horizon (Adaptive):**
-
-The more certain a layer, the longer you can plan ahead:
-
-| Layer Certainty | Planning Horizon | Rationale |
-|-----------------|------------------|-----------|
-| 90-100% (Foundation) | Large chunks (3-8 complexity points) | Derivative systems, proven patterns |
-| 70-90% (Core Gameplay) | Moderate chunks (2-4 points) | Working but needs tuning |
-| 50-70% (Next Features) | Short iterations (1-2 points) | Test assumptions quickly |
-| <50% (Backlog) | **Do not plan** | Cascading uncertainty too high |
-
-**Why this matters:** Original/uncertain work needs tight feedback loops. Derivative/certain work can be planned in larger increments. Lower test cost → shorter horizon.
-
-**Risk Management:**
-- ✅ Build bottom-up: Validate foundation before upper layers
-- ✅ Accept temporary roughness early: Quality comes from iteration count, not perfect first passes
-- ✅ Keep backlog liquid: No interlocking dependencies
-- ✅ Graybox expensive things: Levels, creatures, UI, audio (art hides mechanical problems)
-- ✅ Stabilize before expanding: Don't build on uncertain foundations
-- ⚠️ Watch for "big leaps": Intentional jumps to escape local maxima are allowed, but return to tight loops after
-
-**Cascading Uncertainty Formula:**
-
-If each layer has `certainty C`, and a feature depends on `N` layers below it, the probability it survives unchanged is:
-
-```
-P(unchanged) = C^N
-```
-
-**Example:** Building a feature 5 layers up the stack:
-- If each layer is 80% certain: `0.8^5 = 0.33` (33% chance of surviving unchanged)
-- If each layer is 50% certain: `0.5^5 = 0.03` (3% chance—effectively zero)
-
-**Implication:** Upper-stack features WILL change. Don't over-invest in detailed planning. Embrace iteration.
+**Current Status: 85% - Repair Mode**
 
 ---
 
-## Meta-Notes
+## The Discipline
 
-**What this document does:**
-- Makes cascading uncertainty **visible** through tree structure
-- Guides work order: build bottom-up, stabilize before expanding
-- Prevents premature planning of upper-stack features
-- Tracks completed work and proven patterns
+**Build bottom-up**: Foundation must be perfect before mechanics.
 
-**What this document doesn't do:**
-- Predict the future (upper layers WILL change)
-- Lock design decisions (foundation stability ≠ unchangeable)
-- Guarantee backlog features will ship (most won't)
-- Replace playtesting (testing creates knowledge; documents record it)
+**Validate in isolation**: Test the math before building on it.
 
-**Dependency clarification:**
-- **Dependency = changes in A force changes in B** (not "A must exist for B to work")
-- Only showing **strongest dependencies** (deliberate reduction for focus)
-- Circular dependencies exist but weakest ones ignored
-- Stack will reshape as discoveries happen
+**Accept the cascade**: When foundation shifts, everything above shifts.
 
-**Historical snapshots:**
-- Detailed retrospectives in [ARCHIVE/dependency_stack_snapshot_2025-10-10.md](ARCHIVE/dependency_stack_snapshot_2025-10-10.md)
-- Implementation notes in `PLANS/implementation_*.md` and `PLANS/code_review_*.md`
+**Visualize everything**: Cannot debug what cannot be seen.
 
-**Source material:**
-- Dependency stack concept from Tynan Sylvester's *Designing Games* (Part Three: Process - Dependencies)
-- Adapted for solo experimental game dev with emphasis on rapid iteration and uncertainty quantification
+**Track truthfully**: The audit found issues. Record them. Fix them.
 
 ---
 
-**Last Updated:** 2025-10-15 (Quaternion Math Validation completed - mathematical primitive validation pattern proven, 24/24 tests passing, ready for skeletal animation integration)
+## Meta-Structure
+
+This stack now shows:
+- What exists (Current State)
+- What's broken (Needs Repair)
+- What could exist (The Unknown)
+- How they depend (The arrows)
+
+The audit proved the value of this structure: it revealed exactly where certainty was false and what must be fixed.
+
+When the territory changes, update the map.
+When the map shows problems, fix the territory.
+
+**This is the way.**

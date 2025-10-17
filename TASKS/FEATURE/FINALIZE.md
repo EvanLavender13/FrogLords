@@ -1,94 +1,356 @@
 # Finalize Feature
 
-### 1. Review Development Principles
+**Close the cycle, capture the truth, strengthen the foundation.**
 
-Read `AGENTS.md` to synthesize principles for finalizing features. Essential for:
--   Accurate certainty scoring based on testing outcomes
--   Capturing learnings that inform future design decisions
--   Understanding dependency impacts and cascade effects
--   Strategic planning horizon adjustments
+---
 
-### 2. Identify Target Feature
+## The Purpose
 
-Extract the feature name from the current git branch name (format: `feature/<feature_name>`).
+Finalization is not administrative closure—it's philosophical reflection. We document what emerged, calibrate our certainty, and strengthen the foundation for what comes next.
 
-### 3. Verify Approval
+Every feature teaches us about the principles. The question is: did we listen?
 
-1.  Confirm `PLANS/<feature_name>_PLAN.md` has an `## Approval` section with reviewer signature and timestamp
-2.  If approval is missing, stop and request completion of `REVIEW_CODE` task first
+---
 
-### 4. Update Dependency Stack
+## Prerequisites
 
-Read and execute `TASKS/FEATURE/UPDATE_DEPENDENCIES.md` to:
--   Update feature's certainty score based on implementation learnings
--   Mark as `✅` if stable and proven (95%+)
--   Move `← YOU ARE HERE` marker to next layer
--   Update `Development Strategy` section
+- Code review complete with approval
+- All stages validated and stable
+- Emergent behaviors documented
+- Principles maintained throughout
 
-### 5. Capture Serendipitous Ideas
+---
 
-If new ideas or insights emerged during implementation:
--   Add them to `PLANS/DESIGN_BACKLOG.md` (single line + metadata)
--   Note: BACKLOG_GROOMING task handles pruning completed items and broader maintenance
+## Phase 1: Reflect on Emergence
 
-### 6. Archive Planning Documents
+### What Surprised Us?
 
-1.  Add a `## Completion` section to end of `PLANS/<feature_name>_FEATURE.md`:
-    -   Date completed
-    -   Final certainty score
-    -   Link to code review document
-    -   Brief outcome summary (1-2 sentences)
+Document the unexpected in `PLANS/<feature>_FEATURE.md`:
 
-### 6.5. Feature Reflection (for Retrospectives)
+```markdown
+## Emergent Discoveries
 
-Add a `## Reflection` section to end of `PLANS/<feature_name>_FEATURE.md` answering:
+### What We Didn't Plan For
+- [Behavior that emerged from simple rules]
+- [System interactions that delighted]
+- [Player possibilities we didn't foresee]
 
-1.  **What went well?** (1-3 bullet points)
-    -   What practices, decisions, or planning approaches helped this feature succeed?
-    -   Were there any particularly effective moments in planning, implementation, or review?
-2.  **What caused friction?** (1-3 bullet points)
-    -   What slowed progress or required rework?
-    -   Were there planning gaps, unclear requirements, or unexpected blockers?
-    -   Did any assumptions prove incorrect?
-3.  **What would you do differently?** (1-3 bullet points)
-    -   Knowing what you know now, what would you change about the approach?
-    -   Are there signals you missed or steps you'd add to the process?
+### What This Teaches
+[How emergence validated or challenged our approach]
 
-**Purpose:** Capture fresh insights while context is still loaded. These reflections feed into RETROSPECTIVE task for process improvement.
+### What Becomes Possible
+[New capabilities enabled by this system]
+```
 
-**NOTE:** Be specific. "Planning was good" is less useful than "Clarifying skeletal data structure before planning prevented implementation surprises."
+**Emergence is not bonus—it's validation that we built systems, not features.**
 
-### 6.6. Certainty Calibration (for Process Improvement)
+---
 
-Add a `## Certainty Calibration` section to end of `PLANS/<feature_name>_FEATURE.md`:
+## Phase 2: Validate Against Principles
 
-**Predicted Certainty:** [X%] (from feature plan Section 3)
+### The Six Questions
 
-**Actual Outcome:**
-- [ ] Completed on first attempt (no deferrals, no major rework)
-- [ ] Required feature/rework (specify what changed)
-- [ ] Deferred (specify reason and missing prerequisites)
+For the completed system, reflect honestly:
 
-**Variance Analysis:**
-- If predicted certainty was ≥75% and feature was deferred: What was missed in the dependency analysis?
-- If predicted certainty was ≤50% and feature completed smoothly: What made it easier than expected?
-- Did the certainty score accurately reflect implementation risk?
+#### 1. Radical Simplicity
+- Is this simpler than we initially imagined?
+- What could we still remove?
+- Did complexity emerge or was it added?
 
-**Calibration Adjustment:**
-- For similar features in the future, would you adjust the certainty estimate? How?
-- Example: "Reactive layer certainty should be reduced if motion source not explicitly confirmed"
-- Example: "Pattern reuse (3rd use of spring-damper) justifies +10% certainty boost"
+#### 2. Fundamental Composable Functions
+- Does it compose cleanly with existing systems?
+- Are there special cases we didn't foresee?
+- Is it truly orthogonal?
 
-**Purpose:** Track prediction accuracy over time to improve planning. Feeds into RETROSPECTIVE task for process-wide calibration improvements.
+#### 3. Solid Mathematical Foundations
+- Did mathematical validation prevent issues?
+- Are all formulas proven correct?
+- Can we see everything that happens?
 
-### 7. Propose Next Steps
+#### 4. Emergent Behavior
+- Did it enable more than intended?
+- What prescribed behaviors snuck in?
+- Would we design it differently now?
 
-Recommend running `TASKS/FEATURE/SELECT.md` to identify next work.
+#### 5. Consistency
+- Does it behave predictably?
+- Is player control preserved?
+- Are there hidden inconsistencies?
 
-### Tone & Constraints
+#### 6. Principled Development
+- Can we justify every decision made?
+- Did we follow the principles?
+- What did we learn about them?
 
--   Concise and systematic
--   Verify all prerequisite approvals before proceeding
--   Document learnings while knowledge is fresh
--   Ensure dependency stack accurately reflects new certainty
--   No git operations (user handles all commits/merges)
+Document in `PLANS/<feature>_FEATURE.md`:
+
+```markdown
+## Principle Reflection
+
+### What We Got Right
+[Which principles guided us well]
+
+### What We Struggled With
+[Where principles conflicted or were unclear]
+
+### What We'd Do Differently
+[How we'd apply principles better next time]
+
+**Overall Adherence:** [1-10 for each principle]
+```
+
+---
+
+## Phase 3: Calibrate Certainty
+
+### Prediction vs Reality
+
+Certainty is learned, not assumed. Compare our prediction to reality.
+
+Document in `PLANS/<feature>_FEATURE.md`:
+
+```markdown
+## Certainty Calibration
+
+**Initial Certainty:** [X%]
+**Outcome:** [Completed as planned | Required adjustments | Revealed unknowns]
+
+### What We Underestimated
+[Challenges that surprised us]
+
+### What We Overestimated
+[Things simpler than expected]
+
+### What We Learned
+[How to calibrate future estimates]
+
+**Adjusted Foundation Certainty:** [X%]
+```
+
+**Truth:** If certainty was 90% but we hit major issues, we miscalibrated. Learn why.
+
+---
+
+## Phase 4: Update Dependency Stack
+
+### Strengthen the Foundation
+
+Update `PLANS/DEPENDENCY_STACK.md`:
+
+1. **Update System Certainty**
+   - Did this system reach ≥95% certainty?
+   - Mark with ✅ if proven stable
+   - Lower certainty if issues emerged
+
+2. **Move Progress Marker**
+   - Update `← YOU ARE HERE`
+   - Reflect actual state
+
+3. **Impact Assessment**
+   - Did dependent systems gain certainty?
+   - Did we uncover issues in the foundation?
+   - What became clearer?
+
+**Remember:** Truth flows upward. A solid foundation enables everything above it.
+
+---
+
+## Phase 5: Capture Wisdom
+
+### What Worked
+
+Document patterns that succeeded:
+
+```markdown
+## Success Patterns
+
+### Design Decisions
+- [Approaches that paid off]
+- [Principles that guided well]
+- [Validations that caught issues]
+
+### Development Practices
+- [Workflows that worked]
+- [Validations that mattered]
+- [Stages that built confidence]
+```
+
+### What Created Friction
+
+Document what was hard:
+
+```markdown
+## Friction Points
+
+### Technical Challenges
+- [Mathematical difficulties]
+- [Integration problems]
+- [Performance issues]
+
+### Process Challenges
+- [Where stages were unclear]
+- [When validation was insufficient]
+- [What slowed us down]
+
+### Principle Conflicts
+- [When principles seemed to conflict]
+- [What was hard to validate]
+- [Where emergence was elusive]
+```
+
+### What to Change
+
+Document learnings:
+
+```markdown
+## Future Changes
+
+### Process Improvements
+[How to plan/execute/review better]
+
+### Principle Applications
+[How to apply principles more effectively]
+
+### Validation Enhancements
+[What to validate sooner/better]
+```
+
+---
+
+## Phase 6: Discover New Possibilities
+
+### What Did We Learn?
+
+Add insights to `PLANS/DESIGN_BACKLOG.md`:
+
+- New system possibilities enabled
+- Emergent behaviors to explore
+- Simplifications now possible
+- Compositions worth investigating
+
+**The best feature opens more questions than it answers.**
+
+---
+
+## Phase 7: Document Completion
+
+Add to `PLANS/<feature>_FEATURE.md`:
+
+```markdown
+---
+
+## COMPLETION
+
+**Date:** [YYYY-MM-DD]
+**Duration:** [Total time from select to finalize]
+**Final Certainty:** [X%]
+
+### Summary
+[2-3 sentences: what was built, what emerged, what was learned]
+
+### System State
+- Foundation Certainty: [X%]
+- Principle Adherence: [Average of six scores]
+- Emergent Behaviors: [Count of unexpected discoveries]
+- New Possibilities: [Count of new backlog items]
+
+### Key Learnings
+1. [Most important technical learning]
+2. [Most important principle learning]
+3. [Most important process learning]
+
+**The system is complete. The learning continues.**
+```
+
+---
+
+## Phase 8: Close the Cycle
+
+Output summary to user:
+
+```
+Feature Complete: [System Name]
+
+Validation:
+- Mathematical: All formulas proven
+- Visual: Debug visualization functional
+- Integration: Composition verified
+- Principles: All six maintained
+
+Emergence:
+- [X] unexpected behaviors discovered
+- [Y] new possibilities enabled
+- [Z] simplifications identified
+
+Foundation:
+- Previous certainty: [X%]
+- Current certainty: [Y%]
+- Next recommended work: [System name or SELECT]
+
+Documentation: PLANS/<feature>_FEATURE.md
+
+The foundation is stronger. Build forward.
+```
+
+---
+
+## The Philosophy of Finalization
+
+### Completion Is Learning
+
+Every feature is a hypothesis about what should be built. Finalization reveals whether the hypothesis was correct. Both confirmation and refutation are victories.
+
+### Certainty Is Earned
+
+We don't declare systems certain—they prove themselves through use. Finalization adjusts certainty based on truth discovered during implementation.
+
+### Emergence Is Validation
+
+When unexpected behaviors arise from simple rules, we've succeeded. When we had to prescribe everything, we've failed. Document both.
+
+### Principles Compound
+
+Each feature either strengthens or weakens our adherence to principles. Honest reflection ensures we improve with each cycle.
+
+---
+
+## The Questions of Closure
+
+Before closing, ask:
+
+1. **Did we build a system or a feature?**
+   - Systems enable. Features prescribe.
+
+2. **Did emergence surprise us?**
+   - If no surprises, the system is too rigid.
+
+3. **Are the principles stronger?**
+   - Each cycle should deepen understanding.
+
+4. **Is the foundation more certain?**
+   - Certainty flows upward from truth.
+
+5. **What did we learn?**
+   - No feature should end without wisdom.
+
+---
+
+## The Commitment
+
+Finalize features that:
+- Strengthened the foundation
+- Enabled emergence
+- Maintained all principles
+- Taught us something new
+- Made the next system possible
+
+Never consider complete features that:
+- Violated principles for convenience
+- Prescribed instead of enabled
+- Left uncertainty unresolved
+- Taught us nothing
+- Weakened the foundation
+
+**The best finalization celebrates emergence. The second best documents what was learned. Both honor the principles.**
+
+**This is the way.**

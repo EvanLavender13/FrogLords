@@ -1,197 +1,483 @@
-# Clarify Feature Requirements
+# Clarify Feature
 
-Use **after receiving a feature description** and **before implementation planning**. Goal: eliminate ambiguity via targeted questions that expose gaps, assumptions, or missing visual references.
-
-**Use when:**
-- Description feels vague or open to interpretation
-- User has specific visual/behavioral reference not shared
-- Feature involves animation/poses implementable multiple ways
-- Abstract terms ("natural," "smooth," "dynamic") without concrete examples
-- Uncertain about exact end state or success criteria
-
-### 1. Review Development Principles
-
-Read `AGENTS.md` to synthesize core principles:
-- **Iteration over planning:** Short loops need clear targets; ambiguity kills speed
-- **Paradox of quality:** Clarity upfront maximizes iteration count
-- **Knowledge creation:** Asking right questions is knowledge creation
-- **Testing:** Can't test without knowing what "correct" looks like
-
-### 2. Identify Ambiguities
-
-**Visual/Behavioral:**
-- Multiple ways to interpret motion/appearance?
-- User has reference image/animation/video?
-- Abstract terms ("natural," "smooth") without examples?
-- Different visual styles all match description?
-
-**Mechanical:**
-- Exact input→output mapping? (e.g., "swing arm" = which joint, which axis?)
-- Multiple joints/systems could satisfy description?
-- Relationship between user input and animation/behavior?
-- Time-based, distance-based, or event-based?
-
-**Scope:**
-- Minimum viable vs. full vision?
-- Graybox-acceptable roughness vs. must-be-correct-now?
-- Unstated dependencies?
-- What does "done" look like?
-
-**Success Criteria:**
-- How to verify correctness?
-- Visual/behavioral test for verification?
-- Specific keyframes/poses/moments matching reference?
-- What makes user say "yes, that's it" vs. "no, not quite"?
-
-### 3. Ask Targeted Questions
-
-Formulate questions that **reduce uncertainty** and **expose hidden assumptions**:
-- Request concrete examples over abstract descriptions
-- Ask for visual references (images, videos, animations)
-- Clarify relationships between systems
-- Identify most critical element to get right first
-- Reveal user's mental model
-
-**Visual References:**
-- "Reference image/video showing desired result?"
-- "Specific pose/keyframe defining this?" (e.g., "both arms down" vs. "one forward, one back")
-- "What existing game/animation does this resemble?"
-
-**Mechanical Clarity:**
-- "Driven by time, distance, or user input?"
-- "Which joints/bones move?" (list specific names)
-- "Loop, blend, or discrete states?"
-- "Rotation axes involved?" (pitch/yaw/roll, X/Y/Z)
-
-**Scope Boundaries:**
-- "Minimum graybox proving concept?"
-- "What can look rough vs. must be accurate now?"
-- "Edge cases to ignore this iteration?"
-
-**Success Criteria:**
-- "How to verify correctness? Visual test?"
-- "What makes you say 'yes, exactly right'?"
-- "Detail distinguishing correct from incorrect implementation?"
-
-### 4. Synthesize Understanding
-
-After receiving answers, summarize:
-- **Visual/behavioral target:** Final result look/feel?
-- **Reference materials:** Images/videos defining correctness?
-- **Mechanical approach:** Systems/joints involved and interactions?
-- **Minimum viable:** Simplest graybox proving concept?
-- **Test criteria:** How to verify without user feedback?
-
-State synthesis for confirmation: **"My understanding is..."**
-
-### 5. Document Clarifications
-
-If clarification needed, add `## CLARIFICATION QUESTIONS (Pending)` section to `PLANS/<name>_FEATURE.md`:
-- All identified ambiguities by category
-- Specific questions needing answers
-- Priority indicators for critical info
-- Examples/options illustrating interpretations
-
-**Stop here.** Wait for user to provide answers before proceeding.
-
-If no clarification needed (description already clear, concrete, and unambiguous):
-- Document why clarification was skipped
-- Note any assumptions made
-- **Stop here.** Do not proceed to PLAN or other tasks.
-
-### 6. After Receiving Answers (Separate Task)
-
-Once user provides answers, update document:
-- Move items from "Pending" to "Resolved" (or remove section)
-- Add concrete visual references (images, video links)
-- Add specific joint/system names and rotation axes
-- Add exact keyframe descriptions/pose breakdowns
-- Add clear success criteria (e.g., "arms alternate 180° out of phase, pointing down at rest")
-
-Perform consistency and redundancy pass:
-
-**Consistency:**
-- **Ordering:** Lists/sequences maintain identical structure throughout
-- **Terminology:** Same terms used consistently (e.g., "forward" always same direction)
-- **Value precision:** Remove contradictions ("~90°" vs "locked at 90°" — pick one)
-- **Cross-references:** Sections reference correctly, content exists
-
-**Redundancy Elimination:**
-- **Single source of truth:** Each fact appears exactly once
-- **Remove padding:** Strip phrases adding no information
-- **Consolidate:** Merge repeated concepts into one statement
-- **Collapse sections:** Merge overlapping sections
-
-**Clarity:**
-- **Remove ambiguous qualifiers:** Replace "approximately", "should", "may" with concrete values
-- **Separate scope:** Active implementation vs. deferred features clearly separated
-- **Streamline:** Follow AGENTS.md: "Concise and direct. No preamble/postamble."
-
-**Output:** Terse, zero-redundancy, internally consistent description ready for planning.
-
-**Stop here.** User will explicitly request PLAN when ready.
-
-## Example Clarification Flow
-
-**Initial Feature Description:**
-> "Add smooth camera transitions when changing view modes. Should feel natural and responsive."
-
-**Identified Ambiguities:**
-- What does "smooth" mean? (linear? eased? spring-damped?)
-- What does "natural" mean? (fast? slow? overshooting allowed?)
-- What triggers a "view mode change"? (user input? automatic? distance-based?)
-- How many view modes are there, and what defines each one?
-- Is there a reference game/video showing the desired behavior?
-
-**Targeted Questions:**
-1. "Do you have a reference video showing the desired camera transition behavior?"
-2. "Should transitions use spring-damper curves, easing curves, or linear interpolation?"
-3. "What is the target transition duration — fast (<0.2s), medium (0.2-0.5s), or slow (>0.5s)?"
-4. "Should the camera overshoot the target position and settle, or move directly without overshoot?"
-5. "Which camera properties transition — position only, or also rotation and FOV?"
-
-**User Provides Reference:**
-> "Like the quick-snap in [Game X], about 0.3s with slight overshoot. Position and rotation both transition, FOV stays constant."
-
-**Synthesized Understanding:**
-- **Visual target:** Quick transition (~0.3s) with subtle overshoot/settle behavior matching [Game X].
-- **Interpolation method:** Spring-damper curve (allows overshoot).
-- **Properties affected:** Camera position and rotation; FOV remains constant.
-- **Trigger:** User input (specific key/button).
-- **Success criteria:** Transition completes in 0.3s ± 0.1s; visible overshoot <10% of travel distance.
-
-**Confirmation:**
-> "My understanding is you want a spring-damped camera transition (~0.3s duration with slight overshoot) that affects position and rotation but not FOV, triggered by user input, matching the feel of [Game X]. Correct?"
-
-**User Confirms:** ✅
-
-**Result:** Clear, unambiguous feature description. Clarification questions documented in feature plan; task stops here awaiting user answers.
+**Question ambiguity, challenge prescription, seek mathematical truth.**
 
 ---
 
-## Tone & Constraints
+## The Purpose
 
-- Direct and specific: concrete questions, no philosophical debates
-- Visual-first: prioritize images/videos over verbal descriptions
-- Challenge assumptions: if vague, push for clarity
-- Respect iteration speed: ambiguity costs time; clarification is investment
-- Document everything: clarity from conversation must be written
-- **Stop after documenting questions:** Do not proceed to PLAN or consolidation automatically
+Clarification is not gathering requirements—it's philosophical interrogation. We question what's being asked, challenge vague intentions, and ensure we understand the primitive being requested.
 
-## When to Skip
+**The best clarification reveals we shouldn't build. The second best transforms features into systems.**
 
-- Description includes concrete visual references and specific details
-- Pure refactor or bug fix with objective criteria
-- Simple parameter tweak with no new behavior
+---
 
-**When skipping:** Document why (clear requirements, concrete details, etc.) and stop. Do not proceed to other tasks.
+## Prerequisites
 
-## Expected Outcomes
+- Feature request received (from REQUEST)
+- Before planning begins
+- Time to think deeply
 
-**If clarification needed:**
-- Clarification questions added to `PLANS/<name>_FEATURE.md` under `## CLARIFICATION QUESTIONS (Pending)`
-- Task stops; awaits user answers
+---
 
-**If clarification not needed:**
-- Document why (e.g., "Feature description includes concrete visual references and specific joint names")
-- Task stops; user explicitly requests PLAN when ready
+## Phase 1: The Fundamental Questions
+
+Before asking about details, ask about essence:
+
+### Is This a System or a Feature?
+
+**Feature:** "Add a double jump"
+**System:** "Enable aerial control through force application"
+
+Ask:
+```markdown
+## Essence Clarification
+
+**As Stated:** [Original request]
+**Is This:** Feature (specific outcome) or System (enabling capability)?
+
+### If Feature
+Could this emerge from a simpler system?
+What's the primitive underneath?
+Are we prescribing when we could enable?
+
+### If System
+What's the irreducible core?
+What behaviors should emerge?
+What are we NOT prescribing?
+```
+
+**Often, features reveal themselves as compositions of simpler systems.**
+
+---
+
+## Phase 2: Challenge Through Principles
+
+Test the request against each pillar:
+
+### 1. Radical Simplicity
+```markdown
+## Simplicity Questions
+
+- What's the minimal version?
+- What can we remove from the request?
+- Could something existing already enable this?
+- Is complexity being requested or will it emerge?
+
+**Challenge:** "Do we need this at all?"
+```
+
+### 2. Fundamental Composable Functions
+```markdown
+## Composability Questions
+
+- Does this compose with existing systems?
+- Will it require special cases?
+- Is it orthogonal or overlapping?
+- What systems does it depend on?
+
+**Challenge:** "Could existing systems compose to create this?"
+```
+
+### 3. Solid Mathematical Foundations
+```markdown
+## Mathematical Questions
+
+- What equations govern this?
+- How do we prove correctness?
+- What coordinate systems are involved?
+- What can go wrong numerically?
+
+**Challenge:** "Can we validate this mathematically?"
+```
+
+### 4. Emergent Behavior
+```markdown
+## Emergence Questions
+
+- What outcomes are prescribed in the request?
+- What should emerge instead?
+- What behaviors might surprise us?
+- Are we authoring or enabling?
+
+**Challenge:** "Are we designing the physics or the outcomes?"
+```
+
+### 5. Consistency
+```markdown
+## Consistency Questions
+
+- Will behavior be predictable?
+- Is player control preserved?
+- Are there hidden special cases?
+- Does it work in all contexts?
+
+**Challenge:** "Will this ever betray player expectations?"
+```
+
+### 6. Principled Development
+```markdown
+## Justification Questions
+
+- Why are we building this?
+- What principle guides it?
+- How will we know it's correct?
+- Can we trace every decision?
+
+**Challenge:** "Can we justify this philosophically?"
+```
+
+---
+
+## Phase 3: Seek Mathematical Clarity
+
+Vague terms hide mathematical ambiguity.
+
+### Challenge Vague Language
+
+**Vague:** "Make it smooth"
+**Clear:** "Spring-damped over 0.3s with critical damping"
+
+**Vague:** "Natural feeling"
+**Clear:** "Physically accurate force integration with [specific parameters]"
+
+**Vague:** "Responsive but not too fast"
+**Clear:** "Input to acceleration in [N]ms, capped at [M] units/s²"
+
+### Ask Mathematical Questions
+```markdown
+## Mathematical Specification
+
+- What are the governing equations?
+- What are the input parameters?
+- What are the output behaviors?
+- How do we validate correctness?
+- What reference solution exists?
+
+**For each vague term, demand mathematical precision.**
+```
+
+---
+
+## Phase 4: Demand Visual Truth
+
+Words lie. Examples reveal.
+
+### Request Visual References
+```markdown
+## Visual Clarification
+
+- Reference video/GIF showing the behavior?
+- Existing game that does this well?
+- Sketch of the intended outcome?
+- Debug visualization showing what we should see?
+
+**No visual reference = no clarity**
+```
+
+### Challenge Descriptions Without Examples
+
+"Like [Game X]" → Request timestamp in video
+"Smooth transition" → Request example with measurable parameters
+"Natural movement" → Request reference of what "natural" means
+
+---
+
+## Phase 5: Question Validation
+
+If we can't validate, we can't build.
+
+### Ask Validation Questions
+```markdown
+## Validation Strategy
+
+- How will we know it's correct?
+- What debug visualization do we need?
+- What edge cases must we test?
+- How will we see what's happening?
+- What numerical tests prove correctness?
+
+**If validation is unclear, the requirement is unclear.**
+```
+
+---
+
+## Phase 6: Seek the Minimal Primitive
+
+Often requests bundle multiple things.
+
+### Decompose the Request
+```markdown
+## Primitive Identification
+
+**Original Request:** [The full request]
+
+**Decomposed Into:**
+1. [Primitive 1] - Core mechanical element
+2. [Primitive 2] - Supporting system
+3. [Nice-to-have] - Can emerge later
+
+**Minimal Buildable System:** [What's actually needed]
+
+**Can Be Deferred:** [What's not essential]
+```
+
+**The best clarification reduces scope.**
+
+---
+
+## Phase 7: Document Questions
+
+Create `PLANS/<feature>_FEATURE.md` with clarification needed:
+
+```markdown
+# Feature: [Name]
+
+**Status:** CLARIFICATION NEEDED
+
+## Original Request
+[As stated by user]
+
+## Principle Questions
+
+### Essence
+- Is this a system or feature?
+- What's the irreducible primitive?
+- Could this emerge from existing systems?
+
+### Simplicity
+- What's the minimal version?
+- What can be removed?
+- Is this needed at all?
+
+### Mathematical Foundation
+- What are the governing equations?
+- How do we validate correctness?
+- What coordinate systems involved?
+
+### Emergence
+- What outcomes are prescribed vs enabled?
+- What should surprise us?
+- Are we designing physics or outcomes?
+
+### Consistency
+- Will behavior be predictable?
+- Is player control preserved?
+- Any special cases?
+
+### Validation
+- How do we know it's correct?
+- What visualization needed?
+- What numerical tests?
+
+## Specific Clarifications Needed
+
+1. [Vague term or concept requiring mathematical precision]
+2. [Request for visual reference]
+3. [Question about scope or necessity]
+4. [Challenge about complexity]
+5. [Validation approach unclear]
+
+## Recommended Simplification
+
+[If applicable: simpler system that might suffice]
+
+**AWAITING CLARIFICATION**
+```
+
+---
+
+## Phase 8: Wait for Answers
+
+**STOP.** Do not proceed to planning.
+
+The request is not clear until:
+- Mathematical precision achieved
+- Visual references provided
+- Validation strategy clear
+- Primitive identified
+- Principles satisfied
+
+---
+
+## Phase 9: Incorporate Answers
+
+When answers received, update the document:
+
+```markdown
+---
+
+## CLARIFICATION RESOLVED
+
+**Date:** [YYYY-MM-DD]
+
+### Answers Received
+[Document each answer]
+
+### Mathematical Specification
+[Precise equations and parameters]
+
+### Visual References
+[Links, timestamps, examples]
+
+### Validation Approach
+[How we'll know it's correct]
+
+### Simplified Scope
+[What we're actually building]
+
+### Principle Alignment
+1. Simplicity: [How this is minimal]
+2. Composability: [How this fits]
+3. Mathematics: [How we validate]
+4. Emergence: [What will surprise]
+5. Consistency: [How it's predictable]
+6. Development: [Why we're building]
+
+**Ready for PLAN**
+```
+
+---
+
+## When to Skip Clarification
+
+Skip only when:
+
+- **Mathematically Precise:** Request includes exact equations and parameters
+- **Visually Clear:** Reference examples provided
+- **Validation Obvious:** Success criteria unambiguous
+- **Primitive Identified:** Core system already clear
+- **Principles Aligned:** Obviously upholds all six
+
+**When in doubt, clarify. Ambiguity compounds into chaos.**
+
+---
+
+## Examples
+
+### Example 1: Transforming Feature to System
+
+**Original:** "Add wall running"
+
+**Clarification:**
+```markdown
+## Essence Questions
+- Is this prescribing a specific mechanic or requesting enhanced movement capabilities?
+- Could this emerge from: surface contact detection + force application system?
+- What's the primitive: "wall running" or "maintaining contact with non-ground surfaces"?
+
+## Simplification Proposal
+Instead of "wall running" (prescribed), build:
+- Surface normal detection (primitive)
+- Force application relative to surface (primitive)
+- Friction model for various surfaces (primitive)
+
+Wall running emerges from these primitives.
+```
+
+**Result:** System that enables wall running AND other emergent behaviors.
+
+### Example 2: Demanding Mathematical Precision
+
+**Original:** "Make jumping feel better"
+
+**Clarification:**
+```markdown
+## Mathematical Questions
+"Better" is not measurable. What specifically:
+
+1. Initial velocity (current: X m/s, desired: ?)
+2. Gravity modifier (current: Y m/s², desired: ?)
+3. Air control force (current: Z N, desired: ?)
+4. Apex hang time (current: W s, desired: ?)
+
+Visual reference of "better" jump?
+Game example with timestamp?
+
+**Challenge:** Can we quantify "better" or is this unsolvable?
+```
+
+**Result:** Specific parameters or realization that request is unclear.
+
+### Example 3: Challenging Necessity
+
+**Original:** "Add combat system"
+
+**Clarification:**
+```markdown
+## Simplicity Challenge
+- What problem does combat solve?
+- Could interaction emerge from physics instead?
+- Is this the minimal mechanic needed?
+- What if we just enabled: force application + health system?
+
+**Philosophical Question:**
+Are we building "combat" or "physical interaction with consequences"?
+
+The second is simpler and enables more emergence.
+```
+
+**Result:** Reframe from complex to simple.
+
+---
+
+## The Philosophy of Clarification
+
+### Ambiguity Is Technical Debt
+
+Every vague term becomes a decision made under pressure during implementation. Make decisions now, with thought, not later under deadline.
+
+### Words Hide Assumptions
+
+"Natural," "smooth," "responsive"—these words mean nothing. Mathematics means everything. Demand precision.
+
+### Features Prescribe, Systems Enable
+
+When users request features, look for the system underneath. Build systems. Features emerge.
+
+### The Best Clarification Simplifies
+
+If clarification reveals we need less than requested, celebrate. Less is more.
+
+---
+
+## The Questions of Clarity
+
+Before accepting any request, ask:
+
+1. **What's the mathematical truth?**
+   - Equations, parameters, validation
+
+2. **What's the visual truth?**
+   - Examples, references, proof
+
+3. **What's the essential primitive?**
+   - Irreducible core underneath
+
+4. **Could this emerge instead?**
+   - Simpler systems that compose
+
+5. **How do we validate?**
+   - Proof of correctness
+
+---
+
+## The Commitment
+
+Clarify requests that:
+- Transform features into systems
+- Demand mathematical precision
+- Challenge necessity
+- Reduce scope
+- Enable emergence
+
+Never accept requests that:
+- Remain vague after questioning
+- Prescribe without justification
+- Can't be validated
+- Add complexity without cause
+- Conflict with principles
+
+**The best clarification prevents building. The second best simplifies what's built. Both serve the principles.**
+
+**This is the way.**
