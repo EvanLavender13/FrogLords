@@ -7,6 +7,8 @@
 #include "gui/gui.h"
 #include "gui/character_panel.h"
 #include "rendering/debug_draw.h"
+#include "rendering/debug_visualization.h"
+#include "rendering/debug_validation.h"
 #include "app/debug_generation.h"
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -47,6 +49,9 @@ void app_runtime::initialize() {
     renderer.init();
 
     world.init();
+
+    // Verify mathematical assumptions about coordinate system
+    debug_viz::validation::run_startup_checks();
 
     initialized = true;
 }
@@ -92,6 +97,11 @@ void app_runtime::frame() {
     }
 
     world.update(dt, panel_state);
+
+    // Handle F3 key press to toggle debug visualization
+    if (input::is_key_pressed(SAPP_KEYCODE_F3)) {
+        debug_viz::toggle();
+    }
 
     input::update();
 
@@ -152,14 +162,17 @@ void app_runtime::render_world() {
         renderer.draw(mesh, world.cam, aspect, color);
     }
 
-    debug::draw_context debug_ctx{renderer,      world.cam,     aspect,       unit_circle,
-                                  unit_sphere_8, unit_sphere_6, unit_sphere_4};
+    // Debug visualization (toggle with F3)
+    if (debug_viz::is_enabled()) {
+        debug::draw_context debug_ctx{renderer,      world.cam,     aspect,       unit_circle,
+                                      unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
-    // Generate all debug primitives from the current world state.
-    app::generate_debug_primitives(world.debug_list, world, panel_state);
+        // Generate all debug primitives from the current world state.
+        app::generate_debug_primitives(world.debug_list, world, panel_state);
 
-    // Pass the populated list to the dumb renderer.
-    debug::draw_primitives(debug_ctx, world.debug_list);
+        // Pass the populated list to the dumb renderer.
+        debug::draw_primitives(debug_ctx, world.debug_list);
+    }
 
     gui::render();
 
