@@ -12,7 +12,7 @@ Every line of code must trace back to a principle. Every system must justify its
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## The Six Lenses of Review
 

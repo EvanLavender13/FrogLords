@@ -12,7 +12,7 @@ A plan is not a roadmap to build—it's a proof that we should build.
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Phase 1: Principle Validation
 

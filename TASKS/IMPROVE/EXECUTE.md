@@ -12,7 +12,7 @@ Execution is not refactoring—it's the disciplined removal of complexity.
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ Read `AGENTS.md` - internalize the Six Pillars
 ### Required Foundation
 - Violation clearly identified
 - Simplification strategy chosen
-- AGENTS.md principles internalized
+- PRINCIPLES.md principles internalized
 
 ---
 

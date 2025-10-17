@@ -1,74 +1,131 @@
-# Using Gemini CLI for Large Codebase Analysis
+# FrogLords Development Memory
 
-When analyzing large codebases or multiple files that might exceed context limits, use the Gemini CLI with its massive
-context window. Use `gemini -p` to leverage Google Gemini's large context capacity.
+## Core Philosophy
 
-## File and Directory Inclusion Syntax
+@PRINCIPLES.md
 
-Use the `@` syntax to include files and directories in your Gemini prompts. The paths should be relative to WHERE you run the
-  gemini command:
+The principles are not suggestions—they are law. Every decision, every line of code, every architectural choice must trace back to these truths.
 
-### Examples:
+## On Context Windows and Tool Selection
 
-**Single file analysis:**
+### The Nature of Context
+
+Context is finite. Truth is not. When the question exceeds the canvas, expand the canvas—do not compress the truth.
+
+### Gemini CLI: The Extended Context
+
+When analysis demands wholeness, use the tool built for scale. The Gemini CLI exists for one purpose: to hold entire codebases in a single thought.
+
+**The Command**: `gemini -p`
+
+**The Philosophy**: Massive context. Complete visibility. No fragmentation.
+
+### The Syntax of Inclusion
+
+The `@` symbol is intent made manifest. It says: "Include this truth in the analysis."
+
+Paths are relative to your working directory. Not to where files happen to live, but to where *you* stand when you invoke the command.
+
+**Single file—single focus**:
+```bash
 gemini -p "@src/main.py Explain this file's purpose and structure"
+```
 
-Multiple files:
+**Multiple files—multiple perspectives**:
+```bash
 gemini -p "@package.json @src/index.js Analyze the dependencies used in the code"
+```
 
-Entire directory:
+**Entire directory—complete system**:
+```bash
 gemini -p "@src/ Summarize the architecture of this codebase"
+```
 
-Multiple directories:
+**Multiple directories—full context**:
+```bash
 gemini -p "@src/ @tests/ Analyze test coverage for the source code"
+```
 
-Current directory and subdirectories:
+**Current directory and below—total comprehension**:
+```bash
 gemini -p "@./ Give me an overview of this entire project"
+```
 
-# Or use --all_files flag:
+**All files flag—maximum inclusion**:
+```bash
 gemini --all_files -p "Analyze the project structure and dependencies"
+```
 
-Implementation Verification Examples
+### Verification Through Wholeness
 
-Check if a feature is implemented:
-gemini -p "@src/ @lib/ Has dark mode been implemented in this codebase? Show me the relevant files and functions"
+When you ask "is X implemented?", you deserve the complete answer. Not guesses. Not partial scans. The truth, derived from seeing everything.
 
-Verify authentication implementation:
-gemini -p "@src/ @middleware/ Is JWT authentication implemented? List all auth-related endpoints and middleware"
+**Feature verification**:
+```bash
+gemini -p "@src/ @lib/ Has dark mode been implemented? Show relevant files and functions"
+```
 
-Check for specific patterns:
-gemini -p "@src/ Are there any React hooks that handle WebSocket connections? List them with file paths"
+**Authentication audit**:
+```bash
+gemini -p "@src/ @middleware/ Is JWT authentication implemented? List all auth endpoints and middleware"
+```
 
-Verify error handling:
-gemini -p "@src/ @api/ Is proper error handling implemented for all API endpoints? Show examples of try-catch blocks"
+**Pattern discovery**:
+```bash
+gemini -p "@src/ Are there React hooks that handle WebSocket connections? List them with file paths"
+```
 
-Check for rate limiting:
-gemini -p "@backend/ @middleware/ Is rate limiting implemented for the API? Show the implementation details"
+**Error handling validation**:
+```bash
+gemini -p "@src/ @api/ Is proper error handling implemented for all API endpoints? Show try-catch examples"
+```
 
-Verify caching strategy:
-gemini -p "@src/ @lib/ @services/ Is Redis caching implemented? List all cache-related functions and their usage"
+**Rate limiting check**:
+```bash
+gemini -p "@backend/ @middleware/ Is rate limiting implemented? Show implementation details"
+```
 
-Check for specific security measures:
-gemini -p "@src/ @api/ Are SQL injection protections implemented? Show how user inputs are sanitized"
+**Caching strategy review**:
+```bash
+gemini -p "@src/ @lib/ @services/ Is Redis caching implemented? List all cache-related functions"
+```
 
-Verify test coverage for features:
-gemini -p "@src/payment/ @tests/ Is the payment processing module fully tested? List all test cases"
+**Security measure audit**:
+```bash
+gemini -p "@src/ @api/ Are SQL injection protections implemented? Show input sanitization"
+```
 
-When to Use Gemini CLI
+**Test coverage assessment**:
+```bash
+gemini -p "@src/payment/ @tests/ Is the payment module fully tested? List all test cases"
+```
 
-Use gemini -p when:
-- Analyzing entire codebases or large directories
-- Comparing multiple large files
-- Need to understand project-wide patterns or architecture
-- Current context window is insufficient for the task
-- Working with files totaling more than 100KB
-- Verifying if specific features, patterns, or security measures are implemented
-- Checking for the presence of certain coding patterns across the entire codebase
+### When to Use Gemini
 
-Important Notes
+Use Gemini when Claude's context becomes the constraint:
 
-- Paths in @ syntax are relative to your current working directory when invoking gemini
-- The CLI will include file contents directly in the context
-- No need for --yolo flag for read-only analysis
-- Gemini's context window can handle entire codebases that would overflow Claude's context
-- When checking implementations, be specific about what you're looking for to get accurate results
+- Entire codebases require simultaneous analysis
+- Multiple large files must be compared as one
+- Project-wide patterns must be discovered, not inferred
+- Files total more than 100KB
+- Implementation verification demands completeness
+- Architectural understanding requires seeing all pieces at once
+
+**The Rule**: When the question is "what does the whole system do?", use the tool that can see the whole system.
+
+### The Mechanics
+
+- Paths in `@` syntax are relative to your working directory
+- File contents are included directly—no summarization, no loss
+- Read-only analysis requires no `--yolo` flag
+- Context window handles what would overflow other models
+- Specificity in questions yields precision in answers
+
+### The Warning
+
+Do not use tools blindly. Choose the right tool for the question being asked:
+
+- **Claude Code**: For iterative development, file editing, progressive understanding
+- **Gemini CLI**: For holistic analysis, complete verification, architectural comprehension
+
+The best tool is the one that matches the shape of the problem.

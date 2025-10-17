@@ -12,7 +12,7 @@ A review is not approval—it's philosophical validation that the code deserves 
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Prerequisites
 

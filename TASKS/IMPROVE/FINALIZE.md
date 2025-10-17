@@ -12,7 +12,7 @@ Every improvement reveals patterns of complexity. The question is: do we recogni
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Prerequisites
 

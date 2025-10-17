@@ -12,7 +12,7 @@ The best review rejects the plan. The second best demands simplification. Approv
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Phase 1: Principle Validation
 

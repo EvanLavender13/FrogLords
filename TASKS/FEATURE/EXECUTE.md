@@ -12,7 +12,7 @@ Implement validated stages from the approved plan, confirming principle adherenc
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Read `AGENTS.md` - internalize the Six Pillars
 ## Phase 1: Pre-Execution Validation
 
 ### Gather Truth
-1. Read `AGENTS.md` - internalize the Six Pillars
+1. Read `PRINCIPLES.md` - internalize the Six Pillars
 2. Read `PLANS/<feature>_PLAN.md` - understand all stages
 3. Read `PLANS/<feature>_PLAN_REVIEW.md` - remember the warnings
 

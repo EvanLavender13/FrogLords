@@ -12,7 +12,7 @@ Every retrospective asks: **What did the principles teach us?**
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## The Six Examinations
 

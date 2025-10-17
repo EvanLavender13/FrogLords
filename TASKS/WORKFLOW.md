@@ -70,7 +70,7 @@ Backlogs are not task lists—they're philosophical inventories:
 
 ```mermaid
 graph TB
-    subgraph Principles["AGENTS.md - The Six Pillars"]
+    subgraph Principles["PRINCIPLES.md - The Six Pillars"]
         P[Radical Simplicity<br/>Composable Functions<br/>Mathematical Foundations<br/>Emergent Behavior<br/>Consistency<br/>Principled Development]
     end
 
@@ -368,11 +368,8 @@ Two paths based on risk:
 ```
 TASKS/
 ├── WORKFLOW.md              - This document
-├── AGENTS.md                - The Six Pillars (principles)
 ├── RETROSPECTIVE.md         - Reflection and learning
-├── ALIGN_TASKS.md          - Task consistency maintenance
-├── SYNC_PRINCIPLES.md      - Principle alignment checks
-├── UNDERSTAND_CONCEPT.md   - Research and learning
+├── COMMIT.md                - Git commit workflow
 │
 ├── FEATURE/
 │   ├── WORKFLOW.md         - Feature workflow details
@@ -417,7 +414,7 @@ PLANS/
 
 ### New to the Project?
 
-1. **Read AGENTS.md** - Understand the Six Pillars
+1. **Read /PRINCIPLES.md** - Understand the Six Pillars
 2. **Read this document** - Understand the workflows
 3. **Read FEATURE/WORKFLOW.md** - Understand system building
 4. **Read IMPROVE/WORKFLOW.md** - Understand simplification
@@ -452,21 +449,6 @@ Beyond the two main workflows, occasional meta-processes maintain the system:
 **When:** Every 5-10 completed cycles
 **Purpose:** Reflect on patterns, celebrate emergence, learn from violations
 **Philosophy:** Each cycle teaches. Retrospectives capture the wisdom.
-
-### ALIGN_TASKS (`TASKS/ALIGN_TASKS.md`)
-**When:** After principle updates
-**Purpose:** Ensure all tasks embody current principles
-**Philosophy:** Process must serve principles, not traditions.
-
-### SYNC_PRINCIPLES (`TASKS/SYNC_PRINCIPLES.md`)
-**When:** After major architectural changes
-**Purpose:** Ensure AGENTS.md reflects reality
-**Philosophy:** Principles should describe truth, not wishes.
-
-### UNDERSTAND_CONCEPT (`TASKS/UNDERSTAND_CONCEPT.md`)
-**When:** Need to learn before building
-**Purpose:** Research topics before implementation
-**Philosophy:** Understanding precedes building.
 
 ---
 
@@ -504,7 +486,7 @@ The workflows exist to:
 5. Enable emergence at every level
 6. Make every decision traceable
 
-**When faced with any choice, return to AGENTS.md. The Six Pillars guide everything.**
+**When faced with any choice, return to /PRINCIPLES.md. The Six Pillars guide everything.**
 
 ---
 

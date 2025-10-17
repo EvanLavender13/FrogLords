@@ -12,7 +12,7 @@ The best improvement is deletion. The second best is simplification. Adding is l
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## The Six Questions
 

@@ -12,7 +12,7 @@ The best review rejects unnecessary changes. The second best demands more deleti
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Phase 1: Violation Verification
 

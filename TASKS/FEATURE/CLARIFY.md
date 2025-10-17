@@ -12,7 +12,7 @@ Clarification is not gathering requirements—it's philosophical interrogation. 
 
 ---
 
-Read `AGENTS.md` - internalize the Six Pillars
+Read `PRINCIPLES.md` - internalize the Six Pillars
 
 ## Prerequisites
 
