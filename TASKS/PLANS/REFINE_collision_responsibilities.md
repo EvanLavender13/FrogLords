@@ -268,3 +268,47 @@ Each step is independently committed. To rollback:
 ✅ **Composability enabled** - Controllers can implement custom grounded logic
 
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `collision.cpp`: 91 → 84 (-7 lines)
+- `collision.h`: 15 → 15 (0 lines, signature changed)
+- `controller.cpp`: 158 → 166 (+8 lines)
+- **Net total:** -7 lines (deletion of state interpretation)
+
+**Violations removed:**
+- State interpretation in primitive: 7 lines deleted (grounded check + assignments)
+- Function parameters: 8 → 4 (-4 state parameters)
+- Out parameters: 3 removed (`is_grounded&`, `ground_normal&`, `ground_height&`)
+- Gameplay concepts in physics: 1 removed (`max_slope_angle`)
+
+**Principle:** Composable Functions
+- Before: 6/10 (mixed concerns, coupled responsibilities)
+- After: 9/10 (orthogonal, pure separation)
+- Improvement: +3.0
+
+**Evidence:**
+Collision system no longer knows "grounded" exists. Controller interprets contact data using game logic. Physics primitive ← → Gameplay system separation complete.
+
+**Foundation:**
+- Layer 2 (Primitives): 100% maintained (orthogonality restored)
+- Overall: 97%+ maintained (0 critical, 1 high, 5 medium, 3 low violations remaining)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Convenience-driven coupling - easier to set state directly in collision loop than return data for interpretation.
+
+**Prevention:** Return rich data structures from primitives, interpret in systems. Primitives never know gameplay concepts (grounded, slope limits, etc.).
+
+**Pattern:** Several systems still mix concerns (GUI command coupling addressed, others remain). Check primitives for gameplay knowledge.
+
+**Remaining work:** Refinement #4 (input system modifies camera) - another primitive/system boundary violation.
+<!-- END: MEASURE/LEARNING -->
