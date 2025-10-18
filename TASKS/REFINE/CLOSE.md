@@ -142,7 +142,7 @@ Update blocking issues and next actions:
 ### 4. Create Final Commit
 
 ```bash
-git add TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md TASKS/CURRENT_PLAN.md
+git add TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md TASKS/CURRENT_PLAN.md TASKS/PLANS/REFINE_<name>.md
 
 git commit -m "close: <name> refinement
 
