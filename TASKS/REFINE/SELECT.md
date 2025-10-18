@@ -111,6 +111,8 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 
 **Approach:** Delete | Simplify | Document
 
+**CRITICAL:** Describe the approach conceptually. Use pseudocode and high-level explanations. Do NOT write actual source code—that happens during REFINE.
+
 **DELETE:**
 - Remove:
 - Impact:
