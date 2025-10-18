@@ -94,21 +94,34 @@ void mesh_renderer::draw_mesh(const foundation::mesh& mesh, ...) {
 
 ---
 
-## Success
+## Completed
 
-- [ ] Violation resolved
-- [ ] Principle score improved
-- [ ] Tests passing
-- [ ] No visual regressions
+**Date:** 2025-10-18
+
+**Change:** Replaced per-draw buffer creation/destruction with persistent dynamic buffers using `sg_append_buffer`
+
+**Implementation:**
+- Added `sg_buffer dynamic_vertex_buffer` and `dynamic_index_buffer` members
+- Initialize buffers in `init()` with `.usage.stream_update = true` (64KB each)
+- Use `sg_append_buffer()` in `draw()` to append geometry per frame
+- Track offsets and set `bindings.vertex_buffer_offsets[0]` and `bindings.index_buffer_offset`
+- Destroy buffers in `shutdown()`
+
+**Pattern chosen:** `sg_append_buffer` (immediate-mode, multiple updates per frame)
+- Consulted codex: Acceptable for D3D11, GL perf warning doesn't apply
+- Future optimization path: batching API (begin/draw/end) noted in code comment
+
+**Tests:** All passing ✓
+- Visual validation: All meshes render correctly
+- No flickering or artifacts
+- No performance regression
 
 **Metrics:**
-- Before: LOC ~50, Principle 6/10, API calls ~2N per frame (N=meshes)
-- After: LOC ~60 (+10 setup), Principle 9/10 (+3), API calls ~2 per frame
+- Before: LOC 108, Principle 6/10, API calls ~2N per frame (N=meshes)
+- After: LOC 117 (+9), Principle 9/10 (+3), API calls 0 create/destroy per frame
+- Eliminated per-frame buffer creation/destruction entirely
 
-**Visual validation:**
-- All meshes still render correctly
-- No performance regression
-- No flickering/artifacts
+**Result:** ✓ Violation removed - Radical Simplicity restored
 
 ---
 
