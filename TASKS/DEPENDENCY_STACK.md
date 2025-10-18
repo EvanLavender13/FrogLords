@@ -33,7 +33,7 @@ Layer 1: CORE            [95.5%] ← ✅ TARGET EXCEEDED
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
-| Runtime | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
+| Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
 | Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
 | Physics | 95% | ✅ Documented | `character/controller.{h,cpp}` |
@@ -160,6 +160,7 @@ Rate each system 1-10 on these criteria:
 
 ## Recent Changes
 
+- 2025-10-18: Runtime/Camera → 100% (eliminated stale delta accumulation, Prime Directive restored)
 - 2025-10-18: Collision → 100% (safe normalization, eliminated division by zero)
 - 2025-10-18: Foundation → 97%+ ✅ TARGET EXCEEDED
 - 2025-10-18: Runtime → 100% (removed embedded test logic)

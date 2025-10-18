@@ -66,10 +66,11 @@ void app_runtime::frame() {
 
     ensure_static_meshes();
 
-    if (!gui::wants_mouse()) {
-        static float last_mouse_x = 0.0f;
-        static float last_mouse_y = 0.0f;
+    // Track mouse position every frame to prevent stale delta accumulation
+    static float last_mouse_x = 0.0f;
+    static float last_mouse_y = 0.0f;
 
+    if (!gui::wants_mouse()) {
         if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
             float delta_x = (input::mouse_x() - last_mouse_x) * 0.5f;
             float delta_y = (input::mouse_y() - last_mouse_y) * 0.5f;
@@ -80,10 +81,11 @@ void app_runtime::frame() {
         if (scroll_delta != 0.0f) {
             world.cam.zoom(-scroll_delta * 0.5f);
         }
-
-        last_mouse_x = input::mouse_x();
-        last_mouse_y = input::mouse_y();
     }
+
+    // Always update last mouse position (prevents camera jump when GUI releases control)
+    last_mouse_x = input::mouse_x();
+    last_mouse_y = input::mouse_y();
 
     world.update(dt, panel_state);
 

@@ -22,15 +22,6 @@
 - **Impact:** Architecture, testability, principle adherence
 - **Audit Source:** Gemini + Codex convergence
 
-**#2: Mouse Camera Jump Violates Prime Directive** ← NEXT
-- **Location:** `src/app/runtime.cpp:69-86`
-- **Principles:** **Prime Directive** (Do No Harm to Gameplay), Consistency
-- **Severity:** High - Control is sacred
-- **Type:** Lost responsiveness, Unpredictable response
-- **Description:** `last_mouse_x/y` frozen when ImGui captures mouse. When UI releases control, first camera orbit uses entire accumulated delta, causing large, surprising view snap. Violates "intent must flow unimpeded" and breaks predictability.
-- **Fix:** Delete stale state - Always update `last_mouse` even when GUI owns it, or reset `last_mouse` to current position when GUI releases capture. Prevent delta accumulation.
-- **Impact:** **Player control betrayed, unexpected camera behavior**
-- **Audit Source:** **Codex** (Prime Directive focus)
 
 **#3: Collision Resolution Mixed Responsibilities**
 - **Location:** `src/foundation/collision.cpp:resolve_box_collisions`
@@ -264,17 +255,16 @@
 
 ## Priority Order
 
-**Foundation at 97%+ ✅ - 11 violations found (0 CRITICAL, 3 high, 5 medium, 3 low)**
+**Foundation at 97%+ ✅ - 10 violations found (0 CRITICAL, 2 high, 5 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
-- **High Priority**: Mouse camera jump (#2), GUI coupling (#1), Collision responsibilities (#3)
+- **High Priority**: GUI coupling (#1), Collision responsibilities (#3)
 - **Pattern**: Violations in non-core systems (GUI, debug, tooling) - foundation solid
 
-**Path to 95%+ Layer 3:**
-1. **Mouse camera jump** (#2) - Prime Directive violation ← **NEXT**
-2. **GUI coupling** (#1) - Architectural violation
-3. **Collision responsibilities** (#3) - Composability issue
+**Path to maintain 97%+ Layer 3:**
+1. **GUI coupling** (#1) - Architectural violation ← **NEXT**
+2. **Collision responsibilities** (#3) - Composability issue
 4. Continue medium-priority refinements (#4-#8)
 5. OR **Build Layer 4 systems** - Foundation stable at 97%+
 6. Address low-priority violations opportunistically (#9-#11)
@@ -289,13 +279,14 @@
 
 ## Recent Activity
 
-**Division by Zero Fixed (2025-10-18)**
-- Replaced unsafe division with safe normalization (UP fallback)
-- Collision Detection: Mathematical Foundations CRITICAL → 10/10 (+CRITICAL FIX)
-- Foundation: 97% → 97%+ (critical bug eliminated)
-- 11 violations remaining (0 critical, 3 high, 5 medium, 3 low)
+**Mouse Camera Jump Fixed (2025-10-18)**
+- Deleted stale delta accumulation (always update last_mouse position)
+- Runtime/Camera: Prime Directive violation eliminated, Consistency restored
+- Foundation: 97%+ maintained (user experience fix)
+- 10 violations remaining (0 critical, 2 high, 5 medium, 3 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_mouse_camera_jump.md` (2025-10-18) - Prime Directive +FIXED, Consistency +FIXED
 - `PLANS/REFINE_division_by_zero.md` (2025-10-18) - Mathematical Foundations +CRITICAL FIX
 - `PLANS/REFINE_gradient_continuity.md` (2025-10-18) - Mathematical Foundations +2.0
 - `PLANS/REFINE_embedded_tests.md` (2025-10-18) - Composable Functions +2.0
