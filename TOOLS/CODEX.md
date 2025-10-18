@@ -8,50 +8,56 @@ Certainty comes not from a single perspective but from convergence. When the pat
 
 When complexity demands validation, use the tool built for rapid analysis. The Codex CLI exists for one purpose: to provide a second opinion without the overhead of a new session.
 
-**The Command**: `codex "your question" e`
+**The Command**: `echo "your question" | codex e`
 
 **The Philosophy**: Quick consultation. Independent analysis. Fresh perspective.
 
 ## The Syntax
 
-Ask a question, receive an answer:
+**IMPORTANT**: Codex reads from stdin. You must pipe the prompt in using `echo`:
 
 ```bash
-codex "Does this implementation violate any SOLID principles?" e
+echo "Does this implementation violate any SOLID principles?" | codex e
 ```
 
-That's it. One command, one response, move forward.
+**Why echo?** Direct argument passing doesn't work reliably. Always pipe the prompt via stdin.
+
+**Output Behavior**:
+- **stdout**: Clean, concise findings (the actual answer)
+- **stderr**: Verbose activity stream (thinking, file reads, execution traces)
+
+This separation makes Codex scriptable - pipe stdout to other tools, ignore stderr noise.
 
 ## The Syntax of Consultation
 
 **Quick Code Review**:
 ```bash
-codex "Review src/controller.cpp for potential race conditions" e
+echo "Review src/controller.cpp for potential race conditions" | codex e
 ```
 
 **Architecture Validation**:
 ```bash
-codex "Does the current input buffering approach align with the dual reference pattern?" e
+echo "Does the current input buffering approach align with the dual reference pattern?" | codex e
 ```
 
 **Pattern Recognition**:
 ```bash
-codex "Identify any accumulated state anti-patterns in src/player/" e
+echo "Identify any accumulated state anti-patterns in src/player/" | codex e
 ```
 
 **Mathematical Verification**:
 ```bash
-codex "Verify the spring-damper constants in motion.cpp are physically correct" e
+echo "Verify the spring-damper constants in motion.cpp are physically correct" | codex e
 ```
 
 **Principle Compliance**:
 ```bash
-codex "Does the collision system adhere to the principle of orthogonality?" e
+echo "Does the collision system adhere to the principle of orthogonality?" | codex e
 ```
 
 **Design Decision Analysis**:
 ```bash
-codex "Should skeletal animation be event-driven or state-based? List trade-offs." e
+echo "Should skeletal animation be event-driven or state-based? List trade-offs." | codex e
 ```
 
 ## When to Use Codex
@@ -84,21 +90,48 @@ The best tool is the one that matches the question's shape:
 
 **Before implementing**:
 ```bash
-codex "Review the approach in TASKS/PLANS/BUILD_skeletal_animation.md" e
+echo "Review the approach in TASKS/PLANS/BUILD_skeletal_animation.md" | codex e
 ```
 
 **During implementation** (while working with Claude Code):
 ```bash
-codex "Is this spring constant physically reasonable? k=200, damping=0.7" e
+echo "Is this spring constant physically reasonable? k=200, damping=0.7" | codex e
 ```
 
 **After implementation**:
 ```bash
-codex "Review src/animation/skeleton.cpp for principle violations" e
+echo "Review src/animation/skeleton.cpp for principle violations" | codex e
 ```
 
 **The cycle**: Propose → Validate → Implement → Verify
 
 Confidence is built through convergence. When two independent analyses agree, trust increases. When they disagree, truth emerges from reconciliation.
+
+## Advanced Usage
+
+**Silent Mode** (suppress verbose stderr):
+```bash
+echo "your question" | codex e 2>/dev/null
+```
+
+**Capture Only Results**:
+```bash
+result=$(echo "your question" | codex e 2>/dev/null)
+```
+
+**Automated Workflows**:
+```bash
+# Launch in background, wait for completion, read clean results
+echo "comprehensive audit question" | codex e > results.txt 2>activity.log &
+```
+
+**Dual-AI Analysis** (combine with Gemini):
+```bash
+# Parallel analysis for convergence validation
+gemini -p "@src/ your question" > gemini_findings.txt &
+echo "your question" | codex e > codex_findings.txt &
+wait
+# Synthesize findings from both
+```
 
 **Seek the second opinion. Question the first.**

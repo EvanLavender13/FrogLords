@@ -4,6 +4,7 @@
 
 **Foundation:** 97% ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
+**Last Audit:** 2025-10-18 (Gemini + Codex dual analysis)
 
 ---
 
@@ -11,11 +12,59 @@
 
 ### High Priority
 
-None - All high-priority violations resolved! 🎉
+**#0: CRITICAL - Division by Zero in Collision Detection**
+- **Location:** `src/foundation/collision.cpp:25-29`
+- **Principles:** **Solid Mathematical Foundations** (CRITICAL)
+- **Severity:** **CRITICAL** - Causes state corruption
+- **Type:** Mathematical error, Potential NaN propagation
+- **Description:** When sphere center lies inside (or exactly on the closest point of) an AABB, `distance_squared` becomes 0. Division `distance / distance_magnitude` writes NaNs into collision normal, which propagate into `position` and `velocity`, exploding controller state. Violates "mathematics must be correct before anything else."
+- **Fix:** Delete unsafe division - Add epsilon check: `if (distance_squared < EPSILON) { /* handle contained/touching case */ } else { normalize }`. Return early for degenerate cases.
+- **Impact:** **State corruption, physics explosion, gameplay breakage**
+- **Audit Source:** **Codex** (mathematical deep analysis)
+
+**#1: GUI Direct Manipulation of Game State**
+- **Location:** `src/gui/character_panel.cpp:draw_character_panel`
+- **Principles:** Composable Functions, Principled Development
+- **Severity:** High
+- **Type:** Bidirectional coupling, Architectural violation
+- **Description:** UI panel takes direct non-const references to `controller`, `character_reactive_systems`, and `tuning_params` and modifies them via ImGui widgets. Creates tight coupling between view (UI) and model (game state), violating unidirectional data flow documented in `character_reactive_systems.h`.
+- **Fix:** Simplify - Refactor to event-based or command pattern. GUI emits changes, systems apply them. Restore unidirectional flow: controller → reactive_systems → rendering, with GUI as observer/commander.
+- **Impact:** Architecture, testability, principle adherence
+- **Audit Source:** Gemini + Codex convergence
+
+**#2: Mouse Camera Jump Violates Prime Directive**
+- **Location:** `src/app/runtime.cpp:69-86`
+- **Principles:** **Prime Directive** (Do No Harm to Gameplay), Consistency
+- **Severity:** High - Control is sacred
+- **Type:** Lost responsiveness, Unpredictable response
+- **Description:** `last_mouse_x/y` frozen when ImGui captures mouse. When UI releases control, first camera orbit uses entire accumulated delta, causing large, surprising view snap. Violates "intent must flow unimpeded" and breaks predictability.
+- **Fix:** Delete stale state - Always update `last_mouse` even when GUI owns it, or reset `last_mouse` to current position when GUI releases capture. Prevent delta accumulation.
+- **Impact:** **Player control betrayed, unexpected camera behavior**
+- **Audit Source:** **Codex** (Prime Directive focus)
+
+**#3: Collision Resolution Mixed Responsibilities**
+- **Location:** `src/foundation/collision.cpp:resolve_box_collisions`
+- **Principles:** Composable Functions
+- **Severity:** High
+- **Type:** Mixed concerns, Non-orthogonal
+- **Description:** Function both resolves collision (corrects position/velocity) AND determines grounded state by interpreting collision normal. Two orthogonal responsibilities coupled in one function.
+- **Fix:** Simplify - Split responsibilities. Return detailed contact information (normals, penetration, etc.). Let controller interpret contact data to update its own grounded state. Collision system becomes pure primitive.
+- **Impact:** System composability, testability
+- **Audit Source:** Gemini + Codex convergence
 
 ### Medium Priority
 
-**#3: Special Casing for Camera Modes**
+**#4: Controller Hardwired to Input Polling**
+- **Location:** `src/character/controller.cpp:48-88`
+- **Principles:** Composable Functions
+- **Severity:** Medium
+- **Type:** Tight coupling, Non-reusable
+- **Description:** `apply_input()` accepts camera-relative intent struct but still reaches out to global `input::` state for WASD/jump polling. Makes movement system impossible to reuse or test with synthetic input, undermines orthogonal primitives.
+- **Fix:** Simplify - Route all player intent through explicit `controller_input` data structure. Controller becomes pure: takes input struct, produces new state. No global dependencies.
+- **Impact:** Testability, composability, system reuse
+- **Audit Source:** **Codex** (composability analysis)
+
+**#5: Special Casing for Camera Modes**
 - **Location:** `src/camera/camera.cpp:50-58`
 - **Principles:** Composable Functions
 - **Severity:** Medium
@@ -24,7 +73,7 @@ None - All high-priority violations resolved! 🎉
 - **Fix:** Simplify - Refactor. Base camera handles view/projection, separate `Follower` component updates target position. Orthogonal systems.
 - **Impact:** Camera system architecture
 
-**#4: Unjustified Friction Model**
+**#6: Unjustified Friction Model**
 - **Location:** `src/character/tuning.cpp:8-17, 25-27`
 - **Principles:** Mathematical Foundations, Principled Development
 - **Severity:** Medium
@@ -33,9 +82,29 @@ None - All high-priority violations resolved! 🎉
 - **Fix:** Document - Explain why this model chosen for game feel over physics-based. OR Replace with standard kinetic friction for principled, predictable system.
 - **Impact:** Character movement feel, tuning predictability
 
+**#7: Magic Numbers in Debug Visualization**
+- **Location:** `src/app/debug_generation.cpp:170-180` (generate_collision_state_primitives)
+- **Principles:** Radical Simplicity, Mathematical Foundations, Consistency
+- **Severity:** Medium
+- **Type:** Magic numbers, Arbitrary logic
+- **Description:** Color logic uses if/else with unexplained constants (0.4f, 1.2f, 1.0f, 0.3f). No mathematical or physical justification. Inconsistent color rule application.
+- **Fix:** Document - Define named constants explaining semantic meaning. OR Simplify - Use continuous gradient function instead of branching.
+- **Impact:** Code clarity, debug visualization consistency
+- **Audit Source:** Gemini + Codex convergence
+
+**#8: Coyote Time / Jump Buffering Lacks Rationale**
+- **Location:** `src/character/controller.cpp:apply_input, update`
+- **Principles:** Consistency, Principled Development
+- **Severity:** Medium
+- **Type:** Undocumented principle violation
+- **Description:** Special-case mechanics create intentional inconsistency - "jumping only when grounded" rule has exceptions for game feel. Implementation exists but lacks explicit comment explaining *why* this trade-off was made (Prime Directive > Consistency).
+- **Fix:** Document - Add comment: "Violates Consistency principle for game feel - forgives near-miss jumps per Prime Directive (Do No Harm to Gameplay)."
+- **Impact:** Future developer understanding, principle communication
+- **Audit Source:** Gemini + Codex convergence
+
 ### Low Priority
 
-**#5: Magic Number for Collision Passes**
+**#9: Magic Number for Collision Passes**
 - **Location:** `src/foundation/collision.cpp:41`
 - **Principles:** Mathematical Foundations
 - **Severity:** Low
@@ -43,6 +112,36 @@ None - All high-priority violations resolved! 🎉
 - **Description:** Hard-coded `for (int pass = 0; pass < 3; ++pass)` for collision resolution. Number `3` is arbitrary, lacks mathematical guarantee.
 - **Fix:** Document - Define as named constant `COLLISION_RESOLUTION_PASSES = 3` with comment explaining empirical choice balancing performance/accuracy.
 - **Impact:** Code clarity
+
+**#10: Unused Delta-Time Parameter**
+- **Location:** `src/camera/camera.cpp:78-86`
+- **Principles:** Radical Simplicity
+- **Severity:** Low
+- **Type:** Dead parameter, Unclear intent
+- **Description:** `set_follow_target()` takes `dt` parameter but never uses it. Obscures whether follow mode is intentionally instantaneous or missing time-based smoothing.
+- **Fix:** Delete - Remove unused parameter. OR Document - Add comment explaining why instantaneous is correct.
+- **Impact:** Code clarity, cognitive load
+- **Audit Source:** **Codex**
+
+**#11: Hardcoded Test Level Literals**
+- **Location:** `src/app/game_world.cpp:62-111`
+- **Principles:** Radical Simplicity, Emergent Behavior
+- **Severity:** Low
+- **Type:** Scattered literals, Special cases
+- **Description:** Test arena hard-coded as scattered literals without named primitives (tile size, offsets). Every tweak requires manual edit, reads as pile of special cases rather than composable system.
+- **Fix:** Simplify - Extract named constants for dimensions/offsets. OR Accept - Temporary test code, note for future data-driven/procedural system.
+- **Impact:** Code clarity, maintainability (non-critical - test only)
+- **Audit Source:** **Codex** + Gemini convergence
+
+**#12: Debug Draw Batching Complexity**
+- **Location:** `src/rendering/debug_draw.cpp:19-53`
+- **Principles:** Radical Simplicity
+- **Severity:** Low
+- **Type:** Premature optimization, Unnecessary complexity
+- **Description:** Sorts debug lines by color with mutable copy, custom comparator, and batching logic. Adds significant complexity to non-critical debug path for performance gain that may not be measurable.
+- **Fix:** Simplify - Remove batching unless profiling shows it's necessary. OR Document - Justify with benchmarks showing meaningful performance improvement.
+- **Impact:** Debug code complexity, maintainability
+- **Audit Source:** Gemini + Codex convergence
 
 ---
 
@@ -161,19 +260,28 @@ None - All high-priority violations resolved! 🎉
 - [ ] Missing derivations for tuned values
 - [ ] TODO/FIXME comments
 
-**Last Audit:** 2025-10-18 (Gemini comprehensive review)
-**Next Audit:** After completing high-priority refinements
+**Last Audit:** 2025-10-18 (**Dual Analysis:** Gemini + Codex convergence)
+**Next Audit:** After resolving high-priority violations
 
 ---
 
 ## Priority Order
 
-**Foundation at 97% ✅ - 3 violations remaining (2 medium, 1 low)**
+**Foundation at 97% ✅ - 12 violations found (1 CRITICAL, 2 high, 5 medium, 4 low)**
+
+**Audit Result:**
+- **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
+- **🚨 CRITICAL BUG**: Division by zero in collision (#0) - **MUST FIX IMMEDIATELY**
+- **High Priority**: Mouse camera jump (#2), GUI coupling (#1), Collision responsibilities (#3)
+- **Codex Unique**: Mathematical bug (#0), Prime Directive violation (#2), Input coupling (#4), unused dt (#10)
+- **Pattern**: Critical bugs in **core systems**. Most other violations in non-core (GUI, debug, tooling).
 
 **Recommended path:**
-1. **Build Layer 4 systems** - Foundation solid, variations unblocked ← RECOMMENDED
-2. OR continue medium-priority refinements (camera modes #3, friction model #4)
-3. Address low-priority violations opportunistically (collision passes #5)
+1. **🔥 FIX CRITICAL BUG (#0)** - Division by zero causing state corruption ← **DO THIS FIRST**
+2. **Fix high-priority violations** - Mouse jump (#2), GUI coupling (#1), Collision split (#3)
+3. Continue medium-priority refinements (#4-#8)
+4. OR **Build Layer 4 systems** - After critical bug fixed, foundation stable
+5. Address low-priority violations opportunistically (#9-#12)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
