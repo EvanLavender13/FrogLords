@@ -1,45 +1,43 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Accumulated State Pattern
+**Last Completed:** 2025-10-18 - World Geometry Duplication
 
 ---
 
 ## Ready for Next Task
 
 **Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build (Layer 4 unblocked!)
-- `/REFINE/SELECT` - Pick optional refinement (95% → 100%)
-
-**Recommendation:** Build Layer 4 systems now that foundation is at 95%
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 
 ## Quick Reference
 
-**Foundation:** 95% ✅ TARGET REACHED
-**Cascade:** 90.25% survival (excellent for variation)
+**Foundation:** 95.5% ✅ TARGET EXCEEDED
+**Target:** 95% (Layer 3)
 
 **Layer Status:**
 - Layer 1 (Core): 95% ✅ - Target reached
 - Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): 95% ✅ - Complete
+- Layer 3 (Systems): 96% ✅ - Target exceeded
 - Layer 4 (Variation): <50% ✅ - Ready to build
 
-**Next Priority:** Build Layer 4 systems (skeletal animation, walk/run states, wall sliding, dash)
-**Estimated Path:** ~4-5 systems to reach Layer 4 at 95%
+**Next Priority:** Fix high-priority violation (#1: Character State Management) OR Build Layer 4 systems
+**Estimated Path:** 1 high-priority refinement, then 4-5 systems to reach Layer 4 at 95%
 
 ---
 
 ## Recent Milestone
 
-**Foundation reached 95%!**
+**Foundation exceeded 95% target!**
 
-- Layer 1: 90% → 95% (accumulated state pattern documented)
-- Overall: 92.5% → 95% (+2.5%)
-- Cascade: 85.5% → 90.25% survival (+4.75%)
+- Layer 3: 95% → 96% (world geometry duplication removed)
+- Overall: 95% → 95.5% (+0.5%)
+- Cascade: 90.25% → 91.2% survival (+0.95%)
 
-**Impact:** Layer 4 now has excellent foundation (90.25% survival)
+**Impact:** Layer 4 now has even stronger foundation (91.2% survival)
 
 ---
 

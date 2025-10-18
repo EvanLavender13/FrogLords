@@ -2,7 +2,7 @@
 
 **Foundation certainty. Build order. What's possible now.**
 
-**Overall Foundation:** 95% ✅ TARGET REACHED
+**Overall Foundation:** 95.5% ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 
 ---
@@ -14,16 +14,16 @@ Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
 Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 95%)
     ↓
-Layer 3: SYSTEMS         [95%] ← ✅ COMPLETE
+Layer 3: SYSTEMS         [96%] ← ✅ COMPLETE
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
 Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 ```
 
-**Cascade:** 0.95 × 1.00 × 0.95 = **90.25% survival**
+**Cascade:** 0.95 × 1.00 × 0.96 = **91.2% survival**
 
-**Target achieved:** Foundation at 95%, ready for Layer 4 variation
+**Target exceeded:** Foundation at 95.5%, ready for Layer 4 variation
 
 ---
 
@@ -59,28 +59,28 @@ Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 
 ---
 
-## Layer 3: SYSTEMS (95%)
+## Layer 3: SYSTEMS (96%)
 
-**Status:** ✅ **TARGET REACHED** - Ready for Layer 4
+**Status:** ✅ **TARGET EXCEEDED** - Ready for Layer 4
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Rendering | 100% | ✅ Solid | `rendering/scene.{h,cpp}` |
 | GUI | 95% | ✅ Working | `gui/*` |
-| Game World | 95% | ✅ Clean | `app/game_world.{h,cpp}` |
+| Game World | 96% | ✅ Refined | `app/game_world.{h,cpp}` |
 | Tuning | 95% | ✅ Fixed | `character/tuning.{h,cpp}` |
 | Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
 | Orientation | 100% | ✅ Refined | `character/orientation.{h,cpp}` |
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
 | Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
 
-**Blocking:** None - Layer 3 at target, foundation at 95%
+**Blocking:** None - Layer 3 exceeded target, foundation at 95.5%
 
 ---
 
 ## Layer 4: VARIATION (<50%)
 
-**Status:** ✅ **UNBLOCKED** - Layer 3 at 95%
+**Status:** ✅ **UNBLOCKED** - Layer 3 at 96%
 
 **Ready to build:**
 - Skeletal Animation System (5-8 points)
@@ -89,7 +89,7 @@ Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 - Dash Mechanic (3-5 points)
 - IK Systems (8 points)
 
-**Foundation:** Building on 95% Layer 3 = 90.25% survival (excellent for variation)
+**Foundation:** Building on 96% Layer 3 = 91.2% survival (excellent for variation)
 
 ---
 
@@ -147,21 +147,22 @@ Rate each system 1-10 on these criteria:
 
 ## Next Actions
 
-**Foundation at target (95%) - ready for Layer 4:**
+**Foundation exceeded target (95.5%) - ready for Layer 4:**
 - Build skeletal animation system, OR
 - Build walk/run speed states, OR
 - Build wall detection & sliding, OR
 - Build dash mechanic
 
-**Foundation:** 0.95 × 1.00 × 0.95 = **90.25% survival** (excellent for variation)
+**Foundation:** 0.95 × 1.00 × 0.96 = **91.2% survival** (excellent for variation)
 
 ---
 
 ## Recent Changes
 
+- 2025-10-18: Game World → 96% (world geometry duplication removed)
+- 2025-10-18: Layer 3 → 96% ✅ TARGET EXCEEDED
+- 2025-10-18: Foundation → 95.5% ✅ TARGET EXCEEDED
 - 2025-10-18: Physics → 95% (accumulated state pattern documented)
-- 2025-10-18: Layer 1 → 95% ✅ TARGET REACHED
-- 2025-10-18: Foundation → 95% ✅ TARGET REACHED
 - 2025-10-18: Controller → 100% (extracted reactive systems)
 - 2025-10-17: Orientation → 100% (spring-damper replacement)
 

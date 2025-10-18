@@ -4,13 +4,8 @@ void scene::add_object(const foundation::wireframe_mesh& mesh) {
     meshes.push_back(mesh);
 }
 
-void scene::add_collision_box(const aabb& box) {
-    boxes.push_back(box);
-}
-
 void scene::clear() {
     meshes.clear();
-    boxes.clear();
 }
 
 size_t scene::object_count() const {
@@ -19,8 +14,4 @@ size_t scene::object_count() const {
 
 const std::vector<foundation::wireframe_mesh>& scene::objects() const {
     return meshes;
-}
-
-const std::vector<aabb>& scene::collision_boxes() const {
-    return boxes;
 }

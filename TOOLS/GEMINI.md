@@ -8,7 +8,7 @@ Context is finite. Truth is not. When the question exceeds the canvas, expand th
 
 When analysis demands wholeness, use the tool built for scale. The Gemini CLI exists for one purpose: to hold entire codebases in a single thought.
 
-**The Command**: `gemini -p`
+**The Command**: `gemini -p "@path/to/files your question"`
 
 **The Philosophy**: Massive context. Complete visibility. No fragmentation.
 
@@ -20,32 +20,27 @@ Paths are relative to your working directory. Not to where files happen to live,
 
 **Single file—single focus**:
 ```bash
-gemini -p "@src/main.py Explain this file's purpose and structure"
+gemini -p "@src/physics/motion.cpp Explain the spring-damper implementation"
 ```
 
 **Multiple files—multiple perspectives**:
 ```bash
-gemini -p "@package.json @src/index.js Analyze the dependencies used in the code"
+gemini -p "@src/player/controller.cpp @src/player/state.cpp Analyze the dual reference pattern usage"
 ```
 
 **Entire directory—complete system**:
 ```bash
-gemini -p "@src/ Summarize the architecture of this codebase"
+gemini -p "@src/physics/ Summarize the physics system architecture"
 ```
 
 **Multiple directories—full context**:
 ```bash
-gemini -p "@src/ @tests/ Analyze test coverage for the source code"
+gemini -p "@src/player/ @src/physics/ Analyze how player movement integrates with physics"
 ```
 
 **Current directory and below—total comprehension**:
 ```bash
-gemini -p "@./ Give me an overview of this entire project"
-```
-
-**All files flag—maximum inclusion**:
-```bash
-gemini --all_files -p "Analyze the project structure and dependencies"
+gemini -p "@./ Give me an overview of the entire codebase structure"
 ```
 
 ## Verification Through Wholeness
@@ -54,70 +49,66 @@ When you ask "is X implemented?", you deserve the complete answer. Not guesses. 
 
 **Feature verification**:
 ```bash
-gemini -p "@src/ @lib/ Has dark mode been implemented? Show relevant files and functions"
-```
-
-**Authentication audit**:
-```bash
-gemini -p "@src/ @middleware/ Is JWT authentication implemented? List all auth endpoints and middleware"
+gemini -p "@src/ Has wall sliding been implemented? Show relevant files and functions"
 ```
 
 **Pattern discovery**:
 ```bash
-gemini -p "@src/ Are there React hooks that handle WebSocket connections? List them with file paths"
+gemini -p "@src/ Where is accumulated state being used? List all instances with file paths"
 ```
 
-**Error handling validation**:
+**Spring-damper audit**:
 ```bash
-gemini -p "@src/ @api/ Is proper error handling implemented for all API endpoints? Show try-catch examples"
+gemini -p "@src/physics/ @src/player/ Are all spring-damper implementations mathematically correct? Show constants and formulas"
 ```
 
-**Rate limiting check**:
+**Dual reference compliance**:
 ```bash
-gemini -p "@backend/ @middleware/ Is rate limiting implemented? Show implementation details"
+gemini -p "@src/ Which systems use the dual reference pattern correctly? Which violate it?"
 ```
 
-**Caching strategy review**:
+**Input handling analysis**:
 ```bash
-gemini -p "@src/ @lib/ @services/ Is Redis caching implemented? List all cache-related functions"
+gemini -p "@src/player/ @src/input/ Is player input being buffered correctly? Show the implementation"
 ```
 
-**Security measure audit**:
+**Collision system review**:
 ```bash
-gemini -p "@src/ @api/ Are SQL injection protections implemented? Show input sanitization"
+gemini -p "@src/collision/ @src/world/ Is world geometry duplicated anywhere? Show all storage locations"
 ```
 
-**Test coverage assessment**:
+**State management audit**:
 ```bash
-gemini -p "@src/payment/ @tests/ Is the payment module fully tested? List all test cases"
+gemini -p "@src/player/ Are there any state transitions that could lose player control? List them"
+```
+
+**Principle violations**:
+```bash
+gemini -p "@src/ Identify any violations of the six principles. List by file and line number"
 ```
 
 ## When to Use Gemini
 
 Use Gemini when Claude's context becomes the constraint:
 
-- Entire codebases require simultaneous analysis
+- Entire codebase requires simultaneous analysis
 - Multiple large files must be compared as one
 - Project-wide patterns must be discovered, not inferred
-- Files total more than 100KB
 - Implementation verification demands completeness
 - Architectural understanding requires seeing all pieces at once
+- Cross-system dependencies need full visibility
 
 **The Rule**: When the question is "what does the whole system do?", use the tool that can see the whole system.
-
-## The Mechanics
-
-- Paths in `@` syntax are relative to your working directory
-- File contents are included directly—no summarization, no loss
-- Read-only analysis requires no `--yolo` flag
-- Context window handles what would overflow other models
-- Specificity in questions yields precision in answers
 
 ## The Warning
 
 Do not use tools blindly. Choose the right tool for the question being asked:
 
-- **Claude Code**: For iterative development, file editing, progressive understanding
-- **Gemini CLI**: For holistic analysis, complete verification, architectural comprehension
+- **Claude Code**: For iterative development, the primary development partner
+- **Codex CLI**: For second opinions, validation, alternative perspectives
+- **Gemini CLI**: For massive context, complete codebase analysis
 
-The best tool is the one that matches the shape of the problem.
+The best tool is the one that matches the question's shape:
+- Building and iterating? Claude Code.
+- Need validation? Codex.
+- Need complete visibility? Gemini.
