@@ -50,7 +50,6 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 **Change:** [deleted/simplified/documented what]
 **Tests:** All passing | Updated: [list]
-**Metrics:** LOC __→__ (-__) | Principle __/10→__/10 (+__)
 **Result:** ✓ Violation removed
 <!-- END: REFINE/COMPLETED -->
 ```
@@ -61,7 +60,6 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 git add .
 git commit -m "refine: <name> - <what was removed/simplified>
 
-Removed: <LOC> lines
 Restored: <principle>
 Tests: All passing
 

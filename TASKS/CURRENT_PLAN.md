@@ -1,31 +1,15 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - GUI Coupling
-**Started:** 2025-10-18
-**Branch:** refine/gui_coupling
-**Path:** B (Standard)
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-18 - GUI Coupling
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** GUI direct manipulation of game state violates unidirectional data flow
-**Location:** @TASKS/PLANS/REFINE_gui_coupling.md
-**Principle:** Composable Functions, Principled Development
-**Approach:** Simplify (command pattern for unidirectional flow)
-**Next:** `/REFINE` (Path B - Standard complexity)
-
-**Target Impact:**
-- GUI: Composable Functions 6/10 → 9/10 (+3)
-- Overall: 97%+ → 97%+ (architectural integrity maintained)
-
----
-
-## Quick Reference
-
-**Foundation:** 97%+ ✅ TARGET EXCEEDED
-**Target:** 95% (Layer 3)
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 
@@ -40,12 +24,19 @@
 - Layer 3 (Systems): 97%+ ✅ - Target exceeded
 - Layer 4 (Variation): <50% ✅ - Ready to build
 
-**Next Priority:** GUI coupling (#1) - Architectural violation
-**Estimated Path:** 2 high-priority refinements remaining, OR proceed to Layer 4 build
+**Next Priority:** Collision responsibilities (#3) - Composability issue
+**Estimated Path:** 1 high-priority refinement remaining, OR proceed to Layer 4 build
 
 ---
 
 ## Recent Refinements
+
+**GUI Coupling (2025-10-18)**
+- Implemented command pattern for unidirectional data flow
+- Composable Functions: 6/10 → 9/10 (+3.0)
+- Principled Development: Architecture integrity restored
+- Foundation: 97%+ maintained (architectural pattern violation fixed)
+- 9 violations remaining (0 critical, 1 high, 5 medium, 3 low)
 
 **Mouse Camera Jump (2025-10-18)**
 - Deleted stale delta accumulation (always update last_mouse)
@@ -71,6 +62,6 @@
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 2 high, 5 medium, 3 low)
+- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 1 high, 5 medium, 3 low)
 - `BACKLOG_SYSTEMS.md` - Systems to build (Layer 4 ready)
 - `DEPENDENCY_STACK.md` - Foundation status and build rules

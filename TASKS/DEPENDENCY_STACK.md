@@ -67,7 +67,7 @@ Layer 1: CORE            [95.5%] ← ✅ TARGET EXCEEDED
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Rendering | 100% | ✅ Solid | `rendering/scene.{h,cpp}` |
-| GUI | 95% | ✅ Working | `gui/*` |
+| GUI | 100% | ✅ Refined | `gui/*` |
 | Game World | 97%+ | ✅ Refined | `app/game_world.{h,cpp}` |
 | Tuning | 97% | ✅ Unidirectional | `character/tuning.{h,cpp}` |
 | Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
@@ -149,6 +149,7 @@ Rate each system 1-10 on these criteria:
 ## Next Actions
 
 **Foundation exceeded target (97%+) - ready for Layer 4:**
+- Refine collision responsibilities (#3), OR
 - Build skeletal animation system, OR
 - Build walk/run speed states, OR
 - Build wall detection & sliding, OR
@@ -160,6 +161,7 @@ Rate each system 1-10 on these criteria:
 
 ## Recent Changes
 
+- 2025-10-18: GUI → 100% (command pattern, unidirectional flow established)
 - 2025-10-18: Runtime/Camera → 100% (eliminated stale delta accumulation, Prime Directive restored)
 - 2025-10-18: Collision → 100% (safe normalization, eliminated division by zero)
 - 2025-10-18: Foundation → 97%+ ✅ TARGET EXCEEDED

@@ -12,17 +12,6 @@
 
 ### High Priority
 
-**#1: GUI Direct Manipulation of Game State**
-- **Location:** `src/gui/character_panel.cpp:draw_character_panel`
-- **Principles:** Composable Functions, Principled Development
-- **Severity:** High
-- **Type:** Bidirectional coupling, Architectural violation
-- **Description:** UI panel takes direct non-const references to `controller`, `character_reactive_systems`, and `tuning_params` and modifies them via ImGui widgets. Creates tight coupling between view (UI) and model (game state), violating unidirectional data flow documented in `character_reactive_systems.h`.
-- **Fix:** Simplify - Refactor to event-based or command pattern. GUI emits changes, systems apply them. Restore unidirectional flow: controller → reactive_systems → rendering, with GUI as observer/commander.
-- **Impact:** Architecture, testability, principle adherence
-- **Audit Source:** Gemini + Codex convergence
-
-
 **#3: Collision Resolution Mixed Responsibilities**
 - **Location:** `src/foundation/collision.cpp:resolve_box_collisions`
 - **Principles:** Composable Functions
@@ -255,23 +244,22 @@
 
 ## Priority Order
 
-**Foundation at 97%+ ✅ - 10 violations found (0 CRITICAL, 2 high, 5 medium, 3 low)**
+**Foundation at 97%+ ✅ - 9 violations found (0 CRITICAL, 1 high, 5 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
-- **High Priority**: GUI coupling (#1), Collision responsibilities (#3)
+- **High Priority**: ~~GUI coupling (#1)~~ ✅ FIXED, Collision responsibilities (#3)
 - **Pattern**: Violations in non-core systems (GUI, debug, tooling) - foundation solid
 
 **Path to maintain 97%+ Layer 3:**
-1. **GUI coupling** (#1) - Architectural violation ← **NEXT**
-2. **Collision responsibilities** (#3) - Composability issue
-4. Continue medium-priority refinements (#4-#8)
-5. OR **Build Layer 4 systems** - Foundation stable at 97%+
-6. Address low-priority violations opportunistically (#9-#11)
+1. **Collision responsibilities** (#3) - Composability issue ← **NEXT**
+2. Continue medium-priority refinements (#4-#8)
+3. OR **Build Layer 4 systems** - Foundation stable at 97%+
+4. Address low-priority violations opportunistically (#9-#11)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
-- **State management pattern** - ~~Multiple sources of truth~~ ✅ FIXED, bidirectional flow (existing pattern)
+- **State management pattern** - ~~Multiple sources of truth~~ ✅ FIXED, ~~bidirectional flow~~ ✅ FIXED
 - **Documentation debt** - Unjustified decisions (#4), magic numbers (#5)
 - **Composability gaps** - Special cases (#3), mixed concerns (#6)
 
@@ -279,13 +267,14 @@
 
 ## Recent Activity
 
-**Mouse Camera Jump Fixed (2025-10-18)**
-- Deleted stale delta accumulation (always update last_mouse position)
-- Runtime/Camera: Prime Directive violation eliminated, Consistency restored
-- Foundation: 97%+ maintained (user experience fix)
-- 10 violations remaining (0 critical, 2 high, 5 medium, 3 low)
+**GUI Coupling Fixed (2025-10-18)**
+- Implemented command pattern for unidirectional data flow
+- GUI: Composable Functions 6→9 (+3), Principled Development restored
+- Foundation: 97%+ maintained (architectural integrity)
+- 9 violations remaining (0 critical, 1 high, 5 medium, 3 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_gui_coupling.md` (2025-10-18) - Composable Functions +3, Architecture restored
 - `PLANS/REFINE_mouse_camera_jump.md` (2025-10-18) - Prime Directive +FIXED, Consistency +FIXED
 - `PLANS/REFINE_division_by_zero.md` (2025-10-18) - Mathematical Foundations +CRITICAL FIX
 - `PLANS/REFINE_gradient_continuity.md` (2025-10-18) - Mathematical Foundations +2.0
