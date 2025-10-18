@@ -1,15 +1,31 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Mouse Camera Jump
+**Status:** 🔧 Refinement - GUI Coupling
+**Started:** 2025-10-18
+**Branch:** refine/gui_coupling
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** GUI direct manipulation of game state violates unidirectional data flow
+**Location:** @TASKS/PLANS/REFINE_gui_coupling.md
+**Principle:** Composable Functions, Principled Development
+**Approach:** Simplify (command pattern for unidirectional flow)
+**Next:** `/REFINE` (Path B - Standard complexity)
+
+**Target Impact:**
+- GUI: Composable Functions 6/10 → 9/10 (+3)
+- Overall: 97%+ → 97%+ (architectural integrity maintained)
+
+---
+
+## Quick Reference
+
+**Foundation:** 97%+ ✅ TARGET EXCEEDED
+**Target:** 95% (Layer 3)
 
 ---
 
