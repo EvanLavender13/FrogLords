@@ -112,6 +112,37 @@ void controller::apply_input(const camera_input_params& cam_params, float dt) {
 
 ---
 
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-18
+
+**Question asked:**
+Validated the refinement approach: creating controller_input_params struct, changing apply_input() signature, moving input polling to caller, making controller pure with no global dependencies.
+
+**Concerns evaluated:**
+- Approach soundness
+- Risk to responsiveness or player control
+- Potential simpler alternatives
+- Camera data structure design (combined vs separate)
+
+**Feedback received:**
+- Approach is sound - pushing polling out keeps controller pure and composable
+- No responsiveness risk if caller runs every frame and preserves edge/level semantics
+- Simplification opportunity: keep camera_input_params separate rather than one hybrid struct
+- Two structs maintains sharper responsibility boundaries (player intent vs camera basis)
+- Allows non-camera-driven agents to ignore camera vectors entirely
+
+**Impact on implementation:**
+- Adopted two-struct approach instead of single hybrid struct
+- Kept existing camera_input_params unchanged
+- Created minimal controller_input_params for player intent only
+- Maintained orthogonality between input source and camera basis
+<!-- END: REFINE/REVIEW -->
+
+---
+
 <!-- BEGIN: REFINE/COMPLETED -->
 ## Completed
 
