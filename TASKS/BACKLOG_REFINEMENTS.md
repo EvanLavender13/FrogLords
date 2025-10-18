@@ -90,21 +90,12 @@
 
 ---
 
-## In Progress
-
-**Dual-reference in orientation** (`orientation.cpp`) [WIP: refine/orientation-dual-reference]
-- Investigation phase: Confirm actual violation
-- Possible fix: Switch to spring-damper primitive
-- Alternative: Document current implementation as correct
-
----
-
 ## By Severity
 
 ### Critical (Foundation Threatening)
 **Violations that undermine core systems**
 
-None currently - Critical violation moved to In Progress
+None currently
 
 ### High (Actively Harmful)
 **Violations causing bugs or limiting emergence**
