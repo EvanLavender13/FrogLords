@@ -1,34 +1,48 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-17 - Orientation Spring-Damper
+**Status:** 🔧 Refinement - Controller Mixed Concerns
+**Started:** 2025-10-17
+**Branch:** refine/controller-separation
+**Path:** B (standard)
+**Phase:** SELECT → PLAN
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Extract animation and orientation subsystems from controller
+
+**Location:** @TASKS/PLANS/REFINE_controller_mixed_concerns.md
+
+**Principle:** Composable Functions
+
+**Approach:** Simplify - separate physics from reactive systems
+
+**Next Step:** REFINE/PLAN
+
+**Target Impact:**
+- Layer 3: 94% → 95% (+1%)
+- Controller: 90% → 100% (+10%)
 
 ---
 
 ## Quick Reference
 
-**Foundation:** 92%
-**Target:** 95% (Layer 3)
+**Foundation:** 92% → Target: 95%
 
-**Layer Status:**
-- Layer 1 (Core): 90% - Stable
-- Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): 94% - 2 refinements to target
+**Refinement Details:**
+- **Complexity:** Standard (3 points)
+- **Severity:** HIGH
+- **Path:** Full planning workflow
+- **Risk:** Moderate (multi-file refactor)
 
-**Next Priority:** Controller mixed concerns (HIGH)
-**Estimated Path:** ~2 refinements to 95%
+**Success Criteria:**
+- Controller contains only physics
+- Unidirectional data flow
+- Behavior preserved exactly
 
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations to fix
-- `BACKLOG_SYSTEMS.md` - Systems to build (blocked until 95%)
-- `DEPENDENCY_STACK.md` - Foundation status and build rules
+- `BACKLOG_REFINEMENTS.md` - Remaining violations
+- `DEPENDENCY_STACK.md` - Foundation status
