@@ -1,8 +1,6 @@
 #include "character/controller.h"
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
-#include "input/input.h"
-#include "input/keycodes.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
@@ -45,7 +43,9 @@ controller::controller()
     collision_sphere.radius = BUMPER_RADIUS;
 }
 
-void controller::apply_input(const camera_input_params& cam_params, float dt) {
+void controller::apply_input(const controller_input_params& input_params,
+                             const camera_input_params& cam_params,
+                             float dt) {
     // Execute buffered jump on next grounded frame
     if (is_grounded && jump_buffer_timer > 0.0f) {
         velocity.y = jump_velocity;
@@ -53,29 +53,18 @@ void controller::apply_input(const camera_input_params& cam_params, float dt) {
         jump_buffer_timer = 0.0f;     // Clear buffer
     }
 
-    // Read WASD input
-    glm::vec2 move_direction(0.0f, 0.0f);
-    move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
-    move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
-    move_direction.x -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
-    move_direction.x += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
-
-    if (glm::length(move_direction) > 0.0f) {
-        move_direction = glm::normalize(move_direction);
-    }
-
     // Convert 2D input to 3D acceleration (camera-relative)
     glm::vec3 forward = cam_params.forward;
     glm::vec3 right = cam_params.right;
 
-    input_direction = forward * move_direction.y + right * move_direction.x;
+    input_direction = forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
     // Direct acceleration (instant response)
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
     acceleration = input_direction * accel_magnitude;
 
-    // Jump input (space bar with coyote time and jump buffer)
-    bool jump_input = input::is_key_pressed(SAPP_KEYCODE_SPACE);
+    // Jump input (with coyote time and jump buffer)
+    bool jump_input = input_params.jump_pressed;
     bool can_jump = is_grounded || (coyote_timer < coyote_window);
 
     if (jump_input && can_jump) {

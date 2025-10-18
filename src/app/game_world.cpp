@@ -3,6 +3,8 @@
 
 #include "gui/character_panel.h"
 #include "rendering/velocity_trail.h"
+#include "input/input.h"
+#include "input/keycodes.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <algorithm>
@@ -19,10 +21,24 @@ void game_world::init() {
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
     debug_list.clear();
 
+    // Poll input and construct controller input params
+    controller::controller_input_params input_params;
+    input_params.move_direction = glm::vec2(0.0f, 0.0f);
+    input_params.move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
+    input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
+    input_params.move_direction.x -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
+    input_params.move_direction.x += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
+    if (glm::length(input_params.move_direction) > 0.0f) {
+        input_params.move_direction = glm::normalize(input_params.move_direction);
+    }
+    input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
+
+    // Construct camera input params
     controller::camera_input_params cam_params;
     cam_params.forward = cam.get_forward_horizontal();
     cam_params.right = cam.get_right();
-    character.apply_input(cam_params, dt);
+
+    character.apply_input(input_params, cam_params, dt);
 
     character.update(&world_geometry, dt);
 
