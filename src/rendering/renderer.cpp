@@ -79,21 +79,21 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
         indices.push_back(static_cast<uint16_t>(e.v1));
     }
 
-    // Create immutable buffers for this draw call
-    sg_buffer_desc vertex_buffer_desc = {};
-    vertex_buffer_desc.data = {mesh.vertices.data(), mesh.vertices.size() * sizeof(glm::vec3)};
-    vertex_buffer_desc.usage.vertex_buffer = true;
-    sg_buffer vbuf = sg_make_buffer(&vertex_buffer_desc);
+    // Update persistent dynamic buffers with this mesh's data
+    sg_update_buffer(dynamic_vertex_buffer, &(sg_range){
+        .ptr = mesh.vertices.data(),
+        .size = mesh.vertices.size() * sizeof(glm::vec3)
+    });
 
-    sg_buffer_desc index_buffer_desc = {};
-    index_buffer_desc.data = {indices.data(), indices.size() * sizeof(uint16_t)};
-    index_buffer_desc.usage.index_buffer = true;
-    sg_buffer ibuf = sg_make_buffer(&index_buffer_desc);
+    sg_update_buffer(dynamic_index_buffer, &(sg_range){
+        .ptr = indices.data(),
+        .size = indices.size() * sizeof(uint16_t)
+    });
 
-    // Create bindings for this draw call
+    // Bind persistent buffers
     sg_bindings draw_bindings = {};
-    draw_bindings.vertex_buffers[0] = vbuf;
-    draw_bindings.index_buffer = ibuf;
+    draw_bindings.vertex_buffers[0] = dynamic_vertex_buffer;
+    draw_bindings.index_buffer = dynamic_index_buffer;
 
     sg_apply_pipeline(pipeline);
     sg_apply_bindings(&draw_bindings);
@@ -114,8 +114,4 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
 
     // Draw
     sg_draw(0, static_cast<int>(indices.size()), 1);
-
-    // Destroy buffers immediately (sokol defers actual destruction until safe)
-    sg_destroy_buffer(ibuf);
-    sg_destroy_buffer(vbuf);
 }
