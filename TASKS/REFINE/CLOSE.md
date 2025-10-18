@@ -249,6 +249,40 @@ head -10 TASKS/CURRENT_PLAN.md
 
 ---
 
+### 7. Check Retrospective Threshold
+
+**Check if retro is recommended:**
+
+```bash
+# Count completed plans
+PLAN_COUNT=$(ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null | wc -l)
+
+# Check if retro threshold reached (every 5 plans)
+if [ $((PLAN_COUNT % 5)) -eq 0 ] && [ $PLAN_COUNT -gt 0 ]; then
+  echo "📊 Retrospective threshold reached ($PLAN_COUNT plans)"
+  echo "Consider running RETRO before next cycle"
+fi
+```
+
+**If threshold reached, update CURRENT_PLAN.md to recommend retro:**
+
+Add after the "Ready for Next Task" section:
+
+```markdown
+## Recommended Next Action
+
+**📊 RETRO recommended** - <N> plans completed since start
+**Run:** Review TASKS/RETRO.md and extract patterns
+
+**Or proceed with:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+```
+
+**This is a recommendation, not a requirement. Developer decides when to run.**
+
+---
+
 ## Outputs
 
 - [ ] BACKLOG_REFINEMENTS.md updated
@@ -272,6 +306,7 @@ head -10 TASKS/CURRENT_PLAN.md
 - [ ] Merged to main
 - [ ] Branch deleted
 - [ ] System state verified
+- [ ] Retrospective threshold checked (if ≥5 plans, recommend in CURRENT_PLAN.md)
 
 ---
 
