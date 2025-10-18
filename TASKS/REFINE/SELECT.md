@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Choose the highest-impact violation from BACKLOG_REFINEMENTS.md and classify its complexity to determine the refinement path.
+Choose the highest-impact violation from TASKS/BACKLOG_REFINEMENTS.md and classify its complexity to determine the refinement path.
 
 **Not all violations require the same rigor. Choose the right path.**
 
@@ -15,7 +15,7 @@ Choose the highest-impact violation from BACKLOG_REFINEMENTS.md and classify its
 ## Prerequisites
 
 - [ ] Foundation ≥70% stable
-- [ ] `BACKLOG_REFINEMENTS.md` populated with violations
+- [ ] `TASKS/BACKLOG_REFINEMENTS.md` populated with violations
 - [ ] No system builds in progress
 - [ ] Between features (good time to refine)
 
@@ -25,7 +25,7 @@ Choose the highest-impact violation from BACKLOG_REFINEMENTS.md and classify its
 
 ### 1. Check Foundation Stability
 
-Open `DEPENDENCY_STACK.md`:
+Open `TASKS/DEPENDENCY_STACK.md`:
 - Overall foundation: ___%
 - Recent changes: ___
 - Active systems: ___
@@ -40,7 +40,7 @@ Open `DEPENDENCY_STACK.md`:
 
 ### 2. Review Available Violations
 
-Open `BACKLOG_REFINEMENTS.md` and scan:
+Open `TASKS/BACKLOG_REFINEMENTS.md` and scan:
 
 **By severity:**
 - Critical violations (foundation threatening)
@@ -130,7 +130,7 @@ Open `BACKLOG_REFINEMENTS.md` and scan:
 
 ### 5. Create Refinement Document
 
-Create `PLANS/REFINE_<name>.md`:
+Create `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 # Refinement: <Name>
@@ -271,11 +271,50 @@ Create `PLANS/REFINE_<name>.md`:
 
 ---
 
-### 7. Create Branch
+### 7. Update Current Plan
+
+Update `TASKS/CURRENT_PLAN.md` to point to the new refinement:
+
+```markdown
+# Current Plan
+
+**Status:** In Progress
+**Type:** Refinement
+**Started:** [Today]
+**Branch:** refine/<name>
+**Phase:** SELECT → [REFINE/PLAN]
+
+---
+
+@TASKS/PLANS/REFINE_<name>.md
+
+---
+
+## Quick Reference
+
+**Violation:** <description>
+**Principle:** <which principle>
+**Severity:** <level>
+**Complexity:** <points>
+**Path:** <A|B>
+
+**Next Actions:**
+- [Key steps from plan]
+
+**Target Impact:**
+- Layer: __% → __% (+__%)
+- Overall: __% → __% (+__%)
+```
+
+**This file is imported by CLAUDE.md** - updating it injects current context automatically.
+
+---
+
+### 8. Create Branch
 
 ```bash
 git checkout -b refine/<name>
-git add PLANS/REFINE_<name>.md
+git add TASKS/PLANS/REFINE_<name>.md TASKS/CURRENT_PLAN.md
 git commit -m "select: refinement of <violation>
 
 Violation: <description>
@@ -290,9 +329,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### 8. Update Backlog
+### 9. Update Backlog
 
-In `BACKLOG_REFINEMENTS.md`:
+In `TASKS/BACKLOG_REFINEMENTS.md`:
 - Move violation to "In Progress" section
 - Add note: `[WIP: refine/<name>]`
 
@@ -301,9 +340,10 @@ In `BACKLOG_REFINEMENTS.md`:
 ## Outputs
 
 - [ ] Violation selected
-- [ ] `PLANS/REFINE_<name>.md` created
+- [ ] `TASKS/PLANS/REFINE_<name>.md` created
 - [ ] Complexity classified (Trivial | Standard | Complex)
 - [ ] Path determined (A | B | System build)
+- [ ] `TASKS/CURRENT_PLAN.md` updated (injects context via CLAUDE.md)
 - [ ] Branch created
 - [ ] Backlog updated
 

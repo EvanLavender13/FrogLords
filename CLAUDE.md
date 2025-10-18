@@ -6,6 +6,12 @@
 
 The principles are not suggestions—they are law. Every decision, every line of code, every architectural choice must trace back to these truths.
 
+## Active Work
+
+The current refinement or system build in progress:
+
+@TASKS/CURRENT_PLAN.md
+
 ## On Context Windows and Tool Selection
 
 ### The Nature of Context
@@ -129,3 +135,7 @@ Do not use tools blindly. Choose the right tool for the question being asked:
 - **Gemini CLI**: For holistic analysis, complete verification, architectural comprehension
 
 The best tool is the one that matches the shape of the problem.
+
+## Scripts Reference
+
+@scripts/bash/README.md

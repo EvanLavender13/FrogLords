@@ -81,4 +81,5 @@ if (WIN32)
     target_link_libraries(FrogLords PRIVATE d3d11 dxgi dxguid)
 endif()
 
-
+# Add test subdirectory
+add_subdirectory(tests)
