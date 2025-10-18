@@ -6,274 +6,168 @@
 
 ## Purpose
 
-Choose the highest-impact violation from TASKS/BACKLOG_REFINEMENTS.md and classify its complexity to determine the refinement path.
-
-**Not all violations require the same rigor. Choose the right path.**
+Choose highest-impact violation from backlog. Classify complexity. Determine path.
 
 ---
 
 ## Prerequisites
 
-- [ ] Foundation ≥70% stable
-- [ ] `TASKS/BACKLOG_REFINEMENTS.md` populated with violations
-- [ ] No system builds in progress
-- [ ] Between features (good time to refine)
+- Foundation ≥70% (`DEPENDENCY_STACK.md`)
+- `BACKLOG_REFINEMENTS.md` populated
+- Between features (not during builds)
 
 ---
 
 ## Process
 
-### 1. Check Foundation Stability
+### 1. Check Foundation
 
-Open `TASKS/DEPENDENCY_STACK.md`:
-- Overall foundation: ___%
-- Recent changes: ___
-- Active systems: ___
-
-**Foundation requirements:**
-- **≥70%**: Safe to refine
-- **<70%**: Strengthen foundation first (build or iterate core systems)
-
-**If foundation unstable, defer refinement.**
+Open `DEPENDENCY_STACK.md`:
+- Overall: ___%
+- **≥70%**: Proceed
+- **<70%**: Defer—strengthen foundation first
 
 ---
 
-### 2. Review Available Violations
+### 2. Select Violation
 
-Open `TASKS/BACKLOG_REFINEMENTS.md` and scan:
+Open `BACKLOG_REFINEMENTS.md`. Choose by:
 
-**By severity:**
-- Critical violations (foundation threatening)
-- High violations (actively harmful)
-- Medium violations (technical debt)
-- Low violations (cosmetic)
-
-**By principle:**
-- Which principle most violated?
-- Which violations block future work?
-- Which violations cascade?
-
----
-
-### 3. Select by Priority
-
-**Choose violation by:**
-
-**Priority order:**
-1. **Severity** (Critical > High > Medium > Low)
-2. **Foundation impact** (Core systems > Leaf systems)
-3. **Cascade risk** (Many dependents > Few dependents)
-4. **Fix approach** (Delete > Simplify > Document)
+**Priority:**
+1. Severity (Critical > High > Medium > Low)
+2. Foundation layer (Core > Leaf)
+3. Cascade risk (Many dependents > Few)
+4. Fix approach (Delete > Simplify > Document)
 
 **Prefer:**
-- Violations that can be deleted entirely
-- Violations in core/primitive layers
-- Violations blocking future work
-- Violations with clear fix path
+- Can be deleted entirely
+- Core/primitive layers
+- Blocks future work
+- Clear fix path
 
 **Avoid:**
-- Violations requiring new systems
-- Violations with unclear scope
-- Violations blocked by dependencies
+- Requires new systems
+- Unclear scope
+- Blocked by dependencies
 
 ---
 
-### 4. Classify Complexity
+### 3. Classify Complexity
 
-**For the selected violation, estimate:**
+**Trivial (1-2 pts):** Obvious fix, low risk, single file, <1hr, no test updates
+- Examples: Delete dead code, document magic number
 
-**Trivial (1-2 complexity points):**
-- Obvious fix
-- Low risk
-- Single file
-- <1 hour
-- No tests to update
-- Can skip planning
+**Standard (3-8 pts):** Requires thought, moderate risk, multiple files, <1 day, tests need updates
+- Examples: Derive from first principles, extract primitives, simplify complex function
 
-**Examples:**
-- Delete dead code
-- Remove commented-out code
-- Fix obvious duplication
-- Document magic number
-
-**Standard (3-8 complexity points):**
-- Requires thought
-- Moderate risk
-- Multiple files or complex logic
-- <1 day
-- Tests need updates
-- Needs planning
-
-**Examples:**
-- Derive magic number from first principles
-- Remove special case (make rule general)
-- Simplify complex function
-- Extract composable primitives
-
-**Complex (>8 complexity points):**
-- Major refactor
-- High risk
-- System-wide impact
-- >1 day
-- Extensive testing
-- Should be a new system build
-
-**Examples:**
-- Redesign entire system
-- Change fundamental architecture
-- Replace prescribed with emergent
-- Major performance rewrite
-
-**If complex, defer to system-building cycle instead.**
+**Complex (>8 pts):** Major refactor, high risk, system-wide, >1 day
+- **Don't refine—create new system instead**
 
 ---
 
-### 5. Create Refinement Document
+### 4. Create Plan
 
 Create `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 # Refinement: <Name>
 
-**One-line description of what we're removing/simplifying**
+**One-line description**
 
 ---
 
 ## Selected
 
 **Date:** [Today]
-**Complexity:** Trivial | Standard | Complex
+**Complexity:** Trivial | Standard
 **Path:** A (trivial) | B (standard)
 
 ---
 
-## Violation Details
+## Violation
 
-**Location:**
-- File: `<file path>`
-- Line: <number> (if applicable)
-- System: <which system>
-
-**Principle Violated:**
-- Primary: <principle name>
-- Score before: __/10
-
+**Location:** `<file>:<line>` | System: <name>
+**Principle:** <violated> | Score: __/10
 **Severity:** Critical | High | Medium | Low
+**Type:** Magic number | Special case | Duplication | Complexity | Undocumented
 
-**Type:** Magic number | Special case | Duplication | Complexity | Undocumented | Other
-
----
-
-## Current State
-
-**What exists now:**
+**Current state:**
 ```
-[Code snippet or description of current violation]
+[code/description]
 ```
 
-**Why this violates principles:**
+**Why violation:**
 -
 -
 
 **Impact:**
-- Blocks: [Future work blocked]
-- Cascades to: [Systems affected]
-- Foundation impact: [%]
+- Blocks:
+- Cascades to:
+- Foundation: __%
 
 ---
 
-## Fix Approach
+## Fix
 
-**Primary approach:** Delete | Simplify | Document
+**Approach:** Delete | Simplify | Document
 
-**If DELETE:**
-- Remove: [What gets deleted]
-- Impact: [What breaks, how to fix]
-- Tests: [Which tests to update/remove]
+**DELETE:**
+- Remove:
+- Impact:
+- Tests:
 
-**If SIMPLIFY:**
-- From: [Current complex state]
-- To: [Simpler state]
-- Derive: [If magic number, derive from what?]
-- Generalize: [If special case, what's the general rule?]
+**SIMPLIFY:**
+- From:
+- To:
+- Derive/Generalize:
 
-**If DOCUMENT:**
-- Why we must keep it: [Justification]
-- Derivation: [Mathematical/logical basis]
-- Trade-off: [What we're accepting]
+**DOCUMENT:**
+- Why keep:
+- Derivation:
+- Trade-off:
 
 ---
 
-## Success Criteria
+## Success
 
-**This refinement succeeds when:**
-- [ ] Violation removed/simplified/documented
+- [ ] Violation resolved
 - [ ] Principle score improved
-- [ ] All tests passing
+- [ ] Tests passing
 - [ ] No regressions
-- [ ] Complexity reduced (if simplify)
-- [ ] Completely gone (if delete)
+
+**Metrics:**
+- Before: LOC __, Principle __/10, Complexity __
+- After: LOC __ (-__), Principle __/10 (+__), Complexity __ (-__)
 
 ---
 
-## Estimated Metrics
+## Risk
 
-**Before:**
-- LOC: __
-- Principle score: __/10
-- Special cases: __
-- Cyclomatic complexity: __
-
-**After (estimated):**
-- LOC: __ (-__)
-- Principle score: __/10 (+__)
-- Special cases: __ (-__)
-- Cyclomatic complexity: __ (-__)
-
----
-
-## Risk Assessment
-
-**What could go wrong:**
--
+**Could go wrong:**
 -
 
 **Mitigation:**
 -
--
 
-**Rollback plan:**
-[How to revert if this breaks things]
+**Rollback:**
+[How to revert]
 ```
 
 ---
 
-### 6. Determine Path
+### 5. Determine Path
 
-**Based on complexity:**
+Record complexity classification in the plan:
 
-**Path A (Trivial):**
-- Skip PLAN step
-- Go directly to REFINE
-- Minimal documentation
-- Fast cycle
-
-**Path B (Standard):**
-- Full workflow
-- Plan → Review → Execute → Measure
-- Complete documentation
-- Careful validation
-
-**Path C (Complex):**
-- Don't refine, create new system
-- Use system-building cycle instead
-- Full graybox → iterate → validate flow
+**Path A (Trivial):** Complexity 1-2 pts
+**Path B (Standard):** Complexity 3-8 pts
+**Path C (Complex):** Complexity >8 pts - defer to SYSTEM/SELECT
 
 ---
 
-### 7. Update Current Plan
+### 6. Update Current Plan
 
-Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
+Update `TASKS/CURRENT_PLAN.md`:
 
 ```markdown
 # Current Plan
@@ -281,37 +175,29 @@ Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 **Status:** 🔧 Refinement - <Name>
 **Started:** [Today]
 **Branch:** refine/<name>
-**Path:** A (trivial) | B (standard)
+**Path:** A | B
 **Phase:** SELECT → REFINE
 
 ---
 
 ## Current Work
 
-**Refinement:** <one-line description>
-
+**Refinement:** <description>
 **Location:** @TASKS/PLANS/REFINE_<name>.md
-
-**Principle:** <which principle>
-
+**Principle:** <which>
 **Approach:** Delete | Simplify | Document
-
-**Next Step:** REFINE
+**Next:** REFINE
 
 **Target Impact:**
-- Layer X: __% → __% (+__%)
-- Overall: __% → __% (+__%)
-
----
+- Layer X: __% → __% (+__)
+- Overall: __% → __% (+__)
 ```
 
-**CRITICAL:** The `@TASKS/PLANS/REFINE_<name>.md` reference in Location ensures the detailed plan is ALWAYS in context when CURRENT_PLAN is loaded by CLAUDE.md.
-
-**This file is imported by CLAUDE.md** - updating it injects current context automatically.
+**CRITICAL:** `@` reference ensures plan loads automatically via `CLAUDE.md`.
 
 ---
 
-### 8. Create Branch & Commit
+### 7. Create Branch
 
 ```bash
 git checkout -b refine/<name>
@@ -332,89 +218,20 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Outputs
 
-- [ ] Violation selected from backlog
-- [ ] `TASKS/PLANS/REFINE_<name>.md` created
-- [ ] Complexity classified (Trivial | Standard | Complex)
-- [ ] Path determined (A | B | System build)
-- [ ] `TASKS/CURRENT_PLAN.md` updated (injects context via CLAUDE.md)
-- [ ] Branch created with initial commit
+- [ ] Violation selected
+- [ ] `PLANS/REFINE_<name>.md` created
+- [ ] Complexity classified
+- [ ] Path determined
+- [ ] `CURRENT_PLAN.md` updated
+- [ ] Branch created
 
 ---
 
-## Exit Criteria
+## Next
 
-**Always proceed to REFINE next** (unless Path C - Complex)
+**Always → REFINE** (unless Path C - Complex)
 
-**Defer to SYSTEM/SELECT when:**
-- Path C (Complex) identified
-- Major refactor needed
-- Should be treated as new system build
-
----
-
-## Next Step
-
-**→ REFINE** (Path A or B)
-**→ SYSTEM/SELECT** (Path C - create new system instead)
-
----
-
-## Selection Philosophy
-
-### Delete > Simplify > Document
-
-**Preference order matters:**
-
-1. **Delete entirely** (best)
-   - Removes complexity
-   - No maintenance burden
-   - Can't violate principles if doesn't exist
-
-2. **Simplify to general rule** (good)
-   - Reduces complexity
-   - Enables composition
-   - Restores principles
-
-3. **Document justification** (last resort)
-   - Acknowledges violation
-   - Explains trade-off
-   - Prevents future confusion
-
-**Most refinements should DELETE code.**
-
-### Not All Violations Equal
-
-**Critical in core** > **Low in leaf**
-
-Priority factors:
-- Severity
-- Foundation layer
-- Dependency cascade
-- Fix difficulty
-
-**Fix what matters most, not what's easiest.**
-
-### Complexity Determines Path
-
-**Trivial** → Quick fix, minimal docs
-**Standard** → Careful process, full docs
-**Complex** → Wrong tool, use system build
-
-**Match rigor to risk.**
-
-### Between Features, Not During
-
-**Refine when:**
-- Between system builds
-- Foundation stable
-- No active feature work
-
-**Don't refine during:**
-- Active system building
-- Foundation unstable
-- Critical bug fixing
-
-**Refinement requires calm, not crisis.**
+**Path C (Complex):** → SYSTEM/SELECT (build system instead)
 
 ---
 

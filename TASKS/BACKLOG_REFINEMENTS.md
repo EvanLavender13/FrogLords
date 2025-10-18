@@ -11,15 +11,81 @@
 
 ### High Priority
 
-None - Target reached at 95%
+**#1: Redundant World Geometry Storage**
+- **Location:** `src/app/game_world.cpp:66-74`
+- **Principles:** Radical Simplicity, Composable Functions
+- **Severity:** High
+- **Type:** Duplication, Lost Single Source of Truth
+- **Description:** World geometry stored in two places (`scene.collision_box` and `world_geometry.boxes`), must be manually kept in sync. Foundation-level violation affecting multiple systems.
+- **Fix:** Simplify - Unify representations. Single authoritative list holding both visual and physical properties. Rendering and physics read from same source.
+- **Impact:** Affects collision, rendering, level creation
+
+**#2: Inconsistent Character State Management**
+- **Location:** `src/gui/character_panel.cpp:13-20`
+- **Principles:** Consistency
+- **Severity:** High
+- **Type:** Bidirectional Data Flow, Multiple Truth Sources
+- **Description:** GUI modifies both `controller` directly (e.g. `max_speed`) and `tuning_params` struct, creating two paths for state changes. Changing one makes the other incorrect.
+- **Fix:** Simplify - GUI modifies only `tuning_params`. The `apply_to()` function is single source of truth for updates.
+- **Impact:** Affects tuning, GUI, character controller
 
 ### Medium Priority
 
-None currently blocking progress
+**#3: Inefficient Per-Draw Buffer Creation**
+- **Location:** `src/rendering/renderer.cpp:61-71`
+- **Principles:** Radical Simplicity
+- **Severity:** Medium
+- **Type:** Complexity, Performance
+- **Description:** Creates and destroys new vertex/index buffers for every mesh drawn per frame. Highly inefficient even if driver defers operations.
+- **Fix:** Simplify - Use single dynamic vertex buffer for entire frame. Append all vertex data, issue draws with offsets.
+- **Impact:** Rendering performance, GPU memory management
+
+**#4: Special Casing for Camera Modes**
+- **Location:** `src/camera/camera.cpp:50-58`
+- **Principles:** Composable Functions
+- **Severity:** Medium
+- **Type:** Special case, Overlapping responsibilities
+- **Description:** `zoom()` has if/else for FOLLOW vs ORBIT modes using separate state (`follow_distance` vs `distance`). Modes not cleanly composed.
+- **Fix:** Simplify - Refactor. Base camera handles view/projection, separate `Follower` component updates target position. Orthogonal systems.
+- **Impact:** Camera system architecture
+
+**#5: Unjustified Friction Model**
+- **Location:** `src/character/tuning.cpp:8-17, 25-27`
+- **Principles:** Mathematical Foundations, Principled Development
+- **Severity:** Medium
+- **Type:** Unjustified decision, Dimensionally strange
+- **Description:** Friction based on `FRICTION_RATIO` percentage, not standard physics (F=μN). Formula `c.friction = (c.ground_accel * FRICTION_RATIO) / gravity_mag` lacks physical rationale.
+- **Fix:** Document - Explain why this model chosen for game feel over physics-based. OR Replace with standard kinetic friction for principled, predictable system.
+- **Impact:** Character movement feel, tuning predictability
 
 ### Low Priority
 
-None identified
+**#6: Magic Number for Collision Passes**
+- **Location:** `src/foundation/collision.cpp:41`
+- **Principles:** Mathematical Foundations
+- **Severity:** Low
+- **Type:** Magic number
+- **Description:** Hard-coded `for (int pass = 0; pass < 3; ++pass)` for collision resolution. Number `3` is arbitrary, lacks mathematical guarantee.
+- **Fix:** Document - Define as named constant `COLLISION_RESOLUTION_PASSES = 3` with comment explaining empirical choice balancing performance/accuracy.
+- **Impact:** Code clarity
+
+**#7: Embedded Test Suite in Runtime**
+- **Location:** `src/app/runtime.cpp:20-25`
+- **Principles:** Principled Development, Composable Functions
+- **Severity:** Low
+- **Type:** Workaround, Mixed concerns
+- **Description:** `#ifdef` runs quaternion test suite in runtime initialization. Mixes test with application code despite existing `/tests` directory.
+- **Fix:** Delete - Move tests to proper test file in `/tests` directory using existing infrastructure.
+- **Impact:** Code organization
+
+**#8: Discontinuous Color Gradient Logic**
+- **Location:** `src/app/debug_generation.cpp:49-59`
+- **Principles:** Mathematical Foundations
+- **Severity:** Low
+- **Type:** Unjustified implementation, Discontinuous
+- **Description:** Speed gradient uses if/else with hard-coded thresholds (0.33, 0.66) creating sharp jumps instead of smooth gradient.
+- **Fix:** Simplify - Replace conditionals with continuous interpolation (`glm::mix`) for smooth color blend across speed range.
+- **Impact:** Debug visualization quality
 
 ---
 
@@ -81,6 +147,34 @@ None identified
 - **Prevention:** Default to separation; challenge convenience; require test isolation
 - **Related fixes:** Controller (2025-10-18)
 
+### Pattern: Redundant Storage (Discovered 2025-10-18)
+- **Detection:** Same data stored in multiple places requiring manual synchronization
+- **Root cause:** Separation of visual/physical or multiple system representations
+- **Fix:** Create single source of truth, systems read from unified representation
+- **Prevention:** Question any data duplication. Prefer single authoritative storage.
+- **Related fixes:** World geometry (#1)
+
+### Pattern: Multiple Truth Sources (Discovered 2025-10-18)
+- **Detection:** Different code paths modify same logical state through different variables
+- **Root cause:** Unclear ownership, convenience over correctness
+- **Fix:** Single path for modification, one authoritative update function
+- **Prevention:** Enforce unidirectional data flow, reject shortcuts
+- **Related fixes:** Character state management (#2)
+
+### Pattern: Per-Frame Allocation (Discovered 2025-10-18)
+- **Detection:** Creating/destroying resources every frame instead of reusing
+- **Root cause:** Unfamiliarity with graphics APIs, quick implementation
+- **Fix:** Use persistent buffers, dynamic updates, proper resource management
+- **Prevention:** Review resource lifecycle in rendering code
+- **Related fixes:** Renderer buffers (#3)
+
+### Pattern: Mode-Specific Branching (Discovered 2025-10-18)
+- **Detection:** If/else blocks for different modes using separate state variables
+- **Root cause:** Modes not designed as composable components
+- **Fix:** Refactor to orthogonal systems, base + mode-specific components
+- **Prevention:** Design modes as composable pieces, not special cases
+- **Related fixes:** Camera zoom (#4)
+
 ---
 
 ## Audit Checklist
@@ -110,25 +204,36 @@ None identified
 - [ ] Missing derivations for tuned values
 - [ ] TODO/FIXME comments
 
-**Last Audit:** 2025-10-17
-**Next Audit:** After reaching 95% foundation
+**Last Audit:** 2025-10-18 (Gemini comprehensive review)
+**Next Audit:** After completing high-priority refinements
 
 ---
 
 ## Priority Order
 
-**Foundation at 95% ✅**
+**Foundation at 95% ✅ - 8 violations discovered**
 
-No active refinements blocking progress. Ready to build Layer 4 systems.
+**Recommended path:**
+1. Fix high-priority violations (#1, #2) - Foundation impact
+2. Assess: Build Layer 4 OR continue medium-priority refinements
+3. Address low-priority violations opportunistically
 
-**Optional refinements** (future improvements):
-- Further Layer 1 improvements (95% → 100%)
-- Layer 3 optimizations
-- Pattern library expansion
+**Pattern Discovery:**
+- **Duplication pattern** - Redundant storage (#1), per-frame allocation (#3)
+- **State management pattern** - Multiple sources of truth (#2), bidirectional flow (existing pattern)
+- **Documentation debt** - Unjustified decisions (#5), magic numbers (#6)
+- **Composability gaps** - Special cases (#4), mixed concerns (#7)
 
 ---
 
 ## Recent Activity
+
+**Gemini Comprehensive Audit (2025-10-18)**
+- 8 violations discovered across all severity levels
+- 2 High priority (foundation impact)
+- 3 Medium priority (architectural improvements)
+- 3 Low priority (polish and clarity)
+- 4 distinct pattern categories identified
 
 **See individual plan files for detailed metrics:**
 - `PLANS/REFINE_accumulated_state_pattern.md` (2025-10-18) - Principled Development +1.0

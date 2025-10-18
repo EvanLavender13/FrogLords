@@ -6,9 +6,7 @@
 
 ## Purpose
 
-Execute the planned refinement—removing violation, restoring principle, and reducing complexity.
-
-**Most refinements should delete code. The best fix is no code at all.**
+Execute planned refinement—remove violation, restore principle, reduce complexity.
 
 ---
 
@@ -16,70 +14,44 @@ Execute the planned refinement—removing violation, restoring principle, and re
 
 - [ ] `TASKS/PLANS/REFINE_<name>.md` exists
 - [ ] Complexity classified (Trivial or Standard)
-- [ ] Fix approach identified
 - [ ] Branch `refine/<name>` active
-- [ ] All tests currently passing
+- [ ] All tests passing
 
 ---
 
-## Process (Path A - Trivial)
+## Path A - Trivial
 
-**For trivial refinements (<1 hour, obvious fix):**
+**For: <1 hour, obvious fix, single file, no test changes**
 
-### 1. Make the Change
+### 1. Execute
 
-**Execute the fix:**
-- Delete the code
-- Simplify the logic
-- Document the justification
+Delete code, simplify logic, or document justification.
 
-**Keep it minimal:**
-- Don't add features
-- Don't refactor surrounding code
-- Focus on the violation only
+**Constraints:**
+- Fix violation only
+- No features, no scope creep
+- Minimal change
 
----
-
-### 2. Run Tests
+### 2. Validate
 
 ```bash
-# Run full test suite
-[your test command]
+[test command]
 ```
 
-**All tests must pass.**
+All tests pass. If not: fix, revert, or update tests with justification.
 
-**If tests fail:**
-- Fix breakage OR
-- Revert change OR
-- Update tests (if behavior intentionally changed)
-
----
-
-### 3. Update Document
+### 3. Document
 
 In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
-## Completed (Trivial Path)
+## Completed
 
-**Change made:**
-- Deleted: [what was removed]
-- Simplified: [what was simplified]
-- Documented: [what was documented]
-
-**Tests:**
-- [x] All passing
-- Updated: [list if any]
-
-**Metrics:**
-- LOC before: __ → after: __ (-__)
-- Principle score before: __/10 → after: __/10
-
+**Change:** [deleted/simplified/documented what]
+**Tests:** All passing | Updated: [list]
+**Metrics:** LOC __→__ (-__) | Principle __/10→__/10 (+__)
 **Result:** ✓ Violation removed
 ```
-
----
 
 ### 4. Commit
 
@@ -92,94 +64,44 @@ Restored: <principle>
 Tests: All passing
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com)"
+Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
-**→ Skip to MEASURE**
+**→ Proceed to MEASURE**
 
 ---
 
-## Process (Path B - Standard)
+## Path B - Standard
 
-**For standard refinements (requires planning and validation):**
+**For: Requires planning, multiple files, test updates, <1 day**
 
-### 1. Plan the Refinement
+### 1. Plan Steps
 
-In `TASKS/PLANS/REFINE_<name>.md`, add:
+In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 ## Refinement Plan
 
-**Steps:**
-1. [First change]
-2. [Second change]
-3. [Third change]
-
-**For each step:**
-- What changes
-- Which files affected
-- Which tests update
-- Validation criteria
-
----
-
 ### Step 1: [Name]
-
-**Changes:**
-- File: `<path>`
-- From: [current state]
-- To: [new state]
-
-**Tests to update:**
--
-
-**Validation:**
-- [ ] Tests pass
-- [ ] No regressions
-- [ ] Behavior same (or intentionally different)
-
----
+**Changes:** `<file>:<line>` - [from] → [to]
+**Tests:** [which update]
+**Validation:** Tests pass, no regressions
 
 [Repeat for each step]
 
----
-
-## Rollback Plan
-
-**If this breaks things:**
-1. `git reset --hard HEAD`
-2. Or: [specific revert steps]
-
-**Safe because:**
-- On feature branch
-- Tests guard regressions
-- Small, focused changes
+## Rollback
+`git reset --hard HEAD` or [specific revert steps]
 ```
-
----
 
 ### 2. Execute Each Step
 
-**For each planned step:**
+**Per step:**
 
-**A. Make the change**
-```bash
-# Edit files
-# Keep changes minimal
-# One step at a time
-```
+A. Make change (one step only)
+B. Run tests
+C. Verify: passing, correct behavior, no regressions
+D. Commit:
 
-**B. Run tests**
-```bash
-[test command]
-```
-
-**C. Verify**
-- [ ] Tests passing?
-- [ ] Behavior correct?
-- [ ] No regressions?
-
-**D. Commit the step**
 ```bash
 git add .
 git commit -m "refine: <name> step N - <what changed>
@@ -188,98 +110,60 @@ git commit -m "refine: <name> step N - <what changed>
 Tests: Passing
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com)"
+Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
-**E. Update plan document**
-Mark step complete, note any surprises
-
----
+E. Mark step complete in plan
 
 ### 3. Handle Blockers
 
-**If you discover:**
+**Blocked:** Document why, suggest alternative, commit findings, proceed to MEASURE
 
-**Can't be fixed as planned:**
-- Document blocker in `TASKS/PLANS/REFINE_<name>.md`
-- Explain why approach won't work
-- Suggest alternative or defer
-- Commit documentation
-- Move to MEASURE (document learnings)
+**Scope grew:** If >1 day, consider deferring to system build
 
-**Bigger than expected:**
-- If now >1 day, might be Complex
-- Consider deferring to system build
-- Document scope creep
-- Commit what's done
-- Defer rest
+**Breaking changes:** Document impact, update affected systems, expand tests
 
-**Breaking changes required:**
-- Document what breaks and why
-- Update affected systems
-- Expand test coverage
-- Proceed carefully
-
----
-
-### 4. Validate Principle Restoration
-
-**After all steps complete:**
-
-**Re-score the principle that was violated:**
+### 4. Validate Restoration
 
 In `TASKS/PLANS/REFINE_<name>.md`:
+
 ```markdown
 ## Principle Validation
 
 **Principle:** <name>
-
-**Before:**
-- Score: __/10
-- Violations: [list]
-
-**After:**
-- Score: __/10
-- Violations: [remaining, if any]
-
+**Before:** __/10 | Violations: [list]
+**After:** __/10 | Violations: [remaining]
 **Improvement:** +__ points
-
-**Evidence:**
-- Removed: [what violations fixed]
-- Simplified: [what complexity reduced]
-- Generalized: [what special cases removed]
-
+**Evidence:** [what violations fixed]
 **Verdict:** ✓ Principle restored
 ```
 
-**If score didn't improve, something went wrong.**
+Score must improve or refinement failed.
 
 ---
 
 ## Outputs
 
-- [ ] Violation fixed (deleted, simplified, or documented)
+- [ ] Violation fixed
 - [ ] All tests passing
-- [ ] No regressions introduced
+- [ ] No regressions
 - [ ] Principle score improved
-- [ ] Each step committed
+- [ ] Steps committed
 - [ ] Documentation updated
 
 ---
 
 ## Exit Criteria
 
-**Proceed to MEASURE when:**
-- Fix complete (all steps done)
+**→ MEASURE when:**
+- Fix complete
 - Tests passing
 - Principle score improved
-- Ready to calculate metrics
 
 **Defer if:**
 - Blocker discovered
-- Scope too large
+- Scope exceeds 1 day
 - Breaking changes unacceptable
-- Better to try different approach
 
 ---
 
@@ -289,71 +173,17 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 ---
 
-## Refinement Philosophy
+## Core Rules
 
-### Delete is Best
+**Delete first:** Code you don't have can't have bugs, needs no maintenance, violates no principles.
 
-**The code you don't have:**
-- Never has bugs
-- Needs no maintenance
-- Can't violate principles
-- Costs nothing to run
-- Takes no time to understand
+**Small commits:** One change, all tests pass, independently revertable.
 
-**Most refinements should reduce LOC.**
+**No scope creep:** Fix violation only. Not features, not optimization, not nearby refactoring.
 
-### Small Steps, Frequent Commits
+**Tests guard truth:** Green before → Green after = behavior preserved. Red after = fix or revert.
 
-**Why:**
-- Easy to revert if broken
-- Clear history of changes
-- Validates at each step
-- Reduces risk
-
-**Each commit should:**
-- Make one clear change
-- Pass all tests
-- Be independently revertable
-
-### No Feature Creep
-
-**Refinement is not:**
-- Adding features
-- Optimizing performance
-- Refactoring everything nearby
-- "While we're here" changes
-
-**Refinement is:**
-- Removing violation
-- Restoring principle
-- Reducing complexity
-- Nothing else
-
-**Stay focused. Fix the violation. Stop.**
-
-### Tests Guard Principles
-
-**Before refactoring:**
-- All tests pass → Behavior is captured
-
-**After refactoring:**
-- All tests pass → Behavior preserved
-
-**If tests fail:**
-- Intentional change → Update tests + document
-- Unintentional → Fix code or revert
-
-**No green tests = no merge.**
-
-### Document Learning
-
-**Every refinement teaches:**
-- Why violation appeared
-- How to prevent recurrence
-- What patterns to watch for
-- What principles to emphasize
-
-**Capture lessons for future audits.**
+**Document learning:** Why violation appeared, how to prevent recurrence, patterns to watch.
 
 ---
 
