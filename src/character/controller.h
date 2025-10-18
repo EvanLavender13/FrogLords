@@ -14,8 +14,12 @@ struct controller {
     sphere collision_sphere; // Single sphere used for all collision
 
     // State (source of truth)
-    glm::vec3 position;
-    glm::vec3 velocity;
+    // NOTE: Position and velocity are ACCUMULATED STATE (integrated over time).
+    // This is the CORRECT pattern for physics simulation - see PRINCIPLES.md.
+    // Physics integration requires accumulation - this is NOT a violation.
+    // Exception: Time integration of motion is different from caching/memoization.
+    glm::vec3 position;  // meters (integrated from velocity)
+    glm::vec3 velocity;  // meters/second (integrated from acceleration)
     glm::vec3 acceleration;
     glm::vec3 last_acceleration; // Previous frame's acceleration (for animation)
 
