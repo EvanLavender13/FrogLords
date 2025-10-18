@@ -1,15 +1,30 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Collision Responsibilities
+**Status:** 🔧 Refinement - Controller Input Coupling
+**Started:** 2025-10-18
+**Branch:** refine/controller_input_coupling
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Decouple controller from global input state
+**Location:** @TASKS/PLANS/REFINE_controller_input_coupling.md
+**Principle:** Composable Functions
+**Approach:** Simplify - Extract explicit input struct, make controller pure
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 1: 95.5% → 96%+ (+0.5%)
+- Overall: 97%+ → 97%+ (maintain)
+
+**Violation:**
+- Location: `src/character/controller.cpp:48-88`
+- Type: Tight coupling, global dependencies
+- Fix: Route all input through explicit controller_input_params struct
+- Benefits: Testability, composability, orthogonality
 
 ---
 
@@ -24,12 +39,11 @@
 - Layer 3 (Systems): 97%+ ✅ - Target exceeded
 - Layer 4 (Variation): <50% ✅ - Ready to build
 
-**Next Priority:** Medium-priority refinements (#4-#8) OR build Layer 4 systems
-**Estimated Path:** 0 high-priority refinements, 5 medium, 3 low remaining
+**Remaining:** 0 high-priority, 5 medium, 3 low
 
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 1 high, 5 medium, 3 low)
+- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 0 high, 5 medium, 3 low)
 - `BACKLOG_SYSTEMS.md` - Systems to build (Layer 4 ready)
 - `DEPENDENCY_STACK.md` - Foundation status and build rules
