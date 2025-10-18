@@ -202,17 +202,11 @@ head -10 TASKS/CURRENT_PLAN.md
 ### 7. Check Retrospective Threshold
 
 ```bash
-# Count completed plans
-PLAN_COUNT=$(ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null | wc -l)
-
-# Check threshold (every 5 plans)
-if [ $((PLAN_COUNT % 5)) -eq 0 ] && [ $PLAN_COUNT -gt 0 ]; then
-  echo "📊 Retrospective threshold reached ($PLAN_COUNT plans)"
-  echo "Consider running RETRO before next cycle"
-fi
+# List completed plans (count manually, check if at least 5)
+ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null
 ```
 
-**If threshold reached**, add to `CURRENT_PLAN.md`:
+**If count is at least 5**, add to `CURRENT_PLAN.md`:
 
 ```markdown
 ## Recommended Next Action
