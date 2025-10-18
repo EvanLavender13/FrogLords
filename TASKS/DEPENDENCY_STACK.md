@@ -2,7 +2,7 @@
 
 **Foundation certainty. Build order. What's possible now.**
 
-**Overall Foundation:** 96.5% ✅ TARGET EXCEEDED
+**Overall Foundation:** 97% ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 
 ---
@@ -12,33 +12,33 @@
 ```
 Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
-Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 96.5%)
+Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 97%)
     ↓
 Layer 3: SYSTEMS         [97%] ← ✅ TARGET EXCEEDED
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
-Layer 1: CORE            [95%] ← ✅ TARGET REACHED
+Layer 1: CORE            [95.5%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.95 × 1.00 × 0.97 = **92.2% survival**
+**Cascade:** 0.955 × 1.00 × 0.97 = **92.6% survival**
 
-**Target exceeded:** Foundation at 96.5%, ready for Layer 4 variation
+**Target exceeded:** Foundation at 97%, ready for Layer 4 variation
 
 ---
 
-## Layer 1: CORE (95%)
+## Layer 1: CORE (95.5%)
 
-**Status:** ✅ **TARGET REACHED** - Fully documented foundation
+**Status:** ✅ **TARGET EXCEEDED** - Clean foundation
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
-| Runtime | 100% | ✅ Solid | `app/runtime.{h,cpp}` |
+| Runtime | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
 | Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
 | Physics | 95% | ✅ Documented | `character/controller.{h,cpp}` |
 
-**Blocking:** None - target reached
+**Blocking:** None - target exceeded
 
 ---
 
@@ -75,7 +75,7 @@ Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
 | Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
 
-**Blocking:** None - Layer 3 exceeded target, foundation at 96%
+**Blocking:** None - Layer 3 exceeded target, foundation at 97%
 
 ---
 
@@ -90,7 +90,7 @@ Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 - Dash Mechanic (3-5 points)
 - IK Systems (8 points)
 
-**Foundation:** Building on 97% Layer 3 = 92.2% survival (excellent for variation)
+**Foundation:** Building on 97% Layer 3 = 92.6% survival (excellent for variation)
 
 ---
 
@@ -148,21 +148,23 @@ Rate each system 1-10 on these criteria:
 
 ## Next Actions
 
-**Foundation exceeded target (96.5%) - ready for Layer 4:**
+**Foundation exceeded target (97%) - ready for Layer 4:**
 - Build skeletal animation system, OR
 - Build walk/run speed states, OR
 - Build wall detection & sliding, OR
 - Build dash mechanic
 
-**Foundation:** 0.95 × 1.00 × 0.97 = **92.2% survival** (excellent for variation)
+**Foundation:** 0.955 × 1.00 × 0.97 = **92.6% survival** (excellent for variation)
 
 ---
 
 ## Recent Changes
 
+- 2025-10-18: Runtime → 100% (removed embedded test logic)
+- 2025-10-18: Layer 1 → 95.5% ✅ TARGET EXCEEDED
+- 2025-10-18: Foundation → 97% ✅ TARGET EXCEEDED
 - 2025-10-18: Mesh Renderer → 100% (persistent dynamic buffers)
 - 2025-10-18: Layer 2 → 100% ✅ COMPLETE
-- 2025-10-18: Foundation → 96.5% ✅ TARGET EXCEEDED
 - 2025-10-18: Tuning → 97% (unidirectional data flow established)
 - 2025-10-18: Game World → 97% (tuning system refinement)
 - 2025-10-18: Layer 3 → 97% ✅ TARGET EXCEEDED

@@ -119,7 +119,7 @@ git checkout main -- src/app/runtime.cpp
 - Lines 26-31: Test execution in `initialize()`
 
 **Tests:** Build passing
-**Metrics:** LOC 182→173 (-9) | Principle 8/10→10/10 (+2.0)
+**Metrics:** LOC 181→170 (-11) | Principle 8/10→10/10 (+2.0)
 **Result:** ✓ Violation removed
 
 **Evidence:**
@@ -136,6 +136,52 @@ git checkout main -- src/app/runtime.cpp
 **Improvement:** +2.0 points
 **Evidence:** Test logic completely removed, runtime only handles initialization
 **Verdict:** ✓ Principle restored
+
+---
+
+## Metrics
+
+**Files:**
+- `src/app/runtime.cpp`: 181 → 170 (-11 lines)
+
+**Total:** -11 lines
+
+**Violations removed:**
+- Conditional test compilation blocks: 2 → 0 (-2)
+- Runtime exit calls: 1 → 0 (-1)
+- Test execution in initialization: 1 → 0 (-1)
+
+**Principle Score:**
+- Composable Functions: 8/10 → 10/10 (+2.0)
+- Evidence: No mixed concerns, runtime only initializes
+
+**Foundation Impact:**
+- Layer 1 (Core): 95% → 95.5% (+0.5%)
+- Overall: 96.5% → 97% (+0.5%)
+
+---
+
+## Learning
+
+**Root cause:** Tests were embedded in runtime as a development convenience—quick validation without separate test infrastructure. The workaround became permanent.
+
+**Prevention:**
+- Never mix test execution with production initialization code
+- Establish test infrastructure early (runner script, discovery mechanism)
+- Use conditional compilation only for platform differences, never for development shortcuts
+- Question: "Does this belong in /tests?" before adding test logic anywhere
+
+**Pattern:** This is part of a larger pattern of establishing proper boundaries:
+- Tests in `/tests` directory only
+- Runtime code for initialization only
+- Build system handles test compilation/execution
+- Each system has a single, well-defined purpose
+
+**Remaining work:**
+- Establish test runner script (`scripts/bash/test.sh`)
+- Document test development workflow
+- Consider test framework if test count grows beyond 5-10 files
+- These are noted in the plan above but not blocking current work
 
 ---
 
