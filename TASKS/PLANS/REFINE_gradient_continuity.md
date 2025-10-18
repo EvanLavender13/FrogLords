@@ -52,49 +52,14 @@ if (speed_ratio < 0.33f) {
 
 **SIMPLIFY:**
 - **From:** Branching logic with hard thresholds
-- **To:** Continuous tri-color interpolation using `glm::mix`
+- **To:** Continuous interpolation across color gradient
 - **Derive:**
-  - Blue (0.0) → Cyan (0.5) → Yellow/Red (1.0)
-  - Use continuous interpolation across full `speed_ratio` range
-  - Two-stage mix: blue→cyan→yellow or similar smooth gradient
-
-**Implementation:**
-Replace if/else blocks with continuous interpolation:
-```cpp
-// Continuous gradient: blue -> cyan -> yellow -> red
-glm::vec3 blue = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 cyan = glm::vec3(0.0f, 1.0f, 1.0f);
-glm::vec3 yellow = glm::vec3(1.0f, 1.0f, 0.0f);
-glm::vec3 red = glm::vec3(1.0f, 0.0f, 0.0f);
-
-glm::vec3 rgb;
-if (speed_ratio < 0.5f) {
-    rgb = glm::mix(blue, cyan, speed_ratio * 2.0f);
-} else {
-    float t = (speed_ratio - 0.5f) * 2.0f;
-    glm::vec3 mid = glm::mix(cyan, yellow, t);
-    rgb = t < 0.5f ? mid : glm::mix(yellow, red, (t - 0.5f) * 2.0f);
-}
-color = glm::vec4(rgb, 0.8f);
-```
-
-**Wait - still has branching.** Better approach:
-```cpp
-// Fully continuous 4-color gradient
-glm::vec3 colors[] = {
-    glm::vec3(0.0f, 0.0f, 1.0f),  // blue
-    glm::vec3(0.0f, 1.0f, 1.0f),  // cyan
-    glm::vec3(1.0f, 1.0f, 0.0f),  // yellow
-    glm::vec3(1.0f, 0.0f, 0.0f),  // red
-};
-int num_colors = 4;
-float scaled = speed_ratio * (num_colors - 1);
-int index = (int)scaled;
-float t = scaled - index;
-index = glm::clamp(index, 0, num_colors - 2);
-glm::vec3 rgb = glm::mix(colors[index], colors[index + 1], t);
-color = glm::vec4(rgb, 0.8f);
-```
+  ```
+  Define gradient as array of color stops
+  Map speed_ratio [0.0, 1.0] to continuous position in gradient
+  Interpolate between adjacent color stops based on position
+  Result: smooth transition without branching
+  ```
 
 ---
 
