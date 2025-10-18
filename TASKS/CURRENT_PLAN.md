@@ -1,31 +1,54 @@
 # Current Plan
 
-**Status:** In Progress
-**Type:** Refinement
+**Status:** 🔧 Refinement - Orientation Dual-Reference Investigation
 **Started:** 2025-10-17
-**Branch:** refine/spring-damper-validation
-**Phase:** SELECT → REFINE (planning)
+**Branch:** `refine/orientation-dual-reference`
+**Last Completed:** 2025-10-17 (spring-damper validation)
 
 ---
 
-@TASKS/PLANS/REFINE_spring_damper_validation.md
+## Current Work
+
+**Refinement:** Orientation dual-reference violation (INVESTIGATION)
+
+**Location:** `src/character/orientation.{h,cpp}`
+
+**Principle:** Consistency (The Dual Reference pattern)
+
+**Approach:** Path B (Standard - requires investigation)
+
+**Phase:** SELECT → **PLAN** (next)
+
+**Investigation Goals:**
+1. Confirm if dual-reference violation actually exists
+2. Evaluate spring-damper vs. exponential smoothing
+3. Determine correct fix approach
+
+**Possible Outcomes:**
+- Fix: Replace exponential smoothing with spring-damper (proven Layer 2 primitive)
+- Update: Document current implementation as correct, update backlog
+- Hybrid: Minor simplifications + documentation
+
+---
+
+See:
+- `TASKS/BACKLOG_REFINEMENTS.md` for violations to fix
+- `TASKS/BACKLOG_SYSTEMS.md` for systems to build
+- `TASKS/DEPENDENCY_STACK.md` for foundation status
 
 ---
 
 ## Quick Reference
 
-**Violation:** Spring-damper formula untested
-**Principle:** Solid Mathematical Foundations
-**Severity:** High
-**Complexity:** Standard (3-5 points)
-**Path:** B (full workflow)
+**Foundation:** 91% (updated 2025-10-17)
 
-**Next Actions:**
-- Design test framework approach
-- Implement validation tests
-- Verify critical damping behavior (ζ=1 produces no overshoot)
-- Integrate into build system
+**Layer Status:**
+- Layer 1 (Core): 90%
+- Layer 2 (Primitives): 100% ✓ **COMPLETE**
+- Layer 3 (Systems): 93%
 
-**Target Impact:**
-- Layer 2: 98% → 100% (+2%)
-- Overall Foundation: 90% → 91% (+1%)
+**Next Action:** Run REFINE/SELECT or SYSTEM/SELECT
+
+**Path to 95%:** ~3 more refinements
+
+**Next Priority:** Dual-reference orientation fix (HIGH)
