@@ -247,97 +247,6 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 ---
 
-### 8. Update Backlog
-
-**In** `TASKS/BACKLOG_REFINEMENTS.md`:
-
-**Move violation to "Recently Completed":**
-```markdown
-## Recently Completed
-
-- **<Location>**: <Description>
-  - Completed: [Date]
-  - LOC removed: __
-  - Principle: <name>
-  - Score: __/10 → __/10 (+__)
-  - Pattern: [If part of larger pattern]
-  - Learning: [Key insight]
-```
-
-**If pattern identified, add to Patterns section:**
-```markdown
-## Patterns
-
-**<Pattern Name>** (refined: [Date])
-- Violation type: [Type]
-- Occurrences: [Count remaining]
-- Root cause: [Why this keeps happening]
-- Prevention: [How to stop it]
-- Related refinements: [List]
-```
-
----
-
-### 9. Update Dependency Stack
-
-**In** `TASKS/DEPENDENCY_STACK.md`:
-
-**Update layer certainty:**
-```markdown
-## Layer [N]: [NAME]
-
-**Certainty:** [NEW_%] (was [OLD_%])
-**Last Updated:** [Today]
-
-**Recent refinements:**
-- [Name]: +[%] improvement
-
-**Principle scores:**
-- [Principle]: __/10 (improved from __/10)
-
-**Status:**
-- [x] Refinement completed
-- [ ] Certainty recalculated
-- [ ] Cascade updated
-```
-
-**Recalculate cascade to dependent layers.**
-
----
-
-### 10. Final Commit and Merge
-
-**Commit metrics:**
-```bash
-git add TASKS/PLANS/REFINE_<name>.md TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md
-git commit -m "measure: <name> refinement complete
-
-Metrics:
-- LOC: -<number> lines
-- Complexity: -<number>
-- Special cases: -<number>
-- Magic numbers: -<number>
-
-Principle scores:
-- <principle>: <before>/10 → <after>/10 (+<delta>)
-
-Foundation: <before>% → <after>% (+<delta>%)
-
-Learning: <key insight>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
-
-**Merge to main:**
-```bash
-git checkout main
-git merge --no-ff refine/<name>
-git push origin main
-```
-
----
-
 ## Outputs
 
 - [ ] Code metrics calculated (LOC, complexity)
@@ -346,9 +255,7 @@ git push origin main
 - [ ] Principle scores updated
 - [ ] Foundation impact measured
 - [ ] Learning documented
-- [ ] Backlog updated
-- [ ] Dependency stack updated
-- [ ] Changes merged to main
+- [ ] `TASKS/PLANS/REFINE_<name>.md` complete with all metrics
 
 ---
 
@@ -397,21 +304,21 @@ git push origin main
 
 ## Exit Criteria
 
-**Refinement cycle complete when:**
+**Measurement complete when:**
 - All metrics calculated
 - Learning documented
-- Backlog updated
-- Foundation strengthened
-- Merged to main
+- Reflection section complete
+- `TASKS/PLANS/REFINE_<name>.md` fully populated
+
+**Metrics without action are just numbers. Move to bookkeeping.**
 
 ---
 
 ## Next Step
 
-**→ REFINE/SELECT** (choose next violation)
-**→ SYSTEM/SELECT** (if foundation now ready for new systems)
+**→ REFINE/CLOSE** (update system state, merge to main)
 
-**The cycle continues: Refine → Measure → Refine → Build → Refine...**
+**Then:** SELECT (choose next violation) or SYSTEM/SELECT (if foundation ready)
 
 ---
 

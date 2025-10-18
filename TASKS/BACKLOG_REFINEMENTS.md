@@ -1,399 +1,139 @@
 # Refinements Backlog
 
-**Principle violations to restore. Complexity to remove.**
+**Current violations. Priority order. Patterns to watch.**
 
-**Last Updated:** 2025-10-17 (tuning defaults completed)
-**Foundation:** 90% → Target 95% (+1% from tuning fix)
-
----
-
-## By Principle
-
-### 1. Radical Simplicity
-**Complexity that doesn't serve emergence**
-
-- **src/character/orientation.cpp**: Complex yaw smoothing logic
-  - Principle: Radical Simplicity
-  - Severity: Medium
-  - Type: Complexity
-  - Fix: Simplify (use spring-damper directly, remove special handling)
-  - LOC: ~50 lines
-  - Related: Dual-reference violation
-
-### 2. Fundamental Composable Functions
-**Systems that overlap or don't compose cleanly**
-
-- **src/character/controller.{h,cpp}**: Mixed concerns (physics + animation + orientation)
-  - Principle: Composable Functions
-  - Severity: Medium
-  - Type: Coupling
-  - Fix: Simplify (extract subsystems more clearly)
-  - LOC: 122 lines header, 233 lines cpp
-  - Note: Partially improved, needs more
-
-### 3. Solid Mathematical Foundations
-**Unproven math, magic numbers, unexplained constants**
-
-- ✅ **Magic numbers throughout** → FIXED (2025-10-17)
-  - All 27 constants documented
-  - Derivations complete
-  - Units specified
-
-
-- **src/character/tuning.h vs controller.h**: Defaults mismatch
-  - Principle: Mathematical Foundations
-  - Severity: Critical
-  - Type: Inconsistent sources of truth
-  - Fix: Simplify (choose single source, eliminate bidirectional init issue)
-  - Impact: 4x discrepancy in `time_to_max_speed`
-  - Root cause: Bidirectional system (`apply_to` + `read_from`)
-
-### 4. Emergent Behavior
-**Prescribed outcomes instead of enabled possibilities**
-
-- ✅ **Removed locomotion system** (2025-10-17)
-  - Was prescribing animation states
-  - Now purely reactive (spring-damper based)
-  - Emergence improved
-
-### 5. Consistency
-**Special cases, unpredictable behavior, betrayed expectations**
-
-- ✅ **Ground plane special case** → REMOVED (2025-10-17)
-  - All collision now uniform
-  - No entity-specific logic
-
-- ✅ **Framerate-dependent yaw** → FIXED (2025-10-17)
-  - Proper delta-time integration
-  - Behavior now frame-rate independent
-
-- **src/character/orientation.cpp**: Dual-reference violation
-  - Principle: Consistency (The Dual Reference pattern)
-  - Severity: High
-  - Type: Circular reference (target yaw references smoothed yaw)
-  - Fix: Simplify (separate target from current, maintain pure intent)
-  - PRINCIPLES.md quote: "Never let a smoothed value reference itself"
-
-### 6. Principled Development
-**Decisions that can't be traced to principles**
-
-- **src/character/controller.{h,cpp}**: Accumulated state pattern
-  - Principle: Principled Development
-  - Severity: Medium
-  - Type: Undocumented trade-off
-  - Fix: Document (accept and explain) OR Simplify (derive each frame)
-  - PRINCIPLES.md: "Pure Functions Over Accumulated State"
-  - Options:
-    1. Document why accumulation is acceptable here
-    2. Derive velocity from input each frame
-    3. Switch to Verlet integration (position-based)
+**Foundation:** 92% → Target: 95%
+**Last Updated:** 2025-10-17
 
 ---
 
-## In Progress
+## Active Violations
 
-None - Ready to select next refinement
+### High Priority
 
----
+**1. Controller Mixed Concerns** (`controller.{h,cpp}`)
+- Principle: Composable Functions
+- Type: Coupling (physics + animation + orientation)
+- Impact: Hard to modify subsystems independently
+- Fix: Extract subsystems more clearly
+- Effort: 3 points
 
-## By Severity
+**2. Accumulated State Pattern** (`controller.{position,velocity}`)
+- Principle: Principled Development
+- Type: Undocumented trade-off
+- Impact: Long-term stability unknown
+- Fix: Document rationale OR derive from inputs
+- Effort: 2-3 points
+- Options:
+  - Document why accumulation is acceptable
+  - Derive velocity from input each frame
+  - Switch to Verlet integration
 
-### Critical (Foundation Threatening)
-**Violations that undermine core systems**
+### Medium Priority
 
-None currently - Critical violation moved to In Progress
+None currently blocking progress to 95%
 
-### High (Actively Harmful)
-**Violations causing bugs or limiting emergence**
+### Low Priority
 
-1. **Dual-reference in orientation** (`orientation.cpp`)
-   - Impact: Violates "The Dual Reference" principle
-   - Causes: Subtle coupling, hard to reason about
-   - Fix: 2 points, separate target from current
-   - Status: After spring-damper
-
-### Medium (Technical Debt)
-**Violations making future work harder**
-
-2. **Accumulated state pattern** (`controller.{position,velocity}`)
-   - Impact: Long-term stability unknown
-   - Fix: 2-3 points, document or derive
-   - Status: Lower priority
-
-3. **Mixed concerns in controller** (`controller.{h,cpp}`)
-   - Impact: Hard to modify one subsystem without affecting others
-   - Fix: 3 points, extract subsystems
-   - Status: Partially done, ongoing
-
-4. **Orientation complexity** (`orientation.cpp`)
-   - Impact: ~50 lines doing what spring-damper should do
-   - Fix: 2 points, simplify via spring-damper
-   - Status: Related to dual-reference fix
-
-### Low (Cosmetic)
-**Minor violations, address when convenient**
-
-- None currently (recent cleanup eliminated these)
+None identified
 
 ---
 
-## Recently Completed
+## Patterns Library
 
-**2025-10-17: Spring-Damper Validation**
-- Location: `src/foundation/spring_damper.cpp` (critical_damping function)
-- Completed: 2025-10-17
-- Principle: Solid Mathematical Foundations
-- Score: 9.8/10 → 10.0/10 (+0.2)
-- Pattern: "Documented but Unproven Math"
-- Learning: Documentation ≠ Validation (need both theory + empirical proof)
+**Use these to detect violations during development:**
 
-**Metrics:**
-- LOC removed: 0 (additive only)
-- Test LOC added: +268
-- Unverified claims: 4 → 0 (-4)
-- Test coverage: 0% → 100% for critical_damping()
+### Pattern: Special Cases for Entities
+- **Detection:** Search for `if (entity == ...)` or entity-type checks
+- **Root cause:** Design trying to handle exceptions instead of general rules
+- **Fix:** Make behavior uniform, remove special-case logic
+- **Prevention:** Code review flag entity-specific branches
 
-**Foundation impact:**
-- Layer 2: 98% → 100% (+2%)
-- Layer 3: 92% → 93% (+1%)
-- Overall: 90% → 91% (+1%)
+### Pattern: Frame-Rate Dependent Behavior
+- **Detection:** Behavior changes at different frame rates
+- **Root cause:** Missing delta-time multiplication for rates
+- **Fix:** Always multiply rates by `dt`
+- **Prevention:** Unit analysis - rates should have `/time` dimension
 
-**Test suites implemented:**
-1. Mathematical verification (ζ = 1.0 formula)
-2. Behavioral verification (no overshoot)
-3. Monotonic approach (critically damped)
-4. Parameter range validation (16 combinations)
-5. Damping regime comparison (under/critical/over)
+### Pattern: Custom Smoothing Instead of Primitives
+- **Detection:** Search for `std::exp`, custom `lerp` with time, manual smoothing
+- **Root cause:** Unaware of spring-damper or thinking custom is "simpler"
+- **Fix:** Replace with `spring_damper` primitive
+- **Prevention:** Default to spring-damper for all smoothing needs
+- **Related fixes:** Orientation (2025-10-17)
 
-**All tests: 5/5 passing ✓**
+### Pattern: Dual-Reference (Smoothed referencing itself)
+- **Detection:** Target value calculated from smoothed value
+- **Root cause:** Confusing intent (target) with state (current)
+- **Fix:** Keep target and current separate
+- **Prevention:** "Never let a smoothed value reference itself" (PRINCIPLES.md)
+- **Related fixes:** None yet (pattern identified, not yet observed)
 
-**Reusable artifacts:**
-- Test template: `tests/foundation/test_spring_damper.cpp`
-- Test macros: `TEST_ASSERT`, `TEST_ASSERT_NEAR`
-- CMake pattern for test integration
+### Pattern: Magic Numbers
+- **Detection:** Unexplained numeric constants
+- **Root cause:** Lack of documentation discipline
+- **Fix:** Document with derivation, units, and classification tag
+- **Prevention:** Require comment on every constant declaration
+- **Related fixes:** All constants (2025-10-17)
 
-**ROI:** Exceptional (2 hours, zero risk, 100% certainty achieved)
-
----
-
-**2025-10-17: Tuning Defaults Mismatch**
-- Location: `src/character/tuning.h` vs `controller.h`
-- Completed: 2025-10-17
-- Principle: Solid Mathematical Foundations
-- Violation: 4x discrepancy in time_to_max_speed (0.4s vs 1.6s)
-- Fix: Updated controller.h defaults to match tuning.h (single source of truth)
-- Changes:
-  - ground_accel: 20.0 → 80.0 m/s²
-  - air_accel: 10.0 → 20.0 m/s²
-- Metrics:
-  - Discrepancy: 4x → 0x (-100%)
-  - Inconsistent defaults: 2 → 0 (-2)
-  - Sources of truth: 2 → 1 (-1)
-  - Principle score: 8/10 → 10/10 (+2)
-- Foundation impact:
-  - Tuning system: 80% → 95% (+15%)
-  - Layer 3: 90% → 92% (+2%)
-  - Overall: 89% → 90% (+1%)
-- Pattern: Bidirectional systems are fragile (prefer unidirectional data flow)
-- Learning: Single source of truth prevents initialization order bugs
-- Future work: Consider making constructor apply tuning automatically
-
-**2025-10-17: Magic Number Documentation**
-- Location: 12 files, 27 constants
-- Principle: Mathematical Foundations
-- Before: Unexplained constants throughout
-- After: All documented with derivations
-- Metrics:
-  - Grep-able tags added (PHYSICAL, TUNED, DERIVED, etc.)
-  - Units specified
-  - Formulas verified
-  - Relationships documented
-- Principle score: 6/10 → 9/10 (+3)
-- Foundation impact: +10 certainty (79% → 89%)
-- Learning: Documentation IS foundation repair
-
-**2025-10-17: Debug Visualization System**
-- Location: `src/rendering/debug_*`
-- Principle: Principled Development (validation before integration)
-- Added: Complete debug primitive system
-- Impact: 3-day bugs now 30-second fixes
-- Foundation: 95% → 98%
-
-**2025-10-17: Remove Ground Plane Special Case**
-- Location: Collision system
-- Principle: Consistency (no special cases)
-- Removed: Entity-specific ground logic
-- Simplified: Uniform collision handling
-- LOC: ~30 lines deleted
-
-**2025-10-17: Fix Framerate-Dependent Yaw**
-- Location: `orientation.cpp`
-- Principle: Consistency (predictable behavior)
-- Fixed: Delta-time integration
-- Result: Frame-rate independent behavior
-
----
-
-## Discovered During System Building
-
-**During Debug Viz Implementation (2025-10-17):**
-- None (clean implementation, exemplary)
-
-**During Magic Number Documentation (2025-10-17):**
-- Tuning defaults mismatch (critical!)
-- Bidirectional tuning pattern (interesting, document)
-- 75/25 friction decomposition (reusable)
-
-**During Character Work (Previous):**
-- Locomotion was too prescriptive (removed)
-- Orientation has dual-reference (needs fix)
-- Ground plane was special case (fixed)
-
----
-
-## Patterns
-
-**Recurring violations (inform future audits):**
-
-1. **Special cases for specific entities**
-   - Appeared: Ground plane, player-specific logic
-   - Fixed: Ground plane (2025-10-17)
-   - Remaining: None found
-   - Prevention: Code review for `if (entity == ...)` patterns
-
-2. **Frame-rate dependent behavior**
-   - Appeared: Yaw smoothing
-   - Fixed: 2025-10-17
-   - Root cause: Missing delta-time multiplication
-   - Prevention: Always multiply by dt for rates
-
-3. **Dual-reference pattern**
-   - Appeared: Orientation (target references smoothed)
-   - Status: Needs fix
-   - PRINCIPLES.md: "The Dual Reference" - Keep target separate
-   - Prevention: Never let smoothed value reference itself
-
-4. **Accumulated state**
-   - Appeared: Controller position/velocity
-   - Status: Document or derive
-   - PRINCIPLES.md: "Pure Functions Over Accumulated State"
-   - Prevention: Consider deriving state from inputs
-
-5. **Undocumented math**
-   - Appeared: 27 magic numbers
-   - Fixed: All documented (2025-10-17)
-   - Prevention: Require comment on every constant
-
-**Pattern meta-learning:**
-- Documentation dramatically improves understanding (+10 certainty)
-- **Testing transforms documentation into certainty** (+2% Layer 2)
-- Special cases always indicate design smell
-- Frame-rate independence requires discipline
-- Principles document common violations well
-- **Additive refinements (tests) are zero-risk, high-value**
+### Pattern: Bidirectional Data Flow
+- **Detection:** Systems with both `apply_to()` and `read_from()`
+- **Root cause:** Unclear ownership of truth
+- **Fix:** Establish single source of truth, unidirectional flow
+- **Prevention:** Prefer one-way data flow
+- **Related fixes:** Tuning defaults (2025-10-17)
 
 ---
 
 ## Audit Checklist
 
-**Run periodically to populate this backlog:**
+**Run periodically to discover new violations:**
 
 ### Code Smells
-- [x] Files >500 lines → controller.cpp (233 lines, acceptable)
-- [x] Functions >50 lines → None found
-- [x] High cyclomatic complexity → debug_assert.h (233 lines but template)
-- [x] Deep nesting → None problematic
-- [x] Long parameter lists → None found
+- [ ] Files >500 lines
+- [ ] Functions >50 lines
+- [ ] High cyclomatic complexity
+- [ ] Deep nesting (>3 levels)
+- [ ] Long parameter lists (>5 params)
 
-### Magic Numbers
-- [x] Unexplained constants → ✅ ALL DOCUMENTED (2025-10-17)
-- [x] Undocumented formulas → ✅ ALL VERIFIED
-- [x] Arbitrary thresholds → ✅ ALL EXPLAINED
-- [x] Tweaked-by-feel values → ✅ ALL JUSTIFIED
+### Principle Violations
+- [ ] Unexplained constants (magic numbers)
+- [ ] Entity-type checks (special cases)
+- [ ] Player-specific logic
+- [ ] Hard-coded sequences
+- [ ] Copy-pasted code
+- [ ] Animation blocking physics
+- [ ] Non-deterministic behavior
+- [ ] Frame-rate dependent behavior
 
-### Special Cases
-- [x] Entity-type checks → ✅ Ground plane removed
-- [x] Player-specific logic → None found
-- [x] Level-specific behavior → N/A (no levels yet)
-- [x] Hard-coded sequences → None found
-
-### Duplication
-- [x] Copy-pasted code → None found
-- [x] Similar logic multiple files → None problematic
-- [x] Overlapping responsibilities → Controller (known, being improved)
-
-### Undocumented
-- [x] Emergent behaviors → Some not in EMERGENCE.md yet
-- [x] Magic numbers → ✅ FIXED
-- [x] Design decisions → Some in comments, could improve
-- [x] TODOs and FIXMEs → None found
-
-### Anti-Patterns
-- [x] Animation blocking physics → None (physics drives animation ✓)
-- [x] Accumulated state → Position/velocity (documented as issue)
-- [x] Non-deterministic behavior → None found
-- [x] Frame-rate dependent → ✅ Yaw fixed
-- [x] Mutable global state → None found
+### Documentation Gaps
+- [ ] Emergent behaviors not in EMERGENCE.md
+- [ ] Undocumented design decisions
+- [ ] Missing derivations for tuned values
+- [ ] TODO/FIXME comments
 
 **Last Audit:** 2025-10-17
-**Next Audit:** After tuning defaults fix (to see impact)
-
----
-
-## Usage
-
-### Adding a Violation
-From code review, audit, or discovery during building:
-```markdown
-- **Location**: Description
-  - Principle: <which pillar>
-  - Severity: Critical | High | Medium | Low
-  - Type: Magic number | Special case | Duplication | etc.
-  - Fix: Delete | Simplify | Document
-  - LOC: <lines affected>
-```
-
-### Selecting a Violation
-1. Choose by severity × foundation impact
-2. Create `TASKS/PLANS/REFINE_<name>.md`
-3. Classify: Trivial (path A) vs Standard (path B)
-4. Begin refinement cycle
-
-### Completing a Refinement
-Move to "Recently Completed" with metrics:
-```markdown
-**Date: System/Location**
-- Principle: <restored>
-- Before: <state>
-- After: <state>
-- Metrics: <LOC removed, complexity reduced, etc.>
-- Foundation impact: +<certainty %>
-```
-
-### Discovering Violations
-Add immediately when found during:
-- System building
-- Code review
-- Playtesting
-- Audit cycle
+**Next Audit:** After reaching 95% foundation
 
 ---
 
 ## Priority Order
 
-**Current (Foundation Repair Mode):**
+**Path to 95% foundation:**
 
-1. ✅ ~~**Tuning defaults**~~ (critical, 1 pt) - COMPLETED 2025-10-17
-2. ✅ ~~**Spring-damper validation**~~ (high, 3-5 pts) - COMPLETED 2025-10-17
-3. **Dual-reference orientation** (high, 2 pts) ← NEXT
-4. **Accumulated state** (medium, 2-3 pts)
-5. **Controller concerns** (medium, 3 pts)
-6. **Orientation complexity** (medium, 2 pts)
+1. **Controller mixed concerns** (3 pts) ← NEXT
+2. **Accumulated state** (2-3 pts)
 
-**Progress:** Foundation 89% → 91% (+2%)
-**Goal:** Foundation 91% → 95% (+4% remaining, ~3 more refinements)
+**Estimated:** ~2 refinements remaining
 
-**After repairs complete:** Run full audit to find new violations
+---
+
+## Recent Activity
+
+**See individual plan files for detailed metrics:**
+- `PLANS/REFINE_orientation_dual_reference.md` (2025-10-17) - Composability +2.5
+- `PLANS/REFINE_tuning_defaults.md` (2025-10-17) - Math foundations +2
+- `PLANS/REFINE_spring_damper_validation.md` (2025-10-17) - Layer 2 → 100%
 
 ---
 
