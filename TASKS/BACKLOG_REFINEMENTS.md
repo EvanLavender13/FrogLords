@@ -98,7 +98,11 @@
 
 ## In Progress
 
-None currently - ready to select next refinement
+**Spring-damper math unvalidated** (`spring_damper.cpp`) [WIP: refine/spring-damper-validation]
+- Impact: Foundation primitive untested
+- Used by: Landing animation, future systems
+- Fix: 3-5 points (standard), add unit tests
+- Status: Selected 2025-10-17, planning phase
 
 ---
 
@@ -357,8 +361,8 @@ Add immediately when found during:
 **Current (Foundation Repair Mode):**
 
 1. ✅ ~~**Tuning defaults**~~ (critical, 1 pt) - COMPLETED 2025-10-17
-2. **Spring-damper validation** (high, 1 pt) ← NEXT
-3. **Dual-reference orientation** (high, 2 pts)
+2. ⏳ **Spring-damper validation** (high, 3-5 pts) ← IN PROGRESS
+3. **Dual-reference orientation** (high, 2 pts) ← NEXT
 4. **Accumulated state** (medium, 2-3 pts)
 5. **Controller concerns** (medium, 3 pts)
 6. **Orientation complexity** (medium, 2 pts)
