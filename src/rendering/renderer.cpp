@@ -52,6 +52,8 @@ void wireframe_renderer::shutdown() {
     if (!initialized)
         return;
 
+    sg_destroy_buffer(dynamic_index_buffer);
+    sg_destroy_buffer(dynamic_vertex_buffer);
     sg_destroy_pipeline(pipeline);
     sg_destroy_shader(shader);
 
