@@ -1,8 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
-#include "character/animation.h"
-#include "character/orientation.h"
 
 struct collision_world;
 
@@ -110,16 +108,8 @@ struct controller {
     // Used in: apply_input (lines 40, 77) for buffered jump handling
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
-    // Reactive animation layer
-    character::animation_state animation;
-
-    // Orientation system
-    orientation_system orientation;
-
     controller();
 
     void apply_input(const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
-    void update_reactive_systems(float dt);
-    glm::mat4 get_world_transform() const;
 };

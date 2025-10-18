@@ -114,7 +114,7 @@ void app_runtime::frame() {
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Character tuning sections
-        gui::draw_character_panel(panel_state, world.character, world.character.orientation,
+        gui::draw_character_panel(panel_state, world.character, world.character_visuals,
                                   world.character_params);
 
         // Camera section

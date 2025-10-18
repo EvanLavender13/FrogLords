@@ -24,7 +24,7 @@ void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wi
 
 void generate_character_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
-                                         const orientation_system& orientation) {
+                                         const character_reactive_systems& visuals) {
     // Collision sphere
     list.spheres.push_back(debug::debug_sphere{
         .center = character.collision_sphere.center,
@@ -43,7 +43,7 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
     }
 
     // Orientation indicator
-    float yaw = orientation.get_yaw();
+    float yaw = visuals.orientation.get_yaw();
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
     list.spheres.push_back(debug::debug_sphere{
         .center = character.position + forward_dir * 0.8f,
@@ -73,8 +73,9 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
 }
 
 void generate_physics_springs_primitives(debug::debug_primitive_list& list,
-                                         const controller& character) {
-    float spring_offset = character.animation.get_vertical_offset();
+                                         const controller& character,
+                                         const character_reactive_systems& visuals) {
+    float spring_offset = visuals.animation.get_vertical_offset();
     glm::vec3 spring_bottom = character.collision_sphere.center;
     spring_bottom.y -= character.collision_sphere.radius;
     glm::vec3 spring_top = character.position;
@@ -94,11 +95,12 @@ void generate_physics_springs_primitives(debug::debug_primitive_list& list,
 }
 
 void generate_character_body_primitives(debug::debug_primitive_list& list,
-                                        const controller& character) {
+                                        const controller& character,
+                                        const character_reactive_systems& visuals) {
 
-    // Get the full world transform from the controller, which includes tilt and offset
+    // Get the full world transform from the reactive systems, which includes tilt and offset
 
-    glm::mat4 transform = character.get_world_transform();
+    glm::mat4 transform = visuals.get_visual_transform(character);
 
     // Generate the character body box in local space
 
@@ -183,9 +185,9 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
                                const gui::character_panel_state& panel_state) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
-    generate_character_state_primitives(list, world.character, world.character.orientation);
-    generate_physics_springs_primitives(list, world.character);
-    generate_character_body_primitives(list, world.character);
+    generate_character_state_primitives(list, world.character, world.character_visuals);
+    generate_physics_springs_primitives(list, world.character, world.character_visuals);
+    generate_character_body_primitives(list, world.character, world.character_visuals);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);

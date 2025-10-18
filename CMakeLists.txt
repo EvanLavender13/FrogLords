@@ -57,6 +57,7 @@ add_executable(FrogLords
     src/app/debug_generation.cpp
     src/camera/camera.cpp
     src/character/controller.cpp
+    src/character/character_reactive_systems.cpp
     src/character/orientation.cpp
     src/character/animation.cpp
     src/character/tuning.cpp
