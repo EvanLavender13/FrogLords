@@ -60,6 +60,36 @@ echo "Does the collision system adhere to the principle of orthogonality?" | cod
 echo "Should skeletal animation be event-driven or state-based? List trade-offs." | codex e
 ```
 
+## Multi-Turn Consultation
+
+A single question sometimes reveals more questions. Complex problems demand conversation, not just answers.
+
+When analysis requires iteration, resume the previous session to preserve context:
+
+**Starting a consultation**:
+```bash
+echo "Review the change, look for use-after-free issues" | codex e
+```
+
+**Continuing the conversation**:
+```bash
+echo "Fix the use-after-free issues you found" | codex e resume --last
+```
+
+**The Pattern**: Ask → Analyze → Follow-up → Refine
+
+Use multi-turn when:
+- Initial analysis reveals unexpected complexity
+- The solution requires iterative refinement
+- Context from previous answers informs new questions
+- A problem needs exploration, not just validation
+
+**One-shot vs. Multi-turn**:
+- New question? Use `codex e`
+- Follow-up on previous session? Use `codex e resume --last`
+
+Context preservation allows depth. Shallow questions get shallow answers. Deep questions deserve conversation.
+
 ## When to Use Codex
 
 Use Codex when you need a second opinion:

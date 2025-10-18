@@ -99,13 +99,16 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 **Get a second opinion before executing:**
 
+Use Codex to validate the approach. Direct it to read `TASKS/PLANS/REFINE_<name>.md` and `PRINCIPLES.md` for context.
+
 ```bash
-echo "Review the refinement approach in TASKS/PLANS/REFINE_gui_coupling.md. Also review PRINCIPLES.md for context. Does the approach violate any principles or introduce unnecessary complexity?" | codex e
+echo "your validation question" | codex e
 ```
 
 **Evaluate feedback:**
 - Concerns raised? Revise plan
 - Alternative suggested? Consider it
+- Need clarification? Continue the conversation with `codex e resume --last`
 - Validation confirms? Proceed
 
 **Rule:** Certainty through convergence. When independent analyses agree, confidence increases.

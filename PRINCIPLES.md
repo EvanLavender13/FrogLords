@@ -63,14 +63,41 @@ When systems overlap, they create dark corners where bugs hide. When systems are
 
 ## The Patterns of Truth
 
+### The Single Source of Truth
+Every piece of state exists in exactly one place. All other representations are derived, never duplicated. When data lives in multiple locations, they will diverge. When they diverge, bugs hide in the gaps between versions. One truth. One location. Everything else is a view.
+
 ### The Dual Reference
 Never let a smoothed value reference itself. Keep the target separate from the current state. The intent must remain pure while the expression can be filtered. This pattern appears everywhere once you see it.
 
 ### The Spring-Damper
 Nature uses springs because they provide continuity through both position and velocity. When something must change smoothly, the spring-damper is not just a solution—it is *the* solution proven by physics itself.
 
+### Time-Independence
+Physics must produce identical results regardless of frame rate. Every rate must multiply by delta-time. Every integration must be frame-independent. A game that behaves differently at 30fps vs 60fps has failed mathematically. Time is a parameter, not an assumption.
+
 ### Pure Functions Over Accumulated State
 State that accumulates drifts toward chaos. State that is calculated remains true. When possible, derive state from inputs rather than maintaining it through time.
+
+## The Architecture of Information
+
+### Lists Are Intent, Not History
+
+Every list must answer: "What remains to be done?" Never: "What was done?"
+
+The completed work lives in three places:
+1. The codebase itself (the truth)
+2. The git history (the timeline)
+3. The retrospective documents (the wisdom)
+
+**Nowhere else. Especially not in lists.**
+
+A list item has two valid states: pending or deleted. "Completed" is not a state—it's a failure to delete. When work finishes, remove the item. The repository remembers everything. The list remembers nothing.
+
+Historical change lists are documentation rot disguised as diligence. They grow without bound, they demand maintenance, they duplicate truth that git already preserves.
+
+**The rule**: If a list needs "periodic pruning," it has already failed. Lists should shrink to zero as work completes, then disappear entirely.
+
+Version control is eternal. Lists are ephemeral. Respect the boundary.
 
 ## The Warning Signs
 
