@@ -1,15 +1,26 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Character State Management
+**Status:** 🔧 Refinement - Buffer Creation
+**Started:** 2025-10-18
+**Branch:** refine/buffer_creation
+**Path:** B (Standard - 4 points)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Build Layer 4 variation system ← **RECOMMENDED**
-- `/REFINE/SELECT` - Fix medium-priority violation
+**Refinement:** Per-draw buffer creation inefficiency
+**Location:** @TASKS/PLANS/REFINE_buffer_creation.md
+**Principle:** Radical Simplicity
+**Approach:** Simplify - Use persistent dynamic buffers
+**Next:** REFINE
+
+**Target Impact:**
+- Rendering (Layer 2): Principle 6/10 → 9/10 (+3)
+- Overall: 96% → 96.5% (+0.5%)
+
+**Fix:** Replace per-draw immutable buffer creation/destruction with single persistent dynamic buffer pattern
 
 ---
 
