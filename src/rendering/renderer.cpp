@@ -32,6 +32,19 @@ void wireframe_renderer::init() {
 
     pipeline = sg_make_pipeline(&pipeline_desc);
 
+    // Create persistent dynamic buffers for streaming geometry
+    sg_buffer_desc vbuf_desc = {};
+    vbuf_desc.size = 65536; // 64KB - generous size for dynamic vertex data
+    vbuf_desc.usage.stream_update = true;
+    vbuf_desc.usage.vertex_buffer = true;
+    dynamic_vertex_buffer = sg_make_buffer(&vbuf_desc);
+
+    sg_buffer_desc ibuf_desc = {};
+    ibuf_desc.size = 65536; // 64KB - generous size for dynamic index data
+    ibuf_desc.usage.stream_update = true;
+    ibuf_desc.usage.index_buffer = true;
+    dynamic_index_buffer = sg_make_buffer(&ibuf_desc);
+
     initialized = true;
 }
 
