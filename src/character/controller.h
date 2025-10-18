@@ -54,18 +54,21 @@ struct controller {
     float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
 
     // Tunable parameters
-    // CALCULATED: Ground acceleration (modified by tuning system)
+    // CALCULATED: Ground acceleration (derived from tuning.h defaults)
     // Derived from time_to_max_speed via: ground_accel = (max_speed / time) / NET_FRACTION
-    // Current: 20.0 m/s² yields time_to_max_speed ≈ 1.6s (with NET_FRACTION=0.25)
-    // NOTE: Inconsistent with tuning.h default (0.4s) - tuning system not applied at init
+    // Default: 80.0 m/s² matches tuning.h time_to_max_speed=0.4s (with NET_FRACTION=0.25)
+    // Formula: (8.0 m/s / 0.4s) / 0.25 = 80.0 m/s²
+    // NOTE: Will be overwritten if tuning_params::apply_to() is called
     // Used in: apply_input (line 64) to set acceleration magnitude when grounded
-    float ground_accel = 20.0f; // m/s²
+    float ground_accel = 80.0f; // m/s²
 
-    // CALCULATED: Air acceleration (modified by tuning system)
+    // CALCULATED: Air acceleration (derived from tuning.h defaults)
     // Derived from time_to_max_speed via: air_accel = max_speed / time
-    // Current: 10.0 m/s² is half of ground_accel (reduced air control)
+    // Default: 20.0 m/s² matches tuning.h time_to_max_speed=0.4s
+    // Formula: 8.0 m/s / 0.4s = 20.0 m/s²
+    // NOTE: Will be overwritten if tuning_params::apply_to() is called
     // Used in: apply_input (line 64) to set acceleration magnitude when airborne
-    float air_accel = 10.0f; // m/s²
+    float air_accel = 20.0f; // m/s²
 
     // TUNED: Maximum horizontal movement speed
     // Real-world context: 8.0 m/s ≈ 17.9 mph (fast jogging pace)

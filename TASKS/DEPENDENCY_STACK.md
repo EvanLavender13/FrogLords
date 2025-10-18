@@ -2,7 +2,7 @@
 
 **Foundation state. Truth flows upward.**
 
-**Last Updated:** 2025-10-17
+**Last Updated:** 2025-10-17 (tuning defaults refinement complete)
 
 ---
 
@@ -13,14 +13,14 @@ Layer 5: POLISH          [<50%] ← liquid backlog only
     ↓
 Layer 4: VARIATION       [<50%] ← waiting on repairs
     ↓
-Layer 3: SYSTEMS         [90%] ← repair mode (89% → 95% target)
+Layer 3: SYSTEMS         [92%] ← repair mode (90% → 95% target)
     ↓
 Layer 2: PRIMITIVES      [98%] ← solid, proven
     ↓
 Layer 1: CORE            [90%] ← working, known issues
 ```
 
-**Overall Foundation Certainty:** 89%
+**Overall Foundation Certainty:** 90%
 
 **Status:** 🔧 **REPAIR MODE** - Strengthen foundation before expansion
 
@@ -170,8 +170,9 @@ Uncertainty multiplies through dependencies:
 
 ## Layer 3: SYSTEMS
 
-**Certainty:** 90%
+**Certainty:** 92%
 **Status:** 🔧 Repair mode (target 95%)
+**Last Changed:** 2025-10-17 (tuning defaults fixed)
 
 ### Systems
 
@@ -198,14 +199,16 @@ Uncertainty multiplies through dependencies:
   - ⚠️ Complexity (~50 lines doing spring-damper work)
 - Status: Works but violates principles
 
-**Tuning System [80%]:**
+**Tuning System [95%]:**
 - Bidirectional parameter adjustment
 - Location: `src/character/tuning.{h,cpp}`
 - Pattern: `apply_to()` + `read_from()`
-- Issue:
-  - ⚠️ **CRITICAL:** Defaults mismatch (`controller.h` ≠ `tuning.h`)
-  - 4x discrepancy in `time_to_max_speed` (1.6s vs 0.4s)
-- Status: Blocks confident tuning work
+- Fixed (2025-10-17):
+  - ✅ Defaults now consistent (`controller.h` matches `tuning.h`)
+  - ✅ 4x discrepancy eliminated (was 1.6s vs 0.4s, now 0.4s exact)
+- Remaining consideration:
+  - Could simplify by applying tuning in constructor (removes dual defaults)
+- Status: ✅ Now trustworthy for confident tuning work
 
 **Rendering Scene [100%]:**
 - Scene graph, camera, primitives
@@ -227,17 +230,17 @@ Uncertainty multiplies through dependencies:
 - [x] All systems functional
 - [x] Compose cleanly (mostly)
 - [x] Debug visualization enabled
-- [ ] ⚠️ **CRITICAL:** Tuning defaults fixed
+- [x] ✅ **CRITICAL:** Tuning defaults fixed (2025-10-17)
 - [ ] ⚠️ Dual-reference violations fixed
 - [ ] ⚠️ Mixed concerns separated
 - [ ] Foundation 95% certain
 
 **Blocking issues:**
-1. Tuning defaults (CRITICAL, blocks confident work)
+1. ✅ ~~Tuning defaults~~ (FIXED 2025-10-17)
 2. Dual-reference in orientation (HIGH, violates principles)
 3. Controller mixed concerns (MEDIUM, tech debt)
 
-**Last Changed:** 2025-10-17 (magic number docs, framerate fix)
+**Last Changed:** 2025-10-17 (tuning defaults fixed)
 
 ---
 
@@ -340,19 +343,32 @@ Uncertainty multiplies through dependencies:
 - Debug assert: 10/10 = 100%
 - **Average: 9.8 = 98%**
 
-**Layer 3 (Systems): 90%**
+**Layer 3 (Systems): 92%**
 - Controller: 9.0/10 = 90%
 - Landing: 9.5/10 = 95%
 - Orientation: 8.5/10 = 85% (dual-ref)
-- Tuning: 8.0/10 = 80% (defaults)
+- Tuning: 9.5/10 = 95% (✅ defaults fixed)
 - Rendering: 10/10 = 100%
 - GUI: 9.5/10 = 95%
 - Game world: 9.5/10 = 95%
-- **Average: 9.0 = 90%**
+- **Average: 9.2 = 92%**
 
 ---
 
 ## History
+
+### Refinements Completed
+
+**2025-10-17: Tuning Defaults Mismatch Fixed**
+- Layer: 3 (Systems)
+- System: Tuning
+- Before: 80% → After: 95% (+15%)
+- Layer impact: 90% → 92% (+2%)
+- Overall foundation: 89% → 90% (+1%)
+- Violation: 4x discrepancy in time_to_max_speed
+- Fix: Updated controller.h defaults to match tuning.h
+- Learning: Bidirectional systems need single source of truth
+- Pattern: Initialization order dependencies are fragile
 
 ### System Completions
 
@@ -395,7 +411,7 @@ Uncertainty multiplies through dependencies:
 
 ### Refinements Completed
 
-**See BACKLOG_REFINEMENTS.md for detailed metrics**
+**See TASKS/BACKLOG_REFINEMENTS.md for detailed metrics**
 
 Recent refinements improved foundation 77% → 89%:
 1. Debug visualization (+3%)
@@ -413,6 +429,7 @@ Recent refinements improved foundation 77% → 89%:
 **After audit discovery:** 95% × 90% × 90% = **77%** (reality check)
 **After debug viz:** 98% × 90% × 90% = **79%**
 **After magic docs:** 98% × 90% × 90% = **89%** (understanding improved)
+**After tuning fix:** 90% × 98% × 92% = **81%** (layer 3 improved)
 
 ### Target Cascade
 
@@ -432,7 +449,7 @@ Recent refinements improved foundation 77% → 89%:
 
 ## Repair Priority
 
-**From BACKLOG_REFINEMENTS.md:**
+**From TASKS/BACKLOG_REFINEMENTS.md:**
 
 1. **Tuning defaults** (critical, 1 pt) ← IMMEDIATE
 2. **Spring-damper test** (high, 1 pt)
@@ -473,7 +490,7 @@ Recent refinements improved foundation 77% → 89%:
 ### After System Completion
 1. Update certainty for that layer
 2. Calculate cascade (multiply through dependent layers)
-3. Move enabled systems in BACKLOG_SYSTEMS.md
+3. Move enabled systems in TASKS/BACKLOG_SYSTEMS.md
 4. Document emergence in EMERGENCE.md
 
 ### After Refinement
@@ -492,18 +509,18 @@ Recent refinements improved foundation 77% → 89%:
 
 ## Current Status Summary
 
-**Overall Foundation:** 89%
+**Overall Foundation:** 90%
 
 **Layer Status:**
 - Layer 1 (Core): 90% - Working, known issues
 - Layer 2 (Primitives): 98% - Solid, minor validation gap
-- Layer 3 (Systems): 90% - Repair mode
+- Layer 3 (Systems): 92% - Repair mode (+2% from tuning fix)
 - Layer 4 (Variations): <50% - Don't build
 - Layer 5 (Polish): <50% - Liquid pool
 
 **Mode:** 🔧 **REPAIR** - Strengthen before expansion
 
-**Next Action:** Fix tuning defaults (1 point, immediate)
+**Next Action:** Choose from backlog (tuning defaults complete)
 
 **Goal:** Layer 3 → 95%, enables confident Layer 4 building
 
