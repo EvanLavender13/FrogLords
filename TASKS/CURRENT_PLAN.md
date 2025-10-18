@@ -9,25 +9,27 @@
 
 ## Current Work
 
-**Refinement:** Orientation dual-reference violation (INVESTIGATION)
+**Refinement:** Orientation composability violation (READY TO IMPLEMENT)
 
 **Location:** `src/character/orientation.{h,cpp}`
 
-**Principle:** Consistency (The Dual Reference pattern)
+**Principle:** Fundamental Composable Functions (not dual-reference)
 
-**Approach:** Path B (Standard - requires investigation)
+**Approach:** Path B (Standard - spring-damper replacement)
 
-**Phase:** SELECT → **PLAN** (next)
+**Phase:** PLAN ✓ → **REFINE** (next)
 
-**Investigation Goals:**
-1. Confirm if dual-reference violation actually exists
-2. Evaluate spring-damper vs. exponential smoothing
-3. Determine correct fix approach
+**Investigation Complete (2025-10-17):**
+1. ✓ NO dual-reference violation found (backlog misleading)
+2. ✓ YES composability violation (custom smoothing vs spring-damper)
+3. ✓ Fix approach confirmed: Replace with spring-damper primitive
 
-**Possible Outcomes:**
-- Fix: Replace exponential smoothing with spring-damper (proven Layer 2 primitive)
-- Update: Document current implementation as correct, update backlog
-- Hybrid: Minor simplifications + documentation
+**Implementation Plan:**
+- Remove: target_yaw member (unnecessary state)
+- Remove: Custom exponential smoothing logic (~8 lines)
+- Add: spring_damper yaw_spring member
+- Tune: Match current feel (τ=0.2s → k=25, c=10)
+- Expected: -10 LOC, +2.5 principle score
 
 ---
 
