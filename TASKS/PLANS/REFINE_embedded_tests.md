@@ -139,4 +139,38 @@ git checkout main -- src/app/runtime.cpp
 
 ---
 
+## Notes for Future
+
+**Testing Infrastructure Decisions Needed:**
+
+1. **Test Runner Script**
+   - Need: `scripts/bash/test.sh` to execute test suite
+   - Currently: No unified test execution mechanism
+   - Priority: Before adding more tests
+
+2. **Test Discovery**
+   - Need: Automatic test discovery mechanism
+   - Currently: Single hard-coded executable per test
+   - Consider: Pattern-based discovery (e.g., `test_*.cpp` → auto-compile → auto-run)
+   - Alternative: CMake test registration with CTest
+
+3. **Test Library Evaluation**
+   - Need: Decide if test framework is appropriate
+   - Options: doctest (lightweight), Catch2 (popular), Google Test (heavyweight)
+   - Current: Manual test implementations
+   - Consider: Trade-off between dependency (violates simplicity) vs. better test ergonomics
+
+4. **Workflow Integration**
+   - Need: Define when/where tests are added in development workflow
+   - Questions:
+     - Add tests before implementation (TDD)?
+     - Add tests during implementation?
+     - Add tests during refinement phase?
+     - Separate test-writing pass?
+   - Consider: Tests as validation in SELECT phase before REFINE
+
+**Trigger for Decision:** When next test is needed or when test count reaches 3-5 files
+
+---
+
 **Delete the workaround. Separate concerns. Tests belong in `/tests`.**
