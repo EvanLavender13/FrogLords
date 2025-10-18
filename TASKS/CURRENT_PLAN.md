@@ -4,7 +4,7 @@
 **Started:** 2025-10-17
 **Branch:** refine/controller-separation
 **Path:** B (standard)
-**Phase:** SELECT → PLAN
+**Phase:** SELECT → REFINE
 
 ---
 
@@ -18,7 +18,7 @@
 
 **Approach:** Simplify - separate physics from reactive systems
 
-**Next Step:** REFINE/PLAN
+**Next Step:** REFINE
 
 **Target Impact:**
 - Layer 3: 94% → 95% (+1%)
