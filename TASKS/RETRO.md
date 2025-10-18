@@ -21,7 +21,7 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 
 ### 1. Scan Plans - Extract Patterns
 
-Read "Reflection" section from each completed plan. Count occurrences of:
+Read "Reflection" and "Learning" sections from each completed plan. Count occurrences of:
 - Same principle violated
 - Same mistake repeated
 - Same workflow friction
@@ -35,15 +35,27 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 
 **≥3 occurrences = pattern. <3 = noise (defer).**
 
-### 2. Categorize Patterns
+### 2. Extract Important Ideas
+
+**Look for new ideas/suggestions in Learning sections:**
+- Patterns discovered that generalize
+- Validation/testing approaches proposed
+- Infrastructure decisions deferred
+- Future work identified
+- System audits suggested
+
+**These become backlog items** - refinements, systems, or infrastructure tasks.
+
+### 3. Categorize Patterns
 
 **A. Principle Violations** - Which principles broken repeatedly?
 **B. Emergent Behaviors** - What unexpected interactions worked?
 **C. Workflow Friction** - Which steps painful/unclear?
 **D. Documentation Gaps** - What confusion repeated?
 **E. Documentation Bloat** - Which plans violate Radical Simplicity in their own writing?
+**F. Important Ideas** - New patterns, systems, or infrastructure identified?
 
-### 3. Generate Actions
+### 4. Generate Actions
 
 **For each pattern (≥3 occurrences):**
 
@@ -74,7 +86,7 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 
 ---
 
-### 4. Document Findings
+### 5. Document Findings
 
 **Create `TASKS/PLANS/RETRO_<date>.md` - Keep it SHORT:**
 
@@ -108,6 +120,15 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 
 ---
 
+## Important Ideas from Plans
+
+**<Idea Name>** (<Source Plan>):
+- <Key insight 1-liner>
+- <Application/generalization>
+- <Next steps or backlog item created>
+
+---
+
 ## Actions
 
 **Context Files (COMMON):**
@@ -130,6 +151,7 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 ## Summary
 
 - Patterns: <count>
+- Important Ideas: <count>
 - Actions: <count> context files, <count> workflow updates, <count> backlog
 - Execute: Context files first, then workflow updates
 - Is workflow working? <brief reflection>
@@ -137,7 +159,7 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 ---
 ```
 
-**Keep document under 100 lines. Delete bloat.**
+**Keep document under 150 lines. Delete bloat.**
 
 ---
 
@@ -145,8 +167,9 @@ Read "Reflection" section from each completed plan. Count occurrences of:
 
 **Retro complete when:**
 - [ ] Patterns extracted (≥3 occurrences only)
+- [ ] Important ideas captured (new systems, patterns, infrastructure)
 - [ ] Actions listed (context files, workflow updates, backlog)
-- [ ] Document <100 lines
+- [ ] Document <150 lines
 - [ ] PRINCIPLES.md updates rare or none
 
 **→ Execute actions OR continue with REFINE/SELECT or SYSTEM/SELECT**

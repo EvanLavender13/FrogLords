@@ -51,12 +51,14 @@ wc -l <file>
 
 **Update** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
+<!-- BEGIN: MEASURE/METRICS -->
 ## Metrics
 
 **Files:**
 - `<file>`: ___ → ___ (-___ lines)
 
 **Total:** -___ lines
+<!-- END: MEASURE/METRICS -->
 ```
 
 **Negative is victory.**
@@ -89,7 +91,7 @@ git show HEAD~1:<file> | grep -c "<duplicated_code>"  # Before
 grep -c "<duplicated_code>" <file>                     # After
 ```
 
-**Update plan:**
+**Update plan** (add to MEASURE/METRICS section):
 ```markdown
 **Violations removed:**
 - <specific_violation>: ___ → ___ (-___)
@@ -106,7 +108,7 @@ grep -c "<duplicated_code>" <file>                     # After
 Before refinement: ___/10
 After refinement: ___/10
 
-**Update plan:**
+**Update plan** (add to MEASURE/METRICS section):
 ```markdown
 **Principle:** <name>
 - Before: ___/10
@@ -122,7 +124,7 @@ After refinement: ___/10
 
 ### 5. Foundation Impact
 
-**Update plan:**
+**Update plan** (add to MEASURE/METRICS section):
 ```markdown
 **Foundation:**
 - Layer X: ___% → ___% (+___%)
@@ -137,18 +139,22 @@ After refinement: ___/10
 
 **Update plan:**
 ```markdown
+<!-- BEGIN: MEASURE/LEARNING -->
 ## Learning
 
-**Root cause:** [Why this violation existed]
+**Root cause:** [Why this violation existed - 1 line]
 
-**Prevention:** [How to avoid creating this again]
+**Prevention:** [How to avoid creating this again - 1-2 lines]
 
-**Pattern:** [Is this part of a larger problem?]
+**Pattern:** [Is this part of a larger problem? - 1 line, optional]
 
-**Remaining work:** [Related violations to fix later]
+**Remaining work:** [Related violations to fix later - 1 line, optional]
+<!-- END: MEASURE/LEARNING -->
 ```
 
-**Learning compounds. Document it.**
+**CRITICAL: Keep under 10 lines total. Root cause + prevention only. Delete philosophical expansions.**
+
+**Learning compounds. Document it concisely.**
 
 ---
 

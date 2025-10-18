@@ -45,12 +45,14 @@ All tests pass. If not: fix, revert, or update tests with justification.
 In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
+<!-- BEGIN: REFINE/COMPLETED -->
 ## Completed
 
 **Change:** [deleted/simplified/documented what]
 **Tests:** All passing | Updated: [list]
 **Metrics:** LOC __→__ (-__) | Principle __/10→__/10 (+__)
 **Result:** ✓ Violation removed
+<!-- END: REFINE/COMPLETED -->
 ```
 
 ### 4. Commit
@@ -80,6 +82,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
+<!-- BEGIN: REFINE/PLAN -->
 ## Refinement Plan
 
 ### Step 1: [Name]
@@ -91,6 +94,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 ## Rollback
 `git reset --hard HEAD` or [specific revert steps]
+<!-- END: REFINE/PLAN -->
 ```
 
 ### 2. Execute Each Step
@@ -122,23 +126,6 @@ E. Mark step complete in plan
 **Scope grew:** If >1 day, consider deferring to system build
 
 **Breaking changes:** Document impact, update affected systems, expand tests
-
-### 4. Validate Restoration
-
-In `TASKS/PLANS/REFINE_<name>.md`:
-
-```markdown
-## Principle Validation
-
-**Principle:** <name>
-**Before:** __/10 | Violations: [list]
-**After:** __/10 | Violations: [remaining]
-**Improvement:** +__ points
-**Evidence:** [what violations fixed]
-**Verdict:** ✓ Principle restored
-```
-
-Score must improve or refinement failed.
 
 ---
 

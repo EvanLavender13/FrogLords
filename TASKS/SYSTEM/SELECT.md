@@ -14,75 +14,74 @@ Select a system from TASKS/BACKLOG_SYSTEMS.md based on dependency readiness and 
 
 ## Prerequisites
 
-- [ ] TASKS/BACKLOG_SYSTEMS.md populated with systems
-- [ ] DEPENDENCY_STACK.md shows current certainty levels
-- [ ] No other system currently in progress
-- [ ] Foundation stable enough for new work
+- Foundation ≥90% (`DEPENDENCY_STACK.md`)
+- `BACKLOG_SYSTEMS.md` populated
+- No system currently in progress
 
 ---
 
 ## Process
 
-### 1. Check Foundation State
+### 1. Check Foundation
 
-Open `DEPENDENCY_STACK.md` and review:
-- What is the current certainty at each layer?
-- Which layer is ready for new systems (≥90%)?
-- Are all dependencies for that layer satisfied?
+Open `DEPENDENCY_STACK.md`:
+- Current certainty: ___%
+- **≥90%**: Proceed to layer selection
+- **<90%**: Defer—strengthen foundation first
 
-**If no layer ≥90%, strengthen foundation first (run refinements or iterate on existing systems).**
-
----
-
-### 2. Review Available Systems
-
-Open `TASKS/BACKLOG_SYSTEMS.md` and find systems marked "Buildable Now" at the layer you identified.
-
-For each candidate:
-- Dependencies satisfied? (all prerequisite systems at ≥90%)
-- Core identified? (can describe irreducible minimum)
-- Mathematically approachable? (can prove correctness)
-- Aligns with principles? (serves emergence, not features)
+**Ready layer:** Layer __ (≥90%)
 
 ---
 
-### 3. Choose the Simplest
+### 2. Select System
 
-When multiple systems are available, choose by:
-1. **Lowest layer** (strengthen foundation first)
-2. **Fewest dependencies** (reduce cascade risk)
-3. **Clearest core** (easiest to validate)
+Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
+
+**For each candidate, verify:**
+- Dependencies ≥90%? (all prerequisites)
+- Core identified? (irreducible minimum)
+- Mathematically provable? (can verify correctness)
+- Enables emergence? (not just features)
+
+---
+
+### 3. Prioritize
+
+When multiple systems available, choose by:
+1. **Lowest layer** - strengthen foundation first
+2. **Fewest dependencies** - reduce cascade risk
+3. **Clearest core** - easiest to validate
 
 **Boring and fundamental beats exciting and derivative.**
 
 ---
 
-### 4. Create System Document
+### 4. Create Plan
 
 Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ```markdown
 # System: <Name>
 
-**One-line description of what this enables (not what it does)**
+**One-line description of what this enables**
 
 ---
 
 ## Selected
 
 **Date:** [Today]
-**Layer:** [1-5]
-**Foundation Certainty:** [%]
+**Layer:** [N]
+**Foundation:** [%]
 
 ---
 
 ## Dependencies
 
-**Required Systems (must be ≥90%):**
-- System A: [certainty %]
-- System B: [certainty %]
+**Required (≥90%):**
+- System A: __%
+- System B: __%
 
-**Enabled Systems (will become buildable):**
+**Enables (will become buildable):**
 - System X
 - System Y
 
@@ -90,17 +89,17 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ## Core
 
-**The irreducible minimum:**
-[Describe in 2-3 sentences what cannot be removed while keeping this meaningful]
+**Irreducible minimum:**
+[2-3 sentences: what cannot be removed?]
 
-**What makes this a system, not a feature:**
-[How does this enable emergence vs. prescribe outcomes?]
+**Why a system, not a feature:**
+[How does this enable emergence?]
 
 ---
 
 ## Mathematical Foundation
 
-**What needs mathematical proof:**
+**Needs proof:**
 -
 -
 
@@ -110,44 +109,72 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ---
 
-## Graybox Approach
+## Graybox
 
-**Simplest possible implementation:**
+**Simplest implementation:**
 [Cubes? Primitives? Debug visuals?]
 
-**Validation harness:**
-[How will we test this continuously?]
+**Validation:**
+[How to test continuously?]
 
 ---
 
-## Success Criteria
+## Success
 
-**This system works when:**
-- [ ] Core mechanic functional in graybox
+- [ ] Core functional in graybox
 - [ ] Mathematical correctness proven
 - [ ] Debug visualization shows behavior
 - [ ] Emergent behaviors appear
 - [ ] Principle scores ≥7.0 average
-
----
-
-## Notes
-
-[Initial thoughts, concerns, opportunities]
 ```
 
 ---
 
-### 5. Create Feature Branch
+### 5. Update Current Plan
+
+Update `TASKS/CURRENT_PLAN.md`:
+
+```markdown
+# Current Plan
+
+**Status:** 🏗️ System - <Name>
+**Started:** [Today]
+**Branch:** system/<name>
+**Phase:** SELECT → GRAYBOX
+
+---
+
+## Current Work
+
+**System:** <description>
+**Location:** @TASKS/PLANS/<name>_SYSTEM.md
+**Layer:** [N]
+**Foundation:** [%]
+**Next:** GRAYBOX
+
+**Dependencies:**
+- System A: __%
+- System B: __%
+
+**Target Impact:**
+- Layer [N]: __% → __% (+__)
+- Overall: __% → __% (+__)
+```
+
+**CRITICAL:** `@` reference ensures plan loads automatically via `CLAUDE.md`.
+
+---
+
+### 6. Create Branch
 
 ```bash
 git checkout -b system/<name>
-git add TASKS/PLANS/<name>_SYSTEM.md
+git add TASKS/PLANS/<name>_SYSTEM.md TASKS/CURRENT_PLAN.md
 git commit -m "select: <name> system for layer <N>
 
-Dependencies satisfied: <list>
-Foundation certainty: <%>
-Core identified: <one-line>
+Dependencies: <list>
+Foundation: <%>
+Core: <one-line>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -155,60 +182,27 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### 6. Update Backlog
-
-In `TASKS/BACKLOG_SYSTEMS.md`:
-- Move selected system from "Buildable Now" to "In Progress"
-- Add note: `[WIP: system/<name>]`
-
----
-
 ## Outputs
 
-- [ ] `TASKS/PLANS/<name>_SYSTEM.md` created
-- [ ] Feature branch `system/<name>` created
-- [ ] Initial commit made
-- [ ] Backlog updated
+- [ ] System selected
+- [ ] `PLANS/<name>_SYSTEM.md` created
+- [ ] `CURRENT_PLAN.md` updated
+- [ ] Branch created
 - [ ] Core identified
 - [ ] Dependencies verified
 
 ---
 
-## Exit Criteria
+## Next
 
-**Proceed to GRAYBOX when:**
-- System document complete
-- Core clearly identified
-- Dependencies all ≥90% certain
-- Mathematical approach clear
+**Always → GRAYBOX** (build simplest possible version)
 
-**Defer and return to backlog if:**
-- Dependencies not actually satisfied
+**Defer if:**
+- Dependencies not actually ≥90%
 - Core unclear or too complex
 - Foundation not ready
 - Better choice available
 
 ---
 
-## Next Step
-
-**→ GRAYBOX** (build simplest possible version)
-
----
-
-## Principles Check
-
-**Before proceeding, verify:**
-
-1. **Radical Simplicity** - Is this the simplest system that could enable what we need?
-2. **Composable Functions** - Does this compose with existing systems without overlap?
-3. **Mathematical Foundations** - Can we prove this will work mathematically?
-4. **Emergent Behavior** - Will this enable outcomes, not prescribe them?
-5. **Consistency** - Will this behave predictably?
-6. **Principled Development** - Can we trace this decision to a principle?
-
-**If any answer is "no," reconsider the selection.**
-
----
-
-**Build from certainty. Start with core. Strengthen the foundation.**
+**Build from certainty. Choose by foundation. Enable emergence.**

@@ -14,110 +14,99 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 
 ## Prerequisites
 
-- [ ] `TASKS/PLANS/<name>_SYSTEM.md` exists with core identified
-- [ ] Feature branch `system/<name>` active
-- [ ] Dependencies at ≥90% certainty
-- [ ] Mathematical approach clear
+- `PLANS/<name>_SYSTEM.md` exists with core identified
+- Branch `system/<name>` active
+- Dependencies ≥90%
+- Mathematical approach clear
 
 ---
 
 ## Process
 
-### 1. Define Graybox Scope
+### 1. Define Scope
 
-Update `TASKS/PLANS/<name>_SYSTEM.md` with:
+Update `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
-## Graybox Implementation
+## Graybox
 
-**Visual representation:**
-- Core mechanic: [cubes, spheres, lines, etc.]
-- Debug info: [overlays, colors, labels]
-- Interaction: [primitives only]
+**Visual:**
+- Core: [cubes, spheres, lines]
+- Debug: [overlays, colors, labels]
+- Input: [primitives only]
 
-**What's included:**
-- [ ] Core mechanic only
-- [ ] Mathematical implementation
+**Included:**
+- [ ] Core mechanic
+- [ ] Math implementation
 - [ ] Debug visualization
 - [ ] Validation harness
-- [ ] Self-test capability
+- [ ] Self-test
 
-**What's excluded:**
-- Final art/models
-- Audio
+**Excluded:**
+- Art/models/audio
 - Polish/juice
 - Optional features
 - Variations
 
-**Estimated graybox time:** [hours]
+**Time estimate:** [hours]
 ```
 
 ---
 
-### 2. Build Core Mechanic
+### 2. Build Core
 
-**Implementation priority:**
-1. Mathematical correctness (proven, not guessed)
-2. Debug visualization (make behavior visible)
-3. Minimal interaction (keyboard/mouse primitives)
-4. Self-test harness (automated validation)
+**Priority:**
+1. Mathematical correctness - proven, not guessed
+2. Debug visualization - make behavior visible
+3. Minimal interaction - keyboard/mouse primitives
+4. Self-test harness - automated validation
 
 **Rules:**
-- Use primitives (cubes, spheres, lines, debug draw)
+- Primitives only (cubes, spheres, lines)
 - No assets (textures, models, sounds)
 - No polish (tweening, particles, juice)
 - No extras (features beyond core)
 
-**If you're tempted to add something, ask:**
-- Is this the core mechanic? (No → don't add)
-- Will this help validate? (No → don't add)
-- Can this wait for polish? (Yes → don't add)
+**Before adding anything:**
+- Is this the core? (No → don't add)
+- Does this validate? (No → don't add)
+- Can this wait? (Yes → don't add)
 
 ---
 
-### 3. Create Debug Visualization
+### 3. Debug Visualization
 
-**Make the invisible visible:**
-- Show mathematical state (vectors, values, ranges)
-- Show decision points (where system chooses behavior)
-- Show relationships (what affects what)
-- Color-code states (normal, edge cases, errors)
+**Make invisible visible:**
+- Mathematical state (vectors, values, ranges)
+- Decision points (where system chooses)
+- Relationships (what affects what)
+- Color-code states (normal, edge, error)
 
-**Example:**
-```
-- Physics forces: Draw arrows showing direction/magnitude
-- State machine: Color code current state
-- Ranges: Visualize min/max/current
-- Collisions: Highlight contact points
-- Paths: Draw predicted trajectories
-```
+**Examples:**
+- Physics forces → arrows (direction/magnitude)
+- State machine → color current state
+- Ranges → show min/max/current
+- Collisions → highlight contacts
+- Paths → draw trajectories
 
-**If you can't see it, you can't validate it.**
+**Can't see it? Can't validate it.**
 
 ---
 
-### 4. Implement Validation Harness
+### 4. Validation Harness
 
-Create automated tests for:
-- **Mathematical correctness**: Edge cases, boundary conditions
-- **Consistency**: Same input = same output
-- **No special cases**: General rules only
-- **Predictability**: Behavior matches model
+**Test for:**
+- **Math correctness** - edge cases, boundaries
+- **Consistency** - same input = same output
+- **No special cases** - general rules only
+- **Predictability** - behavior matches model
 
-**Example test structure:**
+**Structure:**
 ```typescript
 describe('System: <name>', () => {
-  it('mathematical correctness: <property>', () => {
-    // Prove mathematical property holds
-  });
-
-  it('consistency: same input produces same output', () => {
-    // Verify deterministic behavior
-  });
-
-  it('no special cases: general rules apply', () => {
-    // Ensure no entity-specific logic
-  });
+  it('math: <property>', () => { /* prove property */ });
+  it('consistency: deterministic', () => { /* verify */ });
+  it('no special cases', () => { /* no entity-specific logic */ });
 });
 ```
 
@@ -125,140 +114,104 @@ describe('System: <name>', () => {
 
 ### 5. Self-Test
 
-**Play it yourself first:**
-- Does the core mechanic feel right?
-- Can you see what's happening (debug viz)?
-- Does math behave as proven?
-- Any surprises (good or bad)?
+**Play it:**
+- Core feel right?
+- Debug viz clear?
+- Math behaves as proven?
+- Any surprises?
 
-**Document immediately:**
-- What works?
-- What doesn't?
-- What surprised you?
-- What emerged unexpectedly?
+**Document now:**
+- Works?
+- Doesn't?
+- Surprised?
+- Emerged?
 
-**Iterate rapidly:**
+**Iterate fast:**
 - Short cycles (minutes to hours)
 - Small changes
 - Frequent tests
-- Follow serendipity (but verify mathematically)
+- Follow serendipity (verify mathematically)
 
 ---
 
-### 6. Update System Document
+### 6. Document Results
 
-In `TASKS/PLANS/<name>_SYSTEM.md`, add:
+In `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
-## Graybox Results
+## Results
 
-**Implementation Status:**
-- [x] Core mechanic functional
-- [x] Mathematical validation passing
-- [x] Debug visualization working
+**Status:**
+- [x] Core functional
+- [x] Math validation passing
+- [x] Debug viz working
 - [ ] Edge cases handled
-- [ ] Emergent behaviors observed
+- [ ] Emergence observed
 
-**What Works:**
--
--
-
-**What Doesn't:**
--
+**Works:**
 -
 
-**Surprises (Serendipity):**
--
+**Doesn't:**
 -
 
-**Mathematical Validation:**
-- Proven: <properties>
-- Tested: <edge cases>
-- Holds: <invariants>
-
-**Next Iteration Needed:**
+**Surprises:**
 -
+
+**Validation:**
+- Proven:
+- Tested:
+- Holds:
+
+**Next:**
 -
 ```
 
+Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`
+
 ---
 
-### 7. Commit Graybox
+### 7. Commit
 
 ```bash
 git add .
-git commit -m "graybox: implement <name> core mechanic
+git commit -m "graybox: <name> core mechanic
 
-Core: <what works>
-Validated: <math properties>
+Works: <what>
+Validated: <properties>
 Emergent: <surprises>
-Status: <ready for iteration | needs work | defer>
+Status: <ready | needs work | defer>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com)"
+Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
 ---
 
 ## Outputs
 
-- [ ] Core mechanic implemented (primitives only)
-- [ ] Debug visualization functional
+- [ ] Core implemented (primitives)
+- [ ] Debug viz functional
 - [ ] Validation harness created
-- [ ] Self-tests passing
-- [ ] Initial playtest completed
-- [ ] Surprises documented
-- [ ] Graybox committed
+- [ ] Tests passing
+- [ ] Playtest completed
+- [ ] Results documented
+- [ ] Committed
 
 ---
 
-## Exit Criteria
-
-**Proceed to ITERATE when:**
-- Core mechanic works in graybox
-- Mathematical validation passes
-- Debug visualization shows behavior clearly
-- Ready for playtesting with others
-
-**Defer if:**
-- Core mechanic fundamentally flawed
-- Math doesn't work as expected
-- Too complex (can't simplify to core)
-- Foundation actually insufficient
-- Better to try different approach
-
-**Deferral is success here. Most systems should fail in graybox. That's why we graybox.**
-
----
-
-## Next Step
+## Next
 
 **→ ITERATE** (if core works)
-**→ Document and defer** (if core doesn't work)
+
+**Defer if:**
+- Core fundamentally flawed
+- Math doesn't work as expected
+- Too complex to simplify
+- Foundation insufficient
+- Different approach needed
+
+**Deferral is success. Most systems should fail in graybox. That's why we graybox.**
 
 ---
 
-## The Graybox Philosophy
-
-### Why Primitives?
-
-**Cheap to build** → Fast iteration
-**Cheap to change** → Follow serendipity
-**Cheap to throw away** → No sunk cost fallacy
-
-### Why Now?
-
-**Before planning** → Plans assume graybox works
-**Before art** → Don't polish broken mechanics
-**Before complexity** → Prove core before building on it
-
-### What Success Looks Like
-
-**It's ugly** → That's the point
-**It's minimal** → That's the goal
-**It works** → That's the proof
-**It surprises** → That's emergence
-
----
-
-**Validate with cubes. Polish when certain.**
+**Cheap to build. Cheap to change. Cheap to throw away. Validate with cubes.**

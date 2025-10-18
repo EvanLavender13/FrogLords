@@ -76,14 +76,17 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 
 ---
 
+<!-- BEGIN: SELECT/SELECTED -->
 ## Selected
 
 **Date:** [Today]
 **Complexity:** Trivial | Standard
 **Path:** A (trivial) | B (standard)
+<!-- END: SELECT/SELECTED -->
 
 ---
 
+<!-- BEGIN: SELECT/VIOLATION -->
 ## Violation
 
 **Location:** `<file>:<line>` | System: <name>
@@ -104,9 +107,11 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 - Blocks:
 - Cascades to:
 - Foundation: __%
+<!-- END: SELECT/VIOLATION -->
 
 ---
 
+<!-- BEGIN: SELECT/FIX -->
 ## Fix
 
 **Approach:** Delete | Simplify | Document
@@ -127,9 +132,11 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 - Why keep:
 - Derivation:
 - Trade-off:
+<!-- END: SELECT/FIX -->
 
 ---
 
+<!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
 - [ ] Violation resolved
@@ -140,19 +147,7 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 **Metrics:**
 - Before: LOC __, Principle __/10, Complexity __
 - After: LOC __ (-__), Principle __/10 (+__), Complexity __ (-__)
-
----
-
-## Risk
-
-**Could go wrong:**
--
-
-**Mitigation:**
--
-
-**Rollback:**
-[How to revert]
+<!-- END: SELECT/SUCCESS -->
 ```
 
 ---
