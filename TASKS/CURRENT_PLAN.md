@@ -1,15 +1,25 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - GUI Coupling
+**Status:** 🔧 Refinement - Collision Responsibilities
+**Started:** 2025-10-18
+**Branch:** refine/collision_responsibilities
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Split collision resolution from state interpretation
+**Location:** @TASKS/PLANS/REFINE_collision_responsibilities.md
+**Principle:** Composable Functions
+**Approach:** Simplify - Split responsibilities
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 2: Composable Functions 6/10 → 9/10 (+3.0)
+- Overall: 97%+ maintained (orthogonality restored)
+- Enables: Alternative movement systems (wall-run, magnetic boots, etc.)
 
 ---
 
