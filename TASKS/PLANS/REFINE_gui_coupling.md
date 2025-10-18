@@ -215,34 +215,67 @@ for each command:
 - All 9 parameter sliders functional
 - Character behavior responds correctly to parameter changes
 - No regressions in GUI interaction
-
-**Metrics:**
-- LOC: +105 total (36 new file + 69 modifications)
-- Principle: Composable Functions 6/10 → 9/10 (+3)
-- Principle: Principled Development improved (architecture compliance)
-
-**Result:** ✓ Violation removed
-- GUI no longer directly modifies game state
-- Unidirectional data flow established
-- Systems independently testable (can apply commands programmatically)
-- Architecture matches documented pattern in `character_reactive_systems.h:14`
-
-**Future Consideration:** Registry pattern if parameter count grows (per Codex feedback)
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/gui/parameter_command.h`: 0 → 36 (+36 lines, new file)
+- `src/gui/character_panel.cpp`: 68 → 95 (+27 lines)
+- `src/gui/character_panel.h`: minimal signature changes (+3 lines)
+- `src/app/runtime.cpp`: call site command dispatch (+39 lines)
+
+**Total:** +105 lines (4 files changed, 134 insertions, 30 deletions)
+
+**Violations removed:**
+- Direct state modification: 11 → 0 (-11 write operations)
+- Bidirectional coupling: GUI ↔ game state → GUI → commands → game state
+
+**Principle:** Composable Functions
+- Before: 6/10 (bidirectional coupling, non-composable systems)
+- After: 9/10 (unidirectional flow, independently testable)
+- Improvement: +3
+
+**Principle:** Principled Development
+- Before: Violated documented architecture (`character_reactive_systems.h:14`)
+- After: Complies with unidirectional data flow pattern
+- Improvement: Architecture integrity restored
+
+**Foundation:**
+- Layer 3 (Systems): 97%+ → 97%+ (architectural integrity maintained)
+- Overall: 97%+ → 97%+ (no degradation, architectural pattern violation fixed)
+
+**Evidence:**
+- GUI no longer takes non-const references
+- All state modification occurs in game loop via explicit command dispatch
+- Systems independently testable (can apply commands programmatically)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** GUI designed before architectural pattern was established. Convenience (direct modification) chosen over principle (unidirectional flow).
+
+**Prevention:** Establish data flow architecture before implementing cross-system features. GUI reads state (const), emits commands/events. Game loop owns all state modification.
+
+**Pattern:** Command pattern generalizes to all external→internal state transitions (GUI, network, scripting, replay). Unidirectional flow = testability + predictability.
+<!-- END: MEASURE/LEARNING -->
 
 ---
 
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved (GUI no longer directly modifies game state)
-- [ ] Principle score improved (Composable Functions, Principled Development)
-- [ ] Tests passing (parameter changes work correctly)
-- [ ] No regressions (all GUI interactions functional)
-- [ ] Architecture documented (unidirectional flow maintained)
-
-**Metrics:**
-- **Before:** character_panel.cpp ~68 LOC, Composable Functions 6/10, Bidirectional coupling
-- **After:** character_panel.cpp ~80 LOC (+12 for command struct), Composable Functions 9/10 (+3), Unidirectional flow ✅
-- **Complexity:** Standard (5 points) - Architectural refactor, moderate risk, isolated scope
+- [x] Violation resolved (GUI no longer directly modifies game state)
+- [x] Principle score improved (Composable Functions 6→9, Principled Development restored)
+- [x] Tests passing (all 9 parameter sliders functional)
+- [x] No regressions (all GUI interactions functional)
+- [x] Architecture documented (unidirectional flow established)
+- [x] Metrics measured (see MEASURE/METRICS section)
+- [x] Learning documented (see MEASURE/LEARNING section)
 <!-- END: SELECT/SUCCESS -->
