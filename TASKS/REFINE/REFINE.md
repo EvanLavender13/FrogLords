@@ -113,6 +113,33 @@ echo "your validation question" | codex e
 
 **Rule:** Certainty through convergence. When independent analyses agree, confidence increases.
 
+**Document the review:**
+
+In `TASKS/PLANS/REFINE_<name>.md`, add:
+
+```markdown
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** [Codex CLI | Gemini CLI | other]
+**Date:** YYYY-MM-DD
+
+**Question asked:**
+[What you asked for validation]
+
+**Concerns evaluated:**
+- [List key concerns you wanted validated]
+
+**Feedback received:**
+- [Key points from the review]
+- [Recommendations or warnings]
+
+**Impact on implementation:**
+- [How feedback changed your approach]
+- [What you kept vs modified]
+<!-- END: REFINE/REVIEW -->
+```
+
 ### 3. Execute Each Step
 
 **Per step:**
