@@ -1,31 +1,41 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Controller Mixed Concerns
+**Status:** 🔧 Refinement - Accumulated State Pattern
+**Started:** 2025-10-18
+**Branch:** refine/accumulated-state-pattern
+**Path:** A (trivial - documentation only)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build (Layer 4 unblocked!)
-- `/REFINE/SELECT` - Pick next violation to fix (optional accumulated state refinement)
+**Refinement:** Document rationale for position/velocity accumulation in physics integration
+
+**Location:** @TASKS/PLANS/REFINE_accumulated_state_pattern.md
+
+**Principle:** Principled Development
+
+**Approach:** DOCUMENT (physics integration requires accumulated state - this is correct, not a violation)
+
+**Next Step:** REFINE (add documentation to controller.{h,cpp} and PRINCIPLES.md)
+
+**Target Impact:**
+- Layer 1 (Core Physics): 90% → 95% (+5%)
+- Overall foundation: 92.5% → 95% (+2.5%)
 
 ---
 
 ## Quick Reference
 
-**Foundation:** 92.5%
-**Target:** 95% (Layer 3) ✅ **REACHED**
+**Foundation:** 92.5% → Target: 95%
+**Effort:** Trivial (documentation only, <1 hour)
 
 **Layer Status:**
-- Layer 1 (Core): 90% - Stable (optional: accumulated state documentation)
+- Layer 1 (Core): 90% → 95% (target) ← **ACTIVE REFINEMENT**
 - Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): 95% ✅ - **TARGET REACHED**
-- Layer 4 (Variation): <50% - **UNBLOCKED, ready to build**
-
-**Next Priority:** Build Layer 4 variations OR refine accumulated state (optional)
-**Estimated Path:** Layer 3 complete, proceed to Layer 4
+- Layer 3 (Systems): 95% ✅ - Complete
+- Layer 4 (Variation): <50% - Ready to build after this
 
 ---
 
