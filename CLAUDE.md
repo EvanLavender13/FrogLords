@@ -27,8 +27,12 @@ The current refinement or system build in progress:
 
 ## Analysis and Validation
 
+Verification is cheap. Mistakes compound. Use these tools liberally.
+
 @TOOLS/GEMINI.md
 @TOOLS/CODEX.md
+
+When context limits visibility, expand it with Gemini. When decisions need validation, consult Codex. Don't wait for problems—seek verification before they emerge.
 
 ## Development Scripts
 

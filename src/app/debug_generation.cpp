@@ -51,21 +51,29 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         .color = {0, 1, 0, 1},
     });
 
-    // Speed gradient ring
+    // Speed gradient ring - continuous interpolation
     float current_speed = glm::length(math::project_to_horizontal(character.velocity));
     if (current_speed > 0.05f) {
         float speed_ratio = glm::clamp(current_speed / character.max_speed, 0.0f, 1.0f);
-        glm::vec4 color;
-        if (speed_ratio < 0.33f) {
-            float t = speed_ratio / 0.33f;
-            color = glm::vec4(0.0f, t, 1.0f - t, 0.8f);
-        } else if (speed_ratio < 0.66f) {
-            float t = (speed_ratio - 0.33f) / 0.33f;
-            color = glm::vec4(t, 1.0f, 0.0f, 0.8f);
-        } else {
-            float t = (speed_ratio - 0.66f) / 0.34f;
-            color = glm::vec4(1.0f, 1.0f - t, 0.0f, 0.8f);
-        }
+
+        // Gradient: blue → cyan → yellow → red
+        constexpr glm::vec3 gradient[] = {
+            {0.0f, 0.0f, 1.0f}, // Blue
+            {0.0f, 1.0f, 1.0f}, // Cyan
+            {1.0f, 1.0f, 0.0f}, // Yellow
+            {1.0f, 0.0f, 0.0f}, // Red
+        };
+        constexpr int num_stops = sizeof(gradient) / sizeof(gradient[0]);
+
+        // Map speed_ratio to continuous position in gradient
+        float position = speed_ratio * (num_stops - 1);
+        int index = glm::clamp(static_cast<int>(position), 0, num_stops - 2);
+        float t = position - index;
+
+        // Interpolate between adjacent stops
+        glm::vec3 rgb = glm::mix(gradient[index], gradient[index + 1], t);
+        glm::vec4 color = glm::vec4(rgb, 0.8f);
+
         foundation::wireframe_mesh speed_ring =
             foundation::generate_circle(character.position, {current_speed});
         mesh_to_debug_lines(list, speed_ring, color);

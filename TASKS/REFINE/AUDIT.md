@@ -44,7 +44,23 @@ tree src/ -L 2
 
 ---
 
-### 2. Examine Against Principles
+### 2. Question Claimed Certainty
+
+Before examining code, read current metrics:
+- `DEPENDENCY_STACK.md` - What percentages are claimed?
+- `BACKLOG_REFINEMENTS.md` - What's considered "fixed"?
+
+**Then ask:**
+- Are these percentages actually true?
+- Is the claimed certainty reflected in the code?
+- Did previous refinements actually fix what they claimed?
+- Are "100%" systems really perfect?
+
+**Radical skepticism. Trust verification, not claims.**
+
+---
+
+### 3. Examine Against Principles
 
 For each system/file, read and ask:
 
@@ -86,7 +102,7 @@ For each system/file, read and ask:
 
 ---
 
-### 3. Document Violations
+### 4. Document Violations
 
 For each violation found:
 
@@ -123,7 +139,7 @@ For each violation found:
 
 ---
 
-### 4. Find Patterns
+### 5. Find Patterns
 
 After documenting individual violations, look for:
 - Same violation type recurring
@@ -143,7 +159,7 @@ Document patterns with prevention strategy:
 
 ---
 
-### 5. Prioritize
+### 6. Prioritize
 
 Order violations by impact:
 
