@@ -2,7 +2,7 @@
 
 **Foundation certainty. Build order. What's possible now.**
 
-**Overall Foundation:** 92.5%
+**Overall Foundation:** 95% ✅ TARGET REACHED
 **Last Updated:** 2025-10-18
 
 ---
@@ -12,33 +12,33 @@
 ```
 Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
-Layer 4: VARIATION       [<50%] ← blocked (need Layer 3 ≥95%)
+Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 95%)
     ↓
-Layer 3: SYSTEMS         [95%] ← ✅ TARGET REACHED
+Layer 3: SYSTEMS         [95%] ← ✅ COMPLETE
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
-Layer 1: CORE            [90%] ← stable (documented issues)
+Layer 1: CORE            [95%] ← ✅ TARGET REACHED
 ```
 
-**Cascade:** 0.90 × 1.00 × 0.95 = **85.5% survival**
+**Cascade:** 0.95 × 1.00 × 0.95 = **90.25% survival**
 
-**Target:** 0.95 × 1.00 × 0.95 = **90% survival** (Layer 1 → 95%)
+**Target achieved:** Foundation at 95%, ready for Layer 4 variation
 
 ---
 
-## Layer 1: CORE (90%)
+## Layer 1: CORE (95%)
 
-**Status:** ✅ Stable - working, known issues documented
+**Status:** ✅ **TARGET REACHED** - Fully documented foundation
 
-| System | Certainty | Status | Issues |
-|--------|-----------|--------|--------|
-| Runtime | 100% | ✅ Solid | None |
-| Input | 95% | ✅ Clean | None |
-| Camera | 95% | ✅ Working | None |
-| Physics | 90% | ⚠️ Documented | Accumulated state pattern |
+| System | Certainty | Status | Location |
+|--------|-----------|--------|----------|
+| Runtime | 100% | ✅ Solid | `app/runtime.{h,cpp}` |
+| Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
+| Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
+| Physics | 95% | ✅ Documented | `character/controller.{h,cpp}` |
 
-**Blocking:** Accumulated state needs documentation or fix (not urgent)
+**Blocking:** None - target reached
 
 ---
 
@@ -74,10 +74,7 @@ Layer 1: CORE            [90%] ← stable (documented issues)
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
 | Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
 
-**Blocking:** None - Layer 3 at target
-
-**Optional refinements:**
-- Accumulated state pattern documentation (would improve Layer 1)
+**Blocking:** None - Layer 3 at target, foundation at 95%
 
 ---
 
@@ -92,7 +89,7 @@ Layer 1: CORE            [90%] ← stable (documented issues)
 - Dash Mechanic (3-5 points)
 - IK Systems (8 points)
 
-**Foundation:** Building on 95% Layer 3 = 85.5% survival (acceptable for variation)
+**Foundation:** Building on 95% Layer 3 = 90.25% survival (excellent for variation)
 
 ---
 
@@ -117,9 +114,9 @@ Defer until Layer 4 solid:
 - **Current:** Layer 2 complete, can add new primitives
 
 ### 🔧 Should Repair (Optional)
-- Layer 3 at 95% ✅ TARGET REACHED
-- Optional: Document accumulated state pattern (would improve Layer 1 to 95%)
-- **Current:** Layer 3 complete, can proceed to Layer 4
+- Foundation at 95% ✅ TARGET REACHED
+- Optional: Further refinements for 95% → 100%
+- **Current:** Foundation solid, can proceed to Layer 4
 
 ### 🚫 Cannot Build
 - Layer 5 blocked (need Layer 4 ≥95%)
@@ -150,22 +147,23 @@ Rate each system 1-10 on these criteria:
 
 ## Next Actions
 
-**Layer 3 at target (95%) - ready for Layer 4:**
+**Foundation at target (95%) - ready for Layer 4:**
 - Build skeletal animation system, OR
 - Build walk/run speed states, OR
 - Build wall detection & sliding, OR
-- Refine accumulated state pattern (optional, improves Layer 1)
+- Build dash mechanic
 
-**Foundation:** 0.90 × 1.00 × 0.95 = **85.5% survival** (acceptable for variation)
+**Foundation:** 0.95 × 1.00 × 0.95 = **90.25% survival** (excellent for variation)
 
 ---
 
 ## Recent Changes
 
-- 2025-10-18: Controller → 100% (extracted reactive systems, unidirectional data flow)
-- 2025-10-18: Layer 3 → 95% ✅ TARGET REACHED
+- 2025-10-18: Physics → 95% (accumulated state pattern documented)
+- 2025-10-18: Layer 1 → 95% ✅ TARGET REACHED
+- 2025-10-18: Foundation → 95% ✅ TARGET REACHED
+- 2025-10-18: Controller → 100% (extracted reactive systems)
 - 2025-10-17: Orientation → 100% (spring-damper replacement)
-- 2025-10-17: Layer 2 → 100% (validation complete)
 
 **See:** `PLANS/REFINE_*.md` for detailed metrics
 

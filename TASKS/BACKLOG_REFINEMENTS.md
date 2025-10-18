@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 92.5% → Target: 95%
+**Foundation:** 95% ✅ TARGET REACHED
 **Last Updated:** 2025-10-18
 
 ---
@@ -11,20 +11,11 @@
 
 ### High Priority
 
-**1. Accumulated State Pattern** (`controller.{position,velocity}`)
-- Principle: Principled Development
-- Type: Undocumented trade-off
-- Impact: Long-term stability unknown
-- Fix: Document rationale OR derive from inputs
-- Effort: 2-3 points
-- Options:
-  - Document why accumulation is acceptable
-  - Derive velocity from input each frame
-  - Switch to Verlet integration
+None - Target reached at 95%
 
 ### Medium Priority
 
-None currently blocking progress to 95%
+None currently blocking progress
 
 ### Low Priority
 
@@ -54,6 +45,13 @@ None identified
 - **Fix:** Replace with `spring_damper` primitive
 - **Prevention:** Default to spring-damper for all smoothing needs
 - **Related fixes:** Orientation (2025-10-17)
+
+### Pattern: Principle Without Exception Documentation
+- **Detection:** Absolute principle statements that have legitimate exceptions
+- **Root cause:** Principles defined without documenting edge cases
+- **Fix:** Add exception clauses to principles at definition time
+- **Prevention:** When defining principles, ask "are there legitimate exceptions?"
+- **Related fixes:** Accumulated state pattern (2025-10-18)
 
 ### Pattern: Dual-Reference (Smoothed referencing itself)
 - **Detection:** Target value calculated from smoothed value
@@ -119,20 +117,23 @@ None identified
 
 ## Priority Order
 
-**Path to 95% foundation:**
+**Foundation at 95% ✅**
 
-1. **Accumulated state** (2-3 pts) ← NEXT
+No active refinements blocking progress. Ready to build Layer 4 systems.
 
-**Estimated:** ~1 refinement remaining
+**Optional refinements** (future improvements):
+- Further Layer 1 improvements (95% → 100%)
+- Layer 3 optimizations
+- Pattern library expansion
 
 ---
 
 ## Recent Activity
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_accumulated_state_pattern.md` (2025-10-18) - Principled Development +1.0
 - `PLANS/REFINE_controller_mixed_concerns.md` (2025-10-18) - Composable Functions +1.0
 - `PLANS/REFINE_orientation_dual_reference.md` (2025-10-17) - Composability +2.5
-- `PLANS/REFINE_tuning_defaults.md` (2025-10-17) - Math foundations +2
 
 ---
 
