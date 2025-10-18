@@ -14,7 +14,7 @@ Execute the planned refinement—removing violation, restoring principle, and re
 
 ## Prerequisites
 
-- [ ] `PLANS/REFINE_<name>.md` exists
+- [ ] `TASKS/PLANS/REFINE_<name>.md` exists
 - [ ] Complexity classified (Trivial or Standard)
 - [ ] Fix approach identified
 - [ ] Branch `refine/<name>` active
@@ -58,7 +58,7 @@ Execute the planned refinement—removing violation, restoring principle, and re
 
 ### 3. Update Document
 
-In `PLANS/REFINE_<name>.md`:
+In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 ## Completed (Trivial Path)
@@ -105,7 +105,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ### 1. Plan the Refinement
 
-In `PLANS/REFINE_<name>.md`, add:
+In `TASKS/PLANS/REFINE_<name>.md`, add:
 
 ```markdown
 ## Refinement Plan
@@ -201,7 +201,7 @@ Mark step complete, note any surprises
 **If you discover:**
 
 **Can't be fixed as planned:**
-- Document blocker in `PLANS/REFINE_<name>.md`
+- Document blocker in `TASKS/PLANS/REFINE_<name>.md`
 - Explain why approach won't work
 - Suggest alternative or defer
 - Commit documentation
@@ -228,7 +228,7 @@ Mark step complete, note any surprises
 
 **Re-score the principle that was violated:**
 
-In `PLANS/REFINE_<name>.md`:
+In `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Principle Validation
 

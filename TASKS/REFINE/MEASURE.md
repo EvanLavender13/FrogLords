@@ -16,7 +16,7 @@ Calculate objective before/after metrics to quantify the refinement's impact and
 
 - [ ] Refinement complete
 - [ ] All tests passing
-- [ ] `PLANS/REFINE_<name>.md` exists
+- [ ] `TASKS/PLANS/REFINE_<name>.md` exists
 - [ ] Changes committed
 
 ---
@@ -38,7 +38,7 @@ wc -l <file>
 find src -name "*.ts" | xargs wc -l
 ```
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Lines of Code
 
@@ -63,7 +63,7 @@ find src -name "*.ts" | xargs wc -l
 # etc.
 ```
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Cyclomatic Complexity
 
@@ -94,7 +94,7 @@ rg "entity.*===.*player|isPlayer" <file>
 rg "entity.*===.*['\"]" <file>
 ```
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Special Cases
 
@@ -121,7 +121,7 @@ rg "entity.*===.*['\"]" <file>
 rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 ```
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Magic Numbers
 
@@ -144,7 +144,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 **Score 1-10 using original criteria from VALIDATE.md**
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Principle Scores
 
@@ -180,7 +180,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 **How does this affect foundation certainty?**
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Metrics: Foundation Impact
 
@@ -209,7 +209,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 ### 7. Document Learning
 
-**In** `PLANS/REFINE_<name>.md`:
+**In** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 ## Reflection
 
@@ -249,7 +249,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 ### 8. Update Backlog
 
-**In** `BACKLOG_REFINEMENTS.md`:
+**In** `TASKS/BACKLOG_REFINEMENTS.md`:
 
 **Move violation to "Recently Completed":**
 ```markdown
@@ -280,7 +280,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 ### 9. Update Dependency Stack
 
-**In** `DEPENDENCY_STACK.md`:
+**In** `TASKS/DEPENDENCY_STACK.md`:
 
 **Update layer certainty:**
 ```markdown
@@ -309,7 +309,7 @@ rg "\b(0\.[0-9]+|[2-9][0-9]+)\b" <file> | grep -v "// "
 
 **Commit metrics:**
 ```bash
-git add PLANS/REFINE_<name>.md BACKLOG_REFINEMENTS.md DEPENDENCY_STACK.md
+git add TASKS/PLANS/REFINE_<name>.md TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md
 git commit -m "measure: <name> refinement complete
 
 Metrics:

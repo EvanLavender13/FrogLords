@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Search the codebase systematically for principle violations, documenting them in BACKLOG_REFINEMENTS.md for future refinement.
+Search the codebase systematically for principle violations, documenting them in TASKS/BACKLOG_REFINEMENTS.md for future refinement.
 
 **Violations don't announce themselves. We must hunt for them.**
 
@@ -16,7 +16,7 @@ Search the codebase systematically for principle violations, documenting them in
 
 - [ ] Foundation ≥70% stable (can absorb changes)
 - [ ] Between system builds (good time for reflection)
-- [ ] `BACKLOG_REFINEMENTS.md` exists
+- [ ] `TASKS/BACKLOG_REFINEMENTS.md` exists
 
 ---
 
@@ -267,7 +267,7 @@ rg "threshold|limit" --type ts
 
 ### 3. Update Backlog
 
-Open `BACKLOG_REFINEMENTS.md` and add all violations to appropriate sections.
+Open `TASKS/BACKLOG_REFINEMENTS.md` and add all violations to appropriate sections.
 
 **By principle:**
 ```markdown
@@ -303,7 +303,7 @@ Open `BACKLOG_REFINEMENTS.md` and add all violations to appropriate sections.
 - Same developer patterns?
 - Same phase of development?
 
-**Document in** `BACKLOG_REFINEMENTS.md`:
+**Document in** `TASKS/BACKLOG_REFINEMENTS.md`:
 ```markdown
 ## Patterns
 
@@ -346,7 +346,7 @@ Open `BACKLOG_REFINEMENTS.md` and add all violations to appropriate sections.
 ## Outputs
 
 - [ ] All six principles audited
-- [ ] Violations documented in `BACKLOG_REFINEMENTS.md`
+- [ ] Violations documented in `TASKS/BACKLOG_REFINEMENTS.md`
 - [ ] Severity assigned to each
 - [ ] Fix approach identified (Delete | Simplify | Document)
 - [ ] Patterns identified

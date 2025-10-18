@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Select a system from BACKLOG_SYSTEMS.md based on dependency readiness and foundation certainty.
+Select a system from TASKS/BACKLOG_SYSTEMS.md based on dependency readiness and foundation certainty.
 
 **This is not about priority or excitement. This is about what we can build without building on sand.**
 
@@ -14,7 +14,7 @@ Select a system from BACKLOG_SYSTEMS.md based on dependency readiness and founda
 
 ## Prerequisites
 
-- [ ] BACKLOG_SYSTEMS.md populated with systems
+- [ ] TASKS/BACKLOG_SYSTEMS.md populated with systems
 - [ ] DEPENDENCY_STACK.md shows current certainty levels
 - [ ] No other system currently in progress
 - [ ] Foundation stable enough for new work
@@ -36,7 +36,7 @@ Open `DEPENDENCY_STACK.md` and review:
 
 ### 2. Review Available Systems
 
-Open `BACKLOG_SYSTEMS.md` and find systems marked "Buildable Now" at the layer you identified.
+Open `TASKS/BACKLOG_SYSTEMS.md` and find systems marked "Buildable Now" at the layer you identified.
 
 For each candidate:
 - Dependencies satisfied? (all prerequisite systems at ≥90%)
@@ -59,7 +59,7 @@ When multiple systems are available, choose by:
 
 ### 4. Create System Document
 
-Create `PLANS/<name>_SYSTEM.md`:
+Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ```markdown
 # System: <Name>
@@ -142,7 +142,7 @@ Create `PLANS/<name>_SYSTEM.md`:
 
 ```bash
 git checkout -b system/<name>
-git add PLANS/<name>_SYSTEM.md
+git add TASKS/PLANS/<name>_SYSTEM.md
 git commit -m "select: <name> system for layer <N>
 
 Dependencies satisfied: <list>
@@ -157,7 +157,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ### 6. Update Backlog
 
-In `BACKLOG_SYSTEMS.md`:
+In `TASKS/BACKLOG_SYSTEMS.md`:
 - Move selected system from "Buildable Now" to "In Progress"
 - Add note: `[WIP: system/<name>]`
 
@@ -165,7 +165,7 @@ In `BACKLOG_SYSTEMS.md`:
 
 ## Outputs
 
-- [ ] `PLANS/<name>_SYSTEM.md` created
+- [ ] `TASKS/PLANS/<name>_SYSTEM.md` created
 - [ ] Feature branch `system/<name>` created
 - [ ] Initial commit made
 - [ ] Backlog updated

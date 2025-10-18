@@ -15,7 +15,7 @@ Transform the validated graybox into production-ready code while maintaining all
 ## Prerequisites
 
 - [ ] System APPROVED in validation (avg ≥7.0)
-- [ ] `PLANS/<name>_VALIDATE.md` shows passing scores
+- [ ] `TASKS/PLANS/<name>_VALIDATE.md` shows passing scores
 - [ ] Graybox fully functional
 - [ ] All tests passing
 - [ ] Emergent behaviors documented
@@ -26,7 +26,7 @@ Transform the validated graybox into production-ready code while maintaining all
 
 ### 1. Plan Integration
 
-In `PLANS/<name>_SYSTEM.md`, add:
+In `TASKS/PLANS/<name>_SYSTEM.md`, add:
 
 ```markdown
 ## Integration Plan
@@ -195,7 +195,7 @@ Ask first: **Does this need polish?**
 
 ### 7. Update Documentation
 
-In `PLANS/<name>_SYSTEM.md`:
+In `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ```markdown
 ## Integration Complete

@@ -17,7 +17,7 @@ Improve the graybox through rapid cycles of testing and refinement until pattern
 - [ ] Graybox functional (core mechanic works)
 - [ ] Debug visualization working
 - [ ] Validation harness passing
-- [ ] `PLANS/<name>_SYSTEM.md` updated with graybox results
+- [ ] `TASKS/PLANS/<name>_SYSTEM.md` updated with graybox results
 
 ---
 
@@ -199,7 +199,7 @@ git reset --hard HEAD  # Revert to last good state
 
 ### After Each Playtest
 
-**Document in** `PLANS/<name>_SYSTEM.md`:
+**Document in** `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ```markdown
 ### Playtest [N] - [Date]
@@ -261,7 +261,7 @@ After each playtest:
 
 ## Update System Document
 
-In `PLANS/<name>_SYSTEM.md`:
+In `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ```markdown
 ## Iteration Complete

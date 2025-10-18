@@ -17,8 +17,8 @@ Close the system-building cycle by capturing all learning, updating foundation c
 - [ ] Integration complete
 - [ ] All tests passing
 - [ ] System in production
-- [ ] `PLANS/<name>_SYSTEM.md` fully documented
-- [ ] `PLANS/<name>_VALIDATE.md` shows approval
+- [ ] `TASKS/PLANS/<name>_SYSTEM.md` fully documented
+- [ ] `TASKS/PLANS/<name>_VALIDATE.md` shows approval
 
 ---
 
@@ -26,7 +26,7 @@ Close the system-building cycle by capturing all learning, updating foundation c
 
 ### 1. Reflect on the Journey
 
-In `PLANS/<name>_SYSTEM.md`, add final reflection:
+In `TASKS/PLANS/<name>_SYSTEM.md`, add final reflection:
 
 ```markdown
 ## System Complete - Reflection
@@ -185,7 +185,7 @@ In `PLANS/<name>_SYSTEM.md`, add final reflection:
 
 ### 2. Update Dependency Stack
 
-Open `DEPENDENCY_STACK.md` and update:
+Open `TASKS/DEPENDENCY_STACK.md` and update:
 
 **This layer:**
 ```markdown
@@ -216,7 +216,7 @@ If this layer is now 90% certain:
 
 ### 3. Update System Backlog
 
-Open `BACKLOG_SYSTEMS.md`:
+Open `TASKS/BACKLOG_SYSTEMS.md`:
 
 **Move completed system:**
 ```markdown
@@ -251,7 +251,7 @@ For each layer that now has ≥90% foundation:
 
 ### 4. Update Refinement Backlog
 
-Open `BACKLOG_REFINEMENTS.md`:
+Open `TASKS/BACKLOG_REFINEMENTS.md`:
 
 **Add any violations discovered during building:**
 ```markdown
@@ -327,7 +327,7 @@ In `EMERGENCE.md` (create if doesn't exist):
 Commit all documentation updates:
 
 ```bash
-git add PLANS/ BACKLOG_SYSTEMS.md BACKLOG_REFINEMENTS.md DEPENDENCY_STACK.md EMERGENCE.md
+git add TASKS/PLANS/ TASKS/BACKLOG_SYSTEMS.md TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md EMERGENCE.md
 git commit -m "strengthen: complete <name> system
 
 Reflection:
@@ -401,9 +401,9 @@ git push origin system/<name>
 ## Outputs
 
 - [ ] Final reflection written
-- [ ] `DEPENDENCY_STACK.md` updated
-- [ ] `BACKLOG_SYSTEMS.md` updated (completed + newly buildable)
-- [ ] `BACKLOG_REFINEMENTS.md` updated (violations found)
+- [ ] `TASKS/DEPENDENCY_STACK.md` updated
+- [ ] `TASKS/BACKLOG_SYSTEMS.md` updated (completed + newly buildable)
+- [ ] `TASKS/BACKLOG_REFINEMENTS.md` updated (violations found)
 - [ ] `EMERGENCE.md` updated (celebrate!)
 - [ ] All documentation committed
 - [ ] Merged to main

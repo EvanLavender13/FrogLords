@@ -14,7 +14,7 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 
 ## Prerequisites
 
-- [ ] `PLANS/<name>_SYSTEM.md` exists with core identified
+- [ ] `TASKS/PLANS/<name>_SYSTEM.md` exists with core identified
 - [ ] Feature branch `system/<name>` active
 - [ ] Dependencies at ≥90% certainty
 - [ ] Mathematical approach clear
@@ -25,7 +25,7 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 
 ### 1. Define Graybox Scope
 
-Update `PLANS/<name>_SYSTEM.md` with:
+Update `TASKS/PLANS/<name>_SYSTEM.md` with:
 
 ```markdown
 ## Graybox Implementation
@@ -147,7 +147,7 @@ describe('System: <name>', () => {
 
 ### 6. Update System Document
 
-In `PLANS/<name>_SYSTEM.md`, add:
+In `TASKS/PLANS/<name>_SYSTEM.md`, add:
 
 ```markdown
 ## Graybox Results

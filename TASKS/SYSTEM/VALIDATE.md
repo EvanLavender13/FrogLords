@@ -17,7 +17,7 @@ Validate the iterated system against all Six Pillars. This is philosophical gate
 - [ ] Iteration complete (patterns emerged)
 - [ ] Emergent behaviors documented
 - [ ] Mathematical validation complete
-- [ ] `PLANS/<name>_SYSTEM.md` updated with iteration results
+- [ ] `TASKS/PLANS/<name>_SYSTEM.md` updated with iteration results
 - [ ] System stable in graybox
 
 ---
@@ -26,7 +26,7 @@ Validate the iterated system against all Six Pillars. This is philosophical gate
 
 ### 1. Create Validation Document
 
-Create `PLANS/<name>_VALIDATE.md`:
+Create `TASKS/PLANS/<name>_VALIDATE.md`:
 
 ```markdown
 # Validation: <Name>
@@ -306,7 +306,7 @@ The system violates principles fundamentally and cannot be fixed without complet
 2. **Restart** → Try completely different approach
 3. **Abandon** → Maybe we don't need this system
 
-**Update** `PLANS/<name>_SYSTEM.md`:
+**Update** `TASKS/PLANS/<name>_SYSTEM.md`:
 ```markdown
 ## REJECTED
 
@@ -346,7 +346,7 @@ The system works and aligns with principles, but:
 
 **Regardless of pass/fail, document what emerged:**
 
-In `PLANS/<name>_SYSTEM.md`:
+In `TASKS/PLANS/<name>_SYSTEM.md`:
 ```markdown
 ## Emergence Documented
 
@@ -376,7 +376,7 @@ In `PLANS/<name>_SYSTEM.md`:
 ### 6. Commit Validation
 
 ```bash
-git add PLANS/<name>_VALIDATE.md PLANS/<name>_SYSTEM.md
+git add TASKS/PLANS/<name>_VALIDATE.md TASKS/PLANS/<name>_SYSTEM.md
 git commit -m "validate: <name> - <decision>
 
 Principle scores: [scores as array]
@@ -394,7 +394,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ## Outputs
 
-- [ ] `PLANS/<name>_VALIDATE.md` created
+- [ ] `TASKS/PLANS/<name>_VALIDATE.md` created
 - [ ] All six principles scored
 - [ ] Average calculated
 - [ ] Decision made (APPROVED | REVISE | REJECT | DEFER)
