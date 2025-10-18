@@ -130,10 +130,18 @@ void controller::update(const collision_world* world, float dt) {
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
 
-    // Resolve collisions and capture pre-collision state
+    // Resolve collisions (pure physics - returns contact data)
     float pre_collision_vertical_velocity = velocity.y;
-    resolve_collisions(collision_sphere, *world, position, velocity, is_grounded, ground_normal,
-                       ground_height, max_slope_angle);
+    sphere_collision contact = resolve_collisions(collision_sphere, *world, position, velocity);
+
+    // Interpret contact to determine grounded state (controller logic)
+    is_grounded = false;
+    if (contact.hit && contact.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
+        is_grounded = true;
+        ground_normal = contact.normal;
+        // Query box geometry directly (no interpretation in collision system)
+        ground_height = contact.contact_box->center.y + contact.contact_box->half_extents.y;
+    }
 
     // Landing detection (after collision resolution, using pre-collision velocity)
     just_landed = !was_grounded && is_grounded;

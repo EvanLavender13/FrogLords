@@ -10,7 +10,6 @@ struct sphere_collision {
     const aabb* contact_box = nullptr;
 };
 
-void resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&, bool&, glm::vec3&,
-                        float&, float);
+sphere_collision resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&);
 
 sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box);
