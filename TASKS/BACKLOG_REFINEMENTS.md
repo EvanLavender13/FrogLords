@@ -2,8 +2,8 @@
 
 **Principle violations to restore. Complexity to remove.**
 
-**Last Updated:** 2025-10-17 (tuning defaults selected)
-**Foundation:** 89% → Target 95%
+**Last Updated:** 2025-10-17 (tuning defaults completed)
+**Foundation:** 90% → Target 95% (+1% from tuning fix)
 
 ---
 
@@ -98,15 +98,7 @@
 
 ## In Progress
 
-1. **Tuning defaults mismatch** (`tuning.h` vs `controller.h`) `[WIP: refine/tuning-defaults]`
-   - Principle: Solid Mathematical Foundations
-   - Severity: Critical
-   - Complexity: Trivial (Path A)
-   - Impact: Can't trust tuning system
-   - Blocks: Confident parameter work
-   - Fix: 1 point, 100% certain
-   - Plan: TASKS/PLANS/REFINE_tuning_defaults.md
-   - Status: Selected 2025-10-17
+None currently - ready to select next refinement
 
 ---
 
@@ -158,6 +150,28 @@ None currently - Critical violation moved to In Progress
 ---
 
 ## Recently Completed
+
+**2025-10-17: Tuning Defaults Mismatch**
+- Location: `src/character/tuning.h` vs `controller.h`
+- Completed: 2025-10-17
+- Principle: Solid Mathematical Foundations
+- Violation: 4x discrepancy in time_to_max_speed (0.4s vs 1.6s)
+- Fix: Updated controller.h defaults to match tuning.h (single source of truth)
+- Changes:
+  - ground_accel: 20.0 → 80.0 m/s²
+  - air_accel: 10.0 → 20.0 m/s²
+- Metrics:
+  - Discrepancy: 4x → 0x (-100%)
+  - Inconsistent defaults: 2 → 0 (-2)
+  - Sources of truth: 2 → 1 (-1)
+  - Principle score: 8/10 → 10/10 (+2)
+- Foundation impact:
+  - Tuning system: 80% → 95% (+15%)
+  - Layer 3: 90% → 92% (+2%)
+  - Overall: 89% → 90% (+1%)
+- Pattern: Bidirectional systems are fragile (prefer unidirectional data flow)
+- Learning: Single source of truth prevents initialization order bugs
+- Future work: Consider making constructor apply tuning automatically
 
 **2025-10-17: Magic Number Documentation**
 - Location: 12 files, 27 constants
@@ -342,14 +356,14 @@ Add immediately when found during:
 
 **Current (Foundation Repair Mode):**
 
-1. **Tuning defaults** (critical, 1 pt) ← NEXT
-2. **Spring-damper validation** (high, 1 pt)
+1. ✅ ~~**Tuning defaults**~~ (critical, 1 pt) - COMPLETED 2025-10-17
+2. **Spring-damper validation** (high, 1 pt) ← NEXT
 3. **Dual-reference orientation** (high, 2 pts)
 4. **Accumulated state** (medium, 2-3 pts)
 5. **Controller concerns** (medium, 3 pts)
 6. **Orientation complexity** (medium, 2 pts)
 
-**Goal:** Foundation 89% → 95% (enables Layer 4)
+**Goal:** Foundation 90% → 95% (enables Layer 4)
 
 **After repairs complete:** Run full audit to find new violations
 
