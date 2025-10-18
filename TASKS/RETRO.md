@@ -163,6 +163,46 @@ Read "Reflection" and "Learning" sections from each completed plan. Count occurr
 
 ---
 
+### 6. Archive Plans and Clear Notification
+
+**Archive completed plans:**
+```bash
+# Create retro archive directory
+mkdir -p TASKS/RETROS/RETRO_$(date +%Y-%m-%d)
+
+# Move completed plans to archive
+mv TASKS/PLANS/REFINE_*.md TASKS/RETROS/RETRO_$(date +%Y-%m-%d)/
+mv TASKS/PLANS/*_SYSTEM.md TASKS/RETROS/RETRO_$(date +%Y-%m-%d)/ 2>/dev/null || true
+```
+
+**Clear retrospective notification from CURRENT_PLAN.md:**
+
+Remove the "Recommended Next Action" section if present:
+```markdown
+## Recommended Next Action
+
+**📊 RETRO recommended** - <N> plans completed since start
+**Run:** Review TASKS/RETRO.md and extract patterns
+
+**Or proceed with:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+```
+
+**Commit:**
+```bash
+git add TASKS/PLANS/RETRO_<date>.md TASKS/RETROS/ TASKS/CURRENT_PLAN.md
+git commit -m "retro: <brief summary of patterns found>
+
+<N> plans analyzed, <X> patterns extracted
+Actions: <brief action summary>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+---
+
 ## Exit Criteria
 
 **Retro complete when:**
@@ -171,6 +211,9 @@ Read "Reflection" and "Learning" sections from each completed plan. Count occurr
 - [ ] Actions listed (context files, workflow updates, backlog)
 - [ ] Document <150 lines
 - [ ] PRINCIPLES.md updates rare or none
+- [ ] Plans archived to `RETROS/RETRO_<date>/`
+- [ ] Retrospective notification removed from CURRENT_PLAN.md
+- [ ] Retro committed
 
 **→ Execute actions OR continue with REFINE/SELECT or SYSTEM/SELECT**
 
