@@ -58,7 +58,7 @@
 			"command": "wsl",
 			"args": [
 				"bash",
-				"scripts/bash/run_clang_format.sh"
+				"scripts/bash/format.sh"
 			],
 			"problemMatcher": []
 		},
@@ -68,7 +68,7 @@
 			"command": "wsl",
 			"args": [
 				"bash",
-				"scripts/bash/run_clang_tidy.sh"
+				"scripts/bash/lint.sh"
 			],
 			"problemMatcher": []
 		},
@@ -78,7 +78,7 @@
 			"command": "wsl",
 			"args": [
 				"bash",
-				"scripts/bash/run_cppcheck.sh"
+				"scripts/bash/analyze.sh"
 			],
 			"problemMatcher": []
 		}
