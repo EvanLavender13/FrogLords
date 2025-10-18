@@ -208,3 +208,48 @@ Validated the refinement approach: creating controller_input_params struct, chan
 - Layer 1 (Core): 95.5% → 96%+ (improved composability)
 - Overall foundation: 97%+ maintained
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.cpp`: 166 → 155 (-11 lines)
+- `src/character/controller.h`: 119 → 126 (+7 lines)
+- `src/app/game_world.cpp`: 112 → 128 (+16 lines)
+
+**Total:** +12 lines (net addition to move polling to correct layer)
+
+**Violations removed:**
+- Global input dependencies: 5 → 0 (-5 `input::` calls)
+- Global includes: 2 → 0 (-2 includes: input.h, keycodes.h)
+- Impure function calls: 1 → 0 (apply_input now pure)
+
+**Principle:** Composable Functions
+- Before: 6/10
+- After: 9/10
+- Improvement: +3
+
+**Evidence:**
+- Controller has zero global dependencies
+- All input via explicit structs
+- Testable with synthetic input
+- Reusable in AI/replay/network contexts
+
+**Foundation:**
+- Layer 1 (Core): 95.5% → 96% (+0.5%)
+- Overall: 97%+ → 97%+ (maintained)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Incremental feature addition without considering composability - direct input polling was convenient but created tight coupling.
+
+**Prevention:** When adding input handling, always pass intent through explicit parameters. Global state access indicates missing abstraction.
+
+**Pattern:** Controller pattern applies broadly - any system that transforms input should accept explicit data, never poll globals.
+<!-- END: MEASURE/LEARNING -->
