@@ -30,6 +30,7 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
         // Fallback to UP pushes sphere upward when distance is degenerate
         result.normal = math::safe_normalize(distance, math::UP);
         result.penetration = s.radius - distance_magnitude;
+        result.contact_box = &box;
     }
 
     return result;
