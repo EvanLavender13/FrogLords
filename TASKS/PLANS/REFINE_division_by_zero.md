@@ -117,10 +117,43 @@ else:
 - Reused: Existing `math::safe_normalize` utility (prevents code duplication)
 
 **Tests:** Build passing, no regressions
-**Metrics:**
-- LOC: 89→91 (+2 lines: comment + safe normalization)
-- Principle: Mathematical Foundations CRITICAL→10/10 (division by zero eliminated)
-- Foundation: 97% (critical bug fixed, stability improved)
-
 **Result:** ✓ Violation removed - NaN propagation eliminated, degenerate case handled explicitly
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/foundation/collision.cpp`: 88 → 91 (+3 lines)
+- `TASKS/PLANS/REFINE_division_by_zero.md`: Documentation updated
+
+**Total:** +3 lines (2 comment + 1 safe normalization call)
+
+**Violations removed:**
+- Unsafe division by zero: 1 → 0 (-1)
+
+**Principle:** Solid Mathematical Foundations
+- Before: CRITICAL (division by zero bug)
+- After: 10/10
+- Improvement: +CRITICAL FIX
+
+**Evidence:** Replaced manual normalization with `math::safe_normalize`, eliminating potential NaN propagation when sphere center is inside/on AABB.
+
+**Foundation:**
+- Layer 2 (Primitives): Critical bug fixed (stability improvement)
+- Overall: 97% → 97%+ (critical bug eliminated)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Unchecked division when distance vector magnitude could be zero (sphere center inside/on AABB).
+
+**Prevention:** Always use `safe_normalize` for vector normalization—never divide by magnitude without epsilon check.
+
+**Pattern:** Division by zero is a mathematical correctness issue—math primitives must handle degenerate cases.
+<!-- END: MEASURE/LEARNING -->

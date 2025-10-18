@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 97% ✅ TARGET EXCEEDED
+**Foundation:** 97%+ ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 **Last Audit:** 2025-10-18 (Gemini + Codex dual analysis)
 
@@ -11,16 +11,6 @@
 ## Active Violations
 
 ### High Priority
-
-**#0: CRITICAL - Division by Zero in Collision Detection**
-- **Location:** `src/foundation/collision.cpp:25-29`
-- **Principles:** **Solid Mathematical Foundations** (CRITICAL)
-- **Severity:** **CRITICAL** - Causes state corruption
-- **Type:** Mathematical error, Potential NaN propagation
-- **Description:** When sphere center lies inside (or exactly on the closest point of) an AABB, `distance_squared` becomes 0. Division `distance / distance_magnitude` writes NaNs into collision normal, which propagate into `position` and `velocity`, exploding controller state. Violates "mathematics must be correct before anything else."
-- **Fix:** Delete unsafe division - Add epsilon check: `if (distance_squared < EPSILON) { /* handle contained/touching case */ } else { normalize }`. Return early for degenerate cases.
-- **Impact:** **State corruption, physics explosion, gameplay breakage**
-- **Audit Source:** **Codex** (mathematical deep analysis)
 
 **#1: GUI Direct Manipulation of Game State**
 - **Location:** `src/gui/character_panel.cpp:draw_character_panel`
@@ -32,7 +22,7 @@
 - **Impact:** Architecture, testability, principle adherence
 - **Audit Source:** Gemini + Codex convergence
 
-**#2: Mouse Camera Jump Violates Prime Directive**
+**#2: Mouse Camera Jump Violates Prime Directive** ← NEXT
 - **Location:** `src/app/runtime.cpp:69-86`
 - **Principles:** **Prime Directive** (Do No Harm to Gameplay), Consistency
 - **Severity:** High - Control is sacred
@@ -189,6 +179,13 @@
 - **Prevention:** Require comment on every constant declaration
 - **Related fixes:** All constants (2025-10-17)
 
+### Pattern: Division by Zero
+- **Detection:** Normalization without epsilon check, `length = sqrt(x); result = vec / length`
+- **Root cause:** Unchecked division when vector magnitude could be zero
+- **Fix:** Always use `safe_normalize` for vector normalization—never divide by magnitude without epsilon check
+- **Prevention:** Use math primitives (safe_normalize) instead of manual division
+- **Related fixes:** Collision detection (2025-10-18)
+
 ### Pattern: Bidirectional Data Flow
 - **Detection:** Systems with both `apply_to()` and `read_from()`
 - **Root cause:** Unclear ownership of truth
@@ -267,21 +264,20 @@
 
 ## Priority Order
 
-**Foundation at 97% ✅ - 12 violations found (1 CRITICAL, 2 high, 5 medium, 4 low)**
+**Foundation at 97%+ ✅ - 11 violations found (0 CRITICAL, 3 high, 5 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
-- **🚨 CRITICAL BUG**: Division by zero in collision (#0) - **MUST FIX IMMEDIATELY**
 - **High Priority**: Mouse camera jump (#2), GUI coupling (#1), Collision responsibilities (#3)
-- **Codex Unique**: Mathematical bug (#0), Prime Directive violation (#2), Input coupling (#4), unused dt (#10)
-- **Pattern**: Critical bugs in **core systems**. Most other violations in non-core (GUI, debug, tooling).
+- **Pattern**: Violations in non-core systems (GUI, debug, tooling) - foundation solid
 
-**Recommended path:**
-1. **🔥 FIX CRITICAL BUG (#0)** - Division by zero causing state corruption ← **DO THIS FIRST**
-2. **Fix high-priority violations** - Mouse jump (#2), GUI coupling (#1), Collision split (#3)
-3. Continue medium-priority refinements (#4-#8)
-4. OR **Build Layer 4 systems** - After critical bug fixed, foundation stable
-5. Address low-priority violations opportunistically (#9-#12)
+**Path to 95%+ Layer 3:**
+1. **Mouse camera jump** (#2) - Prime Directive violation ← **NEXT**
+2. **GUI coupling** (#1) - Architectural violation
+3. **Collision responsibilities** (#3) - Composability issue
+4. Continue medium-priority refinements (#4-#8)
+5. OR **Build Layer 4 systems** - Foundation stable at 97%+
+6. Address low-priority violations opportunistically (#9-#11)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
@@ -293,13 +289,14 @@
 
 ## Recent Activity
 
-**Gradient Continuity Fixed (2025-10-18)**
-- Replaced discontinuous branching with continuous interpolation
-- Debug Visualization: Mathematical Foundations 7/10 → 9/10 (+2.0)
-- Foundation: 97% (unchanged - debug visualization only)
-- 3 violations remaining (0 high, 2 medium, 1 low)
+**Division by Zero Fixed (2025-10-18)**
+- Replaced unsafe division with safe normalization (UP fallback)
+- Collision Detection: Mathematical Foundations CRITICAL → 10/10 (+CRITICAL FIX)
+- Foundation: 97% → 97%+ (critical bug eliminated)
+- 11 violations remaining (0 critical, 3 high, 5 medium, 3 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_division_by_zero.md` (2025-10-18) - Mathematical Foundations +CRITICAL FIX
 - `PLANS/REFINE_gradient_continuity.md` (2025-10-18) - Mathematical Foundations +2.0
 - `PLANS/REFINE_embedded_tests.md` (2025-10-18) - Composable Functions +2.0
 - `PLANS/REFINE_buffer_creation.md` (2025-10-18) - Radical Simplicity +3.0
