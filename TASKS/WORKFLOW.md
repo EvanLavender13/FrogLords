@@ -1,503 +1,455 @@
-# Development Workflows
+# FrogLords: Development Workflow
 
-**Build systems that enable. Remove complexity that constrains. Serve principles always.**
+**Build from certainty. Iterate toward truth. Remove what doesn't serve.**
 
 ---
 
-## The Purpose
+## The Foundation
 
-This is not project management—it's a philosophical framework for principled development. Two complementary workflows serve the Six Pillars: FEATURE builds systems from certainty, IMPROVE removes complexity through simplification.
+This workflow serves the Six Pillars (@PRINCIPLES.md). Every decision, every cycle, every line of code must trace back to:
 
-**Together, they create a cycle of growth and refinement guided by principles.**
+1. Radical Simplicity
+2. Fundamental Composable Functions
+3. Solid Mathematical Foundations
+4. Emergent Behavior
+5. Consistency
+6. Principled Development
+
+**When principles conflict, simplicity wins.**
 
 ---
 
 ## The Philosophy
 
-### The Dance of Building and Simplifying
+### We Don't Plan Games, We Discover Them
 
-Development has two movements:
+Game designs are hidden in the logic of the universe, obscured by excess. Development is not manufacturing from a blueprint—it's **sculpture**, removing everything that doesn't serve until the form emerges.
 
-**FEATURE (Growth):**
-- Build new systems from validated foundations
-- Enable emergence through simple primitives
-- Strengthen certainty upward
+### The Dependency Stack Is Truth
 
-**IMPROVE (Refinement):**
-- Remove accumulated complexity
-- Restore violated principles
-- Simplify continuously
+Systems depend on other systems. Uncertainty multiplies upward through dependencies. A system five layers up the stack, built on unproven foundations, has near-zero chance of surviving unchanged.
 
-**Neither dominates. Both serve the principles. The codebase breathes—growing systems, removing complexity.**
+**Build from the bottom up. Start with core. Strengthen foundations before adding layers.**
 
-### Why Two Workflows?
+### The Design Backlog Is Liquid
 
-They serve different purposes with different constraints:
+Most ideas will never be implemented. That's success, not failure. The backlog is a reservoir of possibilities, kept liquid and unordered until foundations are certain enough to support them.
 
-**FEATURE:**
-- Requires high foundation certainty (≥90%)
-- Builds upward from solid ground
-- Adds capability through systems
-- Longer cycle, more validation
+**Ideas are cheap. Implementation is expensive. Wait for certainty.**
 
-**IMPROVE:**
-- Requires moderate stability (≥70%)
-- Works within existing code
-- Removes unnecessary complexity
-- Shorter cycle, focused changes
+### Iteration Replaces Prediction
 
-**The distinction reflects the risk profile and philosophical intent.**
+We cannot predict how a system will play until we build and test it. Deep planning on uncertain foundations is theater—comforting but delusional.
 
-### The Role of Backlogs
+**Plan to the horizon of certainty. Test. Learn. Repeat.**
 
-Backlogs are not task lists—they're philosophical inventories:
+### Graybox Everything
 
-**DESIGN_BACKLOG:**
-- Systems waiting for foundation certainty
-- Ideas maturing with understanding
-- Dependencies mapped and tracked
+Full art on unproven mechanics is premature production. Build cheap, test thoroughly, prove the system works before investing in polish.
 
-**IMPROVE_BACKLOG:**
-- Principle violations to restore
-- Complexity to remove
-- Patterns to recognize
-
-**Both organize work by principles, not features or deadlines.**
+**Validate with cubes. Polish when certain.**
 
 ---
 
-## System Overview
+## The Two Backlogs
 
-```mermaid
-graph TB
-    subgraph Principles["PRINCIPLES.md - The Six Pillars"]
-        P[Radical Simplicity<br/>Composable Functions<br/>Mathematical Foundations<br/>Emergent Behavior<br/>Consistency<br/>Principled Development]
-    end
+### BACKLOG_SYSTEMS.md
+**Purpose:** Systems awaiting foundation certainty
 
-    subgraph Backlogs["PLANS/ - Philosophical Inventories"]
-        DB[DESIGN_BACKLOG<br/>Systems waiting for certainty]
-        IB[IMPROVE_BACKLOG<br/>Violations to restore]
-    end
+**Contents:**
+- Systems organized by dependency level
+- Core gameplay at bottom, polish at top
+- Certainty required for each (%)
+- Dependencies mapped
 
-    subgraph Feature["FEATURE/ - Build Systems"]
-        FS[SELECT → CLARIFY → PLAN<br/>REVIEW_PLAN → EXECUTE<br/>REVIEW_CODE → FINALIZE]
-    end
+**Philosophy:** The stack visualizes what we can build now vs. what needs a stronger foundation.
 
-    subgraph Improve["IMPROVE/ - Remove Complexity"]
-        IS[SELECT → PLAN → REVIEW_PLAN<br/>EXECUTE → REVIEW_CODE<br/>FINALIZE]
-        RC[REVIEW_CODEBASE<br/>Find violations]
-    end
+**Selection Criteria:** Foundation ≥90% certain for that dependency level
 
-    P -.->|Guides| DB
-    P -.->|Guides| IB
-    P -.->|Validates| FS
-    P -.->|Validates| IS
+---
 
-    DB -->|Foundation ready| FS
-    FS -->|Strengthen foundation| DB
-    FS -->|May discover violations| IB
+### BACKLOG_REFINEMENTS.md
+**Purpose:** Complexity to remove, principles to restore
 
-    RC -->|Populate| IB
-    IB -->|Violation selected| IS
-    IS -->|Remove from backlog| IB
+**Contents:**
+- Violations organized by principle
+- Magic numbers to derive
+- Special cases to eliminate
+- Emergent behaviors to document
 
-    style P fill:#e1f5ff
-    style DB fill:#d4edda
-    style IB fill:#fff3cd
-    style FS fill:#b8e6b8
-    style IS fill:#ffd4b8
+**Philosophy:** Systems accumulate violations. Audits make them visible. Refinement restores truth.
+
+**Selection Criteria:** Foundation ≥70% stable, between system builds
+
+---
+
+## The System-Building Cycle
+
+**When:** Foundation certain enough (≥90%) for next layer
+
+### 1. SELECT
+**File:** `PLANS/<name>_SYSTEM.md`
+
+- Choose from BACKLOG_SYSTEMS based on dependency readiness
+- Create feature branch: `system/<name>`
+- Document: What is the irreducible core? What dependencies does it require?
+
+**Exit Criteria:** Dependencies satisfied, core identified
+
+---
+
+### 2. GRAYBOX
+**Update:** `PLANS/<name>_SYSTEM.md`
+
+- Build in simplest possible form (cubes, primitives, debug visuals)
+- Implement only the core mechanic
+- Create validation harness
+- Test continuously (self-test → over-shoulder → patterns emerge)
+
+**Validation:**
+- Mathematical correctness proven
+- Debug visualization functional
+- Core mechanic feels right
+
+**Exit Criteria:** Core works in graybox OR discovered we shouldn't build this
+
+**Deferral is success here.** Most systems fail in graybox. That's why we graybox.
+
+---
+
+### 3. ITERATE
+**Update:** `PLANS/<name>_SYSTEM.md`
+
+- Short planning horizon (hours to days)
+- Small changes, frequent tests
+- Watch for emergence
+- Let serendipity guide (but verify mathematically)
+- Stop when patterns repeat in playtests
+
+**Questions at each iteration:**
+1. Does this serve player control?
+2. Can this emerge from simpler rules?
+3. Is this mathematically correct?
+4. Will this behave consistently?
+5. Can anything be removed?
+
+**Exit Criteria:** System stable, emergent behaviors documented OR blocker discovered
+
+---
+
+### 4. VALIDATE
+**File:** `PLANS/<name>_REVIEW.md`
+
+**Against each principle:**
+1. **Radical Simplicity** - Can anything be removed? (score 1-10)
+2. **Composable Functions** - Orthogonal to existing systems? (score 1-10)
+3. **Mathematical Foundations** - Mathematically proven? (score 1-10)
+4. **Emergent Behavior** - Generates unpredicted outcomes? (score 1-10)
+5. **Consistency** - Predictable, no special cases? (score 1-10)
+6. **Principled Development** - Decision traceable to principles? (score 1-10)
+
+**Average score < 7.0:** Defer or revise
+**Average score ≥ 7.0:** Proceed
+
+**Document:**
+- What emerged that wasn't planned?
+- What surprised even the creator?
+- What violations were discovered?
+
+---
+
+### 5. INTEGRATE
+**Update:** `PLANS/<name>_SYSTEM.md`
+
+- Remove graybox, add final implementation (if needed—graybox often sufficient)
+- Verify no regressions in dependent systems
+- Update debug visualizations for production
+- Document emergent properties
+
+**Exit Criteria:** System integrated, all tests pass
+
+---
+
+### 6. STRENGTHEN
+**Update:** `BACKLOG_SYSTEMS.md`, `DEPENDENCY_STACK.md`
+
+- Update foundation certainty (this layer now ≥90%)
+- Note what systems are now buildable
+- Add discovered opportunities to backlog
+- Add discovered violations to BACKLOG_REFINEMENTS
+
+**Commit with reflection:**
+```
+system: add <name> to enable <emergence>
+
+Built from: <dependencies>
+Emerged: <unexpected behaviors>
+Enables: <future possibilities>
+Certainty: <foundation level>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
----
-
-## The Two Workflows
-
-### FEATURE Workflow (`TASKS/FEATURE/`)
-
-**Purpose:** Build systems that enable emergence
-
-**Tasks:**
-1. **SELECT** - Choose from backlog based on foundation
-2. **CLARIFY** - Transform features into systems (optional)
-3. **PLAN** - Prove system should be built
-4. **REVIEW_PLAN** - Validate against all principles
-5. **EXECUTE** - Build validated stages
-6. **REVIEW_CODE** - Verify principles maintained
-7. **FINALIZE** - Capture learning, update foundation
-
-**Philosophy:** Build from certainty toward uncertainty. Each system strengthens the foundation for what comes next.
-
-**When to use:** When adding new capabilities, building primitives, enabling new behaviors.
-
-**See:** `TASKS/FEATURE/WORKFLOW.md` for details
+**Return to:** SELECT (next system)
 
 ---
 
-### IMPROVE Workflow (`TASKS/IMPROVE/`)
+## The Refinement Cycle
 
-**Purpose:** Remove complexity, restore principles
+**When:** Between systems, foundation ≥70% stable, violations accumulating
 
-**Tasks:**
-1. **SELECT** - Choose violation, classify complexity
-2. **PLAN** - Plan simplification (Path B only)
-3. **REVIEW_PLAN** - Validate simplification (Path B only)
-4. **EXECUTE** - Delete or simplify (both paths)
-5. **REVIEW_CODE** - Verify reduction (Path B only)
-6. **FINALIZE** - Measure and document (both paths)
+### 1. AUDIT
+**File:** `BACKLOG_REFINEMENTS.md`
 
-**Special:** **REVIEW_CODEBASE** - Find violations to populate backlog
+Search for violations:
+- Magic numbers without derivation
+- Special cases (if/else on entity type, etc.)
+- Duplicated logic
+- Complexity without emergence
+- Undocumented emergent behaviors
+- Lost responsiveness (animation over physics)
+- Behavioral drift (accumulated state)
 
-**Philosophy:** Always try deletion first. Simplification second. Documentation last. Most improvements should remove code.
-
-**When to use:** Between features, when violations accumulate, when foundation stable enough (≥70%).
-
-**See:** `TASKS/IMPROVE/WORKFLOW.md` for details
+**Document each:** Principle violated, severity, location
 
 ---
 
-## How They Work Together
+### 2. SELECT
+**File:** `PLANS/REFINE_<name>.md`
 
-### The Development Cycle
+Choose violation by:
+- Severity (higher first)
+- Foundation impact (core violations first)
+- Simplicity of fix (sometimes)
+
+**Classify:**
+- **Trivial:** Obvious fix, low risk (<1 hour)
+- **Standard:** Requires care, moderate risk (<1 day)
+- **Complex:** Needs planning, high risk (>1 day)
+
+---
+
+### 3. REFINE
+**Update:** `PLANS/REFINE_<name>.md`
+
+**Trivial:** Just fix it
+**Standard:** Plan → Execute → Validate
+**Complex:** Defer to system-building cycle (might be new system)
+
+**Three paths in order:**
+1. **Delete** - Can we remove this entirely? (preferred)
+2. **Simplify** - Can we derive this from something simpler?
+3. **Document** - If we must keep it, why does it exist?
+
+**Validation:**
+- Principle score improved?
+- Complexity reduced (LOC, dependencies)?
+- No regressions?
+
+---
+
+### 4. MEASURE
+**Update:** `PLANS/REFINE_<name>.md`
+
+**Before/After:**
+- Lines of code
+- Cyclomatic complexity
+- Number of special cases
+- Principle scores (1-10 each)
+
+**Document:**
+- What was removed/simplified?
+- What principle was restored?
+- What pattern emerged? (for future audits)
+
+**Commit with metrics:**
+```
+refine: remove <complexity> from <system>
+
+Restored: <principle>
+Removed: <LOC> lines, <N> special cases
+Before: <principle scores>
+After: <principle scores>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Return to:** SELECT (next refinement) OR system-building cycle
+
+---
+
+## The Dependency Stack
+
+**File:** `DEPENDENCY_STACK.md`
+
+Visualize the dependency hierarchy:
 
 ```
-1. Build feature (FEATURE workflow)
-   ↓
-2. Foundation strengthened, possibly introduced violations
-   ↓
-3. Review codebase (REVIEW_CODEBASE)
-   ↓
-4. Remove complexity (IMPROVE workflow)
-   ↓
-5. Foundation cleaner and stronger
-   ↓
-6. Ready for next feature (repeat)
+Layer 5: POLISH          [20% certain] ← backlog only
+    ↓
+Layer 4: VARIATION       [40% certain] ← backlog only
+    ↓
+Layer 3: SYSTEMS         [70% certain] ← buildable, risky
+    ↓
+Layer 2: PRIMITIVES      [90% certain] ← buildable, safe
+    ↓
+Layer 1: CORE            [95% certain] ← proven, solid
 ```
 
-**This cycle never ends. Building and simplifying are continuous.**
+**Update after every system build and refinement.**
 
-### When to Use Each
+**Rules:**
+- Never build on foundations <90% certain
+- Uncertainty multiplies upward: 0.9 × 0.9 × 0.9 = 0.73
+- Five uncertain layers = ~60% chance of total redesign
+- Build bottom-up, test at every layer
 
-**Use FEATURE when:**
-- Foundation certain enough (≥90%)
-- Building new capability
-- Adding primitives
-- Enabling emergence
-- Dependencies satisfied
-
-**Use IMPROVE when:**
-- Foundation stable enough (≥70%)
-- Between features
-- Violations accumulating
-- Technical debt visible
-- No active feature work
-
-**Use neither when:**
-- Foundation too uncertain
-- Major changes in progress
-- Better to stabilize first
-
----
-
-## The Principles in Action
-
-### 1. Radical Simplicity
-**FEATURE:** Build minimal primitives, not feature sets
-**IMPROVE:** Delete first, simplify second, document last
-**Result:** Codebase stays simple despite growth
-
-### 2. Fundamental Composable Functions
-**FEATURE:** Each system orthogonal to others
-**IMPROVE:** Untangle dependencies, separate concerns
-**Result:** Systems compose without special cases
-
-### 3. Solid Mathematical Foundations
-**FEATURE:** Validate math before integration
-**IMPROVE:** Derive magic numbers, prove correctness
-**Result:** Every behavior mathematically sound
-
-### 4. Emergent Behavior
-**FEATURE:** Enable outcomes, don't prescribe them
-**IMPROVE:** Remove prescribed behaviors
-**Result:** Systems surprise even creators
-
-### 5. Consistency
-**FEATURE:** Predictable behavior, preserved control
-**IMPROVE:** Eliminate special cases
-**Result:** Player trust maintained
-
-### 6. Principled Development
-**FEATURE:** Every decision justified
-**IMPROVE:** Every change restores a principle
-**Result:** Can trace all code to principles
+**Core Gameplay:**
+The irreducible minimum. Remove everything possible while keeping the experience meaningful. This is Layer 1.
 
 ---
 
 ## Key Operational Principles
 
 ### Build From Certainty
+Foundation ≥90% → Safe to build
+Foundation <90% → Strengthen foundation first
 
-The dependency stack guides what to build:
-- Foundation ≥90% → Safe to build on
-- Foundation <90% → Wait or improve foundation first
-- Truth flows upward, never down
-
-**Never build on sand. Always strengthen the foundation.**
+### Iterate to Truth
+Planning horizon = certainty horizon
+Uncertain system → short iterations (hours)
+Proven system → longer iterations (days)
 
 ### Validate Continuously
-
-Both workflows require validation at gates:
-- Mathematical correctness proven
-- Debug visualization functional
-- Principle adherence verified
-- No regressions introduced
-
-**Validation is not optional. It's how we build truth.**
+- Mathematical correctness proven (not guessed)
+- Debug visualization always functional
+- Playtests until patterns repeat
+- Principle scores at every gate
 
 ### Exit Freely
+Deferral is learning, not failure
+Most ideas fail in graybox—that's success
+Document what you learned, strengthen backlog
 
-Deferral available at any point in either workflow:
-- Learn we shouldn't proceed
-- Foundation too uncertain
-- Principles can't be maintained
-- Better to defer and learn
-
-**Deferral is learning, not failure.**
-
-### Document Learning
-
-Every cycle teaches:
-- What emerged (FEATURE)
-- What patterns recur (IMPROVE)
-- How to calibrate certainty
-- Where principles guide us
-
-**Learning compounds. Document it.**
+### Remove Aggressively
+Before adding, ask what can be removed
+Delete > Simplify > Document
+Special cases are warnings
 
 ### Measure Everything
-
-Objective metrics prevent self-deception:
-- Foundation certainty (%)
-- Complexity reduction (lines, dependencies)
-- Principle adherence (1-10 per pillar)
-- Emergence events (count)
-
-**What gets measured gets improved.**
+Foundation certainty (%)
+Principle scores (1-10)
+Complexity (LOC, dependencies, special cases)
+Emergence (count unexpected behaviors)
 
 ---
 
-## Backlog Integration
+## Warning Signs
 
-### DESIGN_BACKLOG (`PLANS/DESIGN_BACKLOG.md`)
-
-**Purpose:** Systems awaiting foundation certainty
-
-**Structure:**
-- Organized by certainty required
-- Tracks dependencies
-- Includes emergence opportunities
-- Notes when foundation ready
-
-**Philosophy:** Ideas are cheap. Implementation is expensive. Wait for certainty before building.
-
-**Populated by:**
-- Feature completion (new possibilities discovered)
-- External inspiration (REQUEST)
-- Emergence during development
-
-**Selected by:** FEATURE/SELECT based on foundation state
-
----
-
-### IMPROVE_BACKLOG (`PLANS/IMPROVE_BACKLOG.md`)
-
-**Purpose:** Principle violations to restore
-
-**Structure:**
-- Organized by principle violated
-- Prioritized by severity
-- Includes pattern notes
-- Complexity estimation
-
-**Philosophy:** Violations accumulate silently. Audits make them visible.
-
-**Populated by:**
-- REVIEW_CODEBASE audits
-- Discoveries during FEATURE work
-- Code reviews
-
-**Selected by:** IMPROVE/SELECT based on priority and foundation stability
-
----
-
-## Complexity Guidelines
-
-### FEATURE Complexity
-
-All features follow full workflow:
-- Requires ≥90% foundation certainty
-- Full validation at every gate
-- Mathematical proof required
-- Debug visualization mandatory
-
-**No shortcuts in system building.**
-
-### IMPROVE Complexity
-
-Two paths based on risk:
-
-**Path A: Trivial (1-2 points)**
-- SELECT → EXECUTE → FINALIZE
-- Obvious fixes
-- Low risk
-- Fast cycle
-
-**Path B: Standard (3-8 points)**
-- SELECT → PLAN → REVIEW_PLAN → EXECUTE → REVIEW_CODE → FINALIZE
-- Complex simplification
-- Higher risk
-- Careful approach
-
-**Path selection based on risk, not effort.**
-
----
-
-## Document Organization
-
-### Task Files
-
-```
-TASKS/
-├── WORKFLOW.md              - This document
-├── RETROSPECTIVE.md         - Reflection and learning
-├── COMMIT.md                - Git commit workflow
-│
-├── FEATURE/
-│   ├── WORKFLOW.md         - Feature workflow details
-│   ├── SELECT.md
-│   ├── CLARIFY.md
-│   ├── PLAN.md
-│   ├── REVIEW_PLAN.md
-│   ├── EXECUTE.md
-│   ├── REVIEW_CODE.md
-│   └── FINALIZE.md
-│
-└── IMPROVE/
-    ├── WORKFLOW.md         - Improve workflow details
-    ├── SELECT.md
-    ├── PLAN.md
-    ├── REVIEW_PLAN.md
-    ├── EXECUTE.md
-    ├── REVIEW_CODE.md
-    ├── FINALIZE.md
-    └── REVIEW_CODEBASE.md
-```
-
-### Plan Files
-
-```
-PLANS/
-├── DESIGN_BACKLOG.md           - Systems to build
-├── IMPROVE_BACKLOG.md          - Violations to fix
-├── DEPENDENCY_STACK.md         - Foundation state
-│
-├── <feature>_FEATURE.md        - Feature description & reflection
-├── <feature>_PLAN.md           - Implementation stages
-├── <feature>_PLAN_REVIEW.md    - Plan approval
-├── <feature>_CODE_REVIEW.md    - Code approval
-│
-└── IMPROVE_<name>.md           - All improvement phases
-```
-
----
-
-## Getting Started
-
-### New to the Project?
-
-1. **Read /PRINCIPLES.md** - Understand the Six Pillars
-2. **Read this document** - Understand the workflows
-3. **Read FEATURE/WORKFLOW.md** - Understand system building
-4. **Read IMPROVE/WORKFLOW.md** - Understand simplification
-
-### Starting Feature Work?
-
-1. Check `PLANS/DEPENDENCY_STACK.md` for foundation state
-2. Review `PLANS/DESIGN_BACKLOG.md` for available systems
-3. Start with `TASKS/FEATURE/SELECT.md`
-4. Follow workflow in `TASKS/FEATURE/WORKFLOW.md`
-
-### Starting Improvement Work?
-
-1. Check foundation stability (≥70%)
-2. Review `PLANS/IMPROVE_BACKLOG.md` for violations
-3. Start with `TASKS/IMPROVE/SELECT.md`
-4. Follow workflow in `TASKS/IMPROVE/WORKFLOW.md`
-
-### Need to Audit?
-
-1. Run `TASKS/IMPROVE/REVIEW_CODEBASE.md`
-2. Populates `PLANS/IMPROVE_BACKLOG.md`
-3. Then proceed with IMPROVE workflow
-
----
-
-## Meta-Processes
-
-Beyond the two main workflows, occasional meta-processes maintain the system:
-
-### RETROSPECTIVE (`TASKS/RETROSPECTIVE.md`)
-**When:** Every 5-10 completed cycles
-**Purpose:** Reflect on patterns, celebrate emergence, learn from violations
-**Philosophy:** Each cycle teaches. Retrospectives capture the wisdom.
+**Lost Responsiveness:** Animation has seized control from physics
+**Behavioral Drift:** Accumulated state departed from truth
+**Combinatorial Explosion:** Systems not orthogonal
+**Debugging Blindness:** Complex behavior lacks visualization
+**Special Cases:** Consistency sacrificed for convenience
+**Surprising Instability:** Mathematical foundations not validated
+**Premature Production:** Polish on unproven mechanics
+**Therapeutic Planning:** Deep plans to relieve anxiety, not coordinate work
+**Zero Deferrals:** Not being critical enough
 
 ---
 
 ## The Commitment
 
-This development system exists to:
+**This workflow serves the principles, not productivity theater.**
 
-- **Serve the Six Pillars** - Every workflow validates principles
-- **Build from certainty** - Foundation guides what's possible
-- **Enable emergence** - Systems enable, don't prescribe
-- **Remove complexity** - Continuous simplification
-- **Capture learning** - Wisdom compounds over time
-- **Measure objectively** - Truth over intuition
+We commit to:
+- Build from certainty, never from ambition
+- Iterate toward truth, not toward deadlines
+- Validate continuously, trust nothing
+- Remove complexity relentlessly
+- Document emergence, celebrate surprise
+- Defer freely, learn constantly
 
-This development system never:
-
-- Prescribes outcomes over enabling possibilities
-- Rushes through gates to "ship it"
-- Skips validation to save time
-- Adds complexity for convenience
-- Builds on uncertain foundations
-- Ignores principle violations
+We refuse to:
+- Build on uncertain foundations (<90%)
+- Skip validation to "ship faster"
+- Add complexity without justification
+- Ignore principle violations
+- Prescribe outcomes over enabling emergence
+- Maintain failing approaches from stubbornness
 
 ---
 
-## The Vision
+## The Process Emerges
 
-This is not a game development process. This is **principled system building** that happens to create gameplay.
+This workflow itself follows the principles:
 
-The workflows exist to:
-1. Protect principles throughout development
-2. Build systems that surprise their creators
-3. Remove complexity continuously
-4. Strengthen foundations iteratively
-5. Enable emergence at every level
-6. Make every decision traceable
+**Radical Simplicity:** Two cycles. Two backlogs. Clear gates.
+**Composable Functions:** Cycles are orthogonal. Can run independently.
+**Mathematical Foundations:** Certainty thresholds are measurable.
+**Emergent Behavior:** Process allows serendipity, doesn't prescribe outcomes.
+**Consistency:** Same process every time, no exceptions.
+**Principled Development:** Every step traces to PRINCIPLES.md.
 
-**When faced with any choice, return to /PRINCIPLES.md. The Six Pillars guide everything.**
+**The workflow is a system that generates development, not a script that prescribes it.**
+
+---
+
+## Getting Started
+
+### First System (Core Gameplay)
+1. Create `BACKLOG_SYSTEMS.md` with initial ideas
+2. Identify core gameplay (the irreducible minimum)
+3. Start system-building cycle on core
+4. Create `DEPENDENCY_STACK.md` as you go
+
+### First Refinement
+1. Run audit on existing code
+2. Create `BACKLOG_REFINEMENTS.md`
+3. Select highest-severity violation
+4. Execute refinement cycle
+
+### Steady State
+Alternate between system-building (when foundation ready) and refinement (between systems). The codebase breathes: grow, refine, grow, refine.
+
+---
+
+## File Structure
+
+```
+/
+├── PRINCIPLES.md                    # The Six Pillars
+├── WORKFLOW.md                      # This document
+├── BACKLOG_SYSTEMS.md              # Systems to build
+├── BACKLOG_REFINEMENTS.md          # Violations to fix
+├── DEPENDENCY_STACK.md             # Foundation state
+│
+└── PLANS/
+    ├── <name>_SYSTEM.md            # System description + reflections
+    ├── <name>_REVIEW.md            # Principle validation
+    └── REFINE_<name>.md            # Refinement with metrics
+```
+
+**Lean. Essential. Traceable.**
 
 ---
 
 ## The Truth
 
-We are building engines of experience—machines that transform player intent into emotion through mathematically correct, radically simple, emergent systems.
+We are building engines of experience.
 
-Every feature we build serves this purpose.
-Every improvement we make serves this purpose.
-Every principle we uphold serves this purpose.
+Every system we build enables player intent.
+Every refinement we make removes barriers to that intent.
+Every principle we uphold serves that purpose.
 
-**The workflows are not the goal. Principle-aligned emergent gameplay is the goal. The workflows serve the principles. The principles serve the players.**
+The workflow exists to protect the principles.
+The principles exist to serve the players.
+The players exist to experience emergence.
+
+**Build systems, not features.**
+**Remove complexity, not just bugs.**
+**Serve principles, not schedules.**
 
 **This is the way.**
