@@ -16,16 +16,6 @@ None - all high-priority violations resolved ✅
 
 ### Medium Priority
 
-**#4: Controller Hardwired to Input Polling**
-- **Location:** `src/character/controller.cpp:48-88`
-- **Principles:** Composable Functions
-- **Severity:** Medium
-- **Type:** Tight coupling, Non-reusable
-- **Description:** `apply_input()` accepts camera-relative intent struct but still reaches out to global `input::` state for WASD/jump polling. Makes movement system impossible to reuse or test with synthetic input, undermines orthogonal primitives.
-- **Fix:** Simplify - Route all player intent through explicit `controller_input` data structure. Controller becomes pure: takes input struct, produces new state. No global dependencies.
-- **Impact:** Testability, composability, system reuse
-- **Audit Source:** **Codex** (composability analysis)
-
 **#5: Special Casing for Camera Modes**
 - **Location:** `src/camera/camera.cpp:50-58`
 - **Principles:** Composable Functions
@@ -149,7 +139,7 @@ None - all high-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 97%+ ✅ - 8 violations found (0 CRITICAL, 0 high, 5 medium, 3 low)**
+**Foundation at 97%+ ✅ - 7 violations found (0 CRITICAL, 0 high, 4 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
@@ -157,9 +147,9 @@ None - all high-priority violations resolved ✅
 - **Pattern**: All high-priority violations resolved - foundation solid
 
 **Path to maintain 97%+ Layer 3:**
-1. Continue medium-priority refinements (#4-#8)
+1. Continue medium-priority refinements (#5-#8)
 2. OR **Build Layer 4 systems** - Foundation stable at 97%+
-3. Address low-priority violations opportunistically (#9-#11)
+3. Address low-priority violations opportunistically (#9-#12)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
@@ -171,24 +161,12 @@ None - all high-priority violations resolved ✅
 
 ## Recent Activity
 
-**Collision Responsibilities Fixed (2025-10-18)**
-- Separated collision resolution from state interpretation
-- Collision: Composable Functions 6→9 (+3), orthogonality restored
-- Foundation: 97%+ maintained (Layer 2 composability)
-- 8 violations remaining (0 critical, 0 high, 5 medium, 3 low)
-
-**See individual plan files for detailed metrics:**
-- `PLANS/REFINE_collision_responsibilities.md` (2025-10-18) - Composable Functions +3, Orthogonality restored
-- `PLANS/REFINE_gui_coupling.md` (2025-10-18) - Composable Functions +3, Architecture restored
-- `PLANS/REFINE_mouse_camera_jump.md` (2025-10-18) - Prime Directive +FIXED, Consistency +FIXED
-- `PLANS/REFINE_division_by_zero.md` (2025-10-18) - Mathematical Foundations +CRITICAL FIX
-- `PLANS/REFINE_gradient_continuity.md` (2025-10-18) - Mathematical Foundations +2.0
-- `PLANS/REFINE_embedded_tests.md` (2025-10-18) - Composable Functions +2.0
-- `PLANS/REFINE_buffer_creation.md` (2025-10-18) - Radical Simplicity +3.0
-- `PLANS/REFINE_character_state_management.md` (2025-10-18) - Consistency +2.0
-- `PLANS/REFINE_world_geometry_duplication.md` (2025-10-18) - Radical Simplicity +2.0
-- `PLANS/REFINE_accumulated_state_pattern.md` (2025-10-18) - Principled Development +1.0
-- `PLANS/REFINE_controller_mixed_concerns.md` (2025-10-18) - Composable Functions +1.0
+**Controller Input Coupling Fixed (2025-10-18)**
+- Decoupled controller from global input state
+- Controller: Composable Functions 6→9 (+3), pure function restored
+- Layer 1: 95.5% → 96% (+0.5%)
+- Foundation: 97%+ maintained
+- 7 violations remaining (0 critical, 0 high, 4 medium, 3 low)
 
 ---
 

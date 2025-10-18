@@ -18,25 +18,25 @@ Layer 3: SYSTEMS         [97%+] ← ✅ TARGET EXCEEDED
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
-Layer 1: CORE            [95.5%] ← ✅ TARGET EXCEEDED
+Layer 1: CORE            [96%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.955 × 1.00 × 0.97 = **92.6% survival**
+**Cascade:** 0.96 × 1.00 × 0.97 = **93.1% survival**
 
 **Target exceeded:** Foundation at 97%, ready for Layer 4 variation
 
 ---
 
-## Layer 1: CORE (95.5%)
+## Layer 1: CORE (96%)
 
 **Status:** ✅ **TARGET EXCEEDED** - Clean foundation
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
+| Controller | 96% | ✅ Refined | `character/controller.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
 | Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
-| Physics | 95% | ✅ Documented | `character/controller.{h,cpp}` |
 
 **Blocking:** None - target exceeded
 
@@ -73,7 +73,6 @@ Layer 1: CORE            [95.5%] ← ✅ TARGET EXCEEDED
 | Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
 | Orientation | 100% | ✅ Refined | `character/orientation.{h,cpp}` |
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
-| Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
 
 **Blocking:** None - Layer 3 exceeded target, foundation at 97%+
 
@@ -155,28 +154,7 @@ Rate each system 1-10 on these criteria:
 - Build wall detection & sliding, OR
 - Build dash mechanic
 
-**Foundation:** 0.955 × 1.00 × 0.97+ = **92.6%+ survival** (excellent for variation)
-
----
-
-## Recent Changes
-
-- 2025-10-18: Collision → 100% (orthogonality restored, responsibilities separated)
-- 2025-10-18: GUI → 100% (command pattern, unidirectional flow established)
-- 2025-10-18: Runtime/Camera → 100% (eliminated stale delta accumulation, Prime Directive restored)
-- 2025-10-18: Collision → 100% (safe normalization, eliminated division by zero)
-- 2025-10-18: Foundation → 97%+ ✅ TARGET EXCEEDED
-- 2025-10-18: Runtime → 100% (removed embedded test logic)
-- 2025-10-18: Layer 1 → 95.5% ✅ TARGET EXCEEDED
-- 2025-10-18: Mesh Renderer → 100% (persistent dynamic buffers)
-- 2025-10-18: Layer 2 → 100% ✅ COMPLETE
-- 2025-10-18: Tuning → 97% (unidirectional data flow established)
-- 2025-10-18: Game World → 97% (tuning system refinement)
-- 2025-10-18: Layer 3 → 97% ✅ TARGET EXCEEDED
-- 2025-10-18: Controller → 100% (extracted reactive systems)
-- 2025-10-17: Orientation → 100% (spring-damper replacement)
-
-**See:** `PLANS/REFINE_*.md` for detailed metrics
+**Foundation:** 0.96 × 1.00 × 0.97+ = **93.1%+ survival** (excellent for variation)
 
 ---
 

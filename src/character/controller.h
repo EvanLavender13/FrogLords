@@ -10,6 +10,11 @@ struct controller {
         glm::vec3 right;
     };
 
+    struct controller_input_params {
+        glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
+        bool jump_pressed;        // True on frame of jump press
+    };
+
     // Collision volumes
     sphere collision_sphere; // Single sphere used for all collision
 
@@ -114,6 +119,8 @@ struct controller {
 
     controller();
 
-    void apply_input(const camera_input_params& cam_params, float dt);
+    void apply_input(const controller_input_params& input_params,
+                     const camera_input_params& cam_params,
+                     float dt);
     void update(const collision_world* world, float dt);
 };
