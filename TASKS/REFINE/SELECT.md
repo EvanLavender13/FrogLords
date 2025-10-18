@@ -290,7 +290,7 @@ Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 
 **Refinement:** <one-line description>
 
-**Location:** `<file path>`
+**Location:** @TASKS/PLANS/REFINE_<name>.md
 
 **Principle:** <which principle>
 
@@ -304,6 +304,8 @@ Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 
 ---
 ```
+
+**CRITICAL:** The `@TASKS/PLANS/REFINE_<name>.md` reference in Location ensures the detailed plan is ALWAYS in context when CURRENT_PLAN is loaded by CLAUDE.md.
 
 **This file is imported by CLAUDE.md** - updating it injects current context automatically.
 

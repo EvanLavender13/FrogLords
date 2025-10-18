@@ -6,16 +6,16 @@
 
 ## Purpose
 
-Update backlog, dependency stack, and system records to reflect the completed refinement. Archive the work and prepare for the next cycle.
+Update backlog and stack to reflect current state. Archive detailed metrics in plan file. Prepare for next cycle.
 
-**Metrics without recording are forgotten. Close the loop.**
+**Keep backlogs lean. Detailed history lives in PLANS/REFINE_*.md.**
 
 ---
 
 ## Prerequisites
 
 - [ ] Refinement complete
-- [ ] MEASURE complete (metrics calculated)
+- [ ] MEASURE complete (metrics in plan file)
 - [ ] `TASKS/PLANS/REFINE_<name>.md` fully documented
 - [ ] All changes committed to refinement branch
 
@@ -23,196 +23,155 @@ Update backlog, dependency stack, and system records to reflect the completed re
 
 ## Process
 
-### 1. Update Backlog
+### 1. Update Backlog (Keep Lean!)
 
-**Move violation from active to completed:**
+**In `TASKS/BACKLOG_REFINEMENTS.md`:**
 
-In `TASKS/BACKLOG_REFINEMENTS.md`:
-
-**Remove from active section:**
-- Delete or comment out the violation entry from its principle section
-- Remove from "By Severity" section
-- Update "In Progress" section
-
-**Add to "Recently Completed":**
+**Update header:**
 ```markdown
-## Recently Completed
-
-**YYYY-MM-DD: <Refinement Name>**
-- Location: `<file/system>`
-- Completed: YYYY-MM-DD
-- Principle: <Principle Restored>
-- Score: __/10 → __/10 (+__)
-- Pattern: <Pattern name if identified>
-- Learning: <Key insight>
-
-**Metrics:**
-- LOC removed: __ (or +__ if additive)
-- Special cases: __ → __ (-__)
-- Magic numbers: __ → __ (-__)
-- [Other relevant metrics]
-
-**Foundation impact:**
-- Layer X: __% → __% (+__%)
-- Overall: __% → __% (+__%)
-
-**Test suites:** [If applicable]
-[Description of tests added]
-
-**All tests: X/X passing ✓**
-
-**Reusable artifacts:** [If applicable]
-[Templates, patterns, tools created]
-
-**ROI:** [Exceptional/High/Medium/Low]
-- Effort: [hours]
-- Impact: [description]
-- Risk: [Zero/Low/Medium]
-
----
+**Foundation:** NEW_% → Target: 95%
+**Last Updated:** YYYY-MM-DD
 ```
 
-**Update patterns section if new pattern discovered:**
-```markdown
-## Patterns
+**Remove fixed violation from "Active Violations":**
+- If violation is completely resolved, delete the entry
+- If partially fixed, update description and severity
 
-**<Pattern Name>** (discovered: YYYY-MM-DD)
-- Violation type: [Type]
-- Root cause: [Why this happens]
-- Solution: [How to fix]
-- Prevention: [How to avoid]
-- Related refinements: [List]
+**Update pattern library if new pattern discovered:**
+```markdown
+### Pattern: <Pattern Name>
+- **Detection:** How to spot it
+- **Root cause:** Why it happens
+- **Fix:** How to resolve
+- **Prevention:** How to avoid
+- **Related fixes:** <System> (YYYY-MM-DD)
 ```
 
 **Update priority order:**
-- Remove completed item
-- Renumber remaining items
-- Update progress metrics
+```markdown
+## Priority Order
+
+**Path to 95% foundation:**
+
+1. **Next violation** (X pts) ← NEXT
+2. **Another violation** (Y pts)
+
+**Estimated:** ~X refinements remaining
+```
+
+**Add brief pointer in "Recent Activity":**
+```markdown
+## Recent Activity
+
+**See individual plan files for detailed metrics:**
+- `PLANS/REFINE_<name>.md` (YYYY-MM-DD) - <Principle> +X.X
+- [Keep only last 3-5 entries]
+```
+
+**That's it!** No massive history sections. Details live in plan files.
 
 ---
 
-### 2. Update Dependency Stack
+### 2. Update Dependency Stack (Keep Current!)
 
 **In `TASKS/DEPENDENCY_STACK.md`:**
 
 **Update header:**
 ```markdown
-**Last Updated:** YYYY-MM-DD (<refinement name> complete)
-```
-
-**Update Current State diagram:**
-```markdown
-Layer X: [NAME]         [NEW_%] ← updated certainty
-```
-
-**Update Overall Foundation Certainty:**
-```markdown
-**Overall Foundation Certainty:** NEW_%
-```
-
-**Update cascade calculation:**
-```markdown
-**Current cascade:**
-- Layer 1: __%
-- Layer 2: __%
-- Layer 3: __%
-- **Overall:** X.XX × X.XX × X.XX = **__% survival chance**
-```
-
-**Update affected layer:**
-```markdown
-## Layer X: NAME
-
-**Certainty:** NEW_%
-**Status:** [Updated status]
-**Last Changed:** YYYY-MM-DD (<refinement description>)
-
-### Systems
-
-**<System Name> [NEW_%]:**
-- [Updated description if system changed]
-- Location: `<path>`
-- [Add test info if tests added]
-- Status: ✓ [Updated status]
-```
-
-**Update completion checklist:**
-```markdown
-### Completion Checklist
-- [x] ✅ <Item now complete>
-- [Updated checkmarks]
-
-**Blocking issues:** [Updated list or "None" if complete]
-```
-
-**Update certainty scores:**
-```markdown
-**Layer X (<Name>): NEW_%**
-- <System>: __/10 = __% (updated score)
-- **Average: __ = __%**
-```
-
-**Add to History > Refinements Completed:**
-```markdown
-**YYYY-MM-DD: <Refinement Name>**
-- Layer: X (<Name>)
-- System: <System Name>
-- Before: __% → After: __% (+__%)
-- Layer impact: __% → __% (+__%)
-- [Cascade impact if applicable]
-- Overall foundation: __% → __% (+__%)
-- Violation: <Description>
-- Fix: <What was done>
-- [Test info if applicable]
-- Learning: <Key insight>
-- Pattern: <Pattern name if identified>
-- [Impact statement if major milestone]
-```
-
-**Update cascade history:**
-```markdown
-**After <refinement>:** X% × Y% × Z% = **__% ✓** (<milestone if reached>)
-```
-
-**Update repair priority if applicable:**
-```markdown
-1. ✅ ~~**<Refinement name>**~~ (COMPLETED YYYY-MM-DD)
-[Renumber remaining items]
-```
-
-**Update patterns/notes if applicable:**
-```markdown
-**Patterns observed:**
-- **<New pattern>** (<new learning>)
-```
-
-**Update Current Status Summary:**
-```markdown
 **Overall Foundation:** NEW_%
-
-**Layer Status:**
-- Layer X: NEW_% - [Updated description]
-
-**Next Action:** <Next refinement or milestone>
-
-**Progress:** OLD_% → NEW_% (+__%), [remaining work]
+**Last Updated:** YYYY-MM-DD
 ```
+
+**Update layer diagram:**
+```markdown
+Layer 3: SYSTEMS         [NEW_%] ← updated certainty
+```
+
+**Update cascade:**
+```markdown
+**Cascade:** 0.XX × 0.XX × 0.XX = **NEW_% survival**
+```
+
+**Update affected layer table:**
+```markdown
+## Layer 3: SYSTEMS (NEW_%)
+
+| System | Certainty | Status | Location |
+|--------|-----------|--------|----------|
+| <System> | NEW_% | ✅ Refined | `path/to/file` |
+```
+
+**Update blocking issues:**
+```markdown
+**Blocking:**
+1. ~~Fixed issue~~ ✅ COMPLETE
+2. Remaining issue (priority)
+```
+
+**Update "Next Actions":**
+```markdown
+## Next Actions
+
+**To reach 95% Layer 3:**
+1. Next refinement (X points)
+
+**Estimated:** ~X refinements remaining
+```
+
+**Add brief pointer in "Recent Changes":**
+```markdown
+## Recent Changes
+
+- YYYY-MM-DD: <System> → NEW_% (<brief description>)
+- [Keep only last 3-5 entries]
+
+**See:** `PLANS/REFINE_*.md` for detailed metrics
+```
+
+**That's it!** Stack shows current state, not history.
 
 ---
 
-### 3. Groom Completed Items
+### 3. Update Current Plan
 
-**In `TASKS/PLANS/REFINE_<name>.md`:**
+**In `TASKS/CURRENT_PLAN.md`:**
 
-Verify document is complete:
-- [ ] All metrics sections filled
-- [ ] Reflection section complete
-- [ ] Learning documented
-- [ ] Pattern identified (if applicable)
-- [ ] Success criteria all checked
-- [ ] "Would we do it again?" answered
+```markdown
+# Current Plan
 
-**No changes needed here** - MEASURE already completed this.
+**Status:** ✅ Refinement Complete
+**Last Completed:** YYYY-MM-DD - <Refinement Name>
+
+---
+
+## Ready for Next Task
+
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+
+---
+
+## Quick Reference
+
+**Foundation:** NEW_%
+**Target:** 95% (Layer 3)
+
+**Layer Status:**
+- Layer 1 (Core): __% - Status
+- Layer 2 (Primitives): 100% ✅ - Complete
+- Layer 3 (Systems): NEW_% - X refinements to target
+
+**Next Priority:** <Next violation>
+**Estimated Path:** ~X refinements to 95%
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations to fix
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Foundation status and build rules
+```
 
 ---
 
@@ -223,22 +182,18 @@ Verify document is complete:
 ```bash
 git add TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md TASKS/CURRENT_PLAN.md
 
-git commit -m "measure: <name> refinement complete
+git commit -m "close: <name> refinement - backlog and stack updated
 
-Metrics:
-- LOC: [change]
-- [Key metrics]
+Foundation: OLD_% → NEW_% (+__%)
+Layer 3: OLD_% → NEW_% (+__%)
 
-Principle scores:
-- <principle>: __/10 → __/10 (+__)
-
-Foundation: __% → __% (+__%)
-
-Learning: <key insight>
+Next: <Next refinement or milestone>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
+
+**Keep commit message lean - details are in plan file.**
 
 ---
 
@@ -251,15 +206,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 git checkout main
 
 # Merge with no-fast-forward (preserve history)
-git merge --no-ff refine/<name> -m "Merge branch 'refine/<name>'
+git merge --no-ff refine/<name> -m "Merge refine/<name> - <brief summary>
 
-<Brief summary of refinement>
-
-Metrics:
-- [Key metric 1]
-- [Key metric 2]
-
-Foundation: __% → __% (+__%)
+<Principle> +X.X points
+Foundation +__% (OLD% → NEW_%)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -277,52 +227,7 @@ git log --oneline -3
 
 ---
 
-### 6. Clear Current Plan
-
-**Update `TASKS/CURRENT_PLAN.md`:**
-
-**Refinement complete - clear the plan:**
-
-```markdown
-# Current Plan
-
-**Status:** No active work
-**Last Completed:** YYYY-MM-DD (<refinement name>)
-
----
-
-**Ready to select next refinement or system.**
-
-See:
-- `TASKS/BACKLOG_REFINEMENTS.md` for violations to fix
-- `TASKS/BACKLOG_SYSTEMS.md` for systems to build
-- `TASKS/DEPENDENCY_STACK.md` for foundation status
-
----
-
-## Quick Reference
-
-**Foundation:** __% (updated YYYY-MM-DD)
-
-**Layer Status:**
-- Layer 1: __%
-- Layer 2: __%
-- Layer 3: __%
-
-**Next Action:** Run REFINE/SELECT or SYSTEM/SELECT
-
-**Path to 95%:** ~X more refinements
-```
-
-**Commit the cleared plan:**
-```bash
-git add TASKS/CURRENT_PLAN.md
-# Include in the final bookkeeping commit
-```
-
----
-
-### 7. Verify System State
+### 6. Verify System State
 
 **Quick verification:**
 
@@ -330,38 +235,40 @@ git add TASKS/CURRENT_PLAN.md
 # Verify main is clean
 git status
 
-# Verify foundation certainty updated
+# Verify foundation updated
 grep "Overall Foundation" TASKS/DEPENDENCY_STACK.md
 
-# Verify refinement recorded
-grep -A5 "Recently Completed" TASKS/BACKLOG_REFINEMENTS.md | head -20
-
-# Verify priority order updated
-grep -A10 "Priority Order" TASKS/BACKLOG_REFINEMENTS.md
+# Verify active violations updated
+grep -A10 "Active Violations" TASKS/BACKLOG_REFINEMENTS.md
 
 # Verify current plan cleared
-head -5 TASKS/CURRENT_PLAN.md
+head -10 TASKS/CURRENT_PLAN.md
 ```
 
-**All should reflect the completed refinement.**
+**All should reflect current state (not detailed history).**
 
 ---
 
 ## Outputs
 
 - [ ] BACKLOG_REFINEMENTS.md updated
-  - [ ] Violation moved to "Recently Completed"
-  - [ ] Pattern documented (if applicable)
+  - [ ] Header foundation % updated
+  - [ ] Active violations updated (removed or modified)
+  - [ ] Pattern library updated (if new pattern)
   - [ ] Priority order updated
+  - [ ] Recent activity pointer added (brief!)
 - [ ] DEPENDENCY_STACK.md updated
-  - [ ] Layer certainties recalculated
-  - [ ] Cascade updated
-  - [ ] History recorded
-- [ ] CURRENT_PLAN.md cleared
-  - [ ] Status set to "No active work"
+  - [ ] Header foundation % updated
+  - [ ] Layer diagram updated
+  - [ ] Cascade calculation updated
+  - [ ] Layer table updated
+  - [ ] Blocking issues updated
+  - [ ] Recent changes pointer added (brief!)
+- [ ] CURRENT_PLAN.md updated
+  - [ ] Status set to "Refinement Complete"
   - [ ] Last completed recorded
-  - [ ] Foundation status updated
-- [ ] Final commit created
+  - [ ] Quick reference updated
+- [ ] Final commit created (lean message)
 - [ ] Merged to main
 - [ ] Branch deleted
 - [ ] System state verified
@@ -371,64 +278,79 @@ head -5 TASKS/CURRENT_PLAN.md
 ## Exit Criteria
 
 **Refinement cycle complete when:**
-- System state reflects completion
-- Backlog and stack updated
+- Backlogs show **current state** (not history)
+- Stack shows **what's possible now** (not past)
+- Detailed metrics archived in `PLANS/REFINE_<name>.md`
 - Changes merged to main
-- Learning archived
-- Ready to select next refinement
+- Ready to select next task
 
-**→ Next: REFINE/SELECT (choose next violation)**
+**→ Next: REFINE/SELECT or SYSTEM/SELECT**
 
 ---
 
 ## Closure Philosophy
 
-### Archive for the Future
+### Detailed History Lives in Plan Files
 
-**Today's learning is tomorrow's wisdom.**
+**The plan file (`PLANS/REFINE_<name>.md`) contains:**
+- Complete metrics (LOC, principle scores, etc.)
+- Full reflection and learning
+- Detailed "would we do it again?" analysis
+- Pattern identification
+- ROI calculation
 
-Record not just what was fixed, but:
-- Why it was a violation
-- How it was fixed
-- What was learned
-- How to prevent it
+**The backlogs/stack contain:**
+- Current violations (active, not completed)
+- Current certainties (now, not history)
+- Current blocking issues (what prevents progress)
+- Next actions (what to do)
+- Brief pointers to plan files (for history)
 
-**Future you will thank present you for thorough documentation.**
+### Keep Backlogs Action-Oriented
 
-### Celebrate Reduction
+**Backlogs are decision tools, not archives.**
 
-**Every refinement is a victory:**
-- Negative LOC = progress
-- Increased certainty = strength
-- Patterns identified = knowledge
-- Tests added = confidence
+When someone opens BACKLOG_REFINEMENTS.md, they should instantly see:
+- What's broken right now?
+- What should I fix next?
+- What patterns should I watch for?
 
-**Each small win compounds.**
+NOT:
+- What was fixed 3 months ago?
+- How many LOC were removed?
+- What was the ROI on past work?
 
-### Maintain the Chain
+### Keep Stack Current-Focused
 
-**Broken documentation = broken process.**
+**Stack shows what's possible NOW.**
 
-The backlog and stack are not bureaucracy—they are:
-- Foundation health monitors
-- Progress trackers
-- Learning repositories
-- Decision tools
+When someone opens DEPENDENCY_STACK.md, they should instantly see:
+- What's the foundation certainty?
+- What can I build?
+- What's blocking progress?
+- What's next?
 
-**Keep them current. Keep them truthful.**
+NOT:
+- Detailed cascade history
+- Past refinement metrics
+- Long "how we got here" narratives
 
-### Close the Loop
+### Celebrate in the Right Place
 
-**The refinement isn't complete until it's recorded.**
+**Detailed metrics = plan files**
+**Current state = backlogs/stack**
+**Principles/patterns = PRINCIPLES.md and backlog pattern library**
 
-Without closure:
-- Progress is invisible
-- Learning is lost
-- Patterns go unnoticed
-- Foundation drift goes untracked
+Each document has a purpose. Respect it.
 
-**Measure, record, close. Then repeat.**
+### Trust the Plan Files
+
+**Every refinement has a PLANS/REFINE_<name>.md file.**
+
+That's where the story lives. That's where the learning is archived. That's where future you goes to understand what happened and why.
+
+The backlogs just point to it.
 
 ---
 
-**Record truthfully. Archive thoroughly. Close completely.**
+**Archive in plan files. Track current state in backlogs. Keep both truthful.**
