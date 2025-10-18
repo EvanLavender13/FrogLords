@@ -30,14 +30,16 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
         // Fallback to UP pushes sphere upward when distance is degenerate
         result.normal = math::safe_normalize(distance, math::UP);
         result.penetration = s.radius - distance_magnitude;
+        result.contact_box = &box;
     }
 
     return result;
 }
 
-void resolve_box_collisions(sphere& collision_sphere, const collision_world& world,
-                            glm::vec3& position, glm::vec3& velocity, bool& is_grounded,
-                            glm::vec3& ground_normal, float& ground_height, float max_slope_angle) {
+sphere_collision resolve_box_collisions(sphere& collision_sphere, const collision_world& world,
+                                        glm::vec3& position, glm::vec3& velocity) {
+    sphere_collision final_contact; // Default: hit=false, contact_box=nullptr
+
     // TUNED: Multi-pass collision resolution iteration limit
     // Purpose: Handle corner/edge cases where single pass insufficient (sliding along edges)
     // Common range: 2-4 passes (trade-off: accuracy vs performance)
@@ -54,20 +56,14 @@ void resolve_box_collisions(sphere& collision_sphere, const collision_world& wor
                 position += col.normal * col.penetration;
                 collision_sphere.center = position;
 
-                // Check if this is a ground surface (upward-facing normal)
-                if (col.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
-                    // Set grounded state
-                    is_grounded = true;
-                    ground_normal = col.normal;
-                    ground_height = box.center.y + box.half_extents.y;
-                }
-
                 // Remove velocity into surface
                 float vel_into_surface = glm::dot(velocity, col.normal);
                 if (vel_into_surface < 0.0f) {
                     velocity -= col.normal * vel_into_surface;
                 }
 
+                // Track final contact (last valid collision from multi-pass)
+                final_contact = col;
                 any_collision = true;
             }
         }
@@ -75,18 +71,15 @@ void resolve_box_collisions(sphere& collision_sphere, const collision_world& wor
         if (!any_collision)
             break; // Early exit if no collisions in this pass
     }
+
+    return final_contact;
 }
 
-void resolve_collisions(sphere& collision_sphere, const collision_world& world, glm::vec3& position,
-                        glm::vec3& velocity, bool& is_grounded, glm::vec3& ground_normal,
-                        float& ground_height, float max_slope_angle) {
-    // Reset grounded state before collision checks
-    is_grounded = false;
-
+sphere_collision resolve_collisions(sphere& collision_sphere, const collision_world& world,
+                                    glm::vec3& position, glm::vec3& velocity) {
     // Update collision sphere position to match integrated position
     collision_sphere.center = position;
 
     // Box collision resolution (unified collision system)
-    resolve_box_collisions(collision_sphere, world, position, velocity, is_grounded, ground_normal,
-                           ground_height, max_slope_angle);
+    return resolve_box_collisions(collision_sphere, world, position, velocity);
 }

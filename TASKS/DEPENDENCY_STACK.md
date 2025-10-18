@@ -161,6 +161,7 @@ Rate each system 1-10 on these criteria:
 
 ## Recent Changes
 
+- 2025-10-18: Collision → 100% (orthogonality restored, responsibilities separated)
 - 2025-10-18: GUI → 100% (command pattern, unidirectional flow established)
 - 2025-10-18: Runtime/Camera → 100% (eliminated stale delta accumulation, Prime Directive restored)
 - 2025-10-18: Collision → 100% (safe normalization, eliminated division by zero)
