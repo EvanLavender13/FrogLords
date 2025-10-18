@@ -7,7 +7,7 @@
 namespace gui {
 
 void draw_character_panel(character_panel_state& state, controller& character,
-                          orientation_system& orientation, character::tuning_params& params) {
+                          character_reactive_systems& visuals, character::tuning_params& params) {
     if (!state.show)
         return;
 
@@ -39,27 +39,29 @@ void draw_character_panel(character_panel_state& state, controller& character,
 
     // Landing spring parameters
     if (ImGui::CollapsingHeader("Landing Spring")) {
-        gui::widget::slider_float("Stiffness", &character.animation.landing_spring.stiffness,
-                                  100.0f, 1000.0f);
-        gui::widget::slider_float("Damping", &character.animation.landing_spring.damping, 10.0f,
+        gui::widget::slider_float("Stiffness", &visuals.animation.landing_spring.stiffness, 100.0f,
+                                  1000.0f);
+        gui::widget::slider_float("Damping", &visuals.animation.landing_spring.damping, 10.0f,
                                   100.0f);
-        gui::widget::slider_float("Impulse Scale", &character.animation.landing_impulse_scale, 0.1f,
+        gui::widget::slider_float("Impulse Scale", &visuals.animation.landing_impulse_scale, 0.1f,
                                   1.5f);
 
         // Read-only spring state display
-        gui::widget::text("Spring Position: %.3f", character.animation.get_vertical_offset());
-        gui::widget::text("Spring Velocity: %.3f",
-                          character.animation.landing_spring.get_velocity());
+        gui::widget::text("Spring Position: %.3f", visuals.animation.get_vertical_offset());
+        gui::widget::text("Spring Velocity: %.3f", visuals.animation.landing_spring.get_velocity());
     }
 
     // Orientation parameters
     if (ImGui::CollapsingHeader("Orientation")) {
-        gui::widget::slider_float("Spring Stiffness", &orientation.yaw_spring.stiffness, 5.0f, 100.0f);
-        gui::widget::slider_float("Spring Damping", &orientation.yaw_spring.damping, 1.0f, 40.0f);
+        gui::widget::slider_float("Spring Stiffness", &visuals.orientation.yaw_spring.stiffness,
+                                  5.0f, 100.0f);
+        gui::widget::slider_float("Spring Damping", &visuals.orientation.yaw_spring.damping, 1.0f,
+                                  40.0f);
 
         // Read-only orientation state display
-        gui::widget::text("Current Yaw (rad): %.2f", orientation.get_yaw());
-        gui::widget::text("Angular Velocity (rad/s): %.2f", orientation.yaw_spring.get_velocity());
+        gui::widget::text("Current Yaw (rad): %.2f", visuals.orientation.get_yaw());
+        gui::widget::text("Angular Velocity (rad/s): %.2f",
+                          visuals.orientation.yaw_spring.get_velocity());
     }
 }
 

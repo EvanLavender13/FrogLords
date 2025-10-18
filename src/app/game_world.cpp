@@ -26,6 +26,9 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     character.update(&world_geometry, dt);
 
+    // Update reactive visual systems after physics
+    character_visuals.update(character, dt);
+
     // Sample velocity trail
     trail_state.time_since_last_sample += dt;
     if (trail_state.time_since_last_sample >= trail_state.sample_interval) {
@@ -50,8 +53,6 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
             trail_state.time_since_last_sample = 0.0f;
         }
     }
-
-    character.update_reactive_systems(dt);
 
     if (cam.get_mode() == camera_mode::FOLLOW) {
         cam.follow_update(character.position, dt);

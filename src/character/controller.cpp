@@ -137,31 +137,3 @@ void controller::update(const collision_world* world, float dt) {
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
 }
-
-void controller::update_reactive_systems(float dt) {
-    // Calculate intended velocity for orientation system
-    glm::vec3 intended_velocity = input_direction * max_speed;
-    orientation.update(intended_velocity, dt);
-
-    // Update animation reactive systems
-    animation.update_landing_spring(just_landed, vertical_velocity_on_land, dt);
-
-    // Manage landing flag lifecycle
-    just_landed = false;
-}
-
-glm::mat4 controller::get_world_transform() const {
-    glm::mat4 transform = glm::mat4(1.0f);
-
-    // Translate to character position
-    transform = glm::translate(transform, position);
-
-    // Apply orientation (yaw rotation around Y axis)
-    float yaw = orientation.get_yaw();
-    transform = glm::rotate(transform, yaw, math::UP);
-
-    // Apply landing spring vertical offset (crouch effect)
-    transform *= animation.get_vertical_offset_matrix();
-
-    return transform;
-}

@@ -282,7 +282,7 @@ Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 **Started:** [Today]
 **Branch:** refine/<name>
 **Path:** A (trivial) | B (standard)
-**Phase:** SELECT → [REFINE/PLAN]
+**Phase:** SELECT → REFINE
 
 ---
 
@@ -296,7 +296,7 @@ Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 
 **Approach:** Delete | Simplify | Document
 
-**Next Step:** [REFINE | PLAN]
+**Next Step:** REFINE
 
 **Target Impact:**
 - Layer X: __% → __% (+__%)
@@ -343,28 +343,19 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Exit Criteria
 
-**Proceed to REFINE when:**
-- Path A (Trivial) selected
-- Clear fix approach
-- Low risk
+**Always proceed to REFINE next** (unless Path C - Complex)
 
-**Proceed to PLAN when:**
-- Path B (Standard) selected
-- Needs careful thought
-- Moderate risk
-
-**Defer to system-building when:**
+**Defer to SYSTEM/SELECT when:**
 - Path C (Complex) identified
 - Major refactor needed
-- Should be treated as new system
+- Should be treated as new system build
 
 ---
 
 ## Next Step
 
-**→ REFINE** (if Path A - Trivial)
-**→ REFINE/PLAN** (if Path B - Standard)
-**→ SYSTEM/SELECT** (if Path C - Complex, create new system)
+**→ REFINE** (Path A or B)
+**→ SYSTEM/SELECT** (Path C - create new system instead)
 
 ---
 
