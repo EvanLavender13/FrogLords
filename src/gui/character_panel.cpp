@@ -7,9 +7,9 @@
 namespace gui {
 
 std::vector<parameter_command> draw_character_panel(character_panel_state& state,
-                                                     const controller& character,
-                                                     const character_reactive_systems& visuals,
-                                                     const character::tuning_params& params) {
+                                                    const controller& character,
+                                                    const character_reactive_systems& visuals,
+                                                    const character::tuning_params& params) {
     std::vector<parameter_command> commands;
 
     if (!state.show)

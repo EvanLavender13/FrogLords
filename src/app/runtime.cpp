@@ -105,8 +105,45 @@ void app_runtime::frame() {
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Character tuning sections
-        gui::draw_character_panel(panel_state, world.character, world.character_visuals,
-                                  world.character_params);
+        auto param_commands = gui::draw_character_panel(
+            panel_state, world.character, world.character_visuals, world.character_params);
+
+        // Apply parameter commands (unidirectional flow: GUI → commands → game state)
+        for (const auto& cmd : param_commands) {
+            switch (cmd.type) {
+            case gui::parameter_type::max_speed:
+                world.character_params.max_speed = cmd.value;
+                world.character_params.apply_to(world.character);
+                break;
+            case gui::parameter_type::time_to_max_speed:
+                world.character_params.time_to_max_speed = cmd.value;
+                world.character_params.apply_to(world.character);
+                break;
+            case gui::parameter_type::jump_height:
+                world.character_params.jump_height = cmd.value;
+                world.character_params.apply_to(world.character);
+                break;
+            case gui::parameter_type::gravity:
+                world.character_params.gravity = cmd.value;
+                world.character_params.apply_to(world.character);
+                break;
+            case gui::parameter_type::coyote_window:
+                world.character.coyote_window = cmd.value;
+                break;
+            case gui::parameter_type::jump_buffer_window:
+                world.character.jump_buffer_window = cmd.value;
+                break;
+            case gui::parameter_type::landing_stiffness:
+                world.character_visuals.animation.landing_spring.stiffness = cmd.value;
+                break;
+            case gui::parameter_type::landing_damping:
+                world.character_visuals.animation.landing_spring.damping = cmd.value;
+                break;
+            case gui::parameter_type::landing_impulse_scale:
+                world.character_visuals.animation.landing_impulse_scale = cmd.value;
+                break;
+            }
+        }
 
         // Camera section
         gui::draw_camera_panel(camera_panel_state, world.cam);
