@@ -2,8 +2,8 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 92% → Target: 95%
-**Last Updated:** 2025-10-17
+**Foundation:** 92.5% → Target: 95%
+**Last Updated:** 2025-10-18
 
 ---
 
@@ -11,14 +11,7 @@
 
 ### High Priority
 
-**1. Controller Mixed Concerns** (`controller.{h,cpp}`)
-- Principle: Composable Functions
-- Type: Coupling (physics + animation + orientation)
-- Impact: Hard to modify subsystems independently
-- Fix: Extract subsystems more clearly
-- Effort: 3 points
-
-**2. Accumulated State Pattern** (`controller.{position,velocity}`)
+**1. Accumulated State Pattern** (`controller.{position,velocity}`)
 - Principle: Principled Development
 - Type: Undocumented trade-off
 - Impact: Long-term stability unknown
@@ -83,6 +76,13 @@ None identified
 - **Prevention:** Prefer one-way data flow
 - **Related fixes:** Tuning defaults (2025-10-17)
 
+### Pattern: Convenient Coupling
+- **Detection:** Struct handles multiple unrelated concerns; "just add a member" changes
+- **Root cause:** Feature accretion without architectural discipline
+- **Fix:** Extract subsystems to separate types with unidirectional data flow
+- **Prevention:** Default to separation; challenge convenience; require test isolation
+- **Related fixes:** Controller (2025-10-18)
+
 ---
 
 ## Audit Checklist
@@ -121,19 +121,18 @@ None identified
 
 **Path to 95% foundation:**
 
-1. **Controller mixed concerns** (3 pts) ← NEXT
-2. **Accumulated state** (2-3 pts)
+1. **Accumulated state** (2-3 pts) ← NEXT
 
-**Estimated:** ~2 refinements remaining
+**Estimated:** ~1 refinement remaining
 
 ---
 
 ## Recent Activity
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_controller_mixed_concerns.md` (2025-10-18) - Composable Functions +1.0
 - `PLANS/REFINE_orientation_dual_reference.md` (2025-10-17) - Composability +2.5
 - `PLANS/REFINE_tuning_defaults.md` (2025-10-17) - Math foundations +2
-- `PLANS/REFINE_spring_damper_validation.md` (2025-10-17) - Layer 2 → 100%
 
 ---
 
