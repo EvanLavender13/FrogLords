@@ -273,44 +273,43 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 
 ### 7. Update Current Plan
 
-Update `TASKS/CURRENT_PLAN.md` to point to the new refinement:
+Update `TASKS/CURRENT_PLAN.md` with high-level tracking:
 
 ```markdown
 # Current Plan
 
-**Status:** In Progress
-**Type:** Refinement
+**Status:** 🔧 Refinement - <Name>
 **Started:** [Today]
 **Branch:** refine/<name>
+**Path:** A (trivial) | B (standard)
 **Phase:** SELECT → [REFINE/PLAN]
 
 ---
 
-@TASKS/PLANS/REFINE_<name>.md
+## Current Work
 
----
+**Refinement:** <one-line description>
 
-## Quick Reference
+**Location:** `<file path>`
 
-**Violation:** <description>
 **Principle:** <which principle>
-**Severity:** <level>
-**Complexity:** <points>
-**Path:** <A|B>
 
-**Next Actions:**
-- [Key steps from plan]
+**Approach:** Delete | Simplify | Document
+
+**Next Step:** [REFINE | PLAN]
 
 **Target Impact:**
-- Layer: __% → __% (+__%)
+- Layer X: __% → __% (+__%)
 - Overall: __% → __% (+__%)
+
+---
 ```
 
 **This file is imported by CLAUDE.md** - updating it injects current context automatically.
 
 ---
 
-### 8. Create Branch
+### 8. Create Branch & Commit
 
 ```bash
 git checkout -b refine/<name>
@@ -329,23 +328,14 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### 9. Update Backlog
-
-In `TASKS/BACKLOG_REFINEMENTS.md`:
-- Move violation to "In Progress" section
-- Add note: `[WIP: refine/<name>]`
-
----
-
 ## Outputs
 
-- [ ] Violation selected
+- [ ] Violation selected from backlog
 - [ ] `TASKS/PLANS/REFINE_<name>.md` created
 - [ ] Complexity classified (Trivial | Standard | Complex)
 - [ ] Path determined (A | B | System build)
 - [ ] `TASKS/CURRENT_PLAN.md` updated (injects context via CLAUDE.md)
-- [ ] Branch created
-- [ ] Backlog updated
+- [ ] Branch created with initial commit
 
 ---
 
