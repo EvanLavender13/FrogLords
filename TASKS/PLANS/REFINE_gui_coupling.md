@@ -132,6 +132,73 @@ for each command:
 
 ---
 
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+### Step 1: Define ParameterCommand struct
+**Changes:**
+- Create `src/gui/parameter_command.h`
+- Define enum for all tunable parameters (9 parameters)
+- Define command struct with type and value
+
+**Files Created:**
+- `src/gui/parameter_command.h`
+
+**Tests:** None (data structure only)
+**Validation:** Compiles successfully
+
+### Step 2: Update draw_character_panel signature
+**Changes:**
+- `src/gui/character_panel.h:15-16` - Change signature to take const references, return vector<ParameterCommand>
+- `src/gui/character_panel.cpp:9-10` - Update function signature
+- Add include for `parameter_command.h`
+
+**Files Modified:**
+- `src/gui/character_panel.h`
+- `src/gui/character_panel.cpp`
+
+**Tests:** None yet (function body not updated)
+**Validation:** Compiles with build errors (call site not updated yet)
+
+### Step 3: Modify widgets to emit commands
+**Changes:**
+- `src/gui/character_panel.cpp:9-66` - Replace direct modification with command emission
+- Accumulate commands in vector, return at end
+- Remove `changed` flag logic (no longer applies params directly)
+
+**Files Modified:**
+- `src/gui/character_panel.cpp`
+
+**Tests:** None yet (call site not updated)
+**Validation:** Compiles, but GUI won't modify state until Step 4
+
+### Step 4: Update call site to apply commands
+**Changes:**
+- `src/app/runtime.cpp:108-109` - Capture returned commands
+- Apply each command to appropriate system
+- Implement switch/dispatch logic for each parameter type
+
+**Files Modified:**
+- `src/app/runtime.cpp`
+
+**Tests:** Manual verification - adjust sliders, verify parameters change
+**Validation:** All parameter changes work correctly, no regressions
+
+### Step 5: Run tests and verify
+**Changes:** None
+**Tests:** Build and run application, test all sliders
+**Validation:**
+- Tests pass
+- All parameters adjustable via GUI
+- No behavioral regressions
+- Architecture now unidirectional (GUI → commands → game state)
+
+## Rollback
+`git reset --hard HEAD` (each step commits independently)
+<!-- END: REFINE/PLAN -->
+
+---
+
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 

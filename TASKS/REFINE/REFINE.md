@@ -97,7 +97,22 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 <!-- END: REFINE/PLAN -->
 ```
 
-### 2. Execute Each Step
+### 2. Validate Plan
+
+**Get a second opinion before executing:**
+
+```bash
+echo "Review the refinement approach in TASKS/PLANS/REFINE_gui_coupling.md. Also review PRINCIPLES.md for context. Does the approach violate any principles or introduce unnecessary complexity?" | codex e
+```
+
+**Evaluate feedback:**
+- Concerns raised? Revise plan
+- Alternative suggested? Consider it
+- Validation confirms? Proceed
+
+**Rule:** Certainty through convergence. When independent analyses agree, confidence increases.
+
+### 3. Execute Each Step
 
 **Per step:**
 
@@ -119,7 +134,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 E. Mark step complete in plan
 
-### 3. Handle Blockers
+### 4. Handle Blockers
 
 **Blocked:** Document why, suggest alternative, commit findings, proceed to MEASURE
 
