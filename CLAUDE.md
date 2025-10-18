@@ -25,9 +25,10 @@ The current refinement or system build in progress:
 
 @TASKS/CURRENT_PLAN.md
 
-## Extended Context Analysis
+## Analysis and Validation
 
 @TOOLS/GEMINI.md
+@TOOLS/CODEX.md
 
 ## Development Scripts
 
