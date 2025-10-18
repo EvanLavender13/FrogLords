@@ -1,15 +1,25 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Controller Input Coupling
+**Status:** 🔧 Refinement - Coyote Time Rationale
+**Started:** 2025-10-18
+**Branch:** refine/coyote_time_rationale
+**Path:** A (Trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Document principle trade-off for coyote time / jump buffering
+**Location:** @TASKS/PLANS/REFINE_coyote_time_rationale.md
+**Principle:** Consistency, Principled Development
+**Approach:** Document
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 1 (Controller): 96% → 96.5% (+0.5)
+- Principle Score: 8/10 → 9/10 (+1)
+- Overall: 97%+ maintained
 
 ---
 
