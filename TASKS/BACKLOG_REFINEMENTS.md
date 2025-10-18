@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 95% ✅ TARGET REACHED
+**Foundation:** 95.5% ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 
 ---
@@ -11,16 +11,7 @@
 
 ### High Priority
 
-**#1: Redundant World Geometry Storage**
-- **Location:** `src/app/game_world.cpp:66-74`
-- **Principles:** Radical Simplicity, Composable Functions
-- **Severity:** High
-- **Type:** Duplication, Lost Single Source of Truth
-- **Description:** World geometry stored in two places (`scene.collision_box` and `world_geometry.boxes`), must be manually kept in sync. Foundation-level violation affecting multiple systems.
-- **Fix:** Simplify - Unify representations. Single authoritative list holding both visual and physical properties. Rendering and physics read from same source.
-- **Impact:** Affects collision, rendering, level creation
-
-**#2: Inconsistent Character State Management**
+**#1: Inconsistent Character State Management**
 - **Location:** `src/gui/character_panel.cpp:13-20`
 - **Principles:** Consistency
 - **Severity:** High
@@ -31,7 +22,7 @@
 
 ### Medium Priority
 
-**#3: Inefficient Per-Draw Buffer Creation**
+**#2: Inefficient Per-Draw Buffer Creation**
 - **Location:** `src/rendering/renderer.cpp:61-71`
 - **Principles:** Radical Simplicity
 - **Severity:** Medium
@@ -40,7 +31,7 @@
 - **Fix:** Simplify - Use single dynamic vertex buffer for entire frame. Append all vertex data, issue draws with offsets.
 - **Impact:** Rendering performance, GPU memory management
 
-**#4: Special Casing for Camera Modes**
+**#3: Special Casing for Camera Modes**
 - **Location:** `src/camera/camera.cpp:50-58`
 - **Principles:** Composable Functions
 - **Severity:** Medium
@@ -49,7 +40,7 @@
 - **Fix:** Simplify - Refactor. Base camera handles view/projection, separate `Follower` component updates target position. Orthogonal systems.
 - **Impact:** Camera system architecture
 
-**#5: Unjustified Friction Model**
+**#4: Unjustified Friction Model**
 - **Location:** `src/character/tuning.cpp:8-17, 25-27`
 - **Principles:** Mathematical Foundations, Principled Development
 - **Severity:** Medium
@@ -60,7 +51,7 @@
 
 ### Low Priority
 
-**#6: Magic Number for Collision Passes**
+**#5: Magic Number for Collision Passes**
 - **Location:** `src/foundation/collision.cpp:41`
 - **Principles:** Mathematical Foundations
 - **Severity:** Low
@@ -69,7 +60,7 @@
 - **Fix:** Document - Define as named constant `COLLISION_RESOLUTION_PASSES = 3` with comment explaining empirical choice balancing performance/accuracy.
 - **Impact:** Code clarity
 
-**#7: Embedded Test Suite in Runtime**
+**#6: Embedded Test Suite in Runtime**
 - **Location:** `src/app/runtime.cpp:20-25`
 - **Principles:** Principled Development, Composable Functions
 - **Severity:** Low
@@ -78,7 +69,7 @@
 - **Fix:** Delete - Move tests to proper test file in `/tests` directory using existing infrastructure.
 - **Impact:** Code organization
 
-**#8: Discontinuous Color Gradient Logic**
+**#7: Discontinuous Color Gradient Logic**
 - **Location:** `src/app/debug_generation.cpp:49-59`
 - **Principles:** Mathematical Foundations
 - **Severity:** Low
@@ -147,12 +138,12 @@
 - **Prevention:** Default to separation; challenge convenience; require test isolation
 - **Related fixes:** Controller (2025-10-18)
 
-### Pattern: Redundant Storage (Discovered 2025-10-18)
+### Pattern: Redundant Storage
 - **Detection:** Same data stored in multiple places requiring manual synchronization
 - **Root cause:** Separation of visual/physical or multiple system representations
 - **Fix:** Create single source of truth, systems read from unified representation
 - **Prevention:** Question any data duplication. Prefer single authoritative storage.
-- **Related fixes:** World geometry (#1)
+- **Related fixes:** World geometry (2025-10-18)
 
 ### Pattern: Multiple Truth Sources (Discovered 2025-10-18)
 - **Detection:** Different code paths modify same logical state through different variables
@@ -211,31 +202,31 @@
 
 ## Priority Order
 
-**Foundation at 95% ✅ - 8 violations discovered**
+**Foundation at 95.5% ✅ - 7 violations remaining**
 
 **Recommended path:**
-1. Fix high-priority violations (#1, #2) - Foundation impact
+1. Fix high-priority violation (#1) - Foundation impact
 2. Assess: Build Layer 4 OR continue medium-priority refinements
 3. Address low-priority violations opportunistically
 
 **Pattern Discovery:**
-- **Duplication pattern** - Redundant storage (#1), per-frame allocation (#3)
-- **State management pattern** - Multiple sources of truth (#2), bidirectional flow (existing pattern)
-- **Documentation debt** - Unjustified decisions (#5), magic numbers (#6)
-- **Composability gaps** - Special cases (#4), mixed concerns (#7)
+- **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, per-frame allocation (#2)
+- **State management pattern** - Multiple sources of truth (#1), bidirectional flow (existing pattern)
+- **Documentation debt** - Unjustified decisions (#4), magic numbers (#5)
+- **Composability gaps** - Special cases (#3), mixed concerns (#6)
 
 ---
 
 ## Recent Activity
 
-**Gemini Comprehensive Audit (2025-10-18)**
-- 8 violations discovered across all severity levels
-- 2 High priority (foundation impact)
-- 3 Medium priority (architectural improvements)
-- 3 Low priority (polish and clarity)
-- 4 distinct pattern categories identified
+**World Geometry Duplication Fixed (2025-10-18)**
+- Redundant storage violation removed - scene storage was dead code
+- Foundation: 95% → 95.5% (+0.5%)
+- Layer 3: 95% → 96% (+1%)
+- 7 violations remaining (1 high, 3 medium, 3 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_world_geometry_duplication.md` (2025-10-18) - Radical Simplicity +2.0
 - `PLANS/REFINE_accumulated_state_pattern.md` (2025-10-18) - Principled Development +1.0
 - `PLANS/REFINE_controller_mixed_concerns.md` (2025-10-18) - Composable Functions +1.0
 - `PLANS/REFINE_orientation_dual_reference.md` (2025-10-17) - Composability +2.5

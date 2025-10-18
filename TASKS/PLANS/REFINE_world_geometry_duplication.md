@@ -100,9 +100,23 @@ world.world_geometry.boxes.push_back(ground_plane); // Single storage
 **Approach:** Even simpler than planned - boxes were dead code (never used)
 **Tests:** Build passing, no tests affected (test_spring_damper unrelated)
 **Metrics:**
-- LOC: 21 lines deleted, 0 added (-21)
-- Files: 3 modified (scene.h, scene.cpp, game_world.cpp)
-- Principle Score: 6.5/10 → 8.5/10 (+2.0)
+
+**Files:**
+- `src/rendering/scene.h`: 22 → 18 lines (-4)
+- `src/rendering/scene.cpp`: 26 → 17 lines (-9)
+- `src/app/game_world.cpp`: 120 → 112 lines (-8)
+- **Total:** -21 lines
+
+**Violations removed:**
+- Duplicate storage locations: 2 → 1 (-1)
+- Dead code methods: 3 methods deleted (add_collision_box, collision_boxes, unnecessary include)
+- Duplicate storage calls: 8 removed from setup_test_level()
+
+**Principle Score:**
+- **Before:** 6.5/10 (duplicate storage, manual sync, unclear ownership)
+- **After:** 8.5/10 (single source of truth, orthogonal systems)
+- **Improvement:** +2.0 points
+
 **Result:** ✓ Violation removed
 
 **Actual changes:**
@@ -125,18 +139,56 @@ This is deletion at its purest: removing code that served no purpose.
 
 ---
 
+## Learning
+
+**Root cause:** The scene class originally had `add_collision_box()` and `collision_boxes()` methods, suggesting it was designed to own collision geometry. However, when `collision_world` was added as the authoritative physics source, the scene storage was never removed - both systems existed in parallel with manual duplication.
+
+**Why it persisted:** The duplicate storage was never actually used:
+- Renderer never called `scene.collision_boxes()`
+- Collision system only used `world_geometry.boxes`
+- Tests never verified scene storage
+- Dead code is invisible until you look for it
+
+**Prevention:**
+1. **Never add storage without a single clear reader** - if no system accesses it, delete it
+2. **Grep for usage before adding new storage** - check if data already exists elsewhere
+3. **Question dual add() calls** - pattern `a.add(x); b.add(x);` is a red flag
+4. **Audit storage locations during system design** - who owns what?
+
+**Pattern discovered:** This is not isolated - whenever two systems might "need" the same data:
+- **First:** Verify both actually use it (one might not)
+- **Second:** Decide single owner based on orthogonality (physics owns physics data)
+- **Third:** Other systems read via reference/getter, never duplicate
+
+**Remaining work:** Audit for similar duplication patterns:
+- Does `player_state` duplicate any physics data?
+- Does animation system store physics state?
+- Are any other world properties duplicated between systems?
+
+**Key insight:** The best refactoring is often pure deletion. The scene storage served no purpose - it was waste waiting to be removed. When you find duplication, check if one side is completely unused before building elaborate unification schemes.
+
+---
+
 ## Principle Validation
 
 **Principle:** Radical Simplicity, Composable Functions
-**Before:** 6.5/10 | Violations: Duplicate storage, manual sync required, unclear ownership
-**After:** 8.5/10 | Violations: None
+
+**Before:** 6.5/10
+- Violations: Duplicate storage, manual sync required, unclear ownership
+- Evidence: 2 storage locations, 8 duplicate calls, 3 dead code methods
+
+**After:** 8.5/10
+- Violations: None
+- Evidence: Single source of truth (`collision_world.boxes`), no sync needed, orthogonal ownership
+
 **Improvement:** +2.0 points
-**Evidence:**
-- Single source of truth: `collision_world.boxes`
-- No synchronization needed
-- Clear ownership: physics owns physics data
-- Scene simplified to only visual meshes
-**Verdict:** ✓ Principle restored
+
+**Foundation Impact:**
+- Layer 3 (Systems): 95% → 96% (+1%)
+- Overall: 95% → 95.5% (+0.5%)
+- Cascade to Layer 4: 90.25% → 91% survival
+
+**Verdict:** ✓ Principle restored, foundation strengthened
 
 ---
 
