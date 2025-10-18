@@ -2,7 +2,7 @@
 
 **Principle violations to restore. Complexity to remove.**
 
-**Last Updated:** 2025-10-17
+**Last Updated:** 2025-10-17 (tuning defaults selected)
 **Foundation:** 89% → Target 95%
 
 ---
@@ -96,16 +96,26 @@
 
 ---
 
+## In Progress
+
+1. **Tuning defaults mismatch** (`tuning.h` vs `controller.h`) `[WIP: refine/tuning-defaults]`
+   - Principle: Solid Mathematical Foundations
+   - Severity: Critical
+   - Complexity: Trivial (Path A)
+   - Impact: Can't trust tuning system
+   - Blocks: Confident parameter work
+   - Fix: 1 point, 100% certain
+   - Plan: TASKS/PLANS/REFINE_tuning_defaults.md
+   - Status: Selected 2025-10-17
+
+---
+
 ## By Severity
 
 ### Critical (Foundation Threatening)
 **Violations that undermine core systems**
 
-1. **Tuning defaults mismatch** (`tuning.h` vs `controller.h`)
-   - Impact: Can't trust tuning system
-   - Blocks: Confident parameter work
-   - Fix: 1 point, 100% certain
-   - Status: NEXT
+None currently - Critical violation moved to In Progress
 
 ### High (Actively Harmful)
 **Violations causing bugs or limiting emergence**
@@ -304,7 +314,7 @@ From code review, audit, or discovery during building:
 
 ### Selecting a Violation
 1. Choose by severity × foundation impact
-2. Create `PLANS/REFINE_<name>.md`
+2. Create `TASKS/PLANS/REFINE_<name>.md`
 3. Classify: Trivial (path A) vs Standard (path B)
 4. Begin refinement cycle
 
