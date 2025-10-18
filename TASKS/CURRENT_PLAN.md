@@ -1,15 +1,25 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Division by Zero
+**Status:** 🔧 Refinement - Mouse Camera Jump
+**Started:** 2025-10-18
+**Branch:** refine/mouse_camera_jump
+**Path:** A (trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Delete stale mouse delta accumulation to prevent camera jump
+**Location:** @TASKS/PLANS/REFINE_mouse_camera_jump.md
+**Principle:** Prime Directive (Do No Harm to Gameplay), Consistency
+**Approach:** Delete
+**Next:** REFINE
+
+**Target Impact:**
+- Runtime/Camera: Predictable behavior restored
+- Prime Directive: Violation eliminated
+- Foundation: 97%+ maintained (user experience fix)
 
 ---
 
