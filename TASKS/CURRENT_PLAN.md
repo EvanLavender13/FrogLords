@@ -1,17 +1,25 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Accumulated State Pattern
+**Status:** 🔧 Refinement - World Geometry Duplication
+**Started:** 2025-10-18
+**Branch:** refine/world_geometry_duplication
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build (Layer 4 unblocked!)
-- `/REFINE/SELECT` - Pick optional refinement (95% → 100%)
+**Refinement:** Unify world geometry storage to single source of truth
+**Location:** @TASKS/PLANS/REFINE_world_geometry_duplication.md
+**Principle:** Radical Simplicity, Composable Functions
+**Approach:** Simplify - single authoritative source (collision_world)
+**Next:** REFINE
 
-**Recommendation:** Build Layer 4 systems now that foundation is at 95%
+**Target Impact:**
+- Layer 3 (Systems): 95% → 96% (+1%)
+- Overall: 95% → 95.5% (+0.5%)
+- Principle Score: 6.5/10 → 8.5/10 (+2.0)
 
 ---
 
