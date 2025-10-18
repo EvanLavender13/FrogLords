@@ -27,6 +27,8 @@ class wireframe_renderer {
   private:
     sg_pipeline pipeline;
     sg_shader shader;
+    sg_buffer dynamic_vertex_buffer;
+    sg_buffer dynamic_index_buffer;
 
     bool initialized = false;
 };

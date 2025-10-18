@@ -32,6 +32,19 @@ void wireframe_renderer::init() {
 
     pipeline = sg_make_pipeline(&pipeline_desc);
 
+    // Create persistent dynamic buffers for streaming geometry
+    sg_buffer_desc vbuf_desc = {};
+    vbuf_desc.size = 65536; // 64KB - generous size for dynamic vertex data
+    vbuf_desc.usage.stream_update = true;
+    vbuf_desc.usage.vertex_buffer = true;
+    dynamic_vertex_buffer = sg_make_buffer(&vbuf_desc);
+
+    sg_buffer_desc ibuf_desc = {};
+    ibuf_desc.size = 65536; // 64KB - generous size for dynamic index data
+    ibuf_desc.usage.stream_update = true;
+    ibuf_desc.usage.index_buffer = true;
+    dynamic_index_buffer = sg_make_buffer(&ibuf_desc);
+
     initialized = true;
 }
 
@@ -39,6 +52,8 @@ void wireframe_renderer::shutdown() {
     if (!initialized)
         return;
 
+    sg_destroy_buffer(dynamic_index_buffer);
+    sg_destroy_buffer(dynamic_vertex_buffer);
     sg_destroy_pipeline(pipeline);
     sg_destroy_shader(shader);
 
@@ -66,21 +81,20 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
         indices.push_back(static_cast<uint16_t>(e.v1));
     }
 
-    // Create immutable buffers for this draw call
-    sg_buffer_desc vertex_buffer_desc = {};
-    vertex_buffer_desc.data = {mesh.vertices.data(), mesh.vertices.size() * sizeof(glm::vec3)};
-    vertex_buffer_desc.usage.vertex_buffer = true;
-    sg_buffer vbuf = sg_make_buffer(&vertex_buffer_desc);
+    // Append this mesh's data to dynamic buffers (allows multiple draws per frame)
+    // NOTE: Future optimization - batching API (begin/draw/end) with single update + offsets
+    sg_range vertex_data = {mesh.vertices.data(), mesh.vertices.size() * sizeof(glm::vec3)};
+    int vb_offset = sg_append_buffer(dynamic_vertex_buffer, &vertex_data);
 
-    sg_buffer_desc index_buffer_desc = {};
-    index_buffer_desc.data = {indices.data(), indices.size() * sizeof(uint16_t)};
-    index_buffer_desc.usage.index_buffer = true;
-    sg_buffer ibuf = sg_make_buffer(&index_buffer_desc);
+    sg_range index_data = {indices.data(), indices.size() * sizeof(uint16_t)};
+    int ib_offset = sg_append_buffer(dynamic_index_buffer, &index_data);
 
-    // Create bindings for this draw call
+    // Bind persistent buffers with offsets to this mesh's data
     sg_bindings draw_bindings = {};
-    draw_bindings.vertex_buffers[0] = vbuf;
-    draw_bindings.index_buffer = ibuf;
+    draw_bindings.vertex_buffers[0] = dynamic_vertex_buffer;
+    draw_bindings.vertex_buffer_offsets[0] = vb_offset;
+    draw_bindings.index_buffer = dynamic_index_buffer;
+    draw_bindings.index_buffer_offset = ib_offset;
 
     sg_apply_pipeline(pipeline);
     sg_apply_bindings(&draw_bindings);
@@ -101,8 +115,4 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
 
     // Draw
     sg_draw(0, static_cast<int>(indices.size()), 1);
-
-    // Destroy buffers immediately (sokol defers actual destruction until safe)
-    sg_destroy_buffer(ibuf);
-    sg_destroy_buffer(vbuf);
 }

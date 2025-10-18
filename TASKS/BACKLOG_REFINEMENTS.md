@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 96% ✅ TARGET EXCEEDED
+**Foundation:** 96.5% ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 
 ---
@@ -14,15 +14,6 @@
 None - All high-priority violations resolved! 🎉
 
 ### Medium Priority
-
-**#2: Inefficient Per-Draw Buffer Creation**
-- **Location:** `src/rendering/renderer.cpp:61-71`
-- **Principles:** Radical Simplicity
-- **Severity:** Medium
-- **Type:** Complexity, Performance
-- **Description:** Creates and destroys new vertex/index buffers for every mesh drawn per frame. Highly inefficient even if driver defers operations.
-- **Fix:** Simplify - Use single dynamic vertex buffer for entire frame. Append all vertex data, issue draws with offsets.
-- **Impact:** Rendering performance, GPU memory management
 
 **#3: Special Casing for Camera Modes**
 - **Location:** `src/camera/camera.cpp:50-58`
@@ -145,12 +136,12 @@ None - All high-priority violations resolved! 🎉
 - **Prevention:** Enforce unidirectional data flow, reject shortcuts
 - **Related fixes:** Character state management (2025-10-18)
 
-### Pattern: Per-Frame Allocation (Discovered 2025-10-18)
+### Pattern: Per-Frame Allocation
 - **Detection:** Creating/destroying resources every frame instead of reusing
 - **Root cause:** Unfamiliarity with graphics APIs, quick implementation
 - **Fix:** Use persistent buffers, dynamic updates, proper resource management
 - **Prevention:** Review resource lifecycle in rendering code
-- **Related fixes:** Renderer buffers (#3)
+- **Related fixes:** Renderer buffers (2025-10-18)
 
 ### Pattern: Mode-Specific Branching (Discovered 2025-10-18)
 - **Detection:** If/else blocks for different modes using separate state variables
@@ -195,15 +186,15 @@ None - All high-priority violations resolved! 🎉
 
 ## Priority Order
 
-**Foundation at 96% ✅ - 6 violations remaining (all medium/low priority)**
+**Foundation at 96.5% ✅ - 5 violations remaining (all medium/low priority)**
 
 **Recommended path:**
 1. **Build Layer 4 systems** - Foundation solid, variations unblocked ← RECOMMENDED
-2. OR continue medium-priority refinements (buffer creation #2, camera modes #3)
+2. OR continue medium-priority refinements (camera modes #3, friction model #4)
 3. Address low-priority violations opportunistically
 
 **Pattern Discovery:**
-- **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, per-frame allocation (#2)
+- **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
 - **State management pattern** - ~~Multiple sources of truth~~ ✅ FIXED, bidirectional flow (existing pattern)
 - **Documentation debt** - Unjustified decisions (#4), magic numbers (#5)
 - **Composability gaps** - Special cases (#3), mixed concerns (#6)
@@ -212,19 +203,18 @@ None - All high-priority violations resolved! 🎉
 
 ## Recent Activity
 
-**Character State Management Fixed (2025-10-18)**
-- Last high-priority violation resolved - unidirectional data flow established
-- Foundation: 95.5% → 96% (+0.5%)
-- Layer 3: 96% → 97% (+1%)
-- 6 violations remaining (0 high, 3 medium, 3 low)
-- **All high-priority violations resolved!**
+**Buffer Creation Fixed (2025-10-18)**
+- Replaced per-draw buffer creation/destruction with persistent dynamic buffers
+- Rendering (Layer 2): Radical Simplicity 6/10 → 9/10 (+3.0)
+- Foundation: 96% → 96.5% (+0.5%)
+- 5 violations remaining (0 high, 2 medium, 3 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_buffer_creation.md` (2025-10-18) - Radical Simplicity +3.0
 - `PLANS/REFINE_character_state_management.md` (2025-10-18) - Consistency +2.0
 - `PLANS/REFINE_world_geometry_duplication.md` (2025-10-18) - Radical Simplicity +2.0
 - `PLANS/REFINE_accumulated_state_pattern.md` (2025-10-18) - Principled Development +1.0
 - `PLANS/REFINE_controller_mixed_concerns.md` (2025-10-18) - Composable Functions +1.0
-- `PLANS/REFINE_orientation_dual_reference.md` (2025-10-17) - Composability +2.5
 
 ---
 
