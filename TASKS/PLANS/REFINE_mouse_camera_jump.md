@@ -198,3 +198,40 @@ last_mouse_y = input::mouse_y();
 **Metrics:** LOC 18→18 (0 change, restructure only) | Prime Directive ✓ FIXED | Consistency ✓ FIXED
 **Result:** ✓ Violation removed - camera control is sacred again
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/app/runtime.cpp`: 170 → 172 (+2 lines, restructure with comments)
+- `TASKS/PLANS/REFINE_mouse_camera_jump.md`: 133 → 201 (+68 lines, documentation)
+
+**Total:** +2 lines (net code change)
+
+**Violations removed:**
+- Conditionally updated accumulated state: 1 → 0 (-1)
+- Stale delta accumulation causing camera jump: Present → Eliminated
+
+**Principle:** Prime Directive, Consistency
+- Before: TBD/10 (violation present)
+- After: 10/10 (violation eliminated)
+- Improvement: +CRITICAL FIX
+
+**Foundation:**
+- Runtime/Camera: Control betrayal → Predictable behavior restored
+- Overall: 97%+ maintained (user experience fix, no mathematical impact)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Accumulated state (`last_mouse_x/y`) updated conditionally—froze when GUI owned mouse, causing stale delta on release.
+
+**Prevention:** Never conditionally update accumulated state. Either always update it (keep truth fresh) or eliminate accumulation entirely (derive from truth). State that drifts becomes lies.
+
+**Pattern:** Part of broader "accumulated state anti-pattern"—see remaining violations in geometry/normals accumulation, potential issues in input buffering.
+<!-- END: MEASURE/LEARNING -->
