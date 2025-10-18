@@ -67,20 +67,109 @@ if (speed_ratio < 0.33f) {
 
 **Change:** Deleted branching logic, replaced with continuous gradient interpolation
 **Tests:** All passing
-**Metrics:** LOC 10→8 (-2) | Mathematical Foundations 7/10→9/10 (+2)
 **Result:** ✓ Violation removed
 
-**Implementation:**
-- Deleted: 3 if/else branches with hard-coded thresholds (0.33, 0.66)
-- Added: Gradient array with 4 color stops
-- Replaced: Discontinuous branches with continuous interpolation (glm::mix)
-- Fixed: Index clamping before t calculation to ensure speed_ratio=1.0 → Red
+---
 
-**Verification:**
+### Metrics
+
+**Files:**
+- `src/app/debug_generation.cpp`: 196 → 204 (+8 lines total, but -13 logic lines, +21 comments/structure)
+
+**LOC Impact:**
+- Logic lines: 13 removed (branching), 21 added (gradient array + interpolation)
+- Net: +8 lines (more verbose but simpler logic)
+- **Note:** Line count increased, but complexity decreased
+
+**Violations removed:**
+- Hard-coded thresholds: 5 → 0 (-5)
+  - `0.33f` (2 occurrences)
+  - `0.66f` (1 occurrence)
+  - `0.34f` (1 occurrence)
+  - Implicit threshold at start (1 occurrence)
+- Branching conditions: 2 → 0 (-2)
+  - `if (speed_ratio < 0.33f)`
+  - `else if (speed_ratio < 0.66f)`
+
+---
+
+### Principle Score
+
+**Mathematical Foundations:**
+- Before: 7/10
+- After: 9/10
+- Improvement: +2
+
+**Evidence:**
+- Deleted discontinuous branching with hard thresholds
+- Replaced with continuous mathematical interpolation (glm::mix)
+- Gradient now defined as array of color stops (declarative)
+- Interpolation position calculated purely from speed_ratio
+- Result: Smooth, continuous color transition across entire speed range
+
+---
+
+### Foundation Impact
+
+**No change to foundation percentage** - This is Layer 3 debug visualization, not core foundation.
+
+Layer impact:
+- Layer 3 (Systems): Mathematical correctness improved
+- Overall Foundation: Remains at 97%
+
+---
+
+### Implementation Details
+
+**Deleted:**
+- 3 if/else branches with hard-coded thresholds (0.33, 0.66, 0.34)
+- Inline color calculations per branch
+- Discontinuous step function behavior
+
+**Added:**
+- Gradient array with 4 color stops (blue→cyan→yellow→red)
+- Continuous position calculation from speed_ratio
+- Index clamping for safety
+- Interpolation between adjacent stops using glm::mix
+
+**Fixed:**
+- Index clamping before t calculation ensures speed_ratio=1.0 → Red (no flickering)
+
+---
+
+### Verification
+
 - Build: Successful
 - Tests: All passing
 - Visual: Speed ring shows continuous gradient blue→cyan→yellow→red
 - Edge case: Maximum speed displays solid red (no flickering)
+
+---
+
+### Learning
+
+**Root cause:** Premature implementation without considering mathematical elegance.
+
+The original code treated the problem as "three discrete speed ranges" instead of "continuous interpolation across a gradient." This led to:
+- Hard-coded thresholds that have no physical meaning
+- Branching logic that interrupts mathematical flow
+- Discontinuous jumps at arbitrary boundaries
+
+**Prevention:** When implementing any mapping from continuous input to output, ask: "Is this inherently discrete or continuous?" Debug visualization of speed is **continuous**—the code should reflect that.
+
+**Pattern:** This is part of a broader pattern of "branch-first thinking" instead of "math-first thinking." Similar violations likely exist elsewhere:
+- Any code with hard-coded thresholds
+- Any conditional logic that could be replaced with interpolation
+- Any stepped behavior where smooth behavior is more correct
+
+**Remaining work:**
+- Search codebase for similar branching patterns on continuous values
+- Look for other hard-coded threshold violations
+- Consider: Are there other debug visualizations with discontinuous behavior?
+
+---
+
+**Learning compounds. This pattern will be recognized and prevented in future code.**
 
 ---
 

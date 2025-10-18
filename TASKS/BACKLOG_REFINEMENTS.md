@@ -44,16 +44,6 @@ None - All high-priority violations resolved! 🎉
 - **Fix:** Document - Define as named constant `COLLISION_RESOLUTION_PASSES = 3` with comment explaining empirical choice balancing performance/accuracy.
 - **Impact:** Code clarity
 
-
-**#7: Discontinuous Color Gradient Logic**
-- **Location:** `src/app/debug_generation.cpp:49-59`
-- **Principles:** Mathematical Foundations
-- **Severity:** Low
-- **Type:** Unjustified implementation, Discontinuous
-- **Description:** Speed gradient uses if/else with hard-coded thresholds (0.33, 0.66) creating sharp jumps instead of smooth gradient.
-- **Fix:** Simplify - Replace conditionals with continuous interpolation (`glm::mix`) for smooth color blend across speed range.
-- **Impact:** Debug visualization quality
-
 ---
 
 ## Patterns Library
@@ -178,12 +168,12 @@ None - All high-priority violations resolved! 🎉
 
 ## Priority Order
 
-**Foundation at 97% ✅ - 4 violations remaining (all medium/low priority)**
+**Foundation at 97% ✅ - 3 violations remaining (2 medium, 1 low)**
 
 **Recommended path:**
 1. **Build Layer 4 systems** - Foundation solid, variations unblocked ← RECOMMENDED
 2. OR continue medium-priority refinements (camera modes #3, friction model #4)
-3. Address low-priority violations opportunistically
+3. Address low-priority violations opportunistically (collision passes #5)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
@@ -195,13 +185,14 @@ None - All high-priority violations resolved! 🎉
 
 ## Recent Activity
 
-**Embedded Tests Removed (2025-10-18)**
-- Deleted test execution logic from runtime initialization
-- Runtime (Layer 1): Composable Functions 8/10 → 10/10 (+2.0)
-- Foundation: 96.5% → 97% (+0.5%)
-- 4 violations remaining (0 high, 2 medium, 2 low)
+**Gradient Continuity Fixed (2025-10-18)**
+- Replaced discontinuous branching with continuous interpolation
+- Debug Visualization: Mathematical Foundations 7/10 → 9/10 (+2.0)
+- Foundation: 97% (unchanged - debug visualization only)
+- 3 violations remaining (0 high, 2 medium, 1 low)
 
 **See individual plan files for detailed metrics:**
+- `PLANS/REFINE_gradient_continuity.md` (2025-10-18) - Mathematical Foundations +2.0
 - `PLANS/REFINE_embedded_tests.md` (2025-10-18) - Composable Functions +2.0
 - `PLANS/REFINE_buffer_creation.md` (2025-10-18) - Radical Simplicity +3.0
 - `PLANS/REFINE_character_state_management.md` (2025-10-18) - Consistency +2.0
