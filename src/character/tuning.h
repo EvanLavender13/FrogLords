@@ -8,7 +8,6 @@ struct tuning_params {
     // TUNED: Time from rest to max_speed (responsiveness feel)
     // Platformer typical range: 300-500ms (fighting games: 100-200ms)
     // Current: 400ms provides responsive but not twitchy control
-    // NOTE: Default (0.4s) inconsistent with controller defaults (~1.6s actual)
     // Used in: apply_to to calculate ground_accel and air_accel
     float time_to_max_speed = 0.4f; // seconds
 

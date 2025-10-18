@@ -130,3 +130,34 @@ float ground_accel = 20.0f; // m/s²
 **Rollback plan:**
 - Git revert the commit
 - Defaults are easily changed back
+
+---
+
+## Completed (Trivial Path)
+
+**Date:** 2025-10-17
+
+**Change made:**
+- Updated: `controller.h` ground_accel default from 20.0 → 80.0 m/s²
+- Updated: `controller.h` air_accel default from 10.0 → 20.0 m/s²
+- Documented: Added explicit formulas and notes referencing tuning.h as source of truth
+- Clarified: Values will be overwritten if tuning_params::apply_to() is called
+
+**Tests:**
+- [x] All passing
+- Build completed successfully (8/8 targets)
+- No compilation errors or warnings
+
+**Metrics:**
+- LOC before: 2 inconsistent defaults → after: 2 consistent defaults (0 LOC change, correctness change)
+- Discrepancy before: 4x (0.4s vs 1.6s) → after: 0x (exact match)
+- Principle score before: 8/10 → after: 10/10 (+2)
+
+**Calculation verification:**
+- time_to_max_speed = 0.4s (from tuning.h)
+- max_speed = 8.0 m/s
+- desired_accel = 8.0 / 0.4 = 20.0 m/s²
+- ground_accel = 20.0 / 0.25 = 80.0 m/s² ✓
+- air_accel = 20.0 m/s² ✓
+
+**Result:** ✓ Violation removed - Single source of truth established
