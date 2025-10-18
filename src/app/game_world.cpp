@@ -9,7 +9,7 @@
 
 void game_world::init() {
     character = controller();
-    character_params.read_from(character);
+    character_params.apply_to(character);
     cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
     cam.set_mode(camera_mode::FOLLOW);
     scn = scene();

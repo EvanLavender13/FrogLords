@@ -30,7 +30,6 @@ struct tuning_params {
     float gravity = -9.8f; // m/s²
 
     void apply_to(controller& c) const;
-    void read_from(const controller& c);
 };
 
 } // namespace character
