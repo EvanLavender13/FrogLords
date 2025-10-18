@@ -13,23 +13,12 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#ifdef ENABLE_QUATERNION_TESTS
-#include <cstdlib>
-#endif
-
 app_runtime& runtime() {
     static app_runtime instance;
     return instance;
 }
 
 void app_runtime::initialize() {
-#ifdef ENABLE_QUATERNION_TESTS
-    // Run quaternion validation test suite and exit immediately
-    extern bool run_quaternion_validation_suite();
-    bool tests_passed = run_quaternion_validation_suite();
-    std::exit(tests_passed ? 0 : 1);
-#endif
-
     if (initialized) {
         return;
     }
