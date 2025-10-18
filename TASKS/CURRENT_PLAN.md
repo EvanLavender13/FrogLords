@@ -1,7 +1,7 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Mouse Camera Jump
+**Last Completed:** 2025-10-18 - GUI Coupling
 
 ---
 
@@ -24,12 +24,19 @@
 - Layer 3 (Systems): 97%+ ✅ - Target exceeded
 - Layer 4 (Variation): <50% ✅ - Ready to build
 
-**Next Priority:** GUI coupling (#1) - Architectural violation
-**Estimated Path:** 2 high-priority refinements remaining, OR proceed to Layer 4 build
+**Next Priority:** Collision responsibilities (#3) - Composability issue
+**Estimated Path:** 1 high-priority refinement remaining, OR proceed to Layer 4 build
 
 ---
 
 ## Recent Refinements
+
+**GUI Coupling (2025-10-18)**
+- Implemented command pattern for unidirectional data flow
+- Composable Functions: 6/10 → 9/10 (+3.0)
+- Principled Development: Architecture integrity restored
+- Foundation: 97%+ maintained (architectural pattern violation fixed)
+- 9 violations remaining (0 critical, 1 high, 5 medium, 3 low)
 
 **Mouse Camera Jump (2025-10-18)**
 - Deleted stale delta accumulation (always update last_mouse)
@@ -55,6 +62,6 @@
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 2 high, 5 medium, 3 low)
+- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 1 high, 5 medium, 3 low)
 - `BACKLOG_SYSTEMS.md` - Systems to build (Layer 4 ready)
 - `DEPENDENCY_STACK.md` - Foundation status and build rules
