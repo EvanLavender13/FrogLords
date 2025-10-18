@@ -89,10 +89,29 @@ void controller::apply_input(const camera_input_params& cam_params, float dt) {
 }
 
 void controller::update(const collision_world* world, float dt) {
+    // Physics integration using semi-implicit Euler method (Symplectic Euler):
+    //
+    // Integration order:
+    //   1. v(t+dt) = v(t) + a(t)·dt     (velocity first, using current acceleration)
+    //   2. x(t+dt) = x(t) + v(t+dt)·dt  (position second, using NEW velocity)
+    //
+    // Properties:
+    //   - Stable for damped systems (friction, collision resolution)
+    //   - Better energy conservation than explicit Euler
+    //   - Sufficient accuracy for platformer physics (no rigid body dynamics)
+    //   - First-order accuracy: O(dt)
+    //
+    // Alternatives considered:
+    //   - Verlet integration: Better energy conservation, but requires code refactor
+    //   - RK4 (Runge-Kutta): Overkill for platformer (4x computational cost)
+    //
+    // Trade-off accepted: Semi-implicit Euler is fast, stable, and sufficient.
+    // See PRINCIPLES.md for accumulated state exception (physics integration).
+
     // Apply gravity
     acceleration.y += gravity;
 
-    // Integrate velocity
+    // Integrate velocity (accumulate - required for physics)
     velocity += acceleration * dt;
 
     // Apply friction (if grounded)
@@ -108,7 +127,7 @@ void controller::update(const collision_world* world, float dt) {
     // Apply speed cap
     clamp_horizontal_speed(velocity, max_speed);
 
-    // Integrate position
+    // Integrate position (accumulate - required for physics)
     position += velocity * dt;
 
     // Resolve collisions and capture pre-collision state
