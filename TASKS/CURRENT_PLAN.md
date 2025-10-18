@@ -1,15 +1,24 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Buffer Creation
+**Status:** 🔧 Refinement - Embedded Tests
+**Started:** 2025-10-18
+**Branch:** refine/embedded_tests
+**Path:** A (trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Remove test logic from runtime initialization
+**Location:** @TASKS/PLANS/REFINE_embedded_tests.md
+**Principle:** Principled Development, Composable Functions
+**Approach:** Delete
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 1 (Core): 95% → 95.5% (+0.5%)
+- Overall: 96.5% → 97% (+0.5%)
 
 ---
 
