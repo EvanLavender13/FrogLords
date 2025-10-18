@@ -81,21 +81,20 @@ void wireframe_renderer::draw(const foundation::wireframe_mesh& mesh, const came
         indices.push_back(static_cast<uint16_t>(e.v1));
     }
 
-    // Update persistent dynamic buffers with this mesh's data
-    sg_update_buffer(dynamic_vertex_buffer, &(sg_range){
-        .ptr = mesh.vertices.data(),
-        .size = mesh.vertices.size() * sizeof(glm::vec3)
-    });
+    // Append this mesh's data to dynamic buffers (allows multiple draws per frame)
+    // NOTE: Future optimization - batching API (begin/draw/end) with single update + offsets
+    sg_range vertex_data = {mesh.vertices.data(), mesh.vertices.size() * sizeof(glm::vec3)};
+    int vb_offset = sg_append_buffer(dynamic_vertex_buffer, &vertex_data);
 
-    sg_update_buffer(dynamic_index_buffer, &(sg_range){
-        .ptr = indices.data(),
-        .size = indices.size() * sizeof(uint16_t)
-    });
+    sg_range index_data = {indices.data(), indices.size() * sizeof(uint16_t)};
+    int ib_offset = sg_append_buffer(dynamic_index_buffer, &index_data);
 
-    // Bind persistent buffers
+    // Bind persistent buffers with offsets to this mesh's data
     sg_bindings draw_bindings = {};
     draw_bindings.vertex_buffers[0] = dynamic_vertex_buffer;
+    draw_bindings.vertex_buffer_offsets[0] = vb_offset;
     draw_bindings.index_buffer = dynamic_index_buffer;
+    draw_bindings.index_buffer_offset = ib_offset;
 
     sg_apply_pipeline(pipeline);
     sg_apply_bindings(&draw_bindings);
