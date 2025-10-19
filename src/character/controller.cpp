@@ -44,6 +44,9 @@ controller::controller()
     FL_PRECONDITION(walk_threshold < run_threshold,
                     "walk_threshold must be less than run_threshold to define distinct states");
 
+    // Validate dash parameters (prevent division by zero in debug viz)
+    FL_PRECONDITION(dash_cooldown > 0.0f, "dash_cooldown must be positive");
+
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
@@ -104,6 +107,17 @@ void controller::apply_input(const controller_input_params& input_params,
         // Store buffered input for next valid grounded frame
         jump_buffer_timer = jump_buffer_window;
     }
+
+    // Dash: Apply instant impulse if grounded and cooldown ready
+    // Impulse is added directly to velocity (allows exceeding max_speed)
+    // Friction naturally decelerates back to max_speed over time
+    bool dash_input = input_params.dash_pressed;
+    bool can_dash_now = is_grounded && dash_timer <= 0.0f;
+
+    if (dash_input && can_dash_now) {
+        velocity += input_direction * dash_impulse;
+        dash_timer = dash_cooldown; // Start cooldown
+    }
 }
 
 void controller::update(const collision_world* world, float dt) {
@@ -146,6 +160,8 @@ void controller::update(const collision_world* world, float dt) {
     }
 
     // Apply speed cap
+    // NOTE: Hard clamp prevents dash from working properly (see DASH_SYSTEM.md GRAYBOX/RESULTS)
+    // Need speed-dependent friction instead of hard clamp to allow temporary overspeed
     clamp_horizontal_speed(velocity, max_speed);
 
     // Integrate position (accumulate - required for physics)
@@ -188,6 +204,9 @@ void controller::update(const collision_world* world, float dt) {
         coyote_timer += dt; // Accumulate time since leaving ground
     }
     jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
+
+    // Update dash cooldown timer (frame-rate independent decay)
+    dash_timer = std::max(0.0f, dash_timer - dt);
 
     // Update locomotion state (speed classification + phase calculation)
     // Phase is an OUTPUT computed from movement, never drives physics

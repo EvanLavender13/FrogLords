@@ -4,7 +4,7 @@
 **Started:** 2025-10-19
 **Branch:** system/dash
 **Complexity:** Small (3-5 points)
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX Complete → User Testing
 
 ---
 
@@ -15,7 +15,7 @@
 **Layer:** 4
 **Foundation:** 99%+
 **Complexity:** Small (3-5 points)
-**Next:** GRAYBOX
+**Next:** User testing, then ITERATE or defer
 
 **Dependencies:**
 - Controller: 97%

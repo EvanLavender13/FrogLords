@@ -32,6 +32,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
     input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
+    input_params.dash_pressed = input::is_key_pressed(SAPP_KEYCODE_LEFT_SHIFT);
 
     // Construct camera input params
     controller::camera_input_params cam_params;

@@ -13,6 +13,7 @@ struct controller {
     struct controller_input_params {
         glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
         bool jump_pressed;        // True on frame of jump press
+        bool dash_pressed;        // True on frame of dash press
     };
 
     // Collision volumes
@@ -62,6 +63,9 @@ struct controller {
     // Jump timing forgiveness
     float coyote_timer = 0.0f;      // Time since leaving ground (for coyote time)
     float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
+
+    // Dash state
+    float dash_timer = 0.0f; // Time remaining until next dash available (cooldown)
 
     // Tunable parameters
     // CALCULATED: Ground acceleration (derived from tuning.h defaults)
@@ -122,6 +126,18 @@ struct controller {
     // Used in: apply_input (lines 40, 77) for buffered jump handling
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
+    // TUNED: Dash impulse - instant velocity boost magnitude
+    // Applied directly to velocity in input direction
+    // Higher values = stronger burst, longer time to decelerate
+    // Used in: apply_input for dash mechanic
+    float dash_impulse = 6.0f; // m/s (velocity boost)
+
+    // TUNED: Dash cooldown - time between dash uses
+    // Prevents spam while allowing fluid movement
+    // Industry standard: 0.5-1.5s (depends on game feel)
+    // Used in: apply_input to reset timer, update to decay timer
+    float dash_cooldown = 0.8f; // seconds
+
     // Locomotion state (speed tiers + phase for cyclic motion)
     enum class locomotion_speed_state { walk, run, sprint };
 
@@ -151,6 +167,9 @@ struct controller {
     void apply_input(const controller_input_params& input_params,
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
+
+    // Query helper for dash availability (used by debug viz)
+    bool can_dash() const { return is_grounded && dash_timer <= 0.0f; }
 
   private:
     // Pure function: map state → cycle length (INTERNAL USE ONLY)
