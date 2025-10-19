@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-19
 **Previous:** [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md)
-**Status:** In Progress
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -77,17 +77,17 @@
   - Verified: Invalid states fail fast in debug builds
   - Commit: 236b78f
 
-- [ ] Documentation/code alignment (wheel size)
+- [x] Documentation/code alignment (wheel size)
   - Decision: Keep code, update docs - sprint=largest wheel is correct
   - Rationale: Faster gaits have longer strides (walk=2m, run=3m, sprint=4m). Larger wheel = longer stride. Physically accurate.
-  - Update: SYSTEM.md needs correction (currently says sprint=smallest)
-  - Commit: [Pending - docs update]
+  - Update: Fixed SYSTEM.md references (lines 69, 158, 310)
+  - Commit: 88e960f
 
-- [ ] Float precision decision documented
+- [x] Float precision decision documented
   - Decision: ACCEPT LIMITATION - precision loss at ~1e7 meters (10,000 km) is acceptable
   - Rationale: Typical gameplay doesn't involve 10,000 km of continuous movement. If needed, distance can be reset during level transitions. Cost of double or periodic reset exceeds benefit.
-  - Update: Document in SYSTEM.md mathematical foundation
-  - Commit: [Pending - docs update]
+  - Update: Documented in SYSTEM.md mathematical foundation (line 146)
+  - Commit: 88e960f
 
 **Baseline from ITERATION_1 (must preserve):**
 - Frame-rate independence (distance += speed * dt)
@@ -99,5 +99,90 @@
 - Collision handling (post-resolution velocity)
 
 <!-- END: ITERATE/CONTRACT -->
+
+---
+
+<!-- BEGIN: ITERATE/PLAYTEST_1 -->
+### Playtest 1
+
+**Date:** 2025-10-19
+**Tester:** User
+
+**Results:** ✅ ALL PASS (5/5 categories)
+
+**Output Contract (cycle_length in struct):**
+- ✅ Debug panel displays "Cycle Length" value correctly
+- ✅ Cycle length changes when transitioning states (walk=2m, run=3m, sprint=4m)
+- ✅ Values match the current locomotion state
+
+**Phase Discontinuity (correct behavior):**
+- ✅ Phase value jumps on state transitions (expected behavior)
+- ✅ Wheel rotation angle appears continuous despite phase value change
+- ✅ Behavior is mathematically correct (distance preserved, phase recalculates)
+
+**Wheel Size Visualization:**
+- ✅ Walk state: Smallest wheel (2m) - visually clear
+- ✅ Run state: Medium wheel (3m) - visually clear
+- ✅ Sprint state: Largest wheel (4m) - visually clear
+- ✅ Size progression matches stride length (faster = larger)
+
+**Assertions (debug build stability):**
+- ✅ Game starts without assertion failure (threshold ordering validated)
+- ✅ Normal movement doesn't trigger assertions
+- ✅ State transitions don't trigger assertions
+- ✅ All new preconditions/postconditions pass
+
+**Baseline Functionality:**
+- ✅ All 3 states reachable (walk<3, run 3-6, sprint≥6 m/s)
+- ✅ Phase wraps 0→1 smoothly
+- ✅ Wheel rotates with movement
+- ✅ Color coding works (green/yellow/red)
+- ✅ All ITERATION_1 functionality preserved
+
+**Violations:** None
+
+**Emergent:**
+- Phase discontinuity on state change is subtle but observable in debug panel
+- Visual wheel continuity makes the mathematical behavior feel correct
+- Larger wheels for faster states reinforces the "longer stride" concept
+
+**Status:** ✅ ALL VIOLATIONS FIXED, CONTRACT PROVEN
+<!-- END: ITERATE/PLAYTEST_1 -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Violations Fixed:** 6/6 from ITERATION_1 external review
+1. Phase continuity - RESOLVED: Accepted discontinuity as correct (distance is source of truth)
+2. Output contract - FIXED: Added cycle_length to locomotion_state struct
+3. Threshold ordering - FIXED: Added FL_PRECONDITION in constructor
+4. Silent enum fallback - FIXED: Replaced with FL_ASSERT (fail fast)
+5. Documentation mismatch - FIXED: Updated SYSTEM.md (sprint=largest wheel)
+6. Float precision - RESOLVED: Documented acceptable limitation (1e7m)
+
+**Code Changes:**
+- controller.h: Restructured locomotion_state output (cycle_length added, distance_traveled moved to internal)
+- controller.cpp: Added threshold ordering assertion, fail-fast assertion, phase recalculation comments
+- character_panel.cpp: Updated GUI to read from new struct layout
+- SYSTEM.md: Fixed wheel size descriptions, documented all decisions
+
+**Assertions:** 2 added (threshold ordering, invalid state detection)
+- FL_PRECONDITION(walk_threshold < run_threshold) - controller.cpp:44
+- FL_ASSERT(false, "invalid locomotion_speed_state") - controller.cpp:241
+
+**Playtests:** 1 (20/20 items passed, 0 violations)
+
+**Status:**
+- [x] All violations addressed
+- [x] Contract proven through playtest
+- [x] Stable (no crashes, no assertion failures)
+- [x] Documentation aligned with code
+- [x] Ready for VALIDATE
+
+<!-- END: ITERATE/COMPLETE -->
 
 ---
