@@ -19,6 +19,12 @@ Delete until only insight remains. State facts once. Stop when done.
 
 The principles judge your work the same way they judge the code.
 
+## Coding Conventions
+
+@CONVENTIONS.md
+
+Standards that enforce principles in code. snake_case everywhere. Debug assertions in foundations. Comments explain why.
+
 ## Active Work
 
 The current refinement or system build in progress:

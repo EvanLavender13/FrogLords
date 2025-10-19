@@ -99,17 +99,19 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 **Get a second opinion before executing:**
 
-Use Codex to validate the approach. Direct it to read `TASKS/PLANS/REFINE_<name>.md` and `PRINCIPLES.md` for context.
+Use Codex to validate the approach.
 
 ```bash
-echo "your validation question" | codex e 2>/dev/null
+echo "@TASKS/PLANS/REFINE_<name>.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]" | codex e 2>/dev/null
 ```
 
 **Evaluate feedback:**
 - Concerns raised? Revise plan
 - Alternative suggested? Consider it
 - Need clarification? Continue the conversation with `codex e resume --last`
+- **Changes made?** Request at least 1 review of revised plan
 - Validation confirms? Proceed
+- **Process cycling?** Consider radical simplification instead
 
 **Rule:** Certainty through convergence. When independent analyses agree, confidence increases.
 

@@ -1,14 +1,14 @@
 # AUDIT - Find Principle Violations
 
-**Make the invisible visible.**
+**Leverage AI analysis. Synthesize truth.**
 
 ---
 
 ## Purpose
 
-Examine the codebase against the six principles. Document violations in `TASKS/BACKLOG_REFINEMENTS.md`.
+Use Gemini and Codex to examine the codebase against the six principles. Synthesize their findings into actionable violations in `TASKS/BACKLOG_REFINEMENTS.md`.
 
-**Not pattern matching. Understanding.**
+**Not manual scanning. Distributed analysis.**
 
 ---
 
@@ -17,94 +17,62 @@ Examine the codebase against the six principles. Document violations in `TASKS/B
 - Foundation ≥70% stable
 - Between system builds
 - `TASKS/BACKLOG_REFINEMENTS.md` exists
+- Gemini CLI and Codex CLI available
 
 ---
 
 ## Process
 
-### 1. Identify Systems to Audit
+### 1. Launch Parallel Audits
 
-List all major systems/components:
+Use both tools with principles and conventions as context. Craft your audit prompt based on:
+- Current foundation status
+- Known problem areas
+- Backlog contents
+- Recent changes
+
+**Gemini (massive context):**
 ```bash
-# Find all headers in src/
-find src/ -name "*.h" -o -name "*.hpp"
-
-# Find all implementation files
-find src/ -name "*.cpp" -o -name "*.c"
-
-# Check directory structure
-tree src/ -L 2
+gemini -p "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" > audit_gemini.txt
 ```
 
-**Focus on:**
-- Core systems (physics, input, rendering)
-- Large files (>300 lines)
-- Recently modified files
-- Files with many dependencies
+**Codex (independent opinion):**
+```bash
+echo "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" | codex e 2>/dev/null > audit_codex.txt
+```
+
+**Note**: Codex can resume with `codex e resume --last 2>/dev/null` for follow-up questions.
+
+**Your audit prompt should:**
+- Reference the six principles explicitly
+- Specify what you're looking for (violations, patterns, specific principles)
+- Define the output format you want
+- Be tailored to current codebase state
 
 ---
 
-### 2. Question Claimed Certainty
+### 2. Synthesize Findings
 
-Before examining code, read current metrics:
-- `DEPENDENCY_STACK.md` - What percentages are claimed?
-- `BACKLOG_REFINEMENTS.md` - What's considered "fixed"?
+**Read both outputs:**
+- `audit_gemini.txt` - Gemini's comprehensive view
+- `audit_codex.txt` - Codex's independent analysis
 
-**Then ask:**
-- Are these percentages actually true?
-- Is the claimed certainty reflected in the code?
-- Did previous refinements actually fix what they claimed?
-- Are "100%" systems really perfect?
+**Identify:**
+- Convergence (both found it = high confidence)
+- Divergence (only one found it = requires validation)
+- Blind spots (what was missed)
 
-**Radical skepticism. Trust verification, not claims.**
-
----
-
-### 3. Examine Against Principles
-
-For each system/file, read and ask:
-
-**Principle 1: Radical Simplicity**
-- Can anything be deleted?
-- Can this be split into smaller pieces?
-- Does every line justify its existence?
-- Is complexity necessary or accidental?
-
-**Principle 2: Composable Functions**
-- Do functions compose cleanly?
-- Are there special cases for specific entities/states?
-- Do systems overlap in responsibility?
-- Can systems be combined without modification?
-
-**Principle 3: Mathematical Foundations**
-- Are constants derived or arbitrary?
-- Are formulas documented and proven?
-- Can behavior be predicted from equations?
-- Are there "magic numbers"?
-
-**Principle 4: Emergent Behavior**
-- Are outcomes prescribed or enabled?
-- Do systems interact to create emergence?
-- Are there hard-coded sequences?
-- Can unexpected behaviors arise?
-
-**Principle 5: Consistency**
-- Does same input produce same output?
-- Is there non-deterministic behavior?
-- Are there exceptions to rules?
-- Does the system betray player expectations?
-
-**Principle 6: Principled Development**
-- Can every decision trace to a principle?
-- Are there workarounds or hacks?
-- Is technical debt documented?
-- Are there unjustified arbitrary choices?
+**Validate:**
+- Read actual code at violation locations
+- Confirm violations are real
+- Assess actual severity based on foundation impact
+- Filter false positives
 
 ---
 
-### 4. Document Violations
+### 3. Document Violations
 
-For each violation found:
+For each validated violation in `TASKS/BACKLOG_REFINEMENTS.md`:
 
 ```markdown
 ## [Principle Name]
@@ -114,6 +82,7 @@ For each violation found:
   - Severity: [Critical|High|Medium|Low]
   - Type: [Classification]
   - Fix: [Delete|Simplify|Document] (rationale)
+  - Source: [Gemini|Codex|Both]
 ```
 
 **Severity:**
@@ -139,15 +108,19 @@ For each violation found:
 
 ---
 
-### 5. Find Patterns
+### 4. Find Patterns
 
-After documenting individual violations, look for:
+Look across violations for patterns:
 - Same violation type recurring
 - Same system causing multiple violations
-- Same root cause appearing in different places
+- Same root cause in different places
 
-Document patterns with prevention strategy:
+Use tools for pattern analysis if helpful:
+```bash
+gemini -p "@audit_gemini.txt @audit_codex.txt What patterns emerge?"
+```
 
+Document patterns:
 ```markdown
 ## Patterns
 
@@ -159,9 +132,7 @@ Document patterns with prevention strategy:
 
 ---
 
-### 6. Prioritize
-
-Order violations by impact:
+### 5. Prioritize
 
 **Priority = f(severity, foundation_impact, cascade_risk, fix_simplicity)**
 
@@ -175,33 +146,15 @@ List top priorities in backlog.
 
 ---
 
-## Common Searches (Optional)
-
-Use as starting points for investigation, not as complete audit:
-
-```bash
-# Large files (complexity indicator)
-find src/ -name "*.cpp" -o -name "*.c" | xargs wc -l | sort -rn | head -20
-
-# TODO/FIXME comments (deferred decisions)
-grep -r "TODO\|FIXME\|XXX\|HACK" src/ --include="*.cpp" --include="*.h"
-
-# Magic numbers (unexplained constants)
-grep -rE "\b[0-9]+\.[0-9]+\b|\b[2-9][0-9]+\b" src/ --include="*.cpp" --include="*.h" | grep -v "//"
-```
-
-**These find potential violations. Still requires reading and understanding.**
-
----
-
 ## Exit Criteria
 
-- Major systems examined against all six principles
+- Both tools have audited the codebase
+- Findings synthesized and validated
 - Violations documented in backlog
 - Patterns identified
 - Priorities assigned
 
-**Not "all searches run" but "codebase understood."**
+**Not "both tools ran" but "findings validated and actionable."**
 
 ---
 
@@ -211,12 +164,12 @@ grep -rE "\b[0-9]+\.[0-9]+\b|\b[2-9][0-9]+\b" src/ --include="*.cpp" --include="
 
 ---
 
-## The True Nature of Audits
+## The Philosophy
 
-**Bad audit**: Run predetermined searches, find nothing, declare success.
+**Analysis**: Tools examine code at scale
+**Synthesis**: Human validates and filters
+**Action**: Backlog items trace violations to fixes
 
-**Good audit**: Understand the system, compare to principles, find what's actually wrong.
+Tools provide perspective. You provide judgment.
 
-Violations accumulate in the gaps between what you search for. The only defense is comprehension.
-
-**Read. Understand. Compare. Document.**
+**Distribute work. Synthesize truth. Act on certainty.**
