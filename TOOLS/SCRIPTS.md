@@ -25,6 +25,21 @@ bash scripts/bash/dev.sh --all        # Clean, configure, build, run
 
 All call Windows `.exe` binaries. All require compile database except format.
 
+## AI Tools
+
+**codex.sh** - Codex CLI wrapper for second opinions
+```bash
+bash scripts/bash/codex.sh "your question"
+bash scripts/bash/codex.sh --resume "follow-up"  # Continue session
+```
+
+**gemini.sh** - Gemini CLI wrapper for extended context analysis
+```bash
+bash scripts/bash/gemini.sh "your question"
+bash scripts/bash/gemini.sh "@src/physics/ Analyze spring-damper implementation"
+bash scripts/bash/gemini.sh "@./ Find accumulated state anti-patterns"
+```
+
 ## Workflow
 
 **One-time setup:**

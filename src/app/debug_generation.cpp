@@ -108,6 +108,20 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
 
     foundation::wireframe_mesh body_mesh = foundation::generate_box({0.4f, 0.8f, 0.3f});
 
+    // Color-code character body by locomotion state
+    glm::vec4 body_color;
+    switch (character.locomotion.state) {
+    case controller::locomotion_speed_state::walk:
+        body_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
+        break;
+    case controller::locomotion_speed_state::run:
+        body_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
+        break;
+    case controller::locomotion_speed_state::sprint:
+        body_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
+        break;
+    }
+
     // Manually transform the vertices and add them as debug lines
 
     for (const auto& edge : body_mesh.edges) {
@@ -116,8 +130,78 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
 
         glm::vec3 v1 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v1], 1.0f));
 
-        list.lines.push_back(debug::debug_line{v0, v1, {1.0f, 0.2f, 1.0f, 1.0f}});
+        list.lines.push_back(debug::debug_line{v0, v1, body_color});
     }
+}
+
+void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
+                                        const controller& character,
+                                        const character_reactive_systems& visuals) {
+    // Surveyor wheel visualization (David Rosen GDC technique)
+    // Shows phase (rotation) and cycle length (size) for distance-based cyclic motion
+    // Wheel is vertical like a bicycle wheel, axis perpendicular to movement direction
+
+    glm::vec3 wheel_center = character.position; // Centered on character
+
+    // Wheel radius scales with cycle length (from locomotion_state output)
+    float cycle_length = character.locomotion.cycle_length;
+    float wheel_radius = cycle_length * 0.25f;
+
+    // Wheel rotation based on distance traveled (not phase) for visual continuity
+    // Phase recalculates on state change, but distance is continuous
+    // rotation_angle = distance / radius (standard wheel physics)
+    // Negate for correct forward roll direction
+    float rotation_angle = -(character.distance_traveled / wheel_radius);
+
+    // Get character facing direction from orientation system
+    float yaw = visuals.orientation.get_yaw();
+    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
+    glm::vec3 right_dir = glm::normalize(glm::cross(math::UP, forward_dir));
+
+    // Draw circle (vertical, in forward-up plane like a bicycle wheel)
+    constexpr int circle_segments = 24;
+    glm::vec4 circle_color = {1.0f, 1.0f, 1.0f, 0.8f}; // White
+
+    for (int i = 0; i < circle_segments; ++i) {
+        float angle0 = (static_cast<float>(i) / circle_segments) * 2.0f * glm::pi<float>();
+        float angle1 = (static_cast<float>(i + 1) / circle_segments) * 2.0f * glm::pi<float>();
+
+        // Circle in forward-up plane (rotates around right_dir axis)
+        glm::vec3 p0 = wheel_center + forward_dir * std::cos(angle0) * wheel_radius +
+                       math::UP * std::sin(angle0) * wheel_radius;
+        glm::vec3 p1 = wheel_center + forward_dir * std::cos(angle1) * wheel_radius +
+                       math::UP * std::sin(angle1) * wheel_radius;
+
+        list.lines.push_back(debug::debug_line{p0, p1, circle_color});
+    }
+
+    // Draw "+" cross rotated by phase (rolling around right_dir axis)
+    glm::vec4 cross_color;
+    switch (character.locomotion.state) {
+    case controller::locomotion_speed_state::walk:
+        cross_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
+        break;
+    case controller::locomotion_speed_state::run:
+        cross_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
+        break;
+    case controller::locomotion_speed_state::sprint:
+        cross_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
+        break;
+    }
+
+    // First spoke (rotated by phase around right_dir axis, in forward-up plane)
+    glm::vec3 spoke1_dir =
+        forward_dir * std::cos(rotation_angle) + math::UP * std::sin(rotation_angle);
+    glm::vec3 s1_0 = wheel_center + spoke1_dir * wheel_radius;
+    glm::vec3 s1_1 = wheel_center - spoke1_dir * wheel_radius;
+    list.lines.push_back(debug::debug_line{s1_0, s1_1, cross_color});
+
+    // Perpendicular spoke (90° offset)
+    glm::vec3 spoke2_dir = forward_dir * std::cos(rotation_angle + glm::pi<float>() / 2.0f) +
+                           math::UP * std::sin(rotation_angle + glm::pi<float>() / 2.0f);
+    glm::vec3 s2_0 = wheel_center + spoke2_dir * wheel_radius;
+    glm::vec3 s2_1 = wheel_center - spoke2_dir * wheel_radius;
+    list.lines.push_back(debug::debug_line{s2_0, s2_1, cross_color});
 }
 
 void generate_collision_state_primitives(debug::debug_primitive_list& list,
@@ -222,6 +306,7 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_character_state_primitives(list, world.character, world.character_visuals);
     generate_physics_springs_primitives(list, world.character, world.character_visuals);
     generate_character_body_primitives(list, world.character, world.character_visuals);
+    generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);

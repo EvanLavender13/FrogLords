@@ -12,7 +12,7 @@
 ```
 Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
-Layer 4: VARIATION       [55%] ← ✅ BUILDING (1 system complete)
+Layer 4: VARIATION       [74%] ← ✅ BUILDING (2 systems complete)
     ↓
 Layer 3: SYSTEMS         [98%+] ← ✅ TARGET EXCEEDED
     ↓
@@ -21,7 +21,7 @@ Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
 Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.98 × 1.00 × 0.98 × 0.55 = **52.8% survival**
+**Cascade:** 0.98 × 1.00 × 0.98 × 0.74 = **71.0% survival**
 
 **Target exceeded:** Foundation at 98%, ready for Layer 4 variation
 
@@ -78,27 +78,28 @@ Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 
 ---
 
-## Layer 4: VARIATION (55%)
+## Layer 4: VARIATION (74%)
 
-**Status:** ✅ **BUILDING** - 1 system complete
+**Status:** ✅ **BUILDING** - 2 systems complete
 
-**Certainty:** 55%
+**Certainty:** 74%
 **Last Updated:** 2025-10-19
 
 **Systems at this layer:**
 - **Wall Sliding** (principle avg: 9.3/10 = 93%)
+- **Walk/Run Speed States** (principle avg: 8.7/10 = 87%)
 
 **Layer calculation:**
-93% / 1 system = 93% (limited by single system, will average down as more systems added)
-Conservative estimate: 55% (accounting for breadth needed)
+(93% + 87%) / 2 systems = 90% actual
+Conservative estimate: 74% (accounting for breadth needed - 2-3 more systems to 95%)
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Wall Sliding | 93% | ✅ Complete | `foundation/collision.{h,cpp}` |
+| Walk/Run Speed States | 87% | ✅ Complete | `character/controller.{h,cpp}` |
 
 **Ready to build:**
 - Skeletal Animation System (5-8 points)
-- Walk/Run Speed States (3-5 points)
 - Dash Mechanic (3-5 points)
 - IK Systems (8 points - requires skeletal animation)
 
@@ -161,12 +162,11 @@ Rate each system 1-10 on these criteria:
 ## Next Actions
 
 **To reach 95% Layer 4:**
-1. Build 3-4 more variation systems (currently 1/4-5)
+1. Build 2-3 more variation systems (currently 2/4-5)
 2. Each system should score ≥8.5/10 average
 
 **Systems now buildable:**
 - Skeletal Animation System (5-8 points) - No new dependencies
-- Walk/Run Speed States (3-5 points) - No new dependencies
 - Dash Mechanic (3-5 points) - No new dependencies
 
 ---

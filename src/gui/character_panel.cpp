@@ -89,6 +89,37 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
                           visuals.orientation.yaw_spring.get_velocity());
     }
 
+    // Locomotion State (speed tiers + phase for cyclic motion)
+    if (ImGui::CollapsingHeader("Locomotion State")) {
+        // State name
+        const char* state_name = "UNKNOWN";
+        switch (character.locomotion.state) {
+        case controller::locomotion_speed_state::walk:
+            state_name = "WALK";
+            break;
+        case controller::locomotion_speed_state::run:
+            state_name = "RUN";
+            break;
+        case controller::locomotion_speed_state::sprint:
+            state_name = "SPRINT";
+            break;
+        }
+        gui::widget::text("State: %s", state_name);
+
+        // Horizontal speed
+        float speed = glm::length(glm::vec3(character.velocity.x, 0.0f, character.velocity.z));
+        gui::widget::text("Speed: %.2f m/s", speed);
+
+        // Phase (0-1)
+        gui::widget::text("Phase: %.3f", character.locomotion.phase);
+
+        // Cycle length (from locomotion_state output)
+        gui::widget::text("Cycle Length: %.2f m", character.locomotion.cycle_length);
+
+        // Distance traveled (internal state on controller)
+        gui::widget::text("Distance Traveled: %.2f m", character.distance_traveled);
+    }
+
     return commands;
 }
 

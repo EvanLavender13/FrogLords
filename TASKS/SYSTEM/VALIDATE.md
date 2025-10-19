@@ -21,54 +21,24 @@ Score system against principles. External validation. Approve, revise, or reject
 
 ## Process
 
-### 1. Score Principles
-
-In current iteration doc (`PLANS/<name>_ITERATION_<N>.md`) — add:
-
-```markdown
-<!-- BEGIN: VALIDATE/SCORES -->
-## Principle Scores
-
-**[Principle Name]:** __/10
-- [Key question]
-- Evidence: [what supports this score]
-
-[Repeat for each principle in PRINCIPLES.md]
-
-**Average:** __/10
-<!-- END: VALIDATE/SCORES -->
-```
-
-**Scoring:**
-- 10: Exemplary
-- 7-9: Good
-- 4-6: Issues
-- 1-3: Violations
-
----
-
-### 2. External Review
+### 1. External Review
 
 **Independent principle evaluation.**
 
-**Note:** This may take 30-60 seconds. Sit back and chill - thorough review takes time.
-
 ```bash
-echo "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/foundation/<relevant>.cpp [your validation question]" | codex e 2>/dev/null
+bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/foundation/<relevant>.cpp [your validation question]"
 ```
+
+**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
+
+**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
 
 **Continue conversation if needed:**
 ```bash
-echo "[follow-up question]" | codex e resume --last 2>/dev/null
+bash scripts/bash/codex.sh --resume "[follow-up question]"
 ```
 
-**Synthesize:**
-- Compare external evaluation with self-scores
-- Adjust scores based on evidence
-- Identify missed violations
-- Make final decision
-
-**Document review** in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+**After user confirms completion,** retrieve results and document review in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/REVIEW -->
@@ -77,18 +47,19 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 **Tool:** Codex | Gemini
 **Date:** YYYY-MM-DD
 
-**Feedback:**
-- [Key points from review]
-- [Score adjustments made]
-- [Violations identified]
+**Scores:**
+[Codex/Gemini scores for each principle]
 
-**Final scores:** [adjusted scores]
+**Critical Violations Identified:**
+- [List of violations with evidence]
+
+**Final Average:** [score]/10
 <!-- END: VALIDATE/REVIEW -->
 ```
 
 ---
 
-### 3. Make Decision
+### 2. Make Decision
 
 **Thresholds:**
 - Average ≥7.0 + all ≥6 = **APPROVED**
@@ -117,24 +88,24 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 ---
 
-### 4. Branch on Decision
+### 3. Branch on Decision
 
 **Decision made?** → Follow the appropriate path:
 
 **If APPROVED:**
-- → Continue to Step 5 (Write Unit Tests)
+- → Continue to Step 4 (Write Unit Tests)
 
 **If REVISE:**
-- → Skip to Step 7 (Commit)
+- → Skip to Step 6 (Commit)
 - → Return to ITERATE with required changes
 
 **If REJECT:**
-- → Skip to Step 7 (Commit)
+- → Skip to Step 6 (Commit)
 - → Document learning and discuss next steps
 
 ---
 
-### 5. Write Unit Tests (APPROVED only)
+### 4. Write Unit Tests (APPROVED only)
 
 **Foundation/primitive code only.** High-level systems use debug assertions.
 
@@ -165,7 +136,7 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 ---
 
-### 6. Document Emergence (APPROVED only)
+### 5. Document Emergence (APPROVED only)
 
 In iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
@@ -186,7 +157,7 @@ In iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ---
 
-### 7. Update Status and Commit
+### 6. Update Status and Commit
 
 Update iteration doc status:
 ```markdown
@@ -215,7 +186,6 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ## Outputs
 
-- [ ] Principles scored
 - [ ] External review completed
 - [ ] Decision made
 - [ ] Unit tests written (APPROVED only, foundation code only)

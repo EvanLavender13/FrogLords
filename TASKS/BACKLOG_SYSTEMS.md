@@ -9,11 +9,6 @@
 
 ## Movement & Character
 
-**Walk/Run Speed States**
-- Multiple speed tiers (walk, run, sprint)
-- Smooth transitions between states
-- Input-driven state selection
-
 **Dash Mechanic**
 - Burst movement in input direction
 - Cooldown/resource management

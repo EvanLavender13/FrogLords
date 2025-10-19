@@ -52,7 +52,26 @@ Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
 
 ---
 
-### 3. Classify Complexity
+### 3. Gather References
+
+**FULL STOP: Ask the user what they actually want.**
+
+Before classifying complexity or creating the plan, collect context that informs the implementation:
+
+**Prompt the user:**
+- Technical documentation? (APIs, papers, articles, specs)
+- Visual references? (screenshots, videos, diagrams, mockups)
+- Inspiration/prior art? (how other games/systems solved this)
+- Research findings? (what you've already investigated)
+- Constraints or requirements? (specific behavior expectations)
+
+**Document everything provided.** This section informs complexity classification and graybox implementation.
+
+---
+
+### 4. Classify Complexity
+
+**References inform this assessment. A well-documented reference may simplify. An unknown may complicate.**
 
 **Small (1-3 pts):** Single primitive, clear math, minimal integration
 - Examples: New camera mode, simple collision shape, basic particle effect
@@ -65,7 +84,7 @@ Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
 
 ---
 
-### 4. Create Plan
+### 5. Create Plan
 
 Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
@@ -84,6 +103,28 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 **Foundation:** [%]
 **Complexity:** Small | Medium | Large
 <!-- END: SELECT/SELECTED -->
+
+---
+
+<!-- BEGIN: SELECT/REFERENCES -->
+## References
+
+**Technical documentation:**
+- [APIs, papers, articles, specs]
+
+**Visual references:**
+- [Screenshots, videos, diagrams, mockups]
+
+**Inspiration/Prior art:**
+- [How other games/systems solved this]
+- [What worked, what didn't]
+
+**Research findings:**
+- [Key insights from investigation]
+
+**Constraints/Requirements:**
+- [Specific behavior expectations]
+<!-- END: SELECT/REFERENCES -->
 
 ---
 
@@ -152,7 +193,7 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ---
 
-### 5. Update Current Plan
+### 6. Update Current Plan
 
 Update `TASKS/CURRENT_PLAN.md`:
 
@@ -189,7 +230,7 @@ Update `TASKS/CURRENT_PLAN.md`:
 
 ---
 
-### 6. Create Branch
+### 7. Create Branch
 
 ```bash
 git checkout -b system/<name>
@@ -210,7 +251,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ## Outputs
 
 - [ ] System selected
-- [ ] Complexity classified
+- [ ] References gathered from user
+- [ ] Complexity classified (informed by references)
 - [ ] `PLANS/<name>_SYSTEM.md` created
 - [ ] `CURRENT_PLAN.md` updated
 - [ ] Branch created

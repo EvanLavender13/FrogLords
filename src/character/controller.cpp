@@ -1,6 +1,7 @@
 #include "character/controller.h"
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
+#include "foundation/debug_assert.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
@@ -37,7 +38,12 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , ground_normal(math::UP) {
+    , ground_normal(math::UP)
+    , locomotion{locomotion_speed_state::walk, 0.0f, walk_cycle_length} {
+    // Validate threshold ordering (prevents state collapse)
+    FL_PRECONDITION(walk_threshold < run_threshold,
+                    "walk_threshold must be less than run_threshold to define distinct states");
+
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
@@ -101,6 +107,9 @@ void controller::apply_input(const controller_input_params& input_params,
 }
 
 void controller::update(const collision_world* world, float dt) {
+    FL_PRECONDITION(dt > 0.0f, "dt must be positive for frame-rate independence");
+    FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
+
     // Physics integration using semi-implicit Euler method (Symplectic Euler):
     //
     // Integration order:
@@ -180,9 +189,55 @@ void controller::update(const collision_world* world, float dt) {
     }
     jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
 
+    // Update locomotion state (speed classification + phase calculation)
+    // Phase is an OUTPUT computed from movement, never drives physics
+    float speed = glm::length(math::project_to_horizontal(velocity));
+    FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
+    FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
+
+    // Classify speed into discrete locomotion states
+    if (speed < walk_threshold) {
+        locomotion.state = locomotion_speed_state::walk;
+    } else if (speed < run_threshold) {
+        locomotion.state = locomotion_speed_state::run;
+    } else {
+        locomotion.state = locomotion_speed_state::sprint;
+    }
+
+    // Accumulate distance traveled (frame-rate independent)
+    // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
+    distance_traveled += speed * dt;
+    FL_POSTCONDITION(std::isfinite(distance_traveled),
+                     "distance_traveled must remain finite");
+
+    // Calculate phase (0-1 normalized position within cycle)
+    // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
+    // When state changes → cycle_length changes → phase recalculates from same distance
+    // This causes phase value to jump, but preserves physical correctness
+    // (the surveyor wheel re-scales, distance/rotation is preserved)
+    locomotion.cycle_length = get_cycle_length(locomotion.state);
+    FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
+    locomotion.phase = std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
+    FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
+                     "phase must be in [0, 1) range");
+
     // Save acceleration for animation system (before reset)
     last_acceleration = acceleration;
 
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
+}
+
+float controller::get_cycle_length(locomotion_speed_state state) const {
+    switch (state) {
+    case locomotion_speed_state::walk:
+        return walk_cycle_length;
+    case locomotion_speed_state::run:
+        return run_cycle_length;
+    case locomotion_speed_state::sprint:
+        return sprint_cycle_length;
+    }
+    // Should never reach here - all enum values handled
+    FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
+    return walk_cycle_length; // Unreachable, but satisfies compiler
 }
