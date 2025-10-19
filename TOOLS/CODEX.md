@@ -14,13 +14,41 @@ When complexity demands validation, use the tool built for rapid analysis. The C
 
 ## The Syntax
 
-**IMPORTANT**: Codex reads from stdin. You must pipe the prompt in using `echo`:
+**IMPORTANT**: Codex reads from stdin. You must pipe the prompt in using `echo`.
 
+The `@` symbol includes file or directory contents in the analysis, just like Gemini.
+
+**Single file:**
+```bash
+echo "@src/physics/motion.cpp Explain the spring-damper implementation" | codex e 2>/dev/null
+```
+
+**Multiple files:**
+```bash
+echo "@src/player/controller.cpp @src/player/state.cpp Analyze the dual reference pattern usage" | codex e 2>/dev/null
+```
+
+**Entire directory:**
+```bash
+echo "@src/physics/ Summarize the physics system architecture" | codex e 2>/dev/null
+```
+
+**Multiple directories:**
+```bash
+echo "@src/player/ @src/physics/ Analyze how player movement integrates with physics" | codex e 2>/dev/null
+```
+
+**Current directory and below:**
+```bash
+echo "@./ Give me an overview of the entire codebase structure" | codex e 2>/dev/null
+```
+
+**Simple question without files:**
 ```bash
 echo "Does this implementation violate any SOLID principles?" | codex e 2>/dev/null
 ```
 
-**Why echo?** Direct argument passing doesn't work reliably. Always pipe the prompt via stdin.
+**Why echo?** Codex reads from stdin. Always pipe the prompt.
 
 **Why 2>/dev/null?** Suppress verbose stderr (thinking, file reads, execution traces). You want the answer, not the process.
 
@@ -34,7 +62,7 @@ echo "Does this implementation violate any SOLID principles?" | codex e 2>/dev/n
 
 **Quick Code Review**:
 ```bash
-echo "Review src/controller.cpp for potential race conditions" | codex e 2>/dev/null
+echo "@src/controller.cpp Review for potential race conditions" | codex e 2>/dev/null
 ```
 
 **Architecture Validation**:
@@ -44,17 +72,17 @@ echo "Does the current input buffering approach align with the dual reference pa
 
 **Pattern Recognition**:
 ```bash
-echo "Identify any accumulated state anti-patterns in src/player/" | codex e 2>/dev/null
+echo "@src/player/ Identify any accumulated state anti-patterns" | codex e 2>/dev/null
 ```
 
 **Mathematical Verification**:
 ```bash
-echo "Verify the spring-damper constants in motion.cpp are physically correct" | codex e 2>/dev/null
+echo "@src/physics/motion.cpp Verify the spring-damper constants are physically correct" | codex e 2>/dev/null
 ```
 
 **Principle Compliance**:
 ```bash
-echo "Does the collision system adhere to the principle of orthogonality?" | codex e 2>/dev/null
+echo "@src/collision/ Does the collision system adhere to the principle of orthogonality?" | codex e 2>/dev/null
 ```
 
 **Design Decision Analysis**:
@@ -122,7 +150,7 @@ The best tool is the one that matches the question's shape:
 
 **Before implementing**:
 ```bash
-echo "Review the approach in TASKS/PLANS/BUILD_skeletal_animation.md" | codex e 2>/dev/null
+echo "@TASKS/PLANS/BUILD_skeletal_animation.md Review the approach" | codex e 2>/dev/null
 ```
 
 **During implementation** (while working with Claude Code):
@@ -132,7 +160,7 @@ echo "Is this spring constant physically reasonable? k=200, damping=0.7" | codex
 
 **After implementation**:
 ```bash
-echo "Review src/animation/skeleton.cpp for principle violations" | codex e 2>/dev/null
+echo "@src/animation/skeleton.cpp Review for principle violations" | codex e 2>/dev/null
 ```
 
 **The cycle**: Propose → Validate → Implement → Verify
@@ -161,7 +189,7 @@ echo "comprehensive audit question" | codex e 2>/dev/null > results.txt &
 ```bash
 # Parallel analysis for convergence validation
 gemini -p "@src/ your question" > gemini_findings.txt &
-echo "your question" | codex e 2>/dev/null > codex_findings.txt &
+echo "@src/ your question" | codex e 2>/dev/null > codex_findings.txt &
 wait
 # Synthesize findings from both
 ```

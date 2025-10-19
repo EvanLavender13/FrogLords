@@ -12,8 +12,8 @@
 void game_world::init() {
     character = controller();
     character_params.apply_to(character);
-    cam = camera(character.position, orbit_config{5.0f, 15.0f, 0.0f});
-    cam.set_mode(camera_mode::FOLLOW);
+    cam = camera();
+    cam_follow = camera_follow();  // Use default values
     scn = scene();
     setup_test_level(*this);
 }
@@ -70,9 +70,17 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         }
     }
 
-    if (cam.get_mode() == camera_mode::FOLLOW) {
-        cam.follow_update(character.position, dt);
-    }
+    // Update camera position from follow controller
+    cam.set_position(cam_follow.compute_eye_position(character.position));
+    cam.set_target(cam_follow.compute_look_target(character.position));
+}
+
+void game_world::apply_camera_orbit(float delta_x, float delta_y) {
+    cam_follow.orbit(delta_x, delta_y);
+}
+
+void game_world::apply_camera_zoom(float delta) {
+    cam_follow.zoom(delta);
 }
 
 void setup_test_level(game_world& world) {

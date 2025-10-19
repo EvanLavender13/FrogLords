@@ -74,12 +74,12 @@ void app_runtime::frame() {
         if (input::is_mouse_button_down(SAPP_MOUSEBUTTON_RIGHT)) {
             float delta_x = (input::mouse_x() - last_mouse_x) * 0.5f;
             float delta_y = (input::mouse_y() - last_mouse_y) * 0.5f;
-            world.cam.orbit(-delta_x, delta_y);
+            world.apply_camera_orbit(-delta_x, delta_y);
         }
 
         float scroll_delta = input::mouse_scroll_y();
         if (scroll_delta != 0.0f) {
-            world.cam.zoom(-scroll_delta * 0.5f);
+            world.apply_camera_zoom(-scroll_delta * 0.5f);
         }
     }
 
@@ -146,7 +146,7 @@ void app_runtime::frame() {
         }
 
         // Camera section
-        gui::draw_camera_panel(camera_panel_state, world.cam);
+        gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
 
         // FPS display at bottom
         ImGui::Spacing();

@@ -4,41 +4,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "foundation/math_utils.h"
 
-enum class camera_mode {
-    ORBIT, // Rotate around fixed center
-    FOLLOW // Follow character with free rotation
-};
-
-struct orbit_config {
-    float distance = 8.0f;
-    float latitude = 15.0f;
-    float longitude = 0.0f;
-};
-
 struct clip_planes {
     float near_plane = 0.1f;
     float far_plane = 100.0f;
 };
 
+/// Camera - pure view/projection matrix generation
 class camera {
   public:
-    explicit camera(glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f), orbit_config orbit = {});
+    camera() = default;
 
-    /// Generate view matrix from current eye position
+    /// Generate view matrix from current eye position and target
     glm::mat4 get_view_matrix() const;
 
     /// Generate perspective projection matrix
     /// @param aspect_ratio Viewport width/height ratio
     glm::mat4 get_projection_matrix(float aspect_ratio) const;
 
-    /// Orbit camera around center point (Maya-style)
-    /// @param delta_x Horizontal rotation delta (screen space)
-    /// @param delta_y Vertical rotation delta (screen space)
-    void orbit(float delta_x, float delta_y);
+    /// Set camera eye position in world space
+    void set_position(const glm::vec3& pos) { eye_pos = pos; }
 
-    /// Zoom camera toward/away from center
-    /// @param delta Distance delta (positive = closer)
-    void zoom(float delta);
+    /// Set camera look-at target in world space
+    void set_target(const glm::vec3& target) { center = target; }
 
     /// Set field of view angle
     /// @param fov Field of view in degrees
@@ -66,54 +53,14 @@ class camera {
     /// Get camera yaw angle (horizontal rotation)
     float get_yaw() const;
 
-    /// Switch camera mode
-    void set_mode(camera_mode new_mode) { mode = new_mode; }
-
-    /// Get current camera mode
-    camera_mode get_mode() const { return mode; }
-
-    /// Update follow camera (call each frame when in follow mode)
-    void follow_update(const glm::vec3& target_position, float dt);
-
-    /// Set follow camera parameters
-    void set_follow_distance(float dist) { follow_distance = dist; }
-    void set_follow_height(float height) { follow_height_offset = height; }
-    void set_follow_distance_limits(float min_dist, float max_dist) {
-        min_follow_distance = min_dist;
-        max_follow_distance = max_dist;
-    }
-
-    /// Get follow camera parameters
-    float get_follow_distance() const { return follow_distance; }
-    float get_follow_height() const { return follow_height_offset; }
-
   private:
-    void update_eye_position();
-
-    glm::vec3 center;
-    glm::vec3 eye_pos;
+    glm::vec3 center = glm::vec3(0.0f);
+    glm::vec3 eye_pos = glm::vec3(0.0f, 5.0f, 10.0f);
     glm::vec3 up = math::UP;
-
-    float distance;
-    float latitude;
-    float longitude;
-
-    float min_distance = 2.0f;
-    float max_distance = 30.0f;
-    float min_latitude = -85.0f;
-    float max_latitude = 85.0f;
 
     float fov_degrees = 60.0f;
     // Use a slightly larger near plane to get better floating-point precision in the
     // depth buffer (reduces z-fighting/aliasing when rendering distant thin geometry).
     float z_near = 0.5f;
     float z_far = 100.0f;
-
-    camera_mode mode = camera_mode::ORBIT;
-
-    // Follow mode state
-    float follow_distance = 5.0f;
-    float follow_height_offset = 1.5f;
-    float min_follow_distance = 1.5f;
-    float max_follow_distance = 15.0f;
 };
