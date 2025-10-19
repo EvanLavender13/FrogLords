@@ -5,9 +5,12 @@
 
 ---
 
-## Ready for Next Task
+## Recommended Next Action
 
-**Choose next action:**
+**📊 RETRO recommended** - 5 plans completed since start
+**Run:** Review TASKS/RETRO.md and extract patterns
+
+**Or proceed with:**
 - `/REFINE/SELECT` - Pick next violation to fix
 - `/SYSTEM/SELECT` - Pick next system to build
 
