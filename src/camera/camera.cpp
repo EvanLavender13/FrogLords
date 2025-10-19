@@ -1,31 +1,4 @@
 #include "camera/camera.h"
-#include "foundation/math_utils.h"
-#include <cmath>
-#include <algorithm>
-
-namespace {
-glm::vec3 compute_spherical_position(const glm::vec3& center, float dist, float lat, float lon) {
-    float lat_rad = glm::radians(lat);
-    float lon_rad = glm::radians(lon);
-    glm::vec3 pos;
-    pos.x = center.x + dist * cosf(lat_rad) * sinf(lon_rad);
-    pos.y = center.y + dist * sinf(lat_rad);
-    pos.z = center.z + dist * cosf(lat_rad) * cosf(lon_rad);
-    return pos;
-}
-} // namespace
-
-camera::camera(glm::vec3 center, orbit_config orbit)
-    : center(center)
-    , distance(orbit.distance)
-    , latitude(orbit.latitude)
-    , longitude(orbit.longitude) {
-    update_eye_position();
-}
-
-void camera::update_eye_position() {
-    eye_pos = compute_spherical_position(center, distance, latitude, longitude);
-}
 
 glm::mat4 camera::get_view_matrix() const {
     return glm::lookAt(eye_pos, center, up);
@@ -33,28 +6,6 @@ glm::mat4 camera::get_view_matrix() const {
 
 glm::mat4 camera::get_projection_matrix(float aspect_ratio) const {
     return glm::perspective(glm::radians(fov_degrees), aspect_ratio, z_near, z_far);
-}
-
-void camera::orbit(float delta_x, float delta_y) {
-    longitude += delta_x;
-    latitude = std::clamp(latitude + delta_y, min_latitude, max_latitude);
-
-    // Wrap longitude
-    longitude = math::wrap_angle_degrees(longitude);
-
-    update_eye_position();
-}
-
-void camera::zoom(float delta) {
-    if (mode == camera_mode::FOLLOW) {
-        follow_distance =
-            std::clamp(follow_distance + delta, min_follow_distance, max_follow_distance);
-        // Recalculate eye position immediately to avoid one-frame delay
-        eye_pos = compute_spherical_position(center, follow_distance, latitude, longitude);
-    } else {
-        distance = std::clamp(distance + delta, min_distance, max_distance);
-        update_eye_position();
-    }
 }
 
 glm::vec3 camera::get_forward_horizontal() const {
@@ -73,15 +24,4 @@ glm::vec3 camera::get_right() const {
 float camera::get_yaw() const {
     glm::vec3 forward = get_forward_horizontal();
     return atan2f(forward.x, forward.z);
-}
-
-void camera::follow_update(const glm::vec3& target_position, float dt) {
-    if (mode != camera_mode::FOLLOW)
-        return;
-
-    // Update center to follow target
-    center = target_position + glm::vec3(0, follow_height_offset, 0);
-
-    // Calculate position using spherical coordinates (reuse orbit logic)
-    eye_pos = compute_spherical_position(center, follow_distance, latitude, longitude);
 }
