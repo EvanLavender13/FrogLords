@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-19
 **Previous:** [ITERATION_1.md](wall_sliding_ITERATION_1.md)
-**Status:** In Progress
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -80,5 +80,55 @@
 - [x] Radical Simplicity applied
   - Fixed (a0d88ed): Removed unused `velocity_before`/`velocity_after` debug fields
 <!-- END: ITERATE/CONTRACT -->
+
+---
+
+<!-- BEGIN: ITERATE/PLAYTEST_1 -->
+### Playtest 1
+
+**Date:** 2025-10-19
+**Tester:** User (developer)
+
+**Violations:**
+- None found
+
+**Validated:**
+- Wall sliding at various angles: smooth projection ✓
+- No velocity amplification: speed preserved or reduced ✓
+- 90° wall collision: graceful stop ✓
+- Parallel wall motion: full speed maintained ✓
+- Inside corner handling: graceful resolution ✓
+- Jump at wall: grounded state preserved ✓
+- Slope transition (45° threshold): correct floor/wall classification ✓
+- Deep penetration: no upward spikes ✓
+- Debug visualization: walls RED, floors GREEN ✓
+
+**Result:** All contract items pass
+<!-- END: ITERATE/PLAYTEST_1 -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Fixes Applied:**
+- Single Source of Truth: `max_slope_angle` → `wall_threshold` parameter (16d2e8b)
+- Degenerate contacts: `compute_face_normal()` context-aware fallback (0b6c09b)
+- Sequential iteration: Documented approach, removed unused debug fields (a0d88ed)
+
+**Validation:**
+- Mathematical properties: 5/5 validated (4 from ITERATION_1, 1 fixed)
+- Edge cases: 5/5 validated (4 from ITERATION_1, 1 fixed)
+- Consistency: 5/5 validated (3 from ITERATION_1, 2 fixed)
+- Playtests: 1 (all items pass)
+
+**Status:**
+- [x] Contract proven
+- [x] Violations fixed
+- [x] Stable
+- [x] Ready for VALIDATE
+<!-- END: ITERATE/COMPLETE -->
 
 ---
