@@ -1,15 +1,24 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Friction Model
+**Status:** 🔧 Refinement - Camera Modes
+**Started:** 2025-10-18
+**Branch:** refine/camera_modes
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Separate camera modes into orthogonal, composable components
+**Location:** @TASKS/PLANS/REFINE_camera_modes.md
+**Principle:** Composable Functions
+**Approach:** Simplify
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 1: 97% → 98% (+1%)
+- Overall: 97%+ → 98%+ (+1%)
 
 ---
 
