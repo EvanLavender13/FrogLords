@@ -186,8 +186,11 @@ Run:   ✅ Program started successfully
 - [x] Frame-rate independent (no velocity accumulation artifacts) ✓ Instantaneous projection, dt-scaled physics
 - [x] No special cases (single projection formula for all walls) ✓ project_along_wall() uniform for all
 
+<!-- END: ITERATE/CONTRACT -->
+
 ---
 
+<!-- BEGIN: ITERATE/PLAYTEST_1 -->
 ### Playtest 1
 
 **Date:** 2025-10-18
@@ -209,8 +212,7 @@ Run:   ✅ Program started successfully
 - controller.cpp: Use contacted_floor for grounding logic
 - Commit: 6b58c9a
 - ✅ VERIFIED: User confirms jump works at walls
-
-<!-- END: ITERATE/CONTRACT -->
+<!-- END: ITERATE/PLAYTEST_1 -->
 
 ---
 

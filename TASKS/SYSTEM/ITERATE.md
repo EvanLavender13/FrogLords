@@ -87,31 +87,50 @@ git reset --hard HEAD
 
 ### 3. Playtest
 
-**When self-tests stop teaching.**
+**When assertions stop teaching.**
 
-**Setup:**
-- Find 6-12 people
-- Haven't seen system
-- Match target skill
+**Foundation-first validation:**
+- Most contracts proven via debug assertions (foundation code)
+- Manual testing validates gameplay feel, not math
+- If you're manually checking math, add an assertion instead
 
-**Observe (silent):**
-- Contract breaks
-- Edge cases
-- Emergent behaviors
+**Solo playtest workflow:**
+
+1. **Build and run** (DO NOT commit yet)
+2. **Claude presents checklist** from contract
+3. **Test each item** - report violations or "all pass"
+4. **Violations found?**
+   - Fix → rebuild → retest
+   - Document in playtest section
+5. **All pass?** → Commit
+
+**Repeat until contract complete.**
 
 **Document** in `PLANS/<name>_SYSTEM.md`:
 
 ```markdown
+<!-- BEGIN: ITERATE/PLAYTEST_[N] -->
 ### Playtest [N]
 
-**Violations:** [contract items that failed]
-**Emergent:** [unexpected behaviors]
-**Fix:** [what to address]
+**Date:** [YYYY-MM-DD]
+**Tester:** [name]
+
+**Violations:**
+- [x] [contract item that failed]
+  - Root cause: [why it failed]
+  - Fix: [what was changed] ✓ FIXED
+
+**Emergent:**
+- [unexpected behaviors observed]
+
+**Fix:**
+- [files changed]
+- Commit: [hash]
+- ✅ VERIFIED: [confirmation]
+<!-- END: ITERATE/PLAYTEST_[N] -->
 ```
 
-**Fix → test → commit → next tester**
-
-**Stop when patterns repeat.**
+**Stop when no new violations found.**
 
 ---
 
