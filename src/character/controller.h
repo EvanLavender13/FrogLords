@@ -152,6 +152,8 @@ struct controller {
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
 
-    // Pure function: map state → cycle length
+private:
+    // Pure function: map state → cycle length (INTERNAL USE ONLY)
+    // External consumers should use locomotion.cycle_length (the output struct)
     float get_cycle_length(locomotion_speed_state state) const;
 };

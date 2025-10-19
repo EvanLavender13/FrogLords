@@ -63,12 +63,15 @@
   - ITERATION_2:120 claim "wheel rotation angle appears continuous" was TRUE in observation but FALSE in code
   - Now code matches observation: wheel uses distance_traveled (ITERATION_3 fix 8837e4f)
   - Updated SYSTEM.md:148 to document wheel visualization uses distance_traveled
-  - Commit: [pending]
+  - Commit: 64e5988
 
-- [ ] cycle_length access pattern unstandardized
-  - Document preferred access: `locomotion.cycle_length` (struct member)
-  - Document internal-only: `get_cycle_length()` (implementation detail)
-  - Add comment in code clarifying usage
+- [x] cycle_length access pattern unstandardized
+  - Fixed debug_generation.cpp:147 to use `locomotion.cycle_length` (not get_cycle_length())
+  - Made get_cycle_length() private in controller.h:155-158
+  - Added comment: "INTERNAL USE ONLY - External consumers should use locomotion.cycle_length"
+  - Verified: Only internal controller.cpp:218 uses get_cycle_length() now
+  - Pattern standardized: Struct member = public API, helper function = internal implementation
+  - Commit: [pending]
 
 **Baseline from ITERATION_1+2 (must preserve):**
 - Frame-rate independence (distance += speed * dt)

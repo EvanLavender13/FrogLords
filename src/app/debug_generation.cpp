@@ -143,8 +143,8 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
 
     glm::vec3 wheel_center = character.position; // Centered on character
 
-    // Wheel radius scales with cycle length
-    float cycle_length = character.get_cycle_length(character.locomotion.state);
+    // Wheel radius scales with cycle length (from locomotion_state output)
+    float cycle_length = character.locomotion.cycle_length;
     float wheel_radius = cycle_length * 0.25f;
 
     // Wheel rotation based on distance traveled (not phase) for visual continuity
