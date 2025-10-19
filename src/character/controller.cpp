@@ -202,6 +202,8 @@ void controller::update(const collision_world* world, float dt) {
 
     // Accumulate distance traveled (frame-rate independent)
     locomotion.distance_traveled += speed * dt;
+    FL_POSTCONDITION(std::isfinite(locomotion.distance_traveled),
+                     "distance_traveled must remain finite");
 
     // Calculate phase (0-1 normalized position within cycle)
     float cycle_length = get_cycle_length(locomotion.state);

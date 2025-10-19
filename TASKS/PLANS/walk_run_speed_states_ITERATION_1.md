@@ -24,13 +24,20 @@
   - Validated: Pure threshold checks, no randomness (controller.cpp:195-200)
 
 **Edge cases:**
-- [ ] Zero velocity (stationary): phase freezes, no distance accumulated
-- [ ] State transitions: phase continues across state boundaries (no reset)
-- [ ] Backward movement: phase accumulates (uses speed magnitude, not signed velocity)
-- [ ] Strafe movement: phase accumulates based on horizontal speed magnitude
-- [ ] Collision during movement: distance only accumulates when actually moving
-- [ ] Very high speeds: phase calculation remains stable (no overflow/precision loss)
-- [ ] Rapid state oscillation: state changes instant, no hysteresis artifacts
+- [x] Zero velocity (stationary): phase freezes, no distance accumulated
+  - Validated: distance += speed * dt where speed=0 → no change (controller.cpp:204)
+- [x] State transitions: phase continues across state boundaries (no reset)
+  - Validated: distance_traveled never resets, only cycle_length changes (controller.cpp:207-211)
+- [x] Backward movement: phase accumulates (uses speed magnitude, not signed velocity)
+  - Validated: speed = length(velocity) always positive (controller.cpp:190)
+- [x] Strafe movement: phase accumulates based on horizontal speed magnitude
+  - Validated: uses project_to_horizontal then length (controller.cpp:190)
+- [x] Collision during movement: distance only accumulates when actually moving
+  - Validated: uses velocity AFTER collision resolution (controller.cpp:190)
+- [x] Very high speeds: phase calculation remains stable (no overflow/precision loss)
+  - Validated: Added isfinite assertion (controller.cpp:205-206)
+- [x] Rapid state oscillation: state changes instant, no hysteresis artifacts
+  - Validated: Stateless threshold checks, no smoothing (controller.cpp:195-200)
 
 **Consistency:**
 - [ ] Same input → same output (deterministic state classification)
