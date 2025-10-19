@@ -376,13 +376,44 @@ Does this refinement plan properly maintain separation between mathematical prim
 - [x] Debug visualization uses types directly (no dimension inference)
 - [x] All collision tests passing
 - [x] No behavioral regressions
-
-**Metrics:**
-- Before: LOC ~400, Principle 7.5/10, Complexity 6 (inference heuristics)
-- After: LOC ~410 (+10), Principle 9/10 (+1.5), Complexity 3 (-3, no inference)
-
-**Principle improvements:**
-- Radical Simplicity: +2 (no more dimension inference)
-- Composable Functions: +1 (collision boxes now self-describing)
-- Consistency: +1 (intent explicit, no ambiguity)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/foundation/collision_primitives.h`: 17 → 30 (+13 lines)
+- `src/app/debug_generation.cpp`: 9 → 24 net (+15 lines code)
+- `src/app/game_world.cpp`: 24 → 32 net (+8 lines)
+- Core code: +82 lines added, -45 lines removed = +37 net
+
+**Total:** +37 lines (added semantic infrastructure)
+
+**Violations removed:**
+- Dimension-based inference heuristics: 1 → 0 (-1)
+- Multi-line "why this is broken" comments: 4 lines → 0 (-4 lines)
+- Missing semantic type information: ∞ → 0 (ALL boxes now typed)
+
+**Principle: Radical Simplicity**
+- Before: 7.5/10 (dimension inference couples debug viz to geometry)
+- After: 9.5/10 (explicit types, zero inference)
+- Improvement: +2.0
+
+**Foundation:**
+- Layer 2 (Primitives): 100% → 100% (maintained, added composable semantic types)
+- Overall: 99%+ → 99%+ (strengthened foundation quality)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Collision boxes lacked semantic identity. Debug visualization attempted to infer gameplay meaning from geometry (height < 0.4 = wall). Inference is complexity.
+
+**Prevention:** When geometry alone is insufficient to express intent, add explicit semantic types. Never infer gameplay semantics from mathematical primitives.
+
+**Pattern:** Mathematical primitives (aabb) must remain pure. Compose them with semantic types (collision_box) in higher layers.
+<!-- END: MEASURE/LEARNING -->
