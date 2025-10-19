@@ -1,30 +1,15 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Unused Delta-Time Parameter
-**Started:** 2025-10-19
-**Branch:** refine/unused_dt_parameter
-**Path:** A (Trivial)
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-19 - Unused Delta-Time Parameter (False Positive)
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Remove dead `dt` parameter from `camera::set_follow_target()`
-**Location:** @TASKS/PLANS/REFINE_unused_dt_parameter.md
-**Principle:** Radical Simplicity
-**Approach:** Delete
-**Next:** REFINE
-
-**Target Impact:**
-- Layer 1 (Core): 98% → 98%+ (micro-refinement)
-- Overall: 98%+ (maintain excellence)
-
-**Rationale:**
-- DELETE > Simplify > Document
-- Clean removal of dead code
-- Trivial complexity (1-2 points)
-- Clear intent after fix: instantaneous mode changes
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 
