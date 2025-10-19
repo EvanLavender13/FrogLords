@@ -153,3 +153,41 @@ Review this refinement plan to remove premature optimization from debug renderin
 - No visual artifacts
 - No performance degradation
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/rendering/debug_draw.cpp`: 113 → 72 (-41 lines)
+
+**Total:** -41 lines
+
+**Violations removed:**
+- Sorting/batching logic: 16 instances → 0 (-16)
+- Custom comparators: 1 → 0
+- Batch state management: 1 → 0
+- Color change detection: 1 → 0
+
+**Principle:** Radical Simplicity
+- Before: 7/10
+- After: 9/10
+- Improvement: +2
+
+**Foundation:**
+- Layer 3: 99%+ → 99%+ (maintained)
+- Overall: 99%+ → 99%+ (maintained)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Premature optimization without profiling evidence—assumed batching would help before measuring.
+
+**Prevention:** Profile before optimizing. Debug paths stay simple until data proves complexity pays.
+
+**Pattern:** Look for other "helpful" optimizations in non-critical paths that add complexity without evidence.
+<!-- END: MEASURE/LEARNING -->

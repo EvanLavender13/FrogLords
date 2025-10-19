@@ -39,16 +39,6 @@ None - All medium-priority violations resolved ✅
 - **Impact:** Code clarity, maintainability (non-critical - test only)
 - **Audit Source:** **Codex** + Gemini convergence
 
-**#12: Debug Draw Batching Complexity**
-- **Location:** `src/rendering/debug_draw.cpp:19-53`
-- **Principles:** Radical Simplicity
-- **Severity:** Low
-- **Type:** Premature optimization, Unnecessary complexity
-- **Description:** Sorts debug lines by color with mutable copy, custom comparator, and batching logic. Adds significant complexity to non-critical debug path for performance gain that may not be measurable.
-- **Fix:** Simplify - Remove batching unless profiling shows it's necessary. OR Document - Justify with benchmarks showing meaningful performance improvement.
-- **Impact:** Debug code complexity, maintainability
-- **Audit Source:** Gemini + Codex convergence
-
 ---
 
 ## Patterns Library
@@ -61,11 +51,11 @@ None - All medium-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 99%+ ✅ - 3 violations found (0 CRITICAL, 0 high, 0 medium, 3 low)**
+**Foundation at 99%+ ✅ - 2 violations found (0 CRITICAL, 0 high, 0 medium, 2 low)**
 
 **Next Actions:**
 1. **Build Layer 4 systems** (foundation stable at 99%+)
-2. Address low-priority violations opportunistically (#9, #11-#12)
+2. Address low-priority violations opportunistically (#9, #11)
 
 ---
 
