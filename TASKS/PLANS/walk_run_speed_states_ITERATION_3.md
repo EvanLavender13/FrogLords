@@ -53,12 +53,17 @@
   - Rationale: Phase is OUTPUT (recalculates), distance is SOURCE OF TRUTH (continuous)
   - Result: Phase jumps on state change, but wheel angle remains smooth (correct!)
   - File: debug_generation.cpp:150-154
-  - Commit: [pending]
+  - Commit: 8837e4f
 
-- [ ] Phase discontinuity documentation incomplete
-  - Document complete behavior: phase value + visual wheel behavior
-  - Remove contradictory claims if any exist
-  - Clarify in iteration notes and SYSTEM.md
+- [x] Phase discontinuity documentation incomplete
+  - Complete behavior documented:
+    * Phase VALUE: Discontinuous (recalculates when cycle_length changes)
+    * Wheel ANGLE: Continuous (uses distance_traveled, not phase)
+    * Rationale: Phase = f(distance, cycle_length) is OUTPUT. Distance is SOURCE OF TRUTH.
+  - ITERATION_2:120 claim "wheel rotation angle appears continuous" was TRUE in observation but FALSE in code
+  - Now code matches observation: wheel uses distance_traveled (ITERATION_3 fix 8837e4f)
+  - Updated SYSTEM.md:148 to document wheel visualization uses distance_traveled
+  - Commit: [pending]
 
 - [ ] cycle_length access pattern unstandardized
   - Document preferred access: `locomotion.cycle_length` (struct member)

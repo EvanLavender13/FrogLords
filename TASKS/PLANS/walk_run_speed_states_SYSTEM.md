@@ -138,13 +138,14 @@ locomotion_state { state, phase, cycle_length }
 - State transitions are immediate (discrete, not smoothed)
 - Cycle_length change causes phase discontinuity (this is correct - distance is source of truth)
 
-**Resolved decisions (ITERATION_2):**
+**Resolved decisions (ITERATION_2, ITERATION_3):**
 - Speed thresholds: walk < 3 m/s, run < 6 m/s, sprint ≥ 6 m/s
 - Cycle lengths: walk=2m, run=3m, sprint=4m (faster = longer stride)
-- Phase continuity: Phase RECALCULATES from distance when cycle_length changes (discontinuity is correct)
+- Phase continuity: Phase RECALCULATES from distance when cycle_length changes (value discontinuous)
 - Distance accumulator: Continuous forever (no reset on state change)
 - Float precision: Acceptable limitation at ~1e7 meters (10,000 km of travel)
 - Output contract: {state, phase, cycle_length} (distance_traveled is internal only)
+- Wheel visualization: Uses distance_traveled for rotation angle (continuous), not phase (discontinuous)
 <!-- END: SELECT/MATHEMATICAL_FOUNDATION -->
 
 ---
