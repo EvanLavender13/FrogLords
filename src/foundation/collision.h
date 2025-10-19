@@ -17,8 +17,6 @@ struct sphere_collision {
 
     // Wall sliding debug info
     bool is_wall = false;
-    glm::vec3 velocity_before{0.0f};
-    glm::vec3 velocity_after{0.0f};
 };
 
 sphere_collision resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&,

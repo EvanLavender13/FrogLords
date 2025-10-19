@@ -154,8 +154,6 @@ void controller::update(const collision_world* world, float dt) {
     collision_contact_debug.normal = contact.normal;
     collision_contact_debug.penetration = contact.penetration;
     collision_contact_debug.is_wall = contact.is_wall;
-    collision_contact_debug.velocity_before = contact.velocity_before;
-    collision_contact_debug.velocity_after = contact.velocity_after;
 
     // Interpret contact to determine grounded state (controller logic)
     // Use contacted_floor flag to handle simultaneous floor+wall contacts

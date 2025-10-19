@@ -124,11 +124,9 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                                         float wall_threshold) {
     sphere_collision final_contact; // Default: hit=false, contact_box=nullptr
 
-    // TUNED: Multi-pass collision resolution iteration limit
-    // Purpose: Handle corner/edge cases where single pass insufficient (sliding along edges)
-    // Common range: 2-4 passes (trade-off: accuracy vs performance)
-    // Assessment: 3 passes handles most multi-collision scenarios in practice
-    // Used in: Loop iterations for resolving multiple simultaneous collisions
+    // Sequential iteration resolves multi-wall collisions (industry standard approach)
+    // Handles N-wall cases, converges to stable solution, deterministic physics outcome
+    // 3 passes handles most scenarios
     for (int pass = 0; pass < 3; ++pass) { // iterations (dimensionless)
         bool any_collision = false;
 
@@ -139,9 +137,6 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                 // Push out of collision
                 position += col.normal * col.penetration;
                 collision_sphere.center = position;
-
-                // Store velocity before modification (for debug visualization)
-                glm::vec3 velocity_before = velocity;
 
                 // Wall sliding: Classify surface and apply appropriate velocity response
                 bool is_wall_contact = is_wall(col.normal, wall_threshold);
@@ -165,18 +160,11 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                     }
                 }
 
-                // Store debug info (for visualization)
-                col.is_wall = is_wall_contact;
-                col.velocity_before = velocity_before;
-                col.velocity_after = velocity;
-
                 // Track final contact (last valid collision from multi-pass)
                 final_contact.hit = col.hit;
                 final_contact.normal = col.normal;
                 final_contact.penetration = col.penetration;
-                final_contact.is_wall = col.is_wall;
-                final_contact.velocity_before = col.velocity_before;
-                final_contact.velocity_after = col.velocity_after;
+                final_contact.is_wall = is_wall_contact;
                 // Note: contacted_floor and floor_normal persist across contacts
 
                 any_collision = true;

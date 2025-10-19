@@ -40,8 +40,6 @@ struct controller {
 
         // Wall sliding debug info
         bool is_wall = false;
-        glm::vec3 velocity_before{0.0f};
-        glm::vec3 velocity_after{0.0f};
     };
 
     contact_debug_info collision_contact_debug;
