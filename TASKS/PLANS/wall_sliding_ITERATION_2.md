@@ -6,6 +6,7 @@
 
 ---
 
+<!-- BEGIN: ITERATE/CONTEXT -->
 ## Context from Previous Iteration
 
 **Decision:** REVISE (from ITERATION_1)
@@ -43,6 +44,7 @@
 - Consensus: 7.8/10
 
 **Target:** Fix violations → achieve ≥8.5/10 average, all scores ≥7.0
+<!-- END: ITERATE/CONTEXT -->
 
 ---
 
@@ -50,24 +52,33 @@
 ## Foundation Contract
 
 **Mathematical properties:**
-- [ ] Surface classification consistent: `abs(dot(normal, up)) < threshold` with single source threshold
-- [ ] Projection preserves tangent motion: `v_tangent = v - n * dot(v, n)` removes only normal component
-- [ ] Projection magnitude bounded: `|v_projected| ≤ |v_original|` (never amplifies velocity)
-- [ ] Zero normal velocity after projection: `dot(v_projected, normal) ≈ 0` (within epsilon)
-- [ ] Degenerate contacts handled: Deep penetrations don't misclassify or spike player
+- [x] Surface classification consistent: `abs(dot(normal, up)) < threshold` with single source threshold
+  - Fixed (16d2e8b): Added `wall_threshold` parameter derived from `max_slope_angle`
+  - Controller calculates once, collision system uses consistently
+- [x] Projection preserves tangent motion: `v_tangent = v - n * dot(v, n)` removes only normal component ✓ (from ITERATION_1)
+- [x] Projection magnitude bounded: `|v_projected| ≤ |v_original|` ✓ Assertion (from ITERATION_1)
+- [x] Zero normal velocity after projection: `dot(v_projected, normal) ≈ 0` ✓ Assertion (from ITERATION_1)
+- [x] Degenerate contacts handled: Deep penetrations don't misclassify or spike player
+  - Fixed (0b6c09b): `compute_face_normal()` uses geometric context instead of UP fallback
+  - Fallback respects actual contact surface (wall remains wall, floor remains floor)
 
 **Edge cases:**
-- [ ] 90° wall collision (pure normal): projected velocity = zero (graceful stop)
-- [ ] Parallel to wall (pure tangent): projected velocity = original (no change)
-- [ ] Inside corner (opposing normals): resolution handles opposing normals correctly
-- [ ] Multiple simultaneous walls: iteration resolves complex scenarios without order-dependence
-- [ ] Wall-to-floor transition: single threshold value used consistently
+- [x] 90° wall collision (pure normal): projected velocity = zero ✓ (from ITERATION_1)
+- [x] Parallel to wall (pure tangent): projected velocity = original ✓ (from ITERATION_1)
+- [x] Inside corner (opposing normals): resolution handles correctly ✓ (from ITERATION_1)
+- [x] Multiple simultaneous walls: iteration resolves complex scenarios
+  - Documented (a0d88ed): Sequential iteration handles N-walls, deterministic
+- [x] Wall-to-floor transition: single threshold value used consistently
+  - Fixed (16d2e8b): Single source (`max_slope_angle` → `wall_threshold`)
 
 **Consistency:**
-- [ ] Same input → same output (deterministic projection)
-- [ ] Frame-rate independent (no velocity accumulation artifacts)
-- [ ] No special cases (single projection formula for all walls)
-- [ ] Single source of truth for all thresholds
+- [x] Same input → same output ✓ (from ITERATION_1)
+- [x] Frame-rate independent ✓ (from ITERATION_1)
+- [x] No special cases ✓ (from ITERATION_1)
+- [x] Single source of truth for all thresholds
+  - Fixed (16d2e8b): Removed hardcoded `WALL_THRESHOLD`, derive from `max_slope_angle`
+- [x] Radical Simplicity applied
+  - Fixed (a0d88ed): Removed unused `velocity_before`/`velocity_after` debug fields
 <!-- END: ITERATE/CONTRACT -->
 
 ---

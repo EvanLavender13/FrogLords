@@ -80,6 +80,7 @@ Create `PLANS/<name>_ITERATION_<N+1>.md`:
 
 ---
 
+<!-- BEGIN: ITERATE/CONTEXT -->
 ## Context from Previous Iteration
 
 **Decision:** REVISE (from ITERATION_<N>)
@@ -88,6 +89,7 @@ Create `PLANS/<name>_ITERATION_<N+1>.md`:
 - [copy from ITERATION_<N> VALIDATE/DECISION]
 
 **Baseline contract:** See ITERATION_<N>/CONTRACT
+<!-- END: ITERATE/CONTEXT -->
 
 ---
 ```
@@ -105,49 +107,37 @@ Update iteration list in `PLANS/<name>_SYSTEM.md`:
 
 ### 2. Iteration Cycle
 
-**Work in the iteration document (`PLANS/<name>_ITERATION_<N>.md`).**
+Satisfy the contract. Work through items in `ITERATE/CONTRACT` one at a time until all are checked.
 
-**Repeat until contract passes:**
+**Repeat until contract complete:**
 
-**Pick one:**
-- Mathematical property to validate
-- Edge case to handle
-- Debug assertion to add (foundation code only)
-- Violation from VALIDATE/DECISION (if resuming)
+- Pick one unchecked contract item
+  - If resuming from VALIDATE/REVISE, prioritize violations from ITERATE/CONTEXT
+- Implement the fix
+  - Small changes only
+  - Maintain debug visualization
+  - Stay in graybox
+- Test: Build, run, try to break it
+  - Verify the contract item passes
+- Document in `ITERATE/CONTRACT`
+  - Check the box
+  - Add inline note with commit hash and what was validated/fixed
+- Commit if passing:
+  ```bash
+  git commit -m "iterate: <name> - <what>
 
-**Implement:**
-- Small change (fast to revert)
-- Maintain debug viz
-- Stay in graybox
+  Validated: <property>
+  Status: <X/Y>
 
-**Test:**
-- Build and run
-- Try to break it
-- Check contract
+  🤖 Generated with [Claude Code](https://claude.com/claude-code)
+  Co-Authored-By: Claude <noreply@anthropic.com>"
+  ```
+- Revert if failing:
+  ```bash
+  git reset --hard HEAD
+  ```
 
-**Document in iteration doc:**
-- Update CONTRACT checkboxes
-- Add notes on what was validated
-
-**Commit or revert:**
-
-Pass:
-```bash
-git commit -m "iterate: <name> - <what>
-
-Validated: <property>
-Status: <X/Y>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com)"
-```
-
-Fail:
-```bash
-git reset --hard HEAD
-```
-
-**Contract complete?** → Playtest
+When all contract items checked, proceed to playtest.
 
 ---
 
