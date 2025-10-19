@@ -129,6 +129,14 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                     if (vel_into_surface < 0.0f) {
                         velocity -= col.normal * vel_into_surface;
                     }
+
+                    // Track floor contact (for grounding logic)
+                    // Prevents losing grounded state when touching floor + wall simultaneously
+                    if (col.normal.y > 0.0f) { // Upward-facing surface = floor
+                        final_contact.contacted_floor = true;
+                        final_contact.floor_normal = col.normal;
+                        final_contact.contact_box = col.contact_box; // Store floor box for height query
+                    }
                 }
 
                 // Store debug info (for visualization)
@@ -137,7 +145,14 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                 col.velocity_after = velocity;
 
                 // Track final contact (last valid collision from multi-pass)
-                final_contact = col;
+                final_contact.hit = col.hit;
+                final_contact.normal = col.normal;
+                final_contact.penetration = col.penetration;
+                final_contact.is_wall = col.is_wall;
+                final_contact.velocity_before = col.velocity_before;
+                final_contact.velocity_after = col.velocity_after;
+                // Note: contacted_floor and floor_normal persist across contacts
+
                 any_collision = true;
             }
         }

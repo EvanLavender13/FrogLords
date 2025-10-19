@@ -9,6 +9,12 @@ struct sphere_collision {
     float penetration = 0.0f;
     const aabb* contact_box = nullptr;
 
+    // Surface type tracking (for grounding logic)
+    // True if ANY contact during multi-pass resolution was a floor
+    // Prevents losing grounded state when simultaneously touching floor + wall
+    bool contacted_floor = false;
+    glm::vec3 floor_normal{0.0f};
+
     // Wall sliding debug info
     bool is_wall = false;
     glm::vec3 velocity_before{0.0f};

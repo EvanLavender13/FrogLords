@@ -155,10 +155,11 @@ void controller::update(const collision_world* world, float dt) {
     collision_contact_debug.velocity_after = contact.velocity_after;
 
     // Interpret contact to determine grounded state (controller logic)
+    // Use contacted_floor flag to handle simultaneous floor+wall contacts
     is_grounded = false;
-    if (contact.hit && contact.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
+    if (contact.contacted_floor) {
         is_grounded = true;
-        ground_normal = contact.normal;
+        ground_normal = contact.floor_normal;
         // Query box geometry directly (no interpretation in collision system)
         ground_height = contact.contact_box->center.y + contact.contact_box->half_extents.y;
     }
