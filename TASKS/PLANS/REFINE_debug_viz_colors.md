@@ -132,3 +132,44 @@ if (box.half_extents.y < 0.4f && box.half_extents.x < 1.2f && box.half_extents.z
 
 **Follow-up Task:** See BACKLOG_REFINEMENTS.md #14 for semantic collision types
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/app/debug_generation.cpp`: 315 → 311 (-4 lines)
+
+**Total:** -4 lines
+
+**Violations removed:**
+- Magic numbers in conditional logic: 21 → 15 (-6 numeric literals, but 1 added for COLLISION_BOX_COLOR = net -5)
+- Conditional branches (if/else if/else): 6 → 3 (-3 branches deleted)
+- Heuristic categorization paths: 3 → 0 (-3 logic paths)
+
+**Principle:** Radical Simplicity
+- Before: 6/10
+- After: 9/10
+- Improvement: +3
+
+**Evidence:** Deleted unreliable heuristic logic (14 lines of conditionals and color assignment), replaced with single constant and documentation (8 lines including comments). Removed coupling between debug visualization and test arena geometry.
+
+**Foundation:**
+- Layer 3: 99%+ → 99%+ (maintained - debug-only refinement)
+- Overall: 99%+ → 99%+ (no impact)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Heuristics attempted to infer semantic type (wall/floor/platform) from geometric properties without access to actual intent.
+
+**Prevention:** Don't infer intent from shape. When categorization matters, add explicit semantic information to data structures. Debug visualization should display data, not guess at meaning.
+
+**Pattern:** Reveals missing semantic types in collision system - geometry alone is insufficient for gameplay decisions.
+
+**Remaining work:** Backlog #14 - Add semantic type enum to collision_box for proper categorization.
+<!-- END: MEASURE/LEARNING -->
