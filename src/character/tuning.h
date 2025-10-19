@@ -29,6 +29,18 @@ struct tuning_params {
     // Used in: apply_to to copy to controller.gravity and calculate jump_velocity
     float gravity = -9.8f; // m/s²
 
+    // TUNED: Kinetic friction coefficient (μ)
+    // Physical meaning: Dimensionless coefficient for kinetic friction
+    // Friction force: F_friction = μ · |F_normal| = μ · m · |g|
+    // Friction decel: a_friction = μ · |g|
+    // Range: [0.0, 1.0] physically valid (will be clamped)
+    //   - 0.0 = ice (no friction, no stopping)
+    //   - 0.3 = slippery (gentle deceleration)
+    //   - 0.7 = rubber on asphalt (snappy stopping)
+    //   - 1.0 = maximum practical friction
+    // Used in: apply_to to copy to controller.friction
+    float friction_coefficient = 0.7f; // dimensionless
+
     void apply_to(controller& c) const;
 };
 

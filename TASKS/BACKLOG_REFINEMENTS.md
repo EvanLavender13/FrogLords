@@ -25,15 +25,6 @@ None - all high-priority violations resolved ✅
 - **Fix:** Simplify - Refactor. Base camera handles view/projection, separate `Follower` component updates target position. Orthogonal systems.
 - **Impact:** Camera system architecture
 
-**#6: Unjustified Friction Model**
-- **Location:** `src/character/tuning.cpp:8-17, 25-27`
-- **Principles:** Mathematical Foundations, Principled Development
-- **Severity:** Medium
-- **Type:** Unjustified decision, Dimensionally strange
-- **Description:** Friction based on `FRICTION_RATIO` percentage, not standard physics (F=μN). Formula `c.friction = (c.ground_accel * FRICTION_RATIO) / gravity_mag` lacks physical rationale.
-- **Fix:** Document - Explain why this model chosen for game feel over physics-based. OR Replace with standard kinetic friction for principled, predictable system.
-- **Impact:** Character movement feel, tuning predictability
-
 **#7: Magic Numbers in Debug Visualization**
 - **Location:** `src/app/debug_generation.cpp:170-180` (generate_collision_state_primitives)
 - **Principles:** Radical Simplicity, Mathematical Foundations, Consistency

@@ -18,23 +18,23 @@ Layer 3: SYSTEMS         [97%+] ← ✅ TARGET EXCEEDED
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
-Layer 1: CORE            [96%] ← ✅ TARGET EXCEEDED
+Layer 1: CORE            [97%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.96 × 1.00 × 0.97 = **93.1% survival**
+**Cascade:** 0.97 × 1.00 × 0.97 = **94.1% survival**
 
 **Target exceeded:** Foundation at 97%, ready for Layer 4 variation
 
 ---
 
-## Layer 1: CORE (96%)
+## Layer 1: CORE (97%)
 
 **Status:** ✅ **TARGET EXCEEDED** - Clean foundation
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
-| Controller | 96.5% | ✅ Refined | `character/controller.{h,cpp}` |
+| Controller | 97% | ✅ Refined | `character/controller.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
 | Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
 
@@ -69,7 +69,7 @@ Layer 1: CORE            [96%] ← ✅ TARGET EXCEEDED
 | Rendering | 100% | ✅ Solid | `rendering/scene.{h,cpp}` |
 | GUI | 100% | ✅ Refined | `gui/*` |
 | Game World | 97%+ | ✅ Refined | `app/game_world.{h,cpp}` |
-| Tuning | 97% | ✅ Unidirectional | `character/tuning.{h,cpp}` |
+| Tuning | 97%+ | ✅ Physical | `character/tuning.{h,cpp}` |
 | Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
 | Orientation | 100% | ✅ Refined | `character/orientation.{h,cpp}` |
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
