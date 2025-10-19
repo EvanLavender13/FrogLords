@@ -1,7 +1,7 @@
 # Iteration 1: Walk/Run Speed States
 
 **Started:** 2025-10-19
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -132,5 +132,150 @@
 - [x] Ready for VALIDATE
 
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/SCORES -->
+## Principle Scores
+
+**1. Radical Simplicity:** 9/10
+- Does every element justify its existence?
+- Evidence: Single state enum, pure threshold checks, no special cases. Distance accumulation is one line. Phase calculation is fmod(distance/cycle_length). Three thresholds define all states. Only weakness: Could cycle_length be derived rather than stored per-state?
+
+**2. Fundamental Composable Functions:** 9/10
+- Are systems orthogonal and composable without special cases?
+- Evidence: Phase calculation is completely independent of state classification. State determines cycle_length, nothing else. Can swap speed thresholds without touching phase logic. No cross-dependencies. Composes cleanly with existing controller.
+
+**3. Solid Mathematical Foundations:** 10/10
+- Is every behavior mathematically correct?
+- Evidence: Frame-rate independence proven via dt scaling (controller.cpp:204). Phase wrapping uses std::fmod mathematical properties. Speed magnitude always non-negative (controller.cpp:190-191). Assertions verify all invariants. No accumulated error, no drift.
+
+**4. Emergent Behavior:** 8/10
+- Does the system generate unexpected behaviors from simple rules?
+- Evidence: Jump behavior emerges naturally (no distance while airborne). Direction response emerges from velocity-based distance. Wheel size variation emerges from state-based cycle_length. Limited emergence due to simplicity—system does exactly what designed for, no surprising interactions yet.
+
+**5. Consistency:** 10/10
+- Does the system behave predictably with same input?
+- Evidence: Pure threshold functions (controller.cpp:195-200). Deterministic state classification proven in playtest. No randomness, no time-dependent state. Frame-rate independent. Zero special cases. Contract proven through assertions.
+
+**6. Principled Development:** 9/10
+- Do all decisions trace back to principles?
+- Evidence: Speed magnitude over signed velocity → Consistency. Distance accumulation → Time-Independence. Threshold-based states → Radical Simplicity. Assertions → Validation Before Integration. Only weakness: Initial design didn't question if cycle_length storage is necessary.
+
+**Average:** 9.2/10
+<!-- END: VALIDATE/SCORES -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-19
+
+**Codex Scores:**
+1. Radical Simplicity: 7/10 (self: 9/10)
+2. Fundamental Composable Functions: 6/10 (self: 9/10)
+3. Solid Mathematical Foundations: 7/10 (self: 10/10)
+4. Emergent Behavior: 5/10 (self: 8/10)
+5. Consistency: 6/10 (self: 10/10)
+6. Principled Development: 4/10 (self: 9/10)
+**Average: 5.8/10** (self: 9.2/10)
+
+**Critical Violations Identified:**
+
+1. **Phase continuity BROKEN** (Mathematical Foundation + Consistency)
+   - When cycle_length changes, phase jumps discontinuously
+   - Example: 5.5m traveled → run phase = fmod(5.5,3)/3 = 0.833
+   - After sprint transition → phase = fmod(5.5,4)/4 = 0.375
+   - **This violates the contract claim "phase continues across state boundaries"**
+   - controller.cpp:208-213
+
+2. **Contract violation on outputs** (Composability)
+   - System plan: output {state, phase, cycle_length}
+   - Actual code: output {state, phase, distance_traveled}
+   - Downstream systems must recompute cycle_length, violating orthogonality
+   - controller.h:124-134 vs SYSTEM.md:120-133
+
+3. **Documentation mismatch** (Principled Development)
+   - Plan says sprint uses smallest wheel for visual clarity
+   - Code has walk=2m, run=3m, sprint=4m (opposite)
+   - Either visualization wrong or plan outdated
+   - SYSTEM.md:156 vs controller.h:124-135
+
+4. **No threshold ordering validation** (Validation Before Integration)
+   - Can set run_threshold <= walk_threshold with no assertion
+   - Would collapse middle state silently
+   - controller.cpp:195-201
+
+5. **Float precision drift** (Mathematical Foundations)
+   - distance_traveled accumulates indefinitely as float
+   - Above ~1e7, fmod loses fractional precision → phase jitter
+   - No mitigation or assertion to catch
+   - controller.cpp:203-206
+
+6. **Silent enum fallback** (Consistency)
+   - Returns walk_cycle_length for invalid states
+   - Masks bugs instead of failing fast
+   - controller.cpp:222-231
+
+**Adjusted Scores (accepting Codex evidence):**
+1. Radical Simplicity: 7/10 (silent fallback hides complexity)
+2. Fundamental Composable Functions: 6/10 (contract violation on outputs)
+3. Solid Mathematical Foundations: 6/10 (phase discontinuity is critical)
+4. Emergent Behavior: 5/10 (limited, hardcoded behavior)
+5. Consistency: 5/10 (phase jumps break predictability)
+6. Principled Development: 4/10 (multiple plan/code mismatches)
+
+**Final Average: 5.5/10**
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:**
+Average 5.5/10 is below the 7.0 threshold for approval. Multiple principles scored below 6:
+- Consistency: 5/10 (critical - phase jumps break predictability)
+- Mathematical Foundations: 6/10 (critical - discontinuities violate contract)
+- Principled Development: 4/10 (critical - plan/code mismatches)
+
+Most critical: **Phase continuity is broken**. The contract claimed "phase continues across state boundaries" but Codex proved this false with concrete math. When cycle_length changes, phase jumps discontinuously (e.g., 0.833 → 0.375). This is a fundamental mathematical violation.
+
+**Required changes:**
+
+1. **Fix phase continuity (CRITICAL)**
+   - Decide desired behavior: conserve wheel angle, smoothly retime phase, or accept discontinuity
+   - If accepting discontinuity, update contract to reflect reality
+   - If fixing, implement math to preserve visual continuity
+   - Add test case: transition walk→run→sprint, verify phase behavior
+
+2. **Fix contract violation on outputs**
+   - Either: Add cycle_length to locomotion_state output (matches plan)
+   - Or: Update system plan to document distance_traveled as output
+   - Add accessor for cycle_length if keeping current output
+
+3. **Add threshold ordering assertion**
+   - FL_PRECONDITION(walk_threshold < run_threshold) in constructor
+   - FL_PRECONDITION(run_threshold < sprint_threshold) in constructor
+   - Prevents silent collapse of states
+
+4. **Replace silent enum fallback with assertion**
+   - get_cycle_length: FL_ASSERT(false, "invalid locomotion state") instead of return walk_cycle_length
+   - Fail fast on impossible states
+
+5. **Fix documentation mismatch**
+   - Either: Update code to match plan (sprint=smallest wheel)
+   - Or: Update plan to match code (sprint=largest wheel)
+   - Document rationale for choice
+
+6. **Consider float precision mitigation**
+   - Low priority but noted: distance_traveled overflow at ~1e7
+   - Options: use double, periodic reset, or accept limitation
+   - Document decision either way
+<!-- END: VALIDATE/DECISION -->
 
 ---
