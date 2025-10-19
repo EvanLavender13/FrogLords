@@ -2,7 +2,7 @@
 
 **Foundation certainty. Build order. What's possible now.**
 
-**Overall Foundation:** 97%+ ✅ TARGET EXCEEDED
+**Overall Foundation:** 98%+ ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 
 ---
@@ -12,31 +12,31 @@
 ```
 Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
-Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 97%)
+Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 98%)
     ↓
-Layer 3: SYSTEMS         [97%+] ← ✅ TARGET EXCEEDED
+Layer 3: SYSTEMS         [98%+] ← ✅ TARGET EXCEEDED
     ↓
 Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
     ↓
-Layer 1: CORE            [97%] ← ✅ TARGET EXCEEDED
+Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.97 × 1.00 × 0.97 = **94.1% survival**
+**Cascade:** 0.98 × 1.00 × 0.98 = **96.0% survival**
 
-**Target exceeded:** Foundation at 97%, ready for Layer 4 variation
+**Target exceeded:** Foundation at 98%, ready for Layer 4 variation
 
 ---
 
-## Layer 1: CORE (97%)
+## Layer 1: CORE (98%)
 
 **Status:** ✅ **TARGET EXCEEDED** - Clean foundation
 
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
+| Camera | 98% | ✅ Refined | `camera/camera.{h,cpp}` + `camera/camera_follow.{h,cpp}` |
 | Controller | 97% | ✅ Refined | `character/controller.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
-| Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
 
 **Blocking:** None - target exceeded
 
@@ -60,7 +60,7 @@ Layer 1: CORE            [97%] ← ✅ TARGET EXCEEDED
 
 ---
 
-## Layer 3: SYSTEMS (97%)
+## Layer 3: SYSTEMS (98%+)
 
 **Status:** ✅ **TARGET EXCEEDED** - Ready for Layer 4
 
@@ -68,19 +68,19 @@ Layer 1: CORE            [97%] ← ✅ TARGET EXCEEDED
 |--------|-----------|--------|----------|
 | Rendering | 100% | ✅ Solid | `rendering/scene.{h,cpp}` |
 | GUI | 100% | ✅ Refined | `gui/*` |
-| Game World | 97%+ | ✅ Refined | `app/game_world.{h,cpp}` |
+| Game World | 98% | ✅ Refined | `app/game_world.{h,cpp}` |
 | Tuning | 97%+ | ✅ Physical | `character/tuning.{h,cpp}` |
 | Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
 | Orientation | 100% | ✅ Refined | `character/orientation.{h,cpp}` |
 | Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
 
-**Blocking:** None - Layer 3 exceeded target, foundation at 97%+
+**Blocking:** None - Layer 3 exceeded target, foundation at 98%+
 
 ---
 
 ## Layer 4: VARIATION (<50%)
 
-**Status:** ✅ **UNBLOCKED** - Layer 3 at 96%
+**Status:** ✅ **UNBLOCKED** - Layer 3 at 98%
 
 **Ready to build:**
 - Skeletal Animation System (5-8 points)
@@ -89,7 +89,7 @@ Layer 1: CORE            [97%] ← ✅ TARGET EXCEEDED
 - Dash Mechanic (3-5 points)
 - IK Systems (8 points)
 
-**Foundation:** Building on 97%+ Layer 3 = 92.6%+ survival (excellent for variation)
+**Foundation:** Building on 98%+ Layer 3 = 96.0%+ survival (excellent for variation)
 
 ---
 
@@ -114,9 +114,9 @@ Defer until Layer 4 solid:
 - **Current:** Layer 2 complete, can add new primitives
 
 ### 🔧 Should Repair (Optional)
-- Foundation at 95% ✅ TARGET REACHED
-- Optional: Further refinements for 95% → 100%
-- **Current:** Foundation solid, can proceed to Layer 4
+- Foundation at 95% ✅ TARGET EXCEEDED
+- Optional: Further refinements for 98% → 100%
+- **Current:** Foundation excellent at 98%, can proceed to Layer 4
 
 ### 🚫 Cannot Build
 - Layer 5 blocked (need Layer 4 ≥95%)
@@ -147,14 +147,14 @@ Rate each system 1-10 on these criteria:
 
 ## Next Actions
 
-**Foundation exceeded target (97%+) - ready for Layer 4:**
-- Refine collision responsibilities (#3), OR
+**Foundation exceeded target (98%+) - ready for Layer 4:**
+- Refine debug visualization (#7), OR
 - Build skeletal animation system, OR
 - Build walk/run speed states, OR
 - Build wall detection & sliding, OR
 - Build dash mechanic
 
-**Foundation:** 0.96 × 1.00 × 0.97+ = **93.1%+ survival** (excellent for variation)
+**Foundation:** 0.98 × 1.00 × 0.98+ = **96.0%+ survival** (excellent for variation)
 
 ---
 

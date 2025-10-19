@@ -407,3 +407,46 @@ I've radically simplified the plan based on your feedback. We're now DELETING or
 
 **Final validation:** ✅ Plan approved. Proceed with implementation.
 <!-- END: REFINE/REVIEW -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/camera/camera.h`: 119 → 66 (-53 lines)
+- `src/camera/camera.cpp`: 87 → 27 (-60 lines)
+- `src/camera/camera_follow.h`: 0 → 37 (+37 lines)
+- `src/camera/camera_follow.cpp`: 0 → 77 (+77 lines)
+- `src/gui/camera_panel.cpp`: 84 → 50 (-34 lines)
+
+**Total (source only):** +168 new, -186 deleted = -18 net lines
+
+**Violations removed:**
+- Mode enum + special casing: 16 → 0 (-16 declarations)
+- Mode branching (if/else): 2 → 0 (-2 branches)
+- Cyclomatic complexity: 8 → 2 (-6)
+
+**Principle:** Composable Functions
+- Before: 6/10
+- After: 9/10
+- Improvement: +3
+
+**Evidence:** Eliminated all mode-based branching. Camera now pure matrix generation. Follow behavior extracted to orthogonal component. Clean composition in game_world.
+
+**Foundation:**
+- Layer 1 (Core): 97% → 98% (+1%)
+- Overall: 97%+ → 98%+ (+1%)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Mixed responsibilities—camera owned both matrix generation AND mode-specific movement logic.
+
+**Prevention:** Keep components orthogonal. Extract behavior to separate types before mode enums appear. Camera = math. Controller = behavior.
+
+**Pattern:** Special-casing on enums indicates missing abstraction. Delete modes entirely when only one is used.
+<!-- END: MEASURE/LEARNING -->

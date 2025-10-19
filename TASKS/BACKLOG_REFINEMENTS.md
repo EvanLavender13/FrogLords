@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Foundation:** 97%+ ✅ TARGET EXCEEDED
+**Foundation:** 98%+ ✅ TARGET EXCEEDED
 **Last Updated:** 2025-10-18
 **Last Audit:** 2025-10-18 (Gemini + Codex dual analysis)
 
@@ -15,15 +15,6 @@
 None - all high-priority violations resolved ✅
 
 ### Medium Priority
-
-**#5: Special Casing for Camera Modes**
-- **Location:** `src/camera/camera.cpp:50-58`
-- **Principles:** Composable Functions
-- **Severity:** Medium
-- **Type:** Special case, Overlapping responsibilities
-- **Description:** `zoom()` has if/else for FOLLOW vs ORBIT modes using separate state (`follow_distance` vs `distance`). Modes not cleanly composed.
-- **Fix:** Simplify - Refactor. Base camera handles view/projection, separate `Follower` component updates target position. Orthogonal systems.
-- **Impact:** Camera system architecture
 
 **#7: Magic Numbers in Debug Visualization**
 - **Location:** `src/app/debug_generation.cpp:170-180` (generate_collision_state_primitives)
@@ -121,16 +112,16 @@ None - all high-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 97%+ ✅ - 6 violations found (0 CRITICAL, 0 high, 3 medium, 3 low)**
+**Foundation at 98%+ ✅ - 5 violations found (0 CRITICAL, 0 high, 1 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
 - **High Priority**: ~~GUI coupling (#1)~~ ✅ FIXED, ~~Collision responsibilities (#3)~~ ✅ FIXED
 - **Pattern**: All high-priority violations resolved - foundation solid
 
-**Path to maintain 97%+ Layer 3:**
-1. Continue medium-priority refinements (#5-#7)
-2. OR **Build Layer 4 systems** - Foundation stable at 97%+
+**Path to maintain 98%+ Layer 3:**
+1. Continue medium-priority refinements (#7)
+2. OR **Build Layer 4 systems** - Foundation stable at 98%+
 3. Address low-priority violations opportunistically (#9-#12)
 
 **Pattern Discovery:**
@@ -143,12 +134,12 @@ None - all high-priority violations resolved ✅
 
 ## Recent Activity
 
-**Coyote Time Rationale Documented (2025-10-18)**
-- Documented principle trade-off: Prime Directive > Consistency
-- Controller: Principled Development 8→9 (+1)
-- Layer 1: 96% → 96.5% (+0.5%)
-- Foundation: 97%+ maintained
-- 6 violations remaining (0 critical, 0 high, 3 medium, 3 low)
+**Camera Modes Separation (2025-10-18)**
+- Extracted camera_follow component from camera class
+- Camera: Composable Functions 6→9 (+3)
+- Layer 1: 97% → 98% (+1%)
+- Foundation: 97%+ → 98%+ (+1%)
+- 5 violations remaining (0 critical, 0 high, 1 medium, 3 low)
 
 ---
 
