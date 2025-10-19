@@ -37,6 +37,11 @@ struct controller {
         glm::vec3 normal{0.0f};
         float penetration = 0.0f;
         float vertical_penetration = 0.0f;
+
+        // Wall sliding debug info
+        bool is_wall = false;
+        glm::vec3 velocity_before{0.0f};
+        glm::vec3 velocity_after{0.0f};
     };
 
     contact_debug_info collision_contact_debug;

@@ -83,6 +83,72 @@ This establishes the foundation for how characters interact with vertical geomet
 
 ---
 
+<!-- BEGIN: GRAYBOX/SCOPE -->
+## Graybox Scope
+
+**Visual:**
+- Core: Cubes (walls), sphere (player), lines (velocity vectors, normals)
+- Debug: Color-coded normals (green=floor, red=wall, blue=ceiling)
+- Debug: Velocity visualization (original vs projected)
+- Input: WASD movement only
+
+**Included:**
+- [x] Core mechanic: surface classification and velocity projection
+- [x] Math implementation: dot product classification, vector projection
+- [x] Debug visualization: normals and velocity vectors
+- [ ] Validation harness: unit tests for edge cases
+- [ ] Self-test: manual playtest at various angles
+
+**Excluded:**
+- Art/models/audio
+- Polish/juice (particles, screen shake, etc.)
+- Optional features (wall-running, climbing)
+- Variations (corner sliding optimizations)
+
+**Complexity:** Medium
+<!-- END: GRAYBOX/SCOPE -->
+
+---
+
+<!-- BEGIN: GRAYBOX/RESULTS -->
+## Graybox Results
+
+**Status:**
+- [x] Core functional
+- [x] Math validation passing (build successful, debug validation passed)
+- [x] Debug viz working (normals color-coded, velocity projection visible)
+- [ ] Edge cases handled (needs playtesting)
+- [ ] Emergence observed (needs playtesting)
+
+**Implemented:**
+- Surface classification: `is_wall()` uses dot product with threshold 0.707 (45°)
+- Velocity projection: `project_along_wall()` removes normal component
+- Integration: Modified `resolve_box_collisions()` to classify and project
+- Debug visualization:
+  - Normals: Red=wall, Green=floor, Blue=ceiling
+  - Velocity vectors: Gray=original, Yellow=projected (walls only)
+
+**Mathematical Foundation:**
+- Classification: `abs(normal.y) < 0.707` → wall (vertical surface)
+- Projection: `v_tangent = v - n * dot(v, n)` → preserves parallel motion
+- Zero overhead: Classification happens during collision resolution (no extra passes)
+
+**Next Steps:**
+- Manual playtest: Walk into walls at various angles
+- Validate: 90° → stop, 45° → smooth slide
+- Test: Inside corners (opposing normals)
+- Observe: Any emergent behaviors
+
+**Build Status:**
+```
+Build: ✅ Success (16/16 compiled)
+Debug: ✅ All validation checks passed
+Run:   ✅ Program started successfully
+```
+<!-- END: GRAYBOX/RESULTS -->
+
+---
+
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 

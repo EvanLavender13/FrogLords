@@ -146,6 +146,14 @@ void controller::update(const collision_world* world, float dt) {
     float pre_collision_vertical_velocity = velocity.y;
     sphere_collision contact = resolve_collisions(collision_sphere, *world, position, velocity);
 
+    // Store collision debug info
+    collision_contact_debug.active = contact.hit;
+    collision_contact_debug.normal = contact.normal;
+    collision_contact_debug.penetration = contact.penetration;
+    collision_contact_debug.is_wall = contact.is_wall;
+    collision_contact_debug.velocity_before = contact.velocity_before;
+    collision_contact_debug.velocity_after = contact.velocity_after;
+
     // Interpret contact to determine grounded state (controller logic)
     is_grounded = false;
     if (contact.hit && contact.normal.y >= glm::cos(glm::radians(max_slope_angle))) {

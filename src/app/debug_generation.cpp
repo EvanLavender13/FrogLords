@@ -159,6 +159,47 @@ void generate_collision_state_primitives(debug::debug_primitive_list& list,
             .color = {0, 1, 0, 1},
         });
     }
+
+    // Wall sliding debug visualization
+    if (character.collision_contact_debug.active) {
+        const auto& debug = character.collision_contact_debug;
+
+        // Draw collision normal (color-coded by surface type)
+        glm::vec4 normal_color;
+        if (debug.is_wall) {
+            normal_color = {1, 0, 0, 1}; // Red = Wall
+        } else if (debug.normal.y > 0.5f) {
+            normal_color = {0, 1, 0, 1}; // Green = Floor
+        } else {
+            normal_color = {0, 0, 1, 1}; // Blue = Ceiling
+        }
+
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + debug.normal * 1.0f,
+            .color = normal_color,
+            .head_size = 0.15f,
+        });
+
+        // Draw velocity projection (only for walls)
+        if (debug.is_wall && glm::length(debug.velocity_before) > 0.01f) {
+            // Original velocity (gray)
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + debug.velocity_before * 0.5f,
+                .color = {0.5f, 0.5f, 0.5f, 0.7f},
+                .head_size = 0.1f,
+            });
+
+            // Projected velocity (yellow)
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + debug.velocity_after * 0.5f,
+                .color = {1, 1, 0, 1},
+                .head_size = 0.1f,
+            });
+        }
+    }
 }
 
 void generate_velocity_trail_primitives(debug::debug_primitive_list& list,

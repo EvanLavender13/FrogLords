@@ -4,6 +4,37 @@
 #include <glm/trigonometric.hpp>
 #include <algorithm>
 
+namespace {
+
+// TUNED: Wall classification threshold (angle from vertical)
+// Surfaces with normal.y above this are floors, below this are walls/ceilings
+// Threshold = cos(45°) ≈ 0.707 (45° slope)
+// Used in: is_wall() to classify collision surfaces
+constexpr float WALL_THRESHOLD = 0.707f; // dimensionless (cos of angle)
+
+// Surface classification: Determine if collision normal represents a wall
+// A wall is defined as a surface that is more vertical than the threshold angle
+// Returns true if surface is a wall (not floor or ceiling)
+bool is_wall(const glm::vec3& normal) {
+    // Compare absolute value to handle both upward (floor) and downward (ceiling) normals
+    // abs(dot(normal, UP)) gives how "vertical" the surface is:
+    //   1.0 = horizontal surface (floor/ceiling)
+    //   0.0 = vertical surface (wall)
+    return std::abs(normal.y) < WALL_THRESHOLD;
+}
+
+// Project velocity along wall surface (remove component into wall normal)
+// This preserves player intent to move parallel to the wall
+// Returns velocity vector tangent to the wall surface
+glm::vec3 project_along_wall(const glm::vec3& velocity, const glm::vec3& wall_normal) {
+    // Remove the component of velocity that points into the wall
+    // Formula: v_tangent = v - n * dot(v, n)
+    // This is the standard vector projection formula for removing a component
+    return velocity - wall_normal * glm::dot(velocity, wall_normal);
+}
+
+} // namespace
+
 sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
     sphere_collision result;
 
@@ -56,11 +87,27 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                 position += col.normal * col.penetration;
                 collision_sphere.center = position;
 
-                // Remove velocity into surface
-                float vel_into_surface = glm::dot(velocity, col.normal);
-                if (vel_into_surface < 0.0f) {
-                    velocity -= col.normal * vel_into_surface;
+                // Store velocity before modification (for debug visualization)
+                glm::vec3 velocity_before = velocity;
+
+                // Wall sliding: Classify surface and apply appropriate velocity response
+                bool is_wall_contact = is_wall(col.normal);
+                if (is_wall_contact) {
+                    // Wall collision: Project velocity along wall surface
+                    // This preserves player intent to move parallel to the wall
+                    velocity = project_along_wall(velocity, col.normal);
+                } else {
+                    // Floor/ceiling collision: Remove velocity into surface (original behavior)
+                    float vel_into_surface = glm::dot(velocity, col.normal);
+                    if (vel_into_surface < 0.0f) {
+                        velocity -= col.normal * vel_into_surface;
+                    }
                 }
+
+                // Store debug info (for visualization)
+                col.is_wall = is_wall_contact;
+                col.velocity_before = velocity_before;
+                col.velocity_after = velocity;
 
                 // Track final contact (last valid collision from multi-pass)
                 final_contact = col;

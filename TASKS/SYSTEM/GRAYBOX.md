@@ -28,6 +28,7 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 Update `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
+<!-- BEGIN: GRAYBOX/SCOPE -->
 ## Graybox
 
 **Visual:**
@@ -48,7 +49,8 @@ Update `PLANS/<name>_SYSTEM.md` — add:
 - Optional features
 - Variations
 
-**Time estimate:** [hours]
+**Complexity:** Small | Medium | Large
+<!-- END: GRAYBOX/SCOPE -->
 ```
 
 ---
@@ -139,6 +141,7 @@ describe('System: <name>', () => {
 In `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
+<!-- BEGIN: GRAYBOX/RESULTS -->
 ## Results
 
 **Status:**
@@ -164,6 +167,7 @@ In `PLANS/<name>_SYSTEM.md` — add:
 
 **Next:**
 -
+<!-- END: GRAYBOX/RESULTS -->
 ```
 
 Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`

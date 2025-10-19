@@ -4,7 +4,7 @@
 **Started:** 2025-10-18
 **Branch:** system/wall_sliding
 **Complexity:** Medium (4-6 points)
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → PLAYTEST
 
 ---
 
@@ -15,7 +15,7 @@
 **Layer:** 4 (Variation)
 **Foundation:** 98%+
 **Complexity:** Medium
-**Next:** GRAYBOX
+**Next:** PLAYTEST (manual validation needed)
 
 **Dependencies:**
 - Collision System: 100% ✅
