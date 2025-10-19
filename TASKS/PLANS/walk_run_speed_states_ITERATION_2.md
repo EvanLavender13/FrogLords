@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-19
 **Previous:** [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -184,5 +184,80 @@
 - [x] Ready for VALIDATE
 
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-19
+
+**Scores:**
+1. Radical Simplicity: 8/10
+2. Fundamental Composable Functions: 7/10
+3. Solid Mathematical Foundations: 7/10
+4. Emergent Behavior: 8/10
+5. Consistency: 6/10
+6. Principled Development: 5/10
+
+**Critical Violations Identified:**
+None
+
+**Key Concerns:**
+
+1. **Stale Documentation (Solid Mathematical Foundations, Principled Development)**
+   - Evidence: SYSTEM.md:124 still shows old cycle lengths (1.5/1.0 m) instead of current (2/3/4 m)
+   - Impact: Documentation/code misalignment contradicts claimed fixes
+
+2. **Wheel Rotation Discontinuity (Consistency)**
+   - Evidence: Iteration doc claims "wheel rotation angle appears continuous" (line 120), but debug_generation.cpp:152 uses discontinuous phase for angle
+   - Impact: Visual pops on state transitions contradict documentation claims
+   - Conflict: Phase discontinuity is mathematically correct, but wheel visualization creates observable artifacts
+
+3. **Dual Retrieval Paths (Fundamental Composable Functions)**
+   - Evidence: Both `locomotion.cycle_length` (struct member) and `get_cycle_length()` (function) exist
+   - Impact: Risk of future divergence if consumers mix approaches
+   - Recommendation: Standardize on struct member, keep function as single implementation detail
+
+4. **Phase Continuity Documentation Gap (Principled Development)**
+   - Evidence: Accepted phase discontinuity lacks complete documentation of visual impact
+   - Impact: Mixed messaging between "mathematically correct" and "visually smooth"
+
+**Final Average:** 6.8/10
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** Average score 6.8/10 falls in REVISE range (5.0-6.9), and Principled Development scored below 6. While no critical violations exist and the core mathematics is sound, documentation/code misalignment and unclear wheel continuity behavior require resolution before approval.
+
+**Required changes:**
+
+1. **Fix stale documentation (CRITICAL)**
+   - Update SYSTEM.md:124 with correct cycle lengths (walk=2m, run=3m, sprint=4m)
+   - Verify no other obsolete cycle length references exist in SYSTEM.md
+
+2. **Clarify wheel rotation behavior**
+   - Option A: Document that wheel angle DOES pop on state changes (matches current code)
+   - Option B: Change wheel rotation to use `distance_traveled / wheel_radius` for continuous rotation
+   - Choose one approach and align docs/code/iteration notes
+
+3. **Document phase discontinuity completely**
+   - State explicitly: "Phase value jumps on state change, wheel angle also pops"
+   - Or if fixing: "Phase value jumps but wheel rotation remains continuous via distance-based angle"
+   - Remove contradictory claims of visual smoothness if pops are accepted
+
+4. **Standardize cycle_length access (LOW PRIORITY)**
+   - Document that consumers should use `locomotion.cycle_length` from struct
+   - Note that `get_cycle_length()` is internal implementation only
+
+**Learning:**
+Documentation must be swept completely when values change. A single stale reference undermines principle adherence scores even when code is correct.
+<!-- END: VALIDATE/DECISION -->
 
 ---
