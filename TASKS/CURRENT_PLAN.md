@@ -1,30 +1,15 @@
 # Current Plan
 
-**Status:** 🏗️ System - Walk/Run Speed States
-**Started:** 2025-10-19
-**Branch:** system/walk_run_speed_states
-**Complexity:** Medium (3-5 points)
-**Phase:** GRAYBOX → ITERATE
+**Status:** ✅ System Complete
+**Last Completed:** 2025-10-19 - Walk/Run Speed States
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**System:** Multiple speed tiers with smooth input-driven transitions
-**Location:** @TASKS/PLANS/walk_run_speed_states_SYSTEM.md
-**Layer:** 4
-**Foundation:** 98%+
-**Complexity:** Medium (3-5 points)
-**Next:** GRAYBOX
-
-**Dependencies:**
-- Controller: 97% ✅
-- Spring-Damper: 100% ✅
-- Input: 95% ✅
-
-**Target Impact:**
-- Layer 4: 55% → 70%+ (+15%)
-- Overall: 98%+ → 98%+ (maintain foundation, expand variation)
+**Choose next action:**
+- `/SYSTEM/SELECT` - Pick next system to build
+- `/REFINE/SELECT` - Pick violation to fix
 
 ---
 
@@ -37,16 +22,15 @@
 - Layer 1 (Core): 98% ✅ - TARGET EXCEEDED
 - Layer 2 (Primitives): 100% ✅ - COMPLETE
 - Layer 3 (Systems): 98%+ ✅ - TARGET EXCEEDED
-- Layer 4 (Variation): 55% → 70%+ - BUILDING (2nd system)
+- Layer 4 (Variation): 74% - BUILDING (2 systems complete)
 
-**Path to 95% Layer 4:** 2-3 more systems after this one
+**Path to 95% Layer 4:** 2-3 more systems
+
+**Next Priority:** Skeletal Animation System or Dash Mechanic
 
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
 - `BACKLOG_SYSTEMS.md` - Systems to build
+- `BACKLOG_REFINEMENTS.md` - Violations backlog
 - `DEPENDENCY_STACK.md` - Foundation status
-
-**Context:**
-- @TASKS/CONTEXT/PHYSICS_INTEGRATION_PATTERNS.md - Physics implementation philosophy
