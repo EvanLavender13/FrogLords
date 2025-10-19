@@ -1,250 +1,216 @@
-# Physics Integration Patterns
+# Physics Integration: The Nature of Motion Through Time
 
-**Mathematical correctness in motion simulation.**
+## The Paradox of Integration
 
----
+Physics integration stands apart from all other state management. It is the one place where accumulation is not compromise—it is mathematical necessity.
 
-## Accumulated State in Physics
+**The paradox:** We forbid accumulated state because it drifts from truth. Yet physics integration *is* accumulated state, and it *is* truth.
 
-### The Exception to the Rule
+**The resolution:** Some truths cannot be known directly. They can only be discovered through integration over time.
 
-PRINCIPLES.md states: "Pure Functions Over Accumulated State"
+## The Nature of Integration
 
-**Physics integration is the exception.** Position and velocity MUST be accumulated over time. This is not a violation—this is the correct implementation.
+### Two Forms of State
 
-### Acceptable Accumulated State
+State exists in two forms, but integration reveals a third:
 
-**Physics integration requires accumulation:**
-- Position integrated from velocity over time
-- Velocity integrated from acceleration over time
-- Any numerical integration of differential equations
+**Derivable Truth** - Calculable from authoritative sources each frame
+**Accumulated Falsehood** - Built up through conditional updates, drifting toward lies
+**Integrated Truth** - Built up through unconditional integration, solving equations that have no closed form
 
-**Why:** These values cannot be derived from source data alone. They represent the solution to differential equations integrated over time.
+**The distinction is mathematical, not philosophical.**
 
-**Example (CORRECT):**
-```cpp
-// Physics integration - accumulation is required
-velocity += acceleration * dt;  // Integrate acceleration → velocity
-position += velocity * dt;      // Integrate velocity → position
-```
+A cache that accumulates to avoid recalculation is falsehood waiting to diverge.
+An integral that accumulates to solve a differential equation is truth being discovered.
 
-### Unacceptable Accumulated State
+### The Test
 
-**Caching and dual-reference violations:**
-- Cached values that can be derived from source data
-- Memoized results that could be recalculated
-- Running totals that could be computed from collections
-- Smoothed values that reference themselves (dual-reference)
+Ask: "Can this value be calculated from source data alone?"
 
-**Example (WRONG):**
-```cpp
-// Caching - should derive from source instead
-cached_value += delta;  // WRONG - derive from source
+**If yes:** Derive it. Accumulation is cache rot.
+**If no:** Integrate it. Accumulation is the solution method.
 
-// Dual-reference - smoothed value references itself
-smooth = smooth * 0.9f + target * 0.1f;  // WRONG - use spring-damper
+Position cannot be derived from current velocity alone—it requires integrating velocity over the entire trajectory.
+Velocity cannot be derived from current acceleration alone—it requires integrating acceleration over time.
 
-// Running total - should compute from collection
-total += increment;  // WRONG - sum the collection
-```
+**These are not approximations. They are numerical solutions to continuous equations.**
 
-### The Distinction
+## The Boundary Between Integration and Cache
 
-**Integration over time** (differential equations):
-- Solves dx/dt = f(x, t) numerically
-- Cannot be derived from source alone—requires history
-- Accumulation is mathematically required
-- **Pattern:** Physics simulation, motion, dynamics
+Integration and caching both accumulate. The difference is necessity.
 
-**Accumulated cache** (memoization):
-- Stores derived results for performance
-- Can be recalculated from source data
-- Accumulation is an optimization, not a requirement
-- **Pattern:** Caching, totals, smoothing
+**Integration:** Solves differential equations
+- Form: dx/dt = f(x, t)
+- Cannot be derived from instantaneous state
+- Accumulation is the algorithm itself
+- Truth emerges from the process
 
-**When in doubt:** Can you derive this from source data? If yes, derive it. If no (physics integration), accumulate it.
+**Caching:** Stores derivable results
+- Can be recalculated from source
+- Accumulation is optimization, not requirement
+- Truth exists elsewhere, cache is convenience
+- Divergence is inevitable without synchronization
 
----
+**Examples of Integration (Truth):**
+- Position from velocity over trajectory
+- Velocity from acceleration over time
+- Energy from power over duration
 
-## Integration Methods
+**Examples of Caching (Falsehood in waiting):**
+- Running totals that could sum a collection
+- Smoothed values that reference themselves
+- Memoized calculations with stale inputs
 
-### Semi-Implicit Euler (Current)
+**The principle:** If you can derive it, derive it. If you must integrate it, integrate it unconditionally.
 
-**Method:**
-```cpp
-// Semi-implicit Euler (Symplectic Euler):
-velocity += acceleration * dt;     // Integrate velocity FIRST
-position += velocity * dt;          // Then position using NEW velocity
-```
+## The Philosophy of Integration Methods
 
-**Properties:**
-- Stable for damped systems (friction, collision)
-- Conserves energy better than explicit Euler
-- First-order accurate (error ~O(dt))
-- Fast and simple
-- Sufficient for platformer physics
+Numerical integration is approximation. We trade mathematical purity for computational feasibility.
 
-**When to use:** Damped systems, platformer movement, character controllers
+**The question:** Which approximation preserves the properties we care about?
 
-**Trade-offs:**
-- Energy drift for undamped systems (not a concern with friction)
-- Less accurate than higher-order methods
-- Good enough for games (not engineering simulation)
+### The Stability Hierarchy
 
-### Alternatives Considered
+**Explicit methods** use old values to compute new ones. Energy can grow unbounded. Instability is the failure mode.
 
-**Velocity Verlet:**
-- Better energy conservation for undamped systems
-- Second-order accurate
-- Requires refactor (position-velocity-position pattern)
-- **Decision:** Overkill for platformer with friction
+**Implicit methods** use new values in their own computation. Energy dissipates naturally. Stability is inherent but cost is high.
 
-**RK4 (Runge-Kutta 4th order):**
-- High accuracy (error ~O(dt⁴))
-- 4× computational cost
-- Used in engineering simulations
-- **Decision:** Overkill for platformer physics
+**Semi-implicit methods** split the difference. Update velocity explicitly, then use that new velocity for position. Stability emerges from ordering.
 
-**Explicit Euler:**
-- Simplest method: velocity = v + a*dt; position = p + v*dt
-- Uses OLD velocity for position (unstable)
-- Energy gain over time
-- **Decision:** Inferior to semi-implicit, same cost
+**The choice is not arbitrary—it determines whether simulation diverges or converges.**
 
-### Why Semi-Implicit Euler Wins
+### The Order-Accuracy Trade-off
 
-For platformer physics with friction and collision:
-- Stability matters more than energy conservation
-- First-order accuracy is sufficient
-- Speed and simplicity matter
-- Higher-order methods provide minimal benefit
+**First-order methods** (Euler) have error proportional to timestep. Simple, fast, "good enough" for most games.
 
-**See:** `src/character/controller.cpp` for implementation
+**Second-order methods** (Verlet) have error proportional to timestep squared. Better energy conservation, used in molecular dynamics.
 
----
+**Fourth-order methods** (RK4) have error proportional to timestep to the fourth. Engineering-grade accuracy at 4× cost.
 
-## Frame-Rate Independence
+**The law of diminishing returns:** For damped systems with frequent resets (platformers), first-order is sufficient. Higher orders buy accuracy we don't need at costs we can't afford.
 
-### Units and Scaling
+### Why Semi-Implicit Wins for Gameplay
 
-All physics rates must be multiplied by `dt` (delta time):
+Platformer physics is damped (friction), bounded (gravity, input limits), and reset (collisions, landing).
 
-```cpp
-// Correct - frame-rate independent
-velocity += acceleration * dt;  // m/s² × s = m/s
-position += velocity * dt;      // m/s × s = m
+**In this context:**
+- Stability matters more than energy conservation (we dissipate energy by design)
+- Speed matters more than high-order accuracy (60fps+ is non-negotiable)
+- Simplicity matters more than generality (we're not simulating orbits)
 
-// Wrong - frame-dependent
-velocity += acceleration;  // Would move faster at higher FPS
-position += velocity;      // Would move faster at higher FPS
-```
+**Semi-implicit Euler is not a compromise. It is the correct tool for the problem.**
 
-**Unit analysis:**
-- Acceleration: m/s²
-- Velocity: m/s
-- Position: m
-- Time step (dt): s
+Explicit Euler would drift toward infinity.
+Verlet would conserve energy we're trying to dissipate.
+RK4 would compute precision we immediately throw away.
 
-**Verification:** Dimensional analysis must be consistent.
+**Match the method to the mathematics of the domain.**
 
-### Tuning Constants
+## The Principle of Frame-Rate Independence
 
-Constants must be in correct units:
+Time is a parameter, not an assumption.
 
-```cpp
-// Correct
-float gravity = -9.8f;           // m/s² (acceleration)
-float friction = 0.9f;           // dimensionless (multiplier)
-float jump_velocity = 5.0f;      // m/s (velocity)
-float max_speed = 8.0f;          // m/s (velocity)
-float ground_accel = 80.0f;      // m/s² (acceleration)
+**A simulation that behaves differently at 30fps versus 60fps has failed mathematically.**
 
-// Apply with dt
-acceleration.y += gravity;        // m/s²
-velocity += acceleration * dt;    // (m/s²) × s = m/s
-position += velocity * dt;        // (m/s) × s = m
-```
+### The Nature of Rates
 
-**Key insight:** Accelerations and velocities are rates. They must be multiplied by time to produce changes.
+Rates are changes per unit time. To produce change, multiply by time.
 
----
+**Velocity is meters per second.** To change position, multiply by seconds.
+**Acceleration is meters per second per second.** To change velocity, multiply by seconds.
 
-## Drift and Stability
+**This is not a performance trick—it is dimensional analysis.**
 
-### Sources of Drift
+When rates are not scaled by time, the simulation runs faster at higher framerates. This is not a bug, it is a mathematical error. The units do not balance.
 
-**Numerical integration accumulates error:**
-- Euler methods have O(dt) error per step
-- Error compounds over time
-- Can cause position/velocity drift
+### The Verification
 
-**Mitigation in platformer:**
-- Friction continuously damps velocity
-- Collision resolution resets to contact
-- Grounded state provides reference frame
-- Accumulated error is bounded by game mechanics
+Check dimensions on every equation.
 
-### Stability Analysis
+Position (m) = Position (m) + Velocity (m/s) × Time (s)
+Velocity (m/s) = Velocity (m/s) + Acceleration (m/s²) × Time (s)
 
-**Semi-implicit Euler is stable when:**
-- System is damped (friction, air resistance)
-- Forces are bounded (gravity, input acceleration)
-- Collisions reset state (ground contact)
+**If dimensions do not balance, the equation is wrong.**
 
-**Our system has all three:**
-- Friction: `velocity *= friction` (exponential decay)
-- Bounded forces: Gravity constant, input clamped
-- Collision: Resets to surface contact
+No amount of tuning can fix an equation with incorrect units. It will fail under frame rate changes, time dilation, slow motion, or fast-forward.
 
-**Result:** Drift is negligible for platformer physics.
+**Frame-rate independence is not a feature. It is mathematical correctness.**
 
-### When to Worry About Drift
+## The Question of Drift
 
-**High-precision simulations:**
-- Space flight (long time scales)
-- Orbital mechanics (energy conservation critical)
-- Engineering (accuracy requirements)
+Numerical integration accumulates error. Over infinite time, all integrators drift.
 
-**Platformer physics:**
-- Short time scales (seconds, not hours)
-- Constant resets (landing, collisions)
-- Bounded states (friction, max speed)
+**The question is not "does it drift?" but "does the drift matter?"**
 
-**Verdict:** Semi-implicit Euler is stable and sufficient.
+### Bounded Drift in Damped Systems
 
----
+Platformer physics has three properties that bound error:
 
-## Pattern Summary
+**Damping:** Friction exponentially decays velocity. Errors decay with it.
+**Resets:** Collision resolution resets position to contact. Error cannot accumulate across landings.
+**Bounded forces:** Gravity and input are constant or clamped. Unbounded error growth is impossible.
 
-**Accumulated state in physics:**
-- ✅ Position/velocity integration (required)
-- ✅ Differential equation solutions (required)
-- ❌ Cached derived values (use derivation)
-- ❌ Dual-reference smoothing (use spring-damper)
+**Result:** Error is bounded by game mechanics, not integration order.
 
-**Integration method:**
-- ✅ Semi-implicit Euler (fast, stable, sufficient)
-- ❌ Verlet (overkill for damped systems)
-- ❌ RK4 (overkill for platformer)
+### When Drift Matters
 
-**Frame independence:**
-- ✅ All rates multiplied by dt
-- ✅ Units consistent (m, m/s, m/s²)
-- ✅ Dimensional analysis verified
+**Undamped systems** (orbital mechanics, springs without damping) accumulate energy error that compounds forever.
 
-**Stability:**
-- ✅ Damped system (friction)
-- ✅ Bounded forces (gravity, input)
-- ✅ State resets (collision, grounded)
+**Long time scales** (space flight, astronomical simulation) integrate error over hours or years.
 
----
+**High precision requirements** (engineering, scientific simulation) demand accuracy beyond gameplay.
 
-## References
+**None of these describe platformer physics.**
 
-**Implementation:** `src/character/controller.{h,cpp}`
-**Theory:** PRINCIPLES.md - "Pure Functions Over Accumulated State"
-**Testing:** `tests/foundation/test_spring_damper.cpp` (second-order systems)
+We operate on second-to-minute timescales.
+We reset state dozens of times per second.
+We dissipate energy by design.
 
----
+**In this domain, first-order integration is not just sufficient—it is optimal.**
 
-**Accumulate physics. Derive everything else.**
+## The Warning Signs
+
+Not all accumulation is integration. Watch for cache disguised as physics.
+
+**Conditional accumulation** - `if (grounded) { time_on_ground += dt; }` (derive from transition timestamp)
+**Self-referential smoothing** - `smooth = smooth * 0.9 + target * 0.1;` (use spring-damper with separate state)
+**Running totals** - `total_distance += speed * dt;` (integrate position, derive distance)
+**Reset patterns** - `if (jumped) { accumulated_value = 0; }` (why does it need resetting?)
+
+**When accumulation needs resetting, question whether it should accumulate at all.**
+
+Integration over continuous time doesn't reset. Motion doesn't have a "clear history" button. If your accumulated state does, it's probably cache, not integration.
+
+## The Principle
+
+**Integration is the solution to equations that have no closed form.**
+
+Position from velocity, velocity from acceleration, energy from power—these are differential equations solved numerically.
+
+**Accumulation is the algorithm, not an optimization.**
+
+Cache accumulates to avoid recalculation. Integration accumulates because calculation-from-source is impossible.
+
+**The distinction is mathematical:**
+
+Can you write the formula for position at time t given only current velocity? No—you need the integral of velocity over the trajectory.
+
+Can you write the formula for total damage given the damage event log? Yes—sum the collection.
+
+**One is integration. One is cache. Only one should accumulate.**
+
+## The Direction of Truth
+
+**Physics integration flows forward through time.**
+
+Given initial conditions and forces, we integrate to discover future state. The arrow of causation is clear: past determines present, present determines future.
+
+**Cache pretends to flow forward but actually references backward.**
+
+A smoothed value that uses its own previous value creates circular dependency. The accumulation isn't solving an equation—it's approximating one while introducing lag and staleness.
+
+**Integration discovers. Cache duplicates.**
+
+Know which you're doing. Integrate when mathematics demands it. Derive when source truth exists.
+
+**The best way to prevent accumulated state bugs is still to eliminate accumulated state—except where state is the solution itself.**

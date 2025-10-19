@@ -102,7 +102,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 Use Codex to validate the approach. Direct it to read `TASKS/PLANS/REFINE_<name>.md` and `PRINCIPLES.md` for context.
 
 ```bash
-echo "your validation question" | codex e
+echo "your validation question" | codex e 2>/dev/null
 ```
 
 **Evaluate feedback:**

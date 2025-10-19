@@ -8,7 +8,7 @@ Certainty comes not from a single perspective but from convergence. When the pat
 
 When complexity demands validation, use the tool built for rapid analysis. The Codex CLI exists for one purpose: to provide a second opinion without the overhead of a new session.
 
-**The Command**: `echo "your question" | codex e`
+**The Command**: `echo "your question" | codex e 2>/dev/null`
 
 **The Philosophy**: Quick consultation. Independent analysis. Fresh perspective.
 
@@ -17,47 +17,49 @@ When complexity demands validation, use the tool built for rapid analysis. The C
 **IMPORTANT**: Codex reads from stdin. You must pipe the prompt in using `echo`:
 
 ```bash
-echo "Does this implementation violate any SOLID principles?" | codex e
+echo "Does this implementation violate any SOLID principles?" | codex e 2>/dev/null
 ```
 
 **Why echo?** Direct argument passing doesn't work reliably. Always pipe the prompt via stdin.
 
+**Why 2>/dev/null?** Suppress verbose stderr (thinking, file reads, execution traces). You want the answer, not the process.
+
 **Output Behavior**:
 - **stdout**: Clean, concise findings (the actual answer)
-- **stderr**: Verbose activity stream (thinking, file reads, execution traces)
+- **stderr**: Verbose activity stream (suppressed by `2>/dev/null`)
 
-This separation makes Codex scriptable - pipe stdout to other tools, ignore stderr noise.
+**The Rule**: Always suppress stderr. If you need debugging, remove `2>/dev/null` temporarily.
 
 ## The Syntax of Consultation
 
 **Quick Code Review**:
 ```bash
-echo "Review src/controller.cpp for potential race conditions" | codex e
+echo "Review src/controller.cpp for potential race conditions" | codex e 2>/dev/null
 ```
 
 **Architecture Validation**:
 ```bash
-echo "Does the current input buffering approach align with the dual reference pattern?" | codex e
+echo "Does the current input buffering approach align with the dual reference pattern?" | codex e 2>/dev/null
 ```
 
 **Pattern Recognition**:
 ```bash
-echo "Identify any accumulated state anti-patterns in src/player/" | codex e
+echo "Identify any accumulated state anti-patterns in src/player/" | codex e 2>/dev/null
 ```
 
 **Mathematical Verification**:
 ```bash
-echo "Verify the spring-damper constants in motion.cpp are physically correct" | codex e
+echo "Verify the spring-damper constants in motion.cpp are physically correct" | codex e 2>/dev/null
 ```
 
 **Principle Compliance**:
 ```bash
-echo "Does the collision system adhere to the principle of orthogonality?" | codex e
+echo "Does the collision system adhere to the principle of orthogonality?" | codex e 2>/dev/null
 ```
 
 **Design Decision Analysis**:
 ```bash
-echo "Should skeletal animation be event-driven or state-based? List trade-offs." | codex e
+echo "Should skeletal animation be event-driven or state-based? List trade-offs." | codex e 2>/dev/null
 ```
 
 ## Multi-Turn Consultation
@@ -68,12 +70,12 @@ When analysis requires iteration, resume the previous session to preserve contex
 
 **Starting a consultation**:
 ```bash
-echo "Review the change, look for use-after-free issues" | codex e
+echo "Review the change, look for use-after-free issues" | codex e 2>/dev/null
 ```
 
 **Continuing the conversation**:
 ```bash
-echo "Fix the use-after-free issues you found" | codex e resume --last
+echo "Fix the use-after-free issues you found" | codex e resume --last 2>/dev/null
 ```
 
 **The Pattern**: Ask → Analyze → Follow-up → Refine
@@ -85,8 +87,8 @@ Use multi-turn when:
 - A problem needs exploration, not just validation
 
 **One-shot vs. Multi-turn**:
-- New question? Use `codex e`
-- Follow-up on previous session? Use `codex e resume --last`
+- New question? Use `codex e 2>/dev/null`
+- Follow-up on previous session? Use `codex e resume --last 2>/dev/null`
 
 Context preservation allows depth. Shallow questions get shallow answers. Deep questions deserve conversation.
 
@@ -120,17 +122,17 @@ The best tool is the one that matches the question's shape:
 
 **Before implementing**:
 ```bash
-echo "Review the approach in TASKS/PLANS/BUILD_skeletal_animation.md" | codex e
+echo "Review the approach in TASKS/PLANS/BUILD_skeletal_animation.md" | codex e 2>/dev/null
 ```
 
 **During implementation** (while working with Claude Code):
 ```bash
-echo "Is this spring constant physically reasonable? k=200, damping=0.7" | codex e
+echo "Is this spring constant physically reasonable? k=200, damping=0.7" | codex e 2>/dev/null
 ```
 
 **After implementation**:
 ```bash
-echo "Review src/animation/skeleton.cpp for principle violations" | codex e
+echo "Review src/animation/skeleton.cpp for principle violations" | codex e 2>/dev/null
 ```
 
 **The cycle**: Propose → Validate → Implement → Verify
@@ -139,9 +141,9 @@ Confidence is built through convergence. When two independent analyses agree, tr
 
 ## Advanced Usage
 
-**Silent Mode** (suppress verbose stderr):
+**Verbose Mode** (when you need to debug):
 ```bash
-echo "your question" | codex e 2>/dev/null
+echo "your question" | codex e
 ```
 
 **Capture Only Results**:
@@ -149,17 +151,17 @@ echo "your question" | codex e 2>/dev/null
 result=$(echo "your question" | codex e 2>/dev/null)
 ```
 
-**Automated Workflows**:
+**Background Processing**:
 ```bash
-# Launch in background, wait for completion, read clean results
-echo "comprehensive audit question" | codex e > results.txt 2>activity.log &
+# Launch in background, capture clean results
+echo "comprehensive audit question" | codex e 2>/dev/null > results.txt &
 ```
 
 **Dual-AI Analysis** (combine with Gemini):
 ```bash
 # Parallel analysis for convergence validation
 gemini -p "@src/ your question" > gemini_findings.txt &
-echo "your question" | codex e > codex_findings.txt &
+echo "your question" | codex e 2>/dev/null > codex_findings.txt &
 wait
 # Synthesize findings from both
 ```
