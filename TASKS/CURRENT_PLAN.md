@@ -1,15 +1,30 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Camera Modes Separation
+**Status:** 🏗️ System - Wall Sliding
+**Started:** 2025-10-18
+**Branch:** system/wall_sliding
+**Complexity:** Medium (4-6 points)
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**System:** Preserve player intent when colliding with vertical surfaces
+**Location:** @TASKS/PLANS/wall_sliding_SYSTEM.md
+**Layer:** 4 (Variation)
+**Foundation:** 98%+
+**Complexity:** Medium
+**Next:** GRAYBOX
+
+**Dependencies:**
+- Collision System: 100% ✅
+- Controller: 97% ✅
+- Debug Visualization: 100% ✅
+
+**Target Impact:**
+- Layer 4: <50% → ~55% (+5-6%)
+- Overall: 98%+ → 98%+ (maintain, add variation)
 
 ---
 
