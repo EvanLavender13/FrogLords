@@ -1,16 +1,21 @@
 #include "gui/camera_panel.h"
 #include "gui/gui.h"
 #include <imgui.h>
+#include <vector>
 
 namespace gui {
 
-void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& cam_follow) {
+std::vector<camera_command> draw_camera_panel(camera_panel_state& state,
+                                               const camera& cam,
+                                               const camera_follow& cam_follow) {
+    std::vector<camera_command> commands;
+
     if (!state.show)
-        return;
+        return commands;
 
     // Draw as collapsible section (no window wrapper)
     if (!ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
-        return;
+        return commands;
 
     // Camera mode display (always FOLLOW now)
     ImGui::Text("Mode: FOLLOW");
@@ -44,6 +49,8 @@ void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& ca
     ImGui::Text("Zoom Limits");
     ImGui::SliderFloat("Min Distance", &cam_follow.min_distance, 0.5f, 10.0f, "%.1f m");
     ImGui::SliderFloat("Max Distance", &cam_follow.max_distance, 5.0f, 30.0f, "%.1f m");
+
+    return commands;
 }
 
 } // namespace gui
