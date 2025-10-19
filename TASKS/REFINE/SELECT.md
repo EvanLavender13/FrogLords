@@ -31,37 +31,19 @@ Open `TASKS/DEPENDENCY_STACK.md`:
 
 ### 2. Select Violation
 
-Open `TASKS/BACKLOG_REFINEMENTS.md`. Choose by:
+Open `TASKS/BACKLOG_REFINEMENTS.md`.
 
-**Priority:**
-1. Severity (Critical > High > Medium > Low)
-2. Foundation layer (Core > Leaf)
-3. Cascade risk (Many dependents > Few)
-4. Fix approach (Delete > Simplify > Document)
-
-**Prefer:**
-- Can be deleted entirely
-- Core/primitive layers
-- Blocks future work
-- Clear fix path
-
-**Avoid:**
-- Requires new systems
-- Unclear scope
-- Blocked by dependencies
+Choose the highest-impact violation. Apply the principles.
 
 ---
 
 ### 3. Classify Complexity
 
-**Trivial (1-2 pts):** Obvious fix, low risk, single file, <1hr, no test updates
-- Examples: Delete dead code, document magic number
+**Trivial (1-2 pts):** Single concern, isolated to one location. Fix path obvious. Deletion or documentation. No behavior changes. Zero cascade risk.
 
-**Standard (3-8 pts):** Requires thought, moderate risk, multiple files, <1 day, tests need updates
-- Examples: Derive from first principles, extract primitives, simplify complex function
+**Standard (3-8 pts):** Crosses file boundaries. Requires deriving from first principles or extracting primitives. Changes behavior. Moderate cascade risk. Must validate existing systems remain unaffected.
 
-**Complex (>8 pts):** Major refactor, high risk, system-wide, >1 day
-- **Don't refine—create new system instead**
+**Complex (>8 pts):** System-wide implications. Requires new primitives or fundamental restructuring. High cascade risk across multiple layers. **Don't refine—build new system instead.**
 
 ---
 
@@ -92,7 +74,7 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 **Location:** `<file>:<line>` | System: <name>
 **Principle:** <violated> | Score: __/10
 **Severity:** Critical | High | Medium | Low
-**Type:** Magic number | Special case | Duplication | Complexity | Undocumented
+**Type:** <describe the nature of the violation>
 
 **Current state:**
 ```

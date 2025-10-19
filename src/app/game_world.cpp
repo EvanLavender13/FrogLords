@@ -88,49 +88,57 @@ void setup_test_level(game_world& world) {
     world.scn.add_object(floor);
 
     // Ground collision plane (replaces special-case ground at y=0)
-    aabb ground_plane;
-    ground_plane.center = glm::vec3(0.0f, -0.1f, 0.0f);
-    ground_plane.half_extents = glm::vec3(100.0f, 0.1f, 100.0f);
+    collision_box ground_plane;
+    ground_plane.bounds.center = glm::vec3(0.0f, -0.1f, 0.0f);
+    ground_plane.bounds.half_extents = glm::vec3(100.0f, 0.1f, 100.0f);
+    ground_plane.type = collision_surface_type::FLOOR;
     world.world_geometry.boxes.push_back(ground_plane);
 
     for (int i = 0; i < 5; ++i) {
         float height = 1.0f + static_cast<float>(i) * 1.5f;
-        aabb platform;
-        platform.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
-        platform.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
+        collision_box platform;
+        platform.bounds.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
+        platform.bounds.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
+        platform.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(platform);
     }
 
-    aabb long_wall;
-    long_wall.center = glm::vec3(6.0f, 2.0f, -10.0f);
-    long_wall.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
+    collision_box long_wall;
+    long_wall.bounds.center = glm::vec3(6.0f, 2.0f, -10.0f);
+    long_wall.bounds.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
+    long_wall.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(long_wall);
 
-    aabb corner_wall_1;
-    corner_wall_1.center = glm::vec3(-6.0f, 1.5f, -8.0f);
-    corner_wall_1.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
+    collision_box corner_wall_1;
+    corner_wall_1.bounds.center = glm::vec3(-6.0f, 1.5f, -8.0f);
+    corner_wall_1.bounds.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
+    corner_wall_1.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(corner_wall_1);
 
-    aabb corner_wall_2;
-    corner_wall_2.center = glm::vec3(-4.0f, 1.5f, -12.0f);
-    corner_wall_2.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
+    collision_box corner_wall_2;
+    corner_wall_2.bounds.center = glm::vec3(-4.0f, 1.5f, -12.0f);
+    corner_wall_2.bounds.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
+    corner_wall_2.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(corner_wall_2);
 
-    aabb gap_wall_1;
-    gap_wall_1.center = glm::vec3(3.0f, 1.0f, 2.0f);
-    gap_wall_1.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    collision_box gap_wall_1;
+    gap_wall_1.bounds.center = glm::vec3(3.0f, 1.0f, 2.0f);
+    gap_wall_1.bounds.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    gap_wall_1.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(gap_wall_1);
 
-    aabb gap_wall_2;
-    gap_wall_2.center = glm::vec3(3.0f, 1.0f, 4.0f);
-    gap_wall_2.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    collision_box gap_wall_2;
+    gap_wall_2.bounds.center = glm::vec3(3.0f, 1.0f, 4.0f);
+    gap_wall_2.bounds.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    gap_wall_2.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(gap_wall_2);
 
     for (int i = 0; i < 4; ++i) {
         float height = 0.15f * static_cast<float>(i + 1);
-        aabb step;
-        step.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
-        step.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
+        collision_box step;
+        step.bounds.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
+        step.bounds.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
+        step.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(step);
     }
 }
