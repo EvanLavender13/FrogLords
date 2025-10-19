@@ -115,7 +115,38 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 ---
 
-### 4. Document Emergence
+### 4. Write Unit Tests (if APPROVED)
+
+**Foundation/primitive code only.** High-level systems use debug assertions.
+
+**What to test:**
+- Mathematical correctness
+- Behavioral properties
+- Edge cases
+- Parameter ranges
+
+**Reference:** `tests/foundation/test_spring_damper.cpp`
+
+**Create:** `tests/foundation/test_<name>.cpp`
+
+**All tests must pass before continuing.**
+
+**Document** in `PLANS/<name>_SYSTEM.md`:
+
+```markdown
+<!-- BEGIN: VALIDATE/TESTS -->
+## Foundation Tests
+
+**File:** tests/foundation/test_<name>.cpp
+**Functions:** [list]
+**Count:** [N]
+**Status:** ✓ Passing
+<!-- END: VALIDATE/TESTS -->
+```
+
+---
+
+### 5. Document Emergence
 
 **Regardless of decision:**
 
@@ -138,7 +169,7 @@ In `PLANS/<name>_SYSTEM.md`:
 
 ---
 
-### 5. Commit
+### 6. Commit
 
 ```bash
 git commit -m "validate: <name> - <APPROVED|REVISE|REJECT>
@@ -158,6 +189,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 - [ ] Principles scored
 - [ ] External review completed
 - [ ] Decision made
+- [ ] Unit tests written (if APPROVED, foundation code only)
 - [ ] Emergence documented
 - [ ] Committed
 
