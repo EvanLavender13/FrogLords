@@ -122,7 +122,7 @@ else if (speed < run_threshold) state = RUN
 else state = SPRINT
 
 // Cycle length per state
-cycle_length = state_to_cycle_length[state]  // walk=2.0m, run=1.5m, sprint=1.0m
+cycle_length = state_to_cycle_length[state]  // walk=2.0m, run=3.0m, sprint=4.0m
 
 // Phase calculation (distance-based)
 distance_traveled += speed * dt
@@ -401,3 +401,4 @@ Review the implementation plan for principle adherence (physics drives animation
 
 - [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md) - REVISE
 - [walk_run_speed_states_ITERATION_2.md](walk_run_speed_states_ITERATION_2.md) - REVISE
+- [walk_run_speed_states_ITERATION_3.md](walk_run_speed_states_ITERATION_3.md) - In Progress

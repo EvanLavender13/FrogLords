@@ -1,0 +1,79 @@
+# Iteration 3: Walk/Run Speed States
+
+**Started:** 2025-10-19
+**Previous:** [walk_run_speed_states_ITERATION_2.md](walk_run_speed_states_ITERATION_2.md)
+**Status:** In Progress
+
+---
+
+<!-- BEGIN: ITERATE/CONTEXT -->
+## Context from Previous Iteration
+
+**Decision:** REVISE (from ITERATION_2)
+
+**Required changes:**
+
+1. **Fix stale documentation (CRITICAL)**
+   - Update SYSTEM.md:124 with correct cycle lengths (walk=2m, run=3m, sprint=4m)
+   - Verify no other obsolete cycle length references exist in SYSTEM.md
+
+2. **Clarify wheel rotation behavior**
+   - Option A: Document that wheel angle DOES pop on state changes (matches current code)
+   - Option B: Change wheel rotation to use `distance_traveled / wheel_radius` for continuous rotation
+   - Choose one approach and align docs/code/iteration notes
+
+3. **Document phase discontinuity completely**
+   - State explicitly: "Phase value jumps on state change, wheel angle also pops"
+   - Or if fixing: "Phase value jumps but wheel rotation remains continuous via distance-based angle"
+   - Remove contradictory claims of visual smoothness if pops are accepted
+
+4. **Standardize cycle_length access (LOW PRIORITY)**
+   - Document that consumers should use `locomotion.cycle_length` from struct
+   - Note that `get_cycle_length()` is internal implementation only
+
+**Baseline contract:** See ITERATION_1/CONTRACT + ITERATION_2 fixes
+<!-- END: ITERATE/CONTEXT -->
+
+---
+
+<!-- BEGIN: ITERATE/CONTRACT -->
+## Foundation Contract
+
+**Violations from ITERATION_2 (must fix):**
+- [x] Stale cycle length documentation in SYSTEM.md
+  - Found stale reference at SYSTEM.md:125 (walk=2m, run=1.5m, sprint=1.0m)
+  - Replaced with correct values (walk=2m, run=3m, sprint=4m)
+  - Verified no other stale references exist (grepped for "1.5" and "1.0.*m")
+  - Commit: [pending]
+
+- [ ] Wheel rotation continuity behavior unclear
+  - Investigate current behavior: Does wheel angle pop on state transitions?
+  - Choose approach: Accept pops or implement continuous rotation via distance
+  - Implement chosen approach
+  - Document actual behavior clearly
+
+- [ ] Phase discontinuity documentation incomplete
+  - Document complete behavior: phase value + visual wheel behavior
+  - Remove contradictory claims if any exist
+  - Clarify in iteration notes and SYSTEM.md
+
+- [ ] cycle_length access pattern unstandardized
+  - Document preferred access: `locomotion.cycle_length` (struct member)
+  - Document internal-only: `get_cycle_length()` (implementation detail)
+  - Add comment in code clarifying usage
+
+**Baseline from ITERATION_1+2 (must preserve):**
+- Frame-rate independence (distance += speed * dt)
+- Phase wrapping at boundaries (fmod guarantees [0,1))
+- Distance monotonicity (speed >= 0)
+- Deterministic state classification (pure thresholds)
+- Zero velocity handling (phase freezes)
+- Backward/strafe movement (uses speed magnitude)
+- Collision handling (post-resolution velocity)
+- Output contract: {state, phase, cycle_length}
+- Threshold ordering validation (FL_PRECONDITION)
+- Fail-fast on invalid states (FL_ASSERT)
+
+<!-- END: ITERATE/CONTRACT -->
+
+---
