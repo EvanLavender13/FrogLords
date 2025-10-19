@@ -207,24 +207,20 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
 void generate_collision_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
                                          const collision_world& world) {
+    // Single color for all collision boxes
+    // Why: Heuristic categorization based on dimensions is unreliable and couples debug
+    // visualization to test arena geometry. Proper solution requires semantic types in the
+    // collision system itself (wall/floor/platform) rather than inferring from dimensions.
+    // See: BACKLOG_REFINEMENTS.md for semantic collision type task
+    constexpr glm::vec4 COLLISION_BOX_COLOR = {0.3f, 1.0f, 0.3f, 1.0f}; // Green
+
     // World geometry boxes
     for (const auto& box : world.boxes) {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), box.center);
-        glm::vec4 color;
-        if (box.half_extents.y < 0.4f && box.half_extents.x < 1.2f && box.half_extents.z < 1.2f &&
-            box.center.y < 1.0f) {
-            float height_ratio = box.half_extents.y / 0.3f;
-            color = {0.2f, 0.5f + height_ratio * 0.5f, 1.0f, 1.0f};
-        } else if (box.half_extents.y > box.half_extents.x &&
-                   box.half_extents.y > box.half_extents.z) {
-            color = {1.0f, 0.5f, 0.2f, 1.0f};
-        } else {
-            color = {0.3f, 1.0f, 0.3f, 1.0f};
-        }
         list.boxes.push_back(debug::debug_box{
             .transform = transform,
             .half_extents = box.half_extents,
-            .color = color,
+            .color = COLLISION_BOX_COLOR,
         });
     }
 
