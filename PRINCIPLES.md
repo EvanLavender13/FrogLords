@@ -55,6 +55,8 @@ When players understand a system perfectly, they don't feel constrained—they f
 ### Addition by Subtraction
 Before adding anything, ask what can be removed. The best solution to a problem might be removing the thing that created the problem. Elegance is achieved not when there is nothing left to add, but when there is nothing left to remove.
 
+Absence announces itself. Excess hides in crowds. Start minimal—what's missing becomes obvious.
+
 ### Validation Before Integration
 An untested component is a time bomb. A mathematically unverified system is a foundation of sand. Validate in isolation, integrate with confidence, or suffer the compound interest of technical debt.
 

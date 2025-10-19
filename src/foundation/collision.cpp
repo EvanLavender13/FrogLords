@@ -1,4 +1,5 @@
 #include "foundation/collision.h"
+#include "foundation/debug_assert.h"
 #include "foundation/math_utils.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
@@ -27,10 +28,32 @@ bool is_wall(const glm::vec3& normal) {
 // This preserves player intent to move parallel to the wall
 // Returns velocity vector tangent to the wall surface
 glm::vec3 project_along_wall(const glm::vec3& velocity, const glm::vec3& wall_normal) {
+    // Contract validation (ITERATE phase assertions)
+    FL_ASSERT_FINITE(velocity, "velocity");
+    FL_ASSERT_FINITE(wall_normal, "wall_normal");
+    FL_ASSERT_NORMALIZED(wall_normal, "wall_normal");
+
     // Remove the component of velocity that points into the wall
     // Formula: v_tangent = v - n * dot(v, n)
     // This is the standard vector projection formula for removing a component
-    return velocity - wall_normal * glm::dot(velocity, wall_normal);
+    glm::vec3 projected = velocity - wall_normal * glm::dot(velocity, wall_normal);
+
+    // Contract postconditions
+    // 1. Projection never amplifies velocity: |v_projected| ≤ |v_original|
+    float original_mag = glm::length(velocity);
+    float projected_mag = glm::length(projected);
+    FL_POSTCONDITION(projected_mag <= original_mag + FL_EPSILON,
+                     "projection must not amplify velocity");
+
+    // 2. Projected velocity is orthogonal to normal: dot(v_projected, normal) ≈ 0
+    float dot_result = glm::dot(projected, wall_normal);
+    FL_POSTCONDITION(std::abs(dot_result) < FL_EPSILON,
+                     "projected velocity must be orthogonal to wall normal");
+
+    // 3. Result is finite
+    FL_ASSERT_FINITE(projected, "projected velocity");
+
+    return projected;
 }
 
 } // namespace
@@ -62,6 +85,10 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
         result.normal = math::safe_normalize(distance, math::UP);
         result.penetration = s.radius - distance_magnitude;
         result.contact_box = &box;
+
+        // Validate collision normal (ITERATE phase)
+        FL_ASSERT_NORMALIZED(result.normal, "collision normal");
+        FL_ASSERT_NON_NEGATIVE(result.penetration, "penetration depth");
     }
 
     return result;

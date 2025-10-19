@@ -37,11 +37,11 @@ Update `PLANS/<name>_SYSTEM.md` — add:
 - Input: [primitives only]
 
 **Included:**
+- [ ] Implementation plan
 - [ ] Core mechanic
 - [ ] Math implementation
 - [ ] Debug visualization
-- [ ] Validation harness
-- [ ] Self-test
+- [ ] Build verification
 
 **Excluded:**
 - Art/models/audio
@@ -55,7 +55,33 @@ Update `PLANS/<name>_SYSTEM.md` — add:
 
 ---
 
-### 2. Build Core
+### 2. Plan Implementation
+
+**Before writing code, map the structure.**
+
+Update `PLANS/<name>_SYSTEM.md` — add:
+
+```markdown
+<!-- BEGIN: GRAYBOX/IMPLEMENTATION_PLAN -->
+## Implementation Plan
+
+**Files to modify:**
+List each file path and what changes.
+
+**Call structure:**
+Describe function call chain.
+
+**Debug data flow:**
+Describe how computed values reach visualization.
+
+**Integration points:**
+Identify which existing functions modified and where new code added.
+<!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
+```
+
+---
+
+### 3. Build Core
 
 **Priority:**
 1. Mathematical correctness - proven, not guessed
@@ -95,26 +121,7 @@ Update `PLANS/<name>_SYSTEM.md` — add:
 
 ---
 
-### 4. Validation Harness
-
-**Test for:**
-- **Math correctness** - edge cases, boundaries
-- **Consistency** - same input = same output
-- **No special cases** - general rules only
-- **Predictability** - behavior matches model
-
-**Structure:**
-```typescript
-describe('System: <name>', () => {
-  it('math: <property>', () => { /* prove property */ });
-  it('consistency: deterministic', () => { /* verify */ });
-  it('no special cases', () => { /* no entity-specific logic */ });
-});
-```
-
----
-
-### 5. Self-Test
+### 4. Self-Test
 
 **Play it:**
 - Core feel right?
@@ -128,15 +135,14 @@ describe('System: <name>', () => {
 - Surprised?
 - Emerged?
 
-**Iterate fast:**
-- Short cycles (minutes to hours)
-- Small changes
-- Frequent tests
-- Follow serendipity (verify mathematically)
+**Build and run:**
+- Does it compile?
+- Does it run without crashing?
+- Does debug visualization show the system working?
 
 ---
 
-### 6. Document Results
+### 5. Document Results
 
 In `PLANS/<name>_SYSTEM.md` — add:
 
@@ -146,10 +152,9 @@ In `PLANS/<name>_SYSTEM.md` — add:
 
 **Status:**
 - [x] Core functional
-- [x] Math validation passing
+- [x] Build successful
 - [x] Debug viz working
-- [ ] Edge cases handled
-- [ ] Emergence observed
+- [ ] Ready for iteration
 
 **Works:**
 -
@@ -160,13 +165,8 @@ In `PLANS/<name>_SYSTEM.md` — add:
 **Surprises:**
 -
 
-**Validation:**
-- Proven:
-- Tested:
-- Holds:
-
 **Next:**
--
+- ITERATE phase
 <!-- END: GRAYBOX/RESULTS -->
 ```
 
@@ -174,7 +174,7 @@ Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`
 
 ---
 
-### 7. Commit
+### 6. Commit
 
 ```bash
 git add .
@@ -193,11 +193,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Outputs
 
+- [ ] Implementation plan documented
 - [ ] Core implemented (primitives)
 - [ ] Debug viz functional
-- [ ] Validation harness created
-- [ ] Tests passing
-- [ ] Playtest completed
+- [ ] Build successful
 - [ ] Results documented
 - [ ] Committed
 

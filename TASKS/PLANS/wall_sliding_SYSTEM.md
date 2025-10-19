@@ -165,6 +165,30 @@ Run:   ✅ Program started successfully
 
 ---
 
+<!-- BEGIN: ITERATE/CONTRACT -->
+## Foundation Contract
+
+**Mathematical properties:**
+- [ ] Surface classification consistent: `abs(dot(normal, up)) < 0.707` always classifies 45°+ slopes as walls
+- [ ] Projection preserves tangent motion: `v_tangent = v - n * dot(v, n)` removes only normal component
+- [ ] Projection magnitude bounded: `|v_projected| ≤ |v_original|` (never amplifies velocity)
+- [ ] Zero normal velocity after projection: `dot(v_projected, normal) ≈ 0` (within epsilon)
+
+**Edge cases:**
+- [ ] 90° wall collision (pure normal): projected velocity = zero (graceful stop)
+- [ ] Parallel to wall (pure tangent): projected velocity = original (no change)
+- [ ] Inside corner (opposing normals): averaged normal produces reasonable behavior
+- [ ] Multiple simultaneous walls: normal averaging prevents instability
+- [ ] Wall-to-floor transition: classification switches cleanly at threshold
+
+**Consistency:**
+- [ ] Same input → same output (deterministic projection)
+- [ ] Frame-rate independent (no velocity accumulation artifacts)
+- [ ] No special cases (single projection formula for all walls)
+<!-- END: ITERATE/CONTRACT -->
+
+---
+
 ## Implementation Notes
 
 **Surface classification thresholds:**
