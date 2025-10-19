@@ -62,12 +62,12 @@ struct controller {
 
     // Tunable parameters
     // CALCULATED: Ground acceleration (derived from tuning.h defaults)
-    // Derived from time_to_max_speed via: ground_accel = (max_speed / time) / NET_FRACTION
-    // Default: 80.0 m/s² matches tuning.h time_to_max_speed=0.4s (with NET_FRACTION=0.25)
-    // Formula: (8.0 m/s / 0.4s) / 0.25 = 80.0 m/s²
+    // Derived from time_to_max_speed via: ground_accel = max_speed / time
+    // Default: 20.0 m/s² matches tuning.h time_to_max_speed=0.4s
+    // Formula: 8.0 m/s / 0.4s = 20.0 m/s²
     // NOTE: Will be overwritten if tuning_params::apply_to() is called
     // Used in: apply_input (line 64) to set acceleration magnitude when grounded
-    float ground_accel = 80.0f; // m/s²
+    float ground_accel = 20.0f; // m/s²
 
     // CALCULATED: Air acceleration (derived from tuning.h defaults)
     // Derived from time_to_max_speed via: air_accel = max_speed / time
