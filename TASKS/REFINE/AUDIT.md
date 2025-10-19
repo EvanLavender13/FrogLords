@@ -94,16 +94,6 @@ For each validated violation in `TASKS/BACKLOG_REFINEMENTS.md`:
 - **Medium**: Technical debt, compounds over time
 - **Low**: Cosmetic, address opportunistically
 
-**Type:**
-- Complexity (unnecessary complication)
-- Special case (breaks composability)
-- Magic number (unjustified constant)
-- Duplication (same logic in multiple places)
-- Prescribed outcome (removes emergence)
-- Lost responsiveness (violates Prime Directive)
-- Unjustified decision (no principle backing)
-- Undocumented (missing rationale)
-
 **Fix:**
 - **Delete**: Remove entirely (preferred)
 - **Simplify**: Derive from simpler rules
@@ -120,29 +110,14 @@ Look across violations for patterns:
 
 Review the terminal output from both audits to identify recurring themes.
 
-Document patterns:
+Document patterns in `TASKS/PATTERNS.md`:
 ```markdown
-## Patterns
-
-**Pattern**: [Description]
-- Instances: [Count/locations]
-- Root cause: [Why it happens]
-- Prevention: [How to avoid in future]
+## Pattern: [Name]
+- **Detection:** [How to find it]
+- **Root cause:** [Why it happens]
+- **Fix:** [How to resolve]
+- **Prevention:** [How to avoid in future]
 ```
-
----
-
-### 5. Prioritize
-
-**Priority = f(severity, foundation_impact, cascade_risk, fix_simplicity)**
-
-Where:
-- `severity`: Critical > High > Medium > Low
-- `foundation_impact`: Core systems > Leaf systems
-- `cascade_risk`: Many dependents > Few dependents
-- `fix_simplicity`: Delete > Simplify > Document
-
-List top priorities in backlog.
 
 ---
 
@@ -152,7 +127,6 @@ List top priorities in backlog.
 - Findings synthesized and validated
 - Violations documented in backlog
 - Patterns identified
-- Priorities assigned
 
 **Not "both tools ran" but "findings validated and actionable."**
 

@@ -90,6 +90,24 @@
 - **Fix:** Refactor to orthogonal systems, base + mode-specific components
 - **Prevention:** Design modes as composable pieces, not special cases
 
+## Pattern: Input Modification Before System Processing
+- **Detection:** Input values scaled, filtered, or modified before reaching target system
+- **Root cause:** Convenience of modifying input at source instead of proper system parameters
+- **Fix:** Pass raw input to systems, let systems apply their own parameters
+- **Prevention:** Input is intent - never modify before it reaches the system that needs it
+
+## Pattern: Arbitrary Fallback Constants
+- **Detection:** Functions returning arbitrary constants when unable to compute correct value
+- **Root cause:** Avoiding degenerate case handling with default constant
+- **Fix:** Compute correct answer from geometry or use safe primitives with meaningful fallback
+- **Prevention:** Never return arbitrary constants - derive from mathematics or assert if invalid
+
+## Pattern: Input Loss Through Overwriting
+- **Detection:** Event handlers overwriting accumulated state instead of accumulating
+- **Root cause:** Single-frame assumptions when multiple events can occur per frame
+- **Fix:** Accumulate input events or process immediately
+- **Prevention:** All input must accumulate or be processed immediately - never overwrite
+
 ---
 
 **When a pattern repeats, add it here. When adding code, check against these first.**
