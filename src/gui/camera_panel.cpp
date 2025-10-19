@@ -1,16 +1,21 @@
 #include "gui/camera_panel.h"
 #include "gui/gui.h"
 #include <imgui.h>
+#include <vector>
 
 namespace gui {
 
-void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& cam_follow) {
+std::vector<camera_command> draw_camera_panel(camera_panel_state& state,
+                                               const camera& cam,
+                                               const camera_follow& cam_follow) {
+    std::vector<camera_command> commands;
+
     if (!state.show)
-        return;
+        return commands;
 
     // Draw as collapsible section (no window wrapper)
     if (!ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
-        return;
+        return commands;
 
     // Camera mode display (always FOLLOW now)
     ImGui::Text("Mode: FOLLOW");
@@ -27,23 +32,34 @@ void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& ca
     // Follow settings
     ImGui::Text("Follow Settings");
 
+    // Local copies for slider interaction (GUI needs mutable values)
+    float distance = cam_follow.distance;
+    float height_offset = cam_follow.height_offset;
+    float min_distance = cam_follow.min_distance;
+    float max_distance = cam_follow.max_distance;
+
     // Distance slider
-    if (ImGui::SliderFloat("Distance", &cam_follow.distance, cam_follow.min_distance,
-                           cam_follow.max_distance, "%.1f m")) {
-        // Value updated directly via slider
+    if (ImGui::SliderFloat("Distance", &distance, min_distance, max_distance, "%.1f m")) {
+        commands.push_back({camera_parameter_type::distance, distance});
     }
 
     // Height offset slider
-    if (ImGui::SliderFloat("Height Offset", &cam_follow.height_offset, 0.0f, 3.0f, "%.1f m")) {
-        // Value updated directly via slider
+    if (ImGui::SliderFloat("Height Offset", &height_offset, 0.0f, 3.0f, "%.1f m")) {
+        commands.push_back({camera_parameter_type::height_offset, height_offset});
     }
 
     ImGui::Spacing();
 
     // Zoom limits
     ImGui::Text("Zoom Limits");
-    ImGui::SliderFloat("Min Distance", &cam_follow.min_distance, 0.5f, 10.0f, "%.1f m");
-    ImGui::SliderFloat("Max Distance", &cam_follow.max_distance, 5.0f, 30.0f, "%.1f m");
+    if (ImGui::SliderFloat("Min Distance", &min_distance, 0.5f, 10.0f, "%.1f m")) {
+        commands.push_back({camera_parameter_type::min_distance, min_distance});
+    }
+    if (ImGui::SliderFloat("Max Distance", &max_distance, 5.0f, 30.0f, "%.1f m")) {
+        commands.push_back({camera_parameter_type::max_distance, max_distance});
+    }
+
+    return commands;
 }
 
 } // namespace gui

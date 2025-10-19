@@ -40,6 +40,13 @@ Delete code, simplify logic, or document justification.
 
 All tests pass. If not: fix, revert, or update tests with justification.
 
+**Manual verification:**
+
+If changes affect runtime behavior:
+1. List what user must verify
+2. Ask user to run app and verify
+3. Wait for confirmation
+
 ### 3. Document
 
 In `TASKS/PLANS/REFINE_<name>.md`:
@@ -102,8 +109,12 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 Use Codex to validate the approach.
 
 ```bash
-echo "@TASKS/PLANS/REFINE_<name>.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]" | codex e 2>/dev/null
+bash scripts/bash/codex.sh "@TASKS/PLANS/REFINE_<name>.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]"
 ```
+
+**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
+
+**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
 
 **Evaluate feedback:**
 - Concerns raised? Revise plan
@@ -149,7 +160,8 @@ In `TASKS/PLANS/REFINE_<name>.md`, add:
 A. Make change (one step only)
 B. Run tests
 C. Verify: passing, correct behavior, no regressions
-D. Commit:
+D. If changes affect runtime behavior: list what to verify, ask user to run app and verify, wait for confirmation
+E. Commit:
 
 ```bash
 git add .
@@ -162,7 +174,7 @@ Tests: Passing
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
-E. Mark step complete in plan
+F. Mark step complete in plan
 
 ### 4. Handle Blockers
 

@@ -2,6 +2,8 @@
 
 #include "camera/camera.h"
 #include "camera/camera_follow.h"
+#include "gui/camera_command.h"
+#include <vector>
 
 namespace gui {
 
@@ -11,6 +13,8 @@ struct camera_panel_state {
     float max_dist = 15.0f;
 };
 
-void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& cam_follow);
+std::vector<camera_command> draw_camera_panel(camera_panel_state& state,
+                                               const camera& cam,
+                                               const camera_follow& cam_follow);
 
 } // namespace gui
