@@ -33,14 +33,8 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         .segments = 12,
     });
 
-    // Velocity indicator
-    if (glm::length(character.velocity) > 0.1f) {
-        list.spheres.push_back(debug::debug_sphere{
-            .center = character.position + character.velocity,
-            .radius = 0.1f,
-            .color = {1, 0, 0, 1},
-        });
-    }
+    // Velocity indicator (replaced by cyan/yellow arrows showing intent vs constrained)
+    // Red sphere removed - arrows show the same information with more detail
 
     // Orientation indicator
     float yaw = visuals.orientation.get_yaw();
@@ -158,6 +152,38 @@ void generate_collision_state_primitives(debug::debug_primitive_list& list,
             .radius = 0.05f,
             .color = {0, 1, 0, 1},
         });
+    }
+
+    // Wall sliding debug visualization
+    if (character.collision_contact_debug.active) {
+        const auto& debug = character.collision_contact_debug;
+
+        // Draw collision normal (color-coded by surface type)
+        glm::vec4 normal_color;
+        if (debug.is_wall) {
+            normal_color = {1, 0, 0, 1}; // Red = Wall
+        } else if (debug.normal.y > 0.5f) {
+            normal_color = {0, 1, 0, 1}; // Green = Floor
+        } else {
+            normal_color = {0, 0, 1, 1}; // Blue = Ceiling
+        }
+
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + debug.normal * 1.0f,
+            .color = normal_color,
+            .head_size = 0.15f,
+        });
+
+        // Velocity arrow (replaces red velocity sphere - shows ground truth)
+        if (glm::length(character.velocity) > 0.01f) {
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + character.velocity,
+                .color = {1.0f, 0.0f, 0.0f, 1.0f}, // Red = actual velocity (ground truth)
+                .head_size = 0.15f,
+            });
+        }
     }
 }
 

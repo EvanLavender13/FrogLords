@@ -143,14 +143,24 @@ void controller::update(const collision_world* world, float dt) {
     position += velocity * dt;
 
     // Resolve collisions (pure physics - returns contact data)
+    // Derive wall threshold from max_slope_angle (single source of truth)
+    float wall_threshold = glm::cos(glm::radians(max_slope_angle));
     float pre_collision_vertical_velocity = velocity.y;
-    sphere_collision contact = resolve_collisions(collision_sphere, *world, position, velocity);
+    sphere_collision contact =
+        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
+
+    // Store collision debug info
+    collision_contact_debug.active = contact.hit;
+    collision_contact_debug.normal = contact.normal;
+    collision_contact_debug.penetration = contact.penetration;
+    collision_contact_debug.is_wall = contact.is_wall;
 
     // Interpret contact to determine grounded state (controller logic)
+    // Use contacted_floor flag to handle simultaneous floor+wall contacts
     is_grounded = false;
-    if (contact.hit && contact.normal.y >= glm::cos(glm::radians(max_slope_angle))) {
+    if (contact.contacted_floor) {
         is_grounded = true;
-        ground_normal = contact.normal;
+        ground_normal = contact.floor_normal;
         // Query box geometry directly (no interpretation in collision system)
         ground_height = contact.contact_box->center.y + contact.contact_box->half_extents.y;
     }

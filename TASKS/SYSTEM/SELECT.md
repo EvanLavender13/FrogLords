@@ -43,16 +43,25 @@ Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
 - Mathematically provable? (can verify correctness)
 - Enables emergence? (not just features)
 
----
-
-### 3. Prioritize
-
-When multiple systems available, choose by:
+**When multiple systems available, prioritize by:**
 1. **Lowest layer** - strengthen foundation first
 2. **Fewest dependencies** - reduce cascade risk
 3. **Clearest core** - easiest to validate
 
 **Boring and fundamental beats exciting and derivative.**
+
+---
+
+### 3. Classify Complexity
+
+**Small (1-3 pts):** Single primitive, clear math, minimal integration
+- Examples: New camera mode, simple collision shape, basic particle effect
+
+**Medium (4-8 pts):** Multiple components, moderate integration, some unknowns
+- Examples: Animation blending system, terrain collision, AI state machine
+
+**Large (>8 pts):** Major subsystem, deep integration, significant unknowns
+- Examples: Skeletal animation, networked physics, procedural generation
 
 ---
 
@@ -67,14 +76,18 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ---
 
+<!-- BEGIN: SELECT/SELECTED -->
 ## Selected
 
 **Date:** [Today]
 **Layer:** [N]
 **Foundation:** [%]
+**Complexity:** Small | Medium | Large
+<!-- END: SELECT/SELECTED -->
 
 ---
 
+<!-- BEGIN: SELECT/DEPENDENCIES -->
 ## Dependencies
 
 **Required (≥90%):**
@@ -84,9 +97,11 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 **Enables (will become buildable):**
 - System X
 - System Y
+<!-- END: SELECT/DEPENDENCIES -->
 
 ---
 
+<!-- BEGIN: SELECT/CORE -->
 ## Core
 
 **Irreducible minimum:**
@@ -94,9 +109,11 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 **Why a system, not a feature:**
 [How does this enable emergence?]
+<!-- END: SELECT/CORE -->
 
 ---
 
+<!-- BEGIN: SELECT/MATHEMATICAL_FOUNDATION -->
 ## Mathematical Foundation
 
 **Needs proof:**
@@ -106,9 +123,11 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 **Known uncertainties:**
 -
 -
+<!-- END: SELECT/MATHEMATICAL_FOUNDATION -->
 
 ---
 
+<!-- BEGIN: SELECT/GRAYBOX -->
 ## Graybox
 
 **Simplest implementation:**
@@ -116,9 +135,11 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 **Validation:**
 [How to test continuously?]
+<!-- END: SELECT/GRAYBOX -->
 
 ---
 
+<!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
 - [ ] Core functional in graybox
@@ -126,6 +147,7 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 - [ ] Debug visualization shows behavior
 - [ ] Emergent behaviors appear
 - [ ] Principle scores ≥7.0 average
+<!-- END: SELECT/SUCCESS -->
 ```
 
 ---
@@ -140,6 +162,7 @@ Update `TASKS/CURRENT_PLAN.md`:
 **Status:** 🏗️ System - <Name>
 **Started:** [Today]
 **Branch:** system/<name>
+**Complexity:** Small | Medium | Large
 **Phase:** SELECT → GRAYBOX
 
 ---
@@ -150,6 +173,7 @@ Update `TASKS/CURRENT_PLAN.md`:
 **Location:** @TASKS/PLANS/<name>_SYSTEM.md
 **Layer:** [N]
 **Foundation:** [%]
+**Complexity:** Small | Medium | Large
 **Next:** GRAYBOX
 
 **Dependencies:**
@@ -174,6 +198,7 @@ git commit -m "select: <name> system for layer <N>
 
 Dependencies: <list>
 Foundation: <%>
+Complexity: Small | Medium | Large
 Core: <one-line>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -185,6 +210,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ## Outputs
 
 - [ ] System selected
+- [ ] Complexity classified
 - [ ] `PLANS/<name>_SYSTEM.md` created
 - [ ] `CURRENT_PLAN.md` updated
 - [ ] Branch created

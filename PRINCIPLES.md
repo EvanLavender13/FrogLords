@@ -55,6 +55,8 @@ When players understand a system perfectly, they don't feel constrained—they f
 ### Addition by Subtraction
 Before adding anything, ask what can be removed. The best solution to a problem might be removing the thing that created the problem. Elegance is achieved not when there is nothing left to add, but when there is nothing left to remove.
 
+Absence announces itself. Excess hides in crowds. Start minimal—what's missing becomes obvious.
+
 ### Validation Before Integration
 An untested component is a time bomb. A mathematically unverified system is a foundation of sand. Validate in isolation, integrate with confidence, or suffer the compound interest of technical debt.
 
@@ -81,6 +83,28 @@ State that accumulates drifts toward chaos. State that is calculated remains tru
 ## The Architecture of Information
 
 ### Lists Are Intent, Not History
+
+## ⚠️ STOP: DO NOT CREATE "RECENTLY COMPLETED" SECTIONS ⚠️
+
+**IF YOU ARE ABOUT TO ADD A "RECENTLY COMPLETED" OR "COMPLETED ITEMS" SECTION TO ANY BACKLOG OR LIST:**
+
+# STOP. DELETE IT. YOU ARE VIOLATING CORE PRINCIPLES.
+
+Completed work belongs in:
+1. **Git history** - `git log` shows what was done
+2. **Iteration documents** - `TASKS/PLANS/*_ITERATION_*.md` has the details
+3. **The codebase itself** - the code IS the completed work
+
+**NEVER in backlogs. NEVER in tracking lists. NEVER as "completed" items.**
+
+Backlogs show **what's buildable NOW**. That's it. Nothing else.
+
+If you catch yourself writing "Recently Completed" or "Completed Items" in a backlog:
+- **STOP**
+- **DELETE THE SECTION**
+- **READ THIS AGAIN**
+
+---
 
 Every list must answer: "What remains to be done?" Never: "What was done?"
 

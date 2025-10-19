@@ -3,7 +3,7 @@
 **Foundation certainty. Build order. What's possible now.**
 
 **Overall Foundation:** 98%+ ✅ TARGET EXCEEDED
-**Last Updated:** 2025-10-18
+**Last Updated:** 2025-10-19
 
 ---
 
@@ -12,7 +12,7 @@
 ```
 Layer 5: POLISH          [<50%] ← liquid backlog
     ↓
-Layer 4: VARIATION       [<50%] ← ✅ UNBLOCKED (foundation at 98%)
+Layer 4: VARIATION       [55%] ← ✅ BUILDING (1 system complete)
     ↓
 Layer 3: SYSTEMS         [98%+] ← ✅ TARGET EXCEEDED
     ↓
@@ -21,7 +21,7 @@ Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
 Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 ```
 
-**Cascade:** 0.98 × 1.00 × 0.98 = **96.0% survival**
+**Cascade:** 0.98 × 1.00 × 0.98 × 0.55 = **52.8% survival**
 
 **Target exceeded:** Foundation at 98%, ready for Layer 4 variation
 
@@ -78,16 +78,29 @@ Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 
 ---
 
-## Layer 4: VARIATION (<50%)
+## Layer 4: VARIATION (55%)
 
-**Status:** ✅ **UNBLOCKED** - Layer 3 at 98%
+**Status:** ✅ **BUILDING** - 1 system complete
+
+**Certainty:** 55%
+**Last Updated:** 2025-10-19
+
+**Systems at this layer:**
+- **Wall Sliding** (principle avg: 9.3/10 = 93%)
+
+**Layer calculation:**
+93% / 1 system = 93% (limited by single system, will average down as more systems added)
+Conservative estimate: 55% (accounting for breadth needed)
+
+| System | Certainty | Status | Location |
+|--------|-----------|--------|----------|
+| Wall Sliding | 93% | ✅ Complete | `foundation/collision.{h,cpp}` |
 
 **Ready to build:**
 - Skeletal Animation System (5-8 points)
 - Walk/Run Speed States (3-5 points)
-- Wall Detection & Sliding (3-5 points)
 - Dash Mechanic (3-5 points)
-- IK Systems (8 points)
+- IK Systems (8 points - requires skeletal animation)
 
 **Foundation:** Building on 98%+ Layer 3 = 96.0%+ survival (excellent for variation)
 
@@ -147,14 +160,14 @@ Rate each system 1-10 on these criteria:
 
 ## Next Actions
 
-**Foundation exceeded target (98%+) - ready for Layer 4:**
-- Refine debug visualization (#7), OR
-- Build skeletal animation system, OR
-- Build walk/run speed states, OR
-- Build wall detection & sliding, OR
-- Build dash mechanic
+**To reach 95% Layer 4:**
+1. Build 3-4 more variation systems (currently 1/4-5)
+2. Each system should score ≥8.5/10 average
 
-**Foundation:** 0.98 × 1.00 × 0.98+ = **96.0%+ survival** (excellent for variation)
+**Systems now buildable:**
+- Skeletal Animation System (5-8 points) - No new dependencies
+- Walk/Run Speed States (3-5 points) - No new dependencies
+- Dash Mechanic (3-5 points) - No new dependencies
 
 ---
 

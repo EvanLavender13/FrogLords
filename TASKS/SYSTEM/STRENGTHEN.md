@@ -1,562 +1,253 @@
-# STRENGTHEN - Close the Cycle
+# STRENGTHEN - Close the System Cycle
 
-**Document learning. Update foundation. Celebrate emergence. Enable the next layer.**
+**Archive the system. Update foundation. Enable next layer.**
 
 ---
 
 ## Purpose
 
-Close the system-building cycle by capturing all learning, updating foundation certainty, and enabling future systems that can now be built on this solid ground.
+Update backlogs to current state. Archive detailed metrics in plan file. Merge to main.
 
-**Every system teaches. This step ensures we remember the lessons.**
+**Learning captured in VALIDATE/EMERGENCE. This updates tracking.**
 
 ---
 
 ## Prerequisites
 
-- [ ] Integration complete
+- [ ] System APPROVED in VALIDATE
 - [ ] All tests passing
-- [ ] System in production
-- [ ] `TASKS/PLANS/<name>_SYSTEM.md` fully documented
-- [ ] `TASKS/PLANS/<name>_VALIDATE.md` shows approval
+- [ ] `TASKS/PLANS/<name>_ITERATION_<N>.md` fully documented
+- [ ] All changes committed to system branch
 
 ---
 
 ## Process
 
-### 1. Reflect on the Journey
+### 1. Update Dependency Stack
 
-In `TASKS/PLANS/<name>_SYSTEM.md`, add final reflection:
+**In `TASKS/DEPENDENCY_STACK.md`:**
 
+Update header:
 ```markdown
-## System Complete - Reflection
-
-**Started:** [Date]
-**Completed:** [Date]
-**Total Time:** [hours/days/weeks]
-
----
-
-### What We Planned
-
-**Original goal:**
-[What we thought we were building]
-
-**Expected behavior:**
-[What we expected to happen]
-
-**Anticipated challenges:**
-[What we thought would be hard]
-
----
-
-### What We Built
-
-**Actual system:**
-[What we actually built]
-
-**Actual behavior:**
-[What actually happens]
-
-**Actual challenges:**
-[What was actually hard]
-
----
-
-### What We Learned
-
-**Surprises (good):**
-1.
-2.
-3.
-
-**Surprises (bad):**
-1.
-2.
-3.
-
-**Serendipitous discoveries:**
--
--
-
-**Mathematical insights:**
--
--
-
-**Principle insights:**
--
--
-
----
-
-### What Changed
-
-**From plan to reality:**
-- Planned: <original>
-- Built: <actual>
-- Because: <what we learned>
-
-**Systems we thought we'd enable:**
--
--
-
-**Systems we actually enable:**
--
--
-
----
-
-### What Emerged
-
-**Documented emergent behaviors:**
-1. [Behavior + why it's valuable]
-2. [Behavior + why it's valuable]
-3. [Behavior + why it's valuable]
-
-**Player strategies enabled:**
--
--
-
-**Unexpected possibilities:**
--
--
-
----
-
-### Metrics
-
-**Complexity:**
-- Lines of code: __
-- Files modified: __
-- Dependencies: __
-
-**Quality:**
-- Test coverage: __%
-- Principle avg: __/10
-- Individual scores: [list]
-
-**Iteration:**
-- Graybox cycles: __
-- Playtests: __
-- Deferrals: __
-- Major pivots: __
-
-**Performance:**
-- FPS impact: __ fps
-- Memory: __ MB
-- Load time: __ ms
-
----
-
-### Foundation Impact
-
-**Certainty before:**
-- This layer: __%
-- Overall: __%
-
-**Certainty after:**
-- This layer: __%
-- Overall: __%
-- Improvement: +__%
-
-**Systems now buildable:**
--
--
-
----
-
-### Would We Do It Again?
-
-**Yes/No:** __
-
-**Why:**
-[Honest assessment - was this worth building?]
-
-**What we'd change:**
--
--
-
-**What we'd keep:**
--
--
+**Overall Foundation:** NEW_%
+**Last Updated:** YYYY-MM-DD
 ```
 
----
-
-### 2. Update Dependency Stack
-
-Open `TASKS/DEPENDENCY_STACK.md` and update:
-
-**This layer:**
+Update layer diagram and cascade:
 ```markdown
-## Layer [N]: [LAYER_NAME]
+Layer [N]: [NAME]         [NEW_%]
 
-**Certainty:** [NEW_%]
-**Last Updated:** [TODAY]
+**Cascade:** 0.XX × 0.XX × 0.XX = **NEW_% survival**
+```
+
+Update affected layer table:
+```markdown
+| System | Certainty | Status | Location |
+|--------|-----------|--------|----------|
+| <name> | NEW_% | ✅ Complete | `src/path/to/system` |
+```
+
+**Calculation:**
+```markdown
+## Layer [N]: [NAME]
+
+**Certainty:** NEW_%
+**Last Updated:** YYYY-MM-DD
 
 **Systems at this layer:**
-- [Existing systems]
-- **[NEW SYSTEM]** ← Just completed
+- [existing system 1]
+- [existing system 2]
+- **<name>** (principle avg: X.X/10 = XX%)
 
-**Foundation status:**
-- [x] System [new] added
-- [ ] Layer certainty recalculated
-- [ ] Cascade to dependent layers calculated
+**Layer calculation:**
+Average all systems: ([sys1]% + [sys2]% + [new]%) / count = NEW_%
 ```
 
-**Calculate cascade:**
-If this layer is now 90% certain:
-- Next layer certainty = 0.9 × [next layer score]
-- Layer after = 0.9² × [that layer score]
-- Continue upward
+Update next actions:
+```markdown
+## Next Actions
 
-**Update each dependent layer with cascaded certainty.**
+**To reach 95% Layer [N+1]:**
+1. [Next system needed] (dependency ready: yes/no)
+
+**Systems now buildable:** [list]
+```
 
 ---
 
-### 3. Update System Backlog
+### 2. Update System Backlog
 
-Open `TASKS/BACKLOG_SYSTEMS.md`:
+**In `TASKS/BACKLOG_SYSTEMS.md`:**
 
-**Move completed system:**
+Update header:
+```markdown
+**Foundation:** NEW_%
+**Last Updated:** YYYY-MM-DD
+```
+
+Move completed system:
 ```markdown
 ## Recently Completed
 
-- **[SYSTEM NAME]**: [Description]
-  - Completed: [Date]
+- **<name>**: [description]
+  - Completed: YYYY-MM-DD
   - Layer: [N]
-  - Certainty contribution: +[%]
-  - Emerged: [Key behaviors]
-  - Enables: [Future systems]
+  - Score: X.X/10
+  - Enables: [systems now buildable]
 ```
 
-**Update "Buildable Now" sections:**
+Update "Buildable Now" sections:
 
-For each layer that now has ≥90% foundation:
-- Move systems from "Waiting on [dependencies]" to "Buildable Now"
-- Note which dependency was just satisfied
-
-**Add discovered opportunities:**
+For each layer where foundation now ≥90%, move systems from "Waiting" to "Buildable Now":
 ```markdown
-## [Appropriate Layer]
+## Layer [N]: [NAME]
 
 **Buildable Now:**
-- **[NEW OPPORTUNITY]**: [Discovered during <system>]
-  - Depends on: [Including system we just built]
-  - Enables: [Emergent possibilities]
-  - Certainty needed: [%]
+- **[System]**: [description] ← NOW BUILDABLE (dependency <name> complete)
+  - Depends on: [list including <name>]
+  - Certainty needed: XX% (current: YY%)
 ```
 
 ---
 
-### 4. Update Refinement Backlog
+### 3. Update Current Plan
 
-Open `TASKS/BACKLOG_REFINEMENTS.md`:
+**In `TASKS/CURRENT_PLAN.md`:**
 
-**Add any violations discovered during building:**
 ```markdown
-## Discovered During System Building
+# Current Plan
 
-- **[LOCATION]**: [Violation found while building <system>]
-  - Principle: [Which pillar]
-  - Severity: [Level]
-  - Fix: [Delete | Simplify | Document]
-  - Found: [During which phase]
+**Status:** ✅ System Complete
+**Last Completed:** YYYY-MM-DD - <name>
+
+---
+
+## Ready for Next Task
+
+**Choose next action:**
+- `/SYSTEM/SELECT` - Pick next system to build
+- `/REFINE/SELECT` - Pick violation to fix
+
+---
+
+## Quick Reference
+
+**Foundation:** NEW_%
+**Target:** 95% (Layer 3)
+
+**Layer Status:**
+- Layer 1 (Core): __% - Status
+- Layer 2 (Primitives): 100% ✅ - Complete
+- Layer 3 (Systems): NEW_% - [status]
+- Layer 4 (Variation): __% - [status]
+
+**Next Priority:** [Next system or refinement]
+
+---
+
+**See:**
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `BACKLOG_REFINEMENTS.md` - Violations backlog
+- `DEPENDENCY_STACK.md` - Foundation status
 ```
 
-**Note patterns:**
-```markdown
-## Patterns
-
-**Recurring violations:**
-- [If this is the Nth time we've seen this violation type]
-- Pattern: [Description]
-- Root cause: [Why does this keep happening?]
-- Prevention: [How to avoid in future systems?]
-```
-
 ---
 
-### 5. Celebrate Emergence
-
-**Create a lightweight emergence log:**
-
-In `EMERGENCE.md` (create if doesn't exist):
-```markdown
-# Emergence Log
-
-**Systems that surprised their creators**
-
----
-
-## [System Name] - [Date]
-
-**We built:** [Simple description]
-
-**We expected:** [What we thought would happen]
-
-**What emerged:**
-1. **[Behavior 1]**: [Description + why it's cool]
-2. **[Behavior 2]**: [Description + why it's cool]
-3. **[Behavior 3]**: [Description + why it's cool]
-
-**Player strategies we didn't design:**
--
--
-
-**Future possibilities this enables:**
--
--
-
-**Quote from playtest:**
-> [Something a playtester said that captured the magic]
-
-**Principle alignment:**
-- This validates: [Which principle]
-- Score: __/10 on Emergent Behavior
-
----
-```
-
-**This is your win condition. Document it.**
-
----
-
-### 6. Final Commit on Branch
-
-Commit all documentation updates:
+### 4. Create Final Commit
 
 ```bash
-git add TASKS/PLANS/ TASKS/BACKLOG_SYSTEMS.md TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md EMERGENCE.md
+git add TASKS/DEPENDENCY_STACK.md TASKS/BACKLOG_SYSTEMS.md TASKS/CURRENT_PLAN.md TASKS/PLANS/<name>_SYSTEM.md TASKS/PLANS/<name>_ITERATION_*.md
+
 git commit -m "strengthen: complete <name> system
 
-Reflection:
-- Time: <duration>
-- Iterations: <count>
-- Emergent behaviors: <count>
+Foundation: OLD_% → NEW_% (+X.X%)
+Layer [N]: OLD_% → NEW_% (+X.X%)
+Score: X.X/10
 
-Foundation:
-- Before: <%> → After: <%>
-- Improvement: +<%>
-- Enables: <list systems>
-
-Learning:
-- Surprised by: <key insight>
-- Changed from plan: <what and why>
-- Would do again: <yes/no>
+Enables: [systems now buildable]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com)"
+Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
 ---
 
-### 7. Merge to Main
+### 5. Merge to Main
 
-**Prepare for merge:**
 ```bash
-# Ensure branch is clean
+# Ensure on main
+git checkout main
+
+# Merge with no-fast-forward
+git merge --no-ff system/<name> -m "Merge system/<name>
+
+Score: X.X/10
+Foundation: OLD_% → NEW_% (+X.X%)
+Enables: [systems]
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# Delete system branch
+git branch -d system/<name>
+
+# Verify
+git log --oneline -3
+```
+
+---
+
+### 6. Verify System State
+
+```bash
+# Verify main is clean
 git status
 
-# Rebase on main (if needed)
-git fetch origin
-git rebase origin/main
+# Verify foundation updated
+grep "Overall Foundation" TASKS/DEPENDENCY_STACK.md
 
-# Run all tests one more time
-[run test suite]
-```
+# Verify system moved to completed
+grep -A5 "Recently Completed" TASKS/BACKLOG_SYSTEMS.md
 
-**Merge to main:**
-```bash
-git checkout main
-git merge --no-ff system/<name>
-```
-
-**Tag the milestone:**
-```bash
-git tag -a v<version>-<name> -m "System: <name>
-
-Adds: <capability>
-Enables: <future systems>
-Emergent: <behaviors>
-Foundation: <%> certainty"
-
-git push origin main --tags
-```
-
----
-
-### 8. Archive Branch (Optional)
-
-**Keep branches for historical reference:**
-```bash
-# Push branch to remote
-git push origin system/<name>
-
-# Don't delete - it's documentation of the journey
+# Verify current plan cleared
+head -10 TASKS/CURRENT_PLAN.md
 ```
 
 ---
 
 ## Outputs
 
-- [ ] Final reflection written
-- [ ] `TASKS/DEPENDENCY_STACK.md` updated
-- [ ] `TASKS/BACKLOG_SYSTEMS.md` updated (completed + newly buildable)
-- [ ] `TASKS/BACKLOG_REFINEMENTS.md` updated (violations found)
-- [ ] `EMERGENCE.md` updated (celebrate!)
-- [ ] All documentation committed
+- [ ] DEPENDENCY_STACK.md updated (current state only)
+- [ ] BACKLOG_SYSTEMS.md updated (completed + buildable)
+- [ ] CURRENT_PLAN.md updated
+- [ ] Final commit created
 - [ ] Merged to main
-- [ ] Tagged milestone
-- [ ] Foundation certainty increased
+- [ ] Branch deleted
+- [ ] System state verified
 
 ---
 
-## The Foundation Recalculation
+## Exit Criteria
 
-### Before This System
+**Complete when:**
+- Backlogs show current state (not history)
+- Stack shows what's buildable now (not past)
+- Detailed metrics archived in plan files
+- Changes merged to main
+- Ready to select next task
 
-```
-Layer [N]: [BEFORE_%]
-```
-
-### After This System
-
-**Recalculate this layer:**
-1. Score system 1-10 on each principle (from VALIDATE.md)
-2. Average all systems at this layer
-3. Convert to percentage (× 10)
-
-**Example:**
-- System A scores: 8.5 avg → 85%
-- System B scores: 9.0 avg → 90%
-- System C scores: 7.5 avg → 75%
-- **Layer certainty: (85 + 90 + 75) / 3 = 83%**
-
-### Cascade Upward
-
-**Each dependent layer:**
-Certainty = This layer certainty × Layer's own score
-
-**Example cascade:**
-- Layer 2: 90% certain
-- Layer 3 own score: 80%
-- Layer 3 final: 90% × 80% = 72%
-
-**This is why we build bottom-up.**
+**→ Next: SYSTEM/SELECT or REFINE/SELECT**
 
 ---
 
-## What This Enables
+## Core Rule
 
-### Systems Now Buildable
+**Backlogs are decision tools, not archives.**
 
-**List all systems that:**
-- Required this system as dependency
-- Now have ≥90% foundation certainty
-- Can be selected in next cycle
+Show what's buildable now. Show what's next. Point to plan files for history.
 
-### Systems Now Closer
-
-**List systems that:**
-- Required this system
-- Don't yet have ≥90% certainty
-- Are closer to buildable
-
-### Unexpected Opportunities
-
-**List systems we didn't plan:**
-- Discovered during emergence
-- Enabled by surprising behaviors
-- Added to backlog for future
+Details live in iteration docs. Backlogs stay lean.
 
 ---
 
-## Metrics to Track
-
-**Over time, watch trends:**
-
-**Certainty trajectory:**
-- Is foundation strengthening over time?
-- Are we building bottom-up?
-- Is cascade effect understood?
-
-**Emergence rate:**
-- How many emergent behaviors per system?
-- Are we enabling or prescribing?
-- Surprises increasing or decreasing?
-
-**Iteration efficiency:**
-- Cycles per system trending?
-- Deferral rate healthy (20-40%)?
-- Playtests revealing patterns faster?
-
-**Principle alignment:**
-- Average scores trending up?
-- Specific principles consistently weak?
-- Systems getting simpler over time?
-
----
-
-## Next Step
-
-**→ SELECT** (choose next system from newly buildable options)
-
-**OR**
-
-**→ REFINE** (if violations accumulated, strengthen foundation)
-
-**The cycle continues. Build → Strengthen → Build → Refine → Build...**
-
----
-
-## The Strengthening Philosophy
-
-### Every System Is a Teacher
-
-**We don't just build systems. We learn from them.**
-
-- What surprised us?
-- What was harder than expected?
-- What emerged unexpectedly?
-- What would we change?
-
-**Document everything. Wisdom compounds.**
-
-### Foundation Is Everything
-
-**A 95% certain foundation can support anything.**
-**A 60% certain foundation will collapse under its own weight.**
-
-Every system either:
-- Strengthens foundation (good)
-- Weakens foundation (tech debt)
-- Maintains foundation (neutral)
-
-**Build to strengthen. Always.**
-
-### Celebrate Emergence
-
-**Emergence is the win condition.**
-
-If a system doesn't surprise you, it's probably:
-- Too simple (not a system)
-- Too prescriptive (not enabling)
-- Too early (foundation insufficient)
-
-**When players discover strategies you didn't design, you've succeeded.**
-
-### The Cycle Never Ends
-
-**There is no "done." There is only:**
-- Systems that strengthen foundation
-- Systems that reveal opportunities
-- Systems that enable emergence
-
-**Build → Strengthen → Build → Refine → Build...**
-
-**This is the way.**
-
----
-
-**Document learning. Update foundation. Celebrate emergence. Enable the next layer.**
+**Archive in plan files. Track current state in backlogs. Keep both truthful.**
