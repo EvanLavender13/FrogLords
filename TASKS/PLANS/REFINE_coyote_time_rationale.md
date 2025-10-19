@@ -79,12 +79,40 @@
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved
-- [ ] Principle score improved (8/10 → 9/10)
-- [ ] Tests passing (no changes required)
-- [ ] No regressions
+- [x] Violation resolved
+- [x] Principle score improved (8/10 → 9/10)
+- [x] Tests passing (no changes required)
+- [x] No regressions
 
 **Metrics:**
 - Before: LOC ~500, Principle 8/10, Undocumented trade-off
-- After: LOC ~515 (+15 comment lines), Principle 9/10 (+1), Trade-off explicit
+- After: LOC ~522 (+22 comment lines), Principle 9/10 (+1), Trade-off explicit
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Date:** 2025-10-18
+
+**Changes:**
+- Added comprehensive documentation block explaining coyote time and jump buffering principle trade-off
+- Location: `src/character/controller.cpp:apply_input` (main documentation block)
+- Cross-reference comment at jump buffer execution site
+
+**Documentation added:**
+- Principle conflict: Consistency vs Prime Directive
+- Rationale: Player intent preservation > strict behavioral rules
+- Specific mechanics explained: coyote time (post-edge jumping) and jump buffering (pre-land input)
+- Principle hierarchy established: Prime Directive > Consistency
+- Design reference: Super Mario Bros (1985) precedent from NOTES/DesigningGames/DG_Interface.md
+- Principle reference: PRINCIPLES.md - Prime Directive
+
+**Tests:** All passing (build successful, documentation-only change)
+
+**Result:** ✓ Violation removed
+- Future developers now understand *why* this intentional inconsistency exists
+- Principle hierarchy explicitly documented
+- Satisfies Principled Development: "Every decision must trace back to principles"
+<!-- END: REFINE/COMPLETED -->
