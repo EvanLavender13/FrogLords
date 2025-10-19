@@ -21,7 +21,7 @@ Execute planned refinement—remove violation, restore principle, reduce complex
 
 ## Path A - Trivial
 
-**For: <1 hour, obvious fix, single file, no test changes**
+**Extremely simple deletions:** Skip formal plan if documentation would substantially exceed code change. Fix, commit with learning note in commit message, skip MEASURE. Use judgment.
 
 ### 1. Execute
 
@@ -79,8 +79,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ---
 
 ## Path B - Standard
-
-**For: Requires planning, multiple files, test updates, <1 day**
 
 ### 1. Plan Steps
 

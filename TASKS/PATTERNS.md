@@ -1,8 +1,44 @@
-# Anti-Pattern Detection Guide
+# Pattern Detection Guide
 
-**Use these to detect violations during development.**
+**Code and process anti-patterns. Updated after retrospectives.**
 
-Patterns observed in real code, documented for prevention. Each pattern includes detection heuristics, root cause analysis, fix strategy, and prevention measures.
+---
+
+## Process Anti-Patterns
+
+**Pattern: Contract/Implementation Mismatch**
+- **Detection:** Read contract claims, trace through implementation to verify
+- **Root cause:** Documentation written before understanding, not updated after learning
+- **Fix:** Align contract with actual behavior or fix implementation
+- **Prevention:** External review validates contracts against code
+
+**Pattern: Stale Documentation After Changes**
+- **Detection:** Grep for related values throughout codebase after changing constants
+- **Root cause:** Local changes don't trigger documentation sweep
+- **Fix:** Update all references when values change
+- **Prevention:** Explicit documentation sweep step in workflow
+
+**Pattern: Plan Section Divergence**
+- **Detection:** Compare approach described in different plan sections
+- **Root cause:** Sections written at different times without reconciliation
+- **Fix:** Align all sections to single approach before starting
+- **Prevention:** External review before implementation
+
+**Pattern: Missing Invariant Enforcement**
+- **Detection:** Search for bounds, constraints, min/max pairs without enforcement code
+- **Root cause:** Contract specifies invariant but implementation forgets to maintain it
+- **Fix:** Add assertions and enforcement at state mutation points
+- **Prevention:** Pre-implementation review checks enforcement locations
+
+**Pattern: Process Overhead for Simple Changes**
+- **Detection:** Documentation substantially larger than code change
+- **Root cause:** No lightweight path exists for trivial fixes
+- **Fix:** Use lightweight process for pure deletions and simple fixes
+- **Prevention:** Workflow distinguishes trivial from complex changes
+
+---
+
+## Code Anti-Patterns
 
 ---
 
