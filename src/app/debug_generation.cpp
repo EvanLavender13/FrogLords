@@ -147,9 +147,11 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
     float cycle_length = character.get_cycle_length(character.locomotion.state);
     float wheel_radius = cycle_length * 0.25f;
 
-    // Phase determines rotation angle (0-1 → 0-2π)
+    // Wheel rotation based on distance traveled (not phase) for visual continuity
+    // Phase recalculates on state change, but distance is continuous
+    // rotation_angle = distance / radius (standard wheel physics)
     // Negate for correct forward roll direction
-    float rotation_angle = -character.locomotion.phase * 2.0f * glm::pi<float>();
+    float rotation_angle = -(character.distance_traveled / wheel_radius);
 
     // Get character facing direction from orientation system
     float yaw = visuals.orientation.get_yaw();

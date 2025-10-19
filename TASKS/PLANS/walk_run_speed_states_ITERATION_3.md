@@ -44,13 +44,16 @@
   - Found stale reference at SYSTEM.md:125 (walk=2m, run=1.5m, sprint=1.0m)
   - Replaced with correct values (walk=2m, run=3m, sprint=4m)
   - Verified no other stale references exist (grepped for "1.5" and "1.0.*m")
-  - Commit: [pending]
+  - Commit: d9b6f4e
 
-- [ ] Wheel rotation continuity behavior unclear
-  - Investigate current behavior: Does wheel angle pop on state transitions?
-  - Choose approach: Accept pops or implement continuous rotation via distance
-  - Implement chosen approach
-  - Document actual behavior clearly
+- [x] Wheel rotation continuity behavior unclear
+  - Investigated: Old code used `phase` for rotation → pops on state change
+  - Chosen approach: Implement continuous rotation via distance (Option B)
+  - Implementation: Changed rotation_angle = -(distance_traveled / wheel_radius)
+  - Rationale: Phase is OUTPUT (recalculates), distance is SOURCE OF TRUTH (continuous)
+  - Result: Phase jumps on state change, but wheel angle remains smooth (correct!)
+  - File: debug_generation.cpp:150-154
+  - Commit: [pending]
 
 - [ ] Phase discontinuity documentation incomplete
   - Document complete behavior: phase value + visual wheel behavior
