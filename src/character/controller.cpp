@@ -207,8 +207,7 @@ void controller::update(const collision_world* world, float dt) {
     // Accumulate distance traveled (frame-rate independent)
     // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
     distance_traveled += speed * dt;
-    FL_POSTCONDITION(std::isfinite(distance_traveled),
-                     "distance_traveled must remain finite");
+    FL_POSTCONDITION(std::isfinite(distance_traveled), "distance_traveled must remain finite");
 
     // Calculate phase (0-1 normalized position within cycle)
     // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
@@ -217,7 +216,8 @@ void controller::update(const collision_world* world, float dt) {
     // (the surveyor wheel re-scales, distance/rotation is preserved)
     locomotion.cycle_length = get_cycle_length(locomotion.state);
     FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
-    locomotion.phase = std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
+    locomotion.phase =
+        std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
     FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
                      "phase must be in [0, 1) range");
 

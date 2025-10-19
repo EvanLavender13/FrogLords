@@ -1,15 +1,15 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-19 - Debug Viz Colors
+**Last Completed:** 2025-10-19 - Semantic Collision Types
 
 ---
 
 ## Ready for Next Task
 
 **Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+- `/SYSTEM/SELECT` - Pick next system to build (recommended - foundation at 99%+)
+- `/REFINE/SELECT` - Pick next violation to fix (3 low-priority violations remain)
 
 ---
 

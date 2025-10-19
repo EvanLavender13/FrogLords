@@ -207,20 +207,35 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
 void generate_collision_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
                                          const collision_world& world) {
-    // Single color for all collision boxes
-    // Why: Heuristic categorization based on dimensions is unreliable and couples debug
-    // visualization to test arena geometry. Proper solution requires semantic types in the
-    // collision system itself (wall/floor/platform) rather than inferring from dimensions.
-    // See: BACKLOG_REFINEMENTS.md for semantic collision type task
-    constexpr glm::vec4 COLLISION_BOX_COLOR = {0.3f, 1.0f, 0.3f, 1.0f}; // Green
+    // Type-based colors for semantic collision boxes
+    constexpr glm::vec4 FLOOR_COLOR = {0.3f, 1.0f, 0.3f, 1.0f};    // Green
+    constexpr glm::vec4 WALL_COLOR = {1.0f, 0.0f, 1.0f, 1.0f};     // Magenta
+    constexpr glm::vec4 PLATFORM_COLOR = {1.0f, 1.0f, 0.3f, 1.0f}; // Yellow
+    constexpr glm::vec4 GENERIC_COLOR = {0.5f, 0.5f, 0.5f, 1.0f};  // Gray
 
     // World geometry boxes
     for (const auto& box : world.boxes) {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), box.center);
+        glm::vec4 color;
+        switch (box.type) {
+        case collision_surface_type::FLOOR:
+            color = FLOOR_COLOR;
+            break;
+        case collision_surface_type::WALL:
+            color = WALL_COLOR;
+            break;
+        case collision_surface_type::PLATFORM:
+            color = PLATFORM_COLOR;
+            break;
+        default:
+            color = GENERIC_COLOR;
+            break;
+        }
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), box.bounds.center);
         list.boxes.push_back(debug::debug_box{
             .transform = transform,
-            .half_extents = box.half_extents,
-            .color = COLLISION_BOX_COLOR,
+            .half_extents = box.bounds.half_extents,
+            .color = color,
         });
     }
 

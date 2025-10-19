@@ -137,7 +137,7 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
         bool any_collision = false;
 
         for (const auto& box : world.boxes) {
-            sphere_collision col = resolve_sphere_aabb(collision_sphere, box);
+            sphere_collision col = resolve_sphere_aabb(collision_sphere, box.bounds);
 
             if (col.hit) {
                 // Push out of collision

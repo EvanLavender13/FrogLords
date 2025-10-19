@@ -80,7 +80,37 @@ Physics must produce identical results regardless of frame rate. Every rate must
 ### Pure Functions Over Accumulated State
 State that accumulates drifts toward chaos. State that is calculated remains true. When possible, derive state from inputs rather than maintaining it through time.
 
+### Semantic Typing Over Inference
+Never infer semantic meaning from geometry. If intent matters, encode it explicitly. Mathematical primitives stay pure; compose them with semantic types at higher layers. Inference is complexity—explicit types are truth.
+
 ## The Architecture of Information
+
+## ⚠️ STOP: DO NOT ADD EXAMPLES ⚠️
+
+**IF YOU ARE ABOUT TO ADD AN EXAMPLE:**
+
+# STOP. DELETE IT. STATE THE FACT DIRECTLY.
+
+Examples are not clarity—they are clutter. If you cannot state the concept directly, the concept is unclear. Fix the concept, not the explanation.
+
+Examples belong in:
+1. **Code itself** - the implementation IS the example
+2. **Tests** - demonstrate behavior through validation
+3. **User requests** - when explicitly asked
+
+**NEVER in principles. NEVER in plans. NEVER in documentation.**
+
+If you catch yourself writing:
+- "For example..."
+- "Example:"
+- Showing sample code in documentation
+- Demonstrating instead of stating
+
+**STOP. DELETE IT. STATE THE RULE DIRECTLY.**
+
+This applies everywhere. Code, documentation, plans, responses, explanations. State the truth. Delete everything else.
+
+---
 
 ### Lists Are Intent, Not History
 

@@ -7,10 +7,12 @@ Standards that enforce principles.
 ## Naming
 
 **snake_case for everything:**
-- Types: `camera_follow`, `spring_damper`
-- Functions: `compute_eye_position()`
-- Variables: `target_position`, `delta_time`
-- Files: `camera_follow.h`, `spring_damper.cpp`
+- Types
+- Functions
+- Variables
+- Files
+
+**Exception: Enum constants are UPPER_CASE** (enforced by `.clang-tidy`)
 
 ---
 
