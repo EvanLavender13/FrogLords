@@ -12,6 +12,7 @@
 #include "app/debug_generation.h"
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <algorithm>
 
 app_runtime& runtime() {
     static app_runtime instance;
@@ -146,7 +147,34 @@ void app_runtime::frame() {
         }
 
         // Camera section
-        gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
+        auto camera_commands = gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
+
+        // Apply camera commands (unidirectional flow: GUI → commands → game state)
+        // Enforce invariants: min_distance <= distance <= max_distance
+        for (const auto& cmd : camera_commands) {
+            switch (cmd.type) {
+            case gui::camera_parameter_type::distance:
+                world.cam_follow.distance = std::clamp(cmd.value,
+                                                       world.cam_follow.min_distance,
+                                                       world.cam_follow.max_distance);
+                break;
+            case gui::camera_parameter_type::height_offset:
+                world.cam_follow.height_offset = cmd.value;
+                break;
+            case gui::camera_parameter_type::min_distance:
+                world.cam_follow.min_distance = cmd.value;
+                // Clamp distance and max_distance to respect new minimum
+                world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
+                world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
+                break;
+            case gui::camera_parameter_type::max_distance:
+                world.cam_follow.max_distance = cmd.value;
+                // Clamp distance and min_distance to respect new maximum
+                world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
+                world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
+                break;
+            }
+        }
 
         // FPS display at bottom
         ImGui::Spacing();
