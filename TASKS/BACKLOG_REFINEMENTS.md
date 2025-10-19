@@ -15,15 +15,7 @@ None - All high-priority violations resolved ✅
 
 ### Medium Priority
 
-**#14: Semantic Collision Types for Debug Visualization**
-- **Location:** `src/foundation/collision.h`, `src/app/debug_generation.cpp:207-225`
-- **Principles:** Radical Simplicity, Fundamental Composable Functions, Consistency
-- **Severity:** Medium
-- **Type:** Missing semantic information, Coupling to geometry
-- **Description:** Collision boxes lack semantic type information (wall/floor/platform). Debug visualization cannot reliably categorize boxes based on dimensions alone. Attempted heuristics (height < 0.4f, etc.) fail because geometry doesn't encode intent.
-- **Fix:** Add optional semantic type enum to collision_box (wall/floor/platform/dynamic). Update test arena to specify types. Debug visualization uses types directly rather than inferring from dimensions.
-- **Impact:** Debug visualization clarity, future gameplay systems (wall-run, ledge-grab, etc.)
-- **Audit Source:** Manual verification during debug_viz_colors refinement
+None - All medium-priority violations resolved ✅
 
 
 ### Low Priority
@@ -69,12 +61,11 @@ None - All high-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 99%+ ✅ - 4 violations found (0 CRITICAL, 0 high, 1 medium, 3 low)**
+**Foundation at 99%+ ✅ - 3 violations found (0 CRITICAL, 0 high, 0 medium, 3 low)**
 
 **Next Actions:**
-1. Consider medium-priority refinement (#14 - semantic collision types)
-2. OR **Build Layer 4 systems** (foundation stable at 99%+)
-3. Address low-priority violations opportunistically (#9, #11-#12)
+1. **Build Layer 4 systems** (foundation stable at 99%+)
+2. Address low-priority violations opportunistically (#9, #11-#12)
 
 ---
 

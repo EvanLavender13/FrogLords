@@ -49,7 +49,7 @@ Layer 1: CORE            [98%] ← ✅ TARGET EXCEEDED
 | System | Certainty | Validation | Location |
 |--------|-----------|------------|----------|
 | Spring-Damper | 100% | ✅ Tested | `foundation/spring_damper.{h,cpp}` |
-| Collision | 100% | ✅ Refined | `foundation/collision.{h,cpp}` |
+| Collision | 100% | ✅ Refined | `foundation/collision.{h,cpp}`, `collision_primitives.h` |
 | Math Utils | 100% | ✅ Asserted | `foundation/math_utils.h` |
 | Easing | 100% | ✅ Standard | `foundation/easing.{h,cpp}` |
 | Debug Viz | 100% | ✅ Battle-tested | `rendering/debug_*` |

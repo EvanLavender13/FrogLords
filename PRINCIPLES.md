@@ -80,6 +80,9 @@ Physics must produce identical results regardless of frame rate. Every rate must
 ### Pure Functions Over Accumulated State
 State that accumulates drifts toward chaos. State that is calculated remains true. When possible, derive state from inputs rather than maintaining it through time.
 
+### Semantic Typing Over Inference
+Never infer semantic meaning from geometry. If intent matters, encode it explicitly. Mathematical primitives stay pure; compose them with semantic types at higher layers. Inference is complexity—explicit types are truth.
+
 ## The Architecture of Information
 
 ## ⚠️ STOP: DO NOT ADD EXAMPLES ⚠️
