@@ -21,11 +21,22 @@ Validate mathematical foundations. Handle edge cases. Stabilize through testing.
 
 ## Process
 
-### 1. Define Contract
+### 1. Create or Resume Iteration Document
 
-In `PLANS/<name>_SYSTEM.md` — add:
+**Check `PLANS/<name>_SYSTEM.md` for iteration list:**
+
+**If no iteration list exists (first iteration):**
+
+Create `PLANS/<name>_ITERATION_1.md`:
 
 ```markdown
+# Iteration 1: <name>
+
+**Started:** YYYY-MM-DD
+**Status:** In Progress
+
+---
+
 <!-- BEGIN: ITERATE/CONTRACT -->
 ## Foundation Contract
 
@@ -40,11 +51,61 @@ In `PLANS/<name>_SYSTEM.md` — add:
 - [ ] Frame-rate independent
 - [ ] No special cases
 <!-- END: ITERATE/CONTRACT -->
+
+---
+```
+
+Add iteration list to `PLANS/<name>_SYSTEM.md` (after GRAYBOX/RESULTS):
+
+```markdown
+---
+
+## Iterations
+
+- [ITERATION_1.md](ITERATION_1.md) - In Progress
+```
+
+**If iteration list exists (resuming from VALIDATE/REVISE):**
+
+Read most recent `PLANS/<name>_ITERATION_<N>.md` to find VALIDATE/DECISION.
+
+Create `PLANS/<name>_ITERATION_<N+1>.md`:
+
+```markdown
+# Iteration <N+1>: <name>
+
+**Started:** YYYY-MM-DD
+**Previous:** [ITERATION_<N>.md](ITERATION_<N>.md)
+**Status:** In Progress
+
+---
+
+## Context from Previous Iteration
+
+**Decision:** REVISE (from ITERATION_<N>)
+
+**Required changes:**
+- [copy from ITERATION_<N> VALIDATE/DECISION]
+
+**Baseline contract:** See ITERATION_<N>/CONTRACT
+
+---
+```
+
+Update iteration list in `PLANS/<name>_SYSTEM.md`:
+
+```markdown
+## Iterations
+
+- [ITERATION_1.md](ITERATION_1.md) - REVISE
+- [ITERATION_<N+1>.md](ITERATION_<N+1>.md) - In Progress
 ```
 
 ---
 
 ### 2. Iteration Cycle
+
+**Work in the iteration document (`PLANS/<name>_ITERATION_<N>.md`).**
 
 **Repeat until contract passes:**
 
@@ -52,6 +113,7 @@ In `PLANS/<name>_SYSTEM.md` — add:
 - Mathematical property to validate
 - Edge case to handle
 - Debug assertion to add (foundation code only)
+- Violation from VALIDATE/DECISION (if resuming)
 
 **Implement:**
 - Small change (fast to revert)
@@ -62,6 +124,10 @@ In `PLANS/<name>_SYSTEM.md` — add:
 - Build and run
 - Try to break it
 - Check contract
+
+**Document in iteration doc:**
+- Update CONTRACT checkboxes
+- Add notes on what was validated
 
 **Commit or revert:**
 
@@ -106,11 +172,11 @@ git reset --hard HEAD
 
 **Repeat until contract complete.**
 
-**Document** in `PLANS/<name>_SYSTEM.md`:
+**Document in iteration doc** (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
-<!-- BEGIN: ITERATE/PLAYTEST_[N] -->
-### Playtest [N]
+<!-- BEGIN: ITERATE/PLAYTEST_<N> -->
+### Playtest <N>
 
 **Date:** [YYYY-MM-DD]
 **Tester:** [name]
@@ -127,7 +193,7 @@ git reset --hard HEAD
 - [files changed]
 - Commit: [hash]
 - ✅ VERIFIED: [confirmation]
-<!-- END: ITERATE/PLAYTEST_[N] -->
+<!-- END: ITERATE/PLAYTEST_<N> -->
 ```
 
 **Stop when no new violations found.**
@@ -136,7 +202,7 @@ git reset --hard HEAD
 
 ### 4. Document
 
-In `PLANS/<name>_SYSTEM.md`:
+Add to iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: ITERATE/COMPLETE -->
@@ -152,16 +218,28 @@ In `PLANS/<name>_SYSTEM.md`:
 **Status:**
 - [x] Contract proven
 - [x] Stable
-- [ ] Ready for VALIDATE
+- [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
 ```
 
 ---
 
-### 5. Commit
+### 5. Update Status and Commit
 
+Update iteration doc status:
+```markdown
+**Status:** Ready for VALIDATE
+```
+
+Update `PLANS/<name>_SYSTEM.md` iteration list:
+```markdown
+- [ITERATION_<N>.md](ITERATION_<N>.md) - Ready for VALIDATE
+```
+
+Commit:
 ```bash
-git commit -m "iterate: <name> complete
+git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
+git commit -m "iterate: <name> iteration <N> complete
 
 Contract: proven
 Playtests: <count>
@@ -186,7 +264,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ## Next
 
-**→ VALIDATE** (principle scoring)
+→ VALIDATE (principle scoring in iteration doc)
 
 **Defer if:**
 - Contract unprovable

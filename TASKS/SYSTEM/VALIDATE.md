@@ -15,7 +15,7 @@ Score system against principles. External validation. Approve, revise, or reject
 - [ ] Iteration complete
 - [ ] Foundation contract proven
 - [ ] Playtests stable
-- [ ] `PLANS/<name>_SYSTEM.md` exists
+- [ ] `PLANS/<name>_ITERATION_<N>.md` has ITERATE/COMPLETE
 
 ---
 
@@ -23,7 +23,7 @@ Score system against principles. External validation. Approve, revise, or reject
 
 ### 1. Score Principles
 
-In `PLANS/<name>_SYSTEM.md` — add:
+In current iteration doc (`PLANS/<name>_ITERATION_<N>.md`) — add:
 
 ```markdown
 <!-- BEGIN: VALIDATE/SCORES -->
@@ -52,7 +52,7 @@ In `PLANS/<name>_SYSTEM.md` — add:
 **Independent principle evaluation.**
 
 ```bash
-echo "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]" | codex e 2>/dev/null
+echo "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/foundation/<relevant>.cpp [your validation question]" | codex e 2>/dev/null
 ```
 
 **Continue conversation if needed:**
@@ -66,7 +66,7 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 - Identify missed violations
 - Make final decision
 
-**Document review** in `PLANS/<name>_SYSTEM.md`:
+**Document review** in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/REVIEW -->
@@ -93,7 +93,7 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 - Average 5.0-6.9 or any <6 = **REVISE**
 - Average <5.0 = **REJECT**
 
-**Update** `PLANS/<name>_SYSTEM.md`:
+**Update** iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/DECISION -->
@@ -115,7 +115,24 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 ---
 
-### 4. Write Unit Tests (if APPROVED)
+### 4. Branch on Decision
+
+**Decision made?** → Follow the appropriate path:
+
+**If APPROVED:**
+- → Continue to Step 5 (Write Unit Tests)
+
+**If REVISE:**
+- → Skip to Step 7 (Commit)
+- → Return to ITERATE with required changes
+
+**If REJECT:**
+- → Skip to Step 7 (Commit)
+- → Document learning and discuss next steps
+
+---
+
+### 5. Write Unit Tests (APPROVED only)
 
 **Foundation/primitive code only.** High-level systems use debug assertions.
 
@@ -131,7 +148,7 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 **All tests must pass before continuing.**
 
-**Document** in `PLANS/<name>_SYSTEM.md`:
+**Document** in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/TESTS -->
@@ -146,11 +163,9 @@ echo "[follow-up question]" | codex e resume --last 2>/dev/null
 
 ---
 
-### 5. Document Emergence
+### 6. Document Emergence (APPROVED only)
 
-**Regardless of decision:**
-
-In `PLANS/<name>_SYSTEM.md`:
+In iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/EMERGENCE -->
@@ -169,10 +184,22 @@ In `PLANS/<name>_SYSTEM.md`:
 
 ---
 
-### 6. Commit
+### 7. Update Status and Commit
 
+Update iteration doc status:
+```markdown
+**Status:** <APPROVED|REVISE|REJECT>
+```
+
+Update `PLANS/<name>_SYSTEM.md` iteration list:
+```markdown
+- [ITERATION_<N>.md](ITERATION_<N>.md) - <APPROVED|REVISE|REJECT>
+```
+
+Commit:
 ```bash
-git commit -m "validate: <name> - <APPROVED|REVISE|REJECT>
+git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
+git commit -m "validate: <name> iteration <N> - <APPROVED|REVISE|REJECT>
 
 Average: <score>/10
 Scores: [1,2,3,4,5,6]
@@ -189,8 +216,8 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 - [ ] Principles scored
 - [ ] External review completed
 - [ ] Decision made
-- [ ] Unit tests written (if APPROVED, foundation code only)
-- [ ] Emergence documented
+- [ ] Unit tests written (APPROVED only, foundation code only)
+- [ ] Emergence documented (APPROVED only)
 - [ ] Committed
 
 ---
