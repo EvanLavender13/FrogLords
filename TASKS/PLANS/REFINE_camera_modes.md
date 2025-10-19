@@ -134,3 +134,229 @@ CameraOrbiter : ICameraController {
 - Layer 1: 97% → 98% (+1%)
 - Foundation: 97%+ → 98%+ (+1%)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+**Strategy:** Extract follow camera logic only. Delete orbit mode entirely.
+
+### Step 1: Create follow camera controller
+**Changes:** New files `src/camera/camera_follow.h`, `src/camera/camera_follow.cpp`
+**Tests:** None yet (implementation only)
+**Validation:** Compiles successfully
+
+Create `camera_follow` as standalone component:
+```cpp
+struct camera_follow {
+    // State
+    float distance = 5.0f;
+    float latitude = 15.0f;
+    float longitude = 0.0f;
+    float height_offset = 1.5f;
+
+    // Limits
+    float min_distance = 1.5f;
+    float max_distance = 15.0f;
+    float min_latitude = -85.0f;
+    float max_latitude = 85.0f;
+
+    // Input
+    void orbit(float delta_x, float delta_y);
+    void zoom(float delta);
+
+    // Output: derive camera position from target
+    glm::vec3 compute_eye_position(const glm::vec3& target_position) const;
+    glm::vec3 compute_look_target(const glm::vec3& target_position) const;
+};
+```
+
+Implementation:
+- Move `compute_spherical_position` helper from camera.cpp
+- `orbit()`: update latitude/longitude with clamping and wrapping
+- `zoom()`: update distance with clamping
+- `compute_eye_position()`: target + height_offset + spherical offset
+- `compute_look_target()`: target + height_offset
+
+**Principle:** Simple stateful component. No polymorphism, no modes, just the data and functions needed for follow behavior.
+
+### Step 2: Simplify camera class
+**Changes:** `src/camera/camera.h`, `src/camera/camera.cpp`
+**Tests:** None yet (breaking changes)
+**Validation:** Compiles with errors (expected - usage not updated yet)
+
+**Delete entirely:**
+- `camera_mode` enum
+- `mode` member
+- All orbit-related code: `orbit()`, `distance`, `latitude`, `longitude`, orbit limits
+- All follow-related code: `follow_update()`, `follow_distance`, `follow_height_offset`, follow limits
+- All mode setters/getters: `set_mode()`, `get_mode()`, `set_follow_*()`, `get_follow_*()`
+- `update_eye_position()` helper
+- `compute_spherical_position()` helper (moved to camera_follow)
+
+**Keep only:**
+- `eye_pos`, `center` (set directly)
+- `up` vector
+- `get_view_matrix()` - generate from eye_pos and center
+- `get_projection_matrix()` - generate from FOV and clip planes
+- `get_forward_horizontal()`, `get_right()`, `get_yaw()` - derived queries
+- FOV, clip planes (with setters)
+
+**Simplify constructor:**
+```cpp
+camera() = default;
+```
+
+**Add simple setters:**
+```cpp
+void set_position(const glm::vec3& pos) { eye_pos = pos; }
+void set_target(const glm::vec3& target) { center = target; }
+```
+
+**Result:** Camera is pure matrix math. No modes, no special cases, no movement logic.
+
+### Step 3: Update game_world to use camera_follow
+**Changes:** `src/app/game_world.h`, `src/app/game_world.cpp`
+**Tests:** None yet (integration changes)
+**Validation:** Compiles successfully, game runs
+
+Change `game_world`:
+- Add member: `camera_follow cam_follow`
+- Initialize in `init()`: `cam_follow` with default values (distance=5.0, latitude=15.0, etc.)
+- In `update()`:
+  - Call `cam.set_position(cam_follow.compute_eye_position(character.position))`
+  - Call `cam.set_target(cam_follow.compute_look_target(character.position))`
+- Remove: `cam.follow_update()` call, `cam.set_mode()` call
+
+### Step 4: Update runtime input handling
+**Changes:** `src/app/game_world.h`, `src/app/game_world.cpp`, `src/app/runtime.cpp`
+**Tests:** None yet
+**Validation:** Camera orbit/zoom work correctly in game
+
+Add forwarding methods to `game_world` (don't expose `cam_follow` directly):
+```cpp
+void apply_camera_orbit(float delta_x, float delta_y) {
+    cam_follow.orbit(delta_x, delta_y);
+}
+void apply_camera_zoom(float delta) {
+    cam_follow.zoom(delta);
+}
+```
+
+Update `runtime.cpp`:
+- Mouse drag for orbit: call `game_world.apply_camera_orbit(delta_x, delta_y)`
+- Scroll for zoom: call `game_world.apply_camera_zoom(delta)`
+
+**Principle:** Prevent coupling. Runtime never reaches into `cam_follow` directly.
+
+### Step 5: Update camera panel GUI
+**Changes:** `src/gui/camera_panel.h`, `src/gui/camera_panel.cpp`
+**Tests:** None yet
+**Validation:** Camera panel UI functional
+
+Update GUI to query camera state through accessors:
+- Remove mode enum handling
+- Add getters to `game_world` if needed: `get_camera_distance()`, etc.
+- Or pass `cam_follow` by const reference to GUI panel
+
+**Note:** Keep `cam_follow` internal; expose only query interface.
+
+### Step 6: Create tests for camera_follow
+**Changes:** New file `tests/camera/test_camera_follow.cpp`
+**Tests:** New test suite
+**Validation:** All tests pass
+
+Test coverage:
+- `compute_eye_position()`: spherical offset from target
+- `compute_look_target()`: target + height offset
+- `orbit()`: latitude/longitude updates with clamping and wrapping
+- `zoom()`: distance updates with clamping
+
+### Step 7: Run full build and verify
+**Changes:** None
+**Tests:** All existing tests (if any exist)
+**Validation:** Clean build, all tests pass, no regressions
+
+Final verification:
+- Build succeeds with no warnings
+- All tests pass
+- Game runs with identical camera behavior
+- Camera input (orbit/zoom) responds correctly
+- No performance regressions
+
+## Rollback
+
+If blocked or breaking changes unacceptable:
+```bash
+git reset --hard HEAD
+```
+
+Per-step rollback: Each step is independently committed, can cherry-pick or revert individual commits.
+<!-- END: REFINE/PLAN -->
+
+---
+
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-18
+
+**Review 1 - Original Plan:**
+
+**Question asked:**
+Review TASKS/PLANS/REFINE_camera_modes.md. Does the refinement plan properly separate camera concerns into orthogonal components? Are there any violations of the Six Principles (especially Composable Functions and Radical Simplicity)? Any missing steps or potential issues?
+
+**Feedback received:**
+- Original interface violated Composable Functions (implicit state, no explicit inputs)
+- `orbit()/zoom()` methods didn't exist on interface, forcing type knowledge
+- Controller selection/switching not addressed
+- Input dependencies not explicitly contracted
+
+**Impact:** Revised to concrete types with explicit input structures.
+
+---
+
+**Review 2 - Revised Plan:**
+
+**Question asked:**
+I've revised the plan based on your feedback. Please review the updated REFINE/PLAN section. Does the new design with concrete types, explicit inputs, and pure functions address your concerns? Any remaining issues?
+
+**Feedback received:**
+- Controllers claim to be "pure" but mutate internal `params_` state (contradiction)
+- Only `camera_follow_controller` gets wired—orbit controller never used (dead code)
+- Input buffering loses events (single pending command overwritten)
+- Hidden state for dynamic data (orbit center, follow target) not clarified
+
+**Impact:** **Radically simplified** - removed orbit controller entirely. Only extract follow camera logic.
+
+---
+
+**Final Approach:**
+- Create simple `camera_follow` struct with state and methods (no polymorphism)
+- Reduce `camera` to pure matrix generation (no modes, no movement)
+- Compose in `game_world`: `cam_follow` generates positions, `cam` generates matrices
+- Delete all orbit/mode code (not used, not needed)
+
+**Principles honored:**
+- Radical Simplicity: Delete orbit support entirely
+- Composable Functions: camera_follow and camera are orthogonal
+- Single Source of Truth: Only one component owns follow state
+
+---
+
+**Review 3 - Final Simplified Plan:**
+
+**Question asked:**
+I've radically simplified the plan based on your feedback. We're now DELETING orbit controller entirely and only extracting follow camera logic. Please review the final REFINE/PLAN section. Does this simplified approach properly address all concerns while honoring Radical Simplicity?
+
+**Feedback received:**
+- Single `camera_follow` component + thin `camera` math cleanly separates responsibilities
+- Tests focused on specialized behavior (good alignment with Radical Simplicity)
+- Suggestion: Don't expose `cam_follow` directly—use forwarding methods to prevent coupling
+
+**Impact:** Added forwarding methods in `game_world` for camera input (orbit/zoom) to maintain encapsulation.
+
+**Final validation:** ✅ Plan approved. Proceed with implementation.
+<!-- END: REFINE/REVIEW -->

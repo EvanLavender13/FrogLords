@@ -1,6 +1,7 @@
 #pragma once
 
 #include "camera/camera.h"
+#include "camera/camera_follow.h"
 #include "character/controller.h"
 #include "character/character_reactive_systems.h"
 #include "character/tuning.h"
@@ -17,6 +18,7 @@ struct character_panel_state;
 
 struct game_world {
     camera cam;
+    camera_follow cam_follow;
     scene scn;
     collision_world world_geometry;
     controller character;
@@ -28,6 +30,10 @@ struct game_world {
 
     void init();
     void update(float dt, const gui::character_panel_state& panel_state);
+
+    // Camera input forwarding
+    void apply_camera_orbit(float delta_x, float delta_y);
+    void apply_camera_zoom(float delta);
 };
 
 void setup_test_level(game_world& world);
