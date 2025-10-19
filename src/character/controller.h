@@ -120,7 +120,6 @@ struct controller {
     controller();
 
     void apply_input(const controller_input_params& input_params,
-                     const camera_input_params& cam_params,
-                     float dt);
+                     const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
 };

@@ -44,10 +44,10 @@ controller::controller()
 }
 
 void controller::apply_input(const controller_input_params& input_params,
-                             const camera_input_params& cam_params,
-                             float dt) {
+                             const camera_input_params& cam_params, float dt) {
     // Execute buffered jump on next grounded frame (jump buffer forgiveness)
-    // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full rationale
+    // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full
+    // rationale
     if (is_grounded && jump_buffer_timer > 0.0f) {
         velocity.y = jump_velocity;
         coyote_timer = coyote_window; // Exhaust coyote window
@@ -58,7 +58,8 @@ void controller::apply_input(const controller_input_params& input_params,
     glm::vec3 forward = cam_params.forward;
     glm::vec3 right = cam_params.right;
 
-    input_direction = forward * input_params.move_direction.y + right * input_params.move_direction.x;
+    input_direction =
+        forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
     // Direct acceleration (instant response)
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
@@ -81,7 +82,8 @@ void controller::apply_input(const controller_input_params& input_params,
     // These forgiveness mechanics preserve player intent, which is the higher truth.
     //
     // Design reference: Super Mario Bros (1985) - "press jump button a few frames early
-    // and Mario will automatically jump the moment he touches down" (NOTES/DesigningGames/DG_Interface.md)
+    // and Mario will automatically jump the moment he touches down"
+    // (NOTES/DesigningGames/DG_Interface.md)
     //
     // See PRINCIPLES.md - Prime Directive: "Do No Harm to Gameplay"
     //
