@@ -82,3 +82,55 @@ Significant complexity for performance gain that may not be measurable.
 - Before: LOC ~35, Principle 7/10, Complexity High
 - After: LOC ~15 (-20), Principle 9/10 (+2), Complexity Low
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+### Step 1: Simplify Line Rendering
+**Changes:** `src/rendering/debug_draw.cpp:25-72` - Remove sorting, batching, comparator
+**From:** Sort lines by color, build batches, flush on color change
+**To:** Iterate lines directly, draw each individually
+**Tests:** None (debug visualization)
+**Validation:** Run game with debug collision shapes enabled
+
+### Step 2: Verify Debug Visualizations
+**Manual test:** Enable all debug visualizations
+- Collision shapes (bodies, tree)
+- Camera bounds
+- Navigation/AI paths
+**Validation:** All primitives render correctly, no performance degradation
+
+## Rollback
+`git reset --hard HEAD`
+<!-- END: REFINE/PLAN -->
+
+---
+
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-19
+
+**Question asked:**
+Review this refinement plan to remove premature optimization from debug rendering. Does the simplification align with Radical Simplicity principle? Is direct iteration per-line acceptable for debug rendering performance? Are there any edge cases or correctness concerns? Should any of the batching logic be preserved?
+
+**Concerns evaluated:**
+- Alignment with Radical Simplicity principle
+- Performance implications of direct iteration
+- Edge cases and correctness
+- Whether any batching should remain
+
+**Feedback received:**
+- Simplification matches Radical Simplicity: removes unproven complexity from non-critical path
+- Direct iteration fine for debug use: even hundreds of extra draw calls stay under threshold
+- Edge case: construct fresh wireframe_mesh per line so vertices/edges reset cleanly
+- No batching logic needs to survive: reintroduce with evidence if profiling shows need
+
+**Impact on implementation:**
+- Confirmed approach: remove all batching logic
+- Implementation detail: create fresh wireframe_mesh for each line
+- No changes to plan needed
+<!-- END: REFINE/REVIEW -->
