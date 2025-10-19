@@ -40,16 +40,9 @@ Create `PLANS/<name>_ITERATION_1.md`:
 <!-- BEGIN: ITERATE/CONTRACT -->
 ## Foundation Contract
 
-**Mathematical properties:**
-- [ ] [property that must always hold]
+Define what must be proven about this system. Choose categories that serve validation.
 
-**Edge cases:**
-- [ ] [case that must be handled]
-
-**Consistency:**
-- [ ] Same input → same output
-- [ ] Frame-rate independent
-- [ ] No special cases
+- [ ] [contract item to validate]
 <!-- END: ITERATE/CONTRACT -->
 
 ---
@@ -107,37 +100,28 @@ Update iteration list in `PLANS/<name>_SYSTEM.md`:
 
 ### 2. Iteration Cycle
 
-Satisfy the contract. Work through items in `ITERATE/CONTRACT` one at a time until all are checked.
+**One contract item at a time. Validate, then commit.**
 
-**Repeat until contract complete:**
+For each unchecked contract item:
+- Implement the fix (small changes only, maintain debug visualization)
+- Build and test until it passes
+- Document validation in contract (check box, add commit hash and what was validated)
+- Commit on success, revert on failure
 
-- Pick one unchecked contract item
-  - If resuming from VALIDATE/REVISE, prioritize violations from ITERATE/CONTEXT
-- Implement the fix
-  - Small changes only
-  - Maintain debug visualization
-  - Stay in graybox
-- Test: Build, run, try to break it
-  - Verify the contract item passes
-- Document in `ITERATE/CONTRACT`
-  - Check the box
-  - Add inline note with commit hash and what was validated/fixed
-- Commit if passing:
-  ```bash
-  git commit -m "iterate: <name> - <what>
+If resuming from VALIDATE/REVISE, turn violations into contract items and prioritize them.
 
-  Validated: <property>
-  Status: <X/Y>
+When all contract items are checked, proceed to playtest.
 
-  🤖 Generated with [Claude Code](https://claude.com/claude-code)
-  Co-Authored-By: Claude <noreply@anthropic.com>"
-  ```
-- Revert if failing:
-  ```bash
-  git reset --hard HEAD
-  ```
+**Commit format:**
+```bash
+git commit -m "iterate: <name> - <what>
 
-When all contract items checked, proceed to playtest.
+Validated: <property>
+Status: <X/Y>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
 
 ---
 

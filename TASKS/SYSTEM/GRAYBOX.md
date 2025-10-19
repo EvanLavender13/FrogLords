@@ -31,23 +31,10 @@ Update `PLANS/<name>_SYSTEM.md` — add:
 <!-- BEGIN: GRAYBOX/SCOPE -->
 ## Graybox
 
-**Visual:**
-- Core: [cubes, spheres, lines]
-- Debug: [overlays, colors, labels]
-- Input: [primitives only]
+Define the minimal scope that proves the core works.
 
-**Included:**
-- [ ] Implementation plan
-- [ ] Core mechanic
-- [ ] Math implementation
-- [ ] Debug visualization
-- [ ] Build verification
-
-**Excluded:**
-- Art/models/audio
-- Polish/juice
-- Optional features
-- Variations
+**What will be built:**
+[Describe the core mechanic and how it will be validated]
 
 **Complexity:** Small | Medium | Large
 <!-- END: GRAYBOX/SCOPE -->
@@ -88,13 +75,17 @@ Identify which existing functions modified and where new code added.
 Use Codex to validate the implementation plan against principles.
 
 ```bash
-echo "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]" | codex e 2>/dev/null
+bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]"
 ```
+
+**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
+
+**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
 
 **Evaluate feedback:**
 - Concerns raised? Revise plan
 - Alternative suggested? Consider it
-- Need clarification? Continue with `codex e resume --last 2>/dev/null`
+- Need clarification? Continue with `bash scripts/bash/codex.sh --resume "[follow-up question]"`
 - Validation confirms? Proceed
 
 **Document the review** in `PLANS/<name>_SYSTEM.md`:
@@ -123,66 +114,31 @@ echo "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validat
 
 ### 3. Build Core
 
-**Priority:**
-1. Mathematical correctness - proven, not guessed
-2. Debug visualization - make behavior visible
-3. Minimal interaction - keyboard/mouse primitives
-4. Self-test harness - automated validation
+**Prove correctness. Make it visible. Keep it minimal.**
 
-**Rules:**
-- Primitives only (cubes, spheres, lines)
-- No assets (textures, models, sounds)
-- No polish (tweening, particles, juice)
-- No extras (features beyond core)
-
-**Before adding anything:**
-- Is this the core? (No → don't add)
-- Does this validate? (No → don't add)
-- Can this wait? (Yes → don't add)
+Build only what validates the mathematical foundation. Everything else defers.
 
 ---
 
-### 3. Debug Visualization
+### 4. Debug Visualization
 
-**Make invisible visible:**
-- Mathematical state (vectors, values, ranges)
-- Decision points (where system chooses)
-- Relationships (what affects what)
-- Color-code states (normal, edge, error)
+**Make the invisible visible.**
 
-**Examples:**
-- Physics forces → arrows (direction/magnitude)
-- State machine → color current state
-- Ranges → show min/max/current
-- Collisions → highlight contacts
-- Paths → draw trajectories
+Visualize the mathematical state, decision points, and relationships that drive behavior.
 
-**Can't see it? Can't validate it.**
+Can't see it? Can't validate it.
 
 ---
 
-### 4. Self-Test
+### 5. Self-Test
 
-**Play it:**
-- Core feel right?
-- Debug viz clear?
-- Math behaves as proven?
-- Any surprises?
+**Build, run, break it.**
 
-**Document now:**
-- Works?
-- Doesn't?
-- Surprised?
-- Emerged?
-
-**Build and run:**
-- Does it compile?
-- Does it run without crashing?
-- Does debug visualization show the system working?
+Validate the core works. Document what works, what doesn't, and what surprises emerge.
 
 ---
 
-### 5. Document Results
+### 6. Document Results
 
 In `PLANS/<name>_SYSTEM.md` — add:
 
@@ -214,7 +170,7 @@ Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`
 
 ---
 
-### 6. Commit
+### 7. Commit
 
 ```bash
 git add .

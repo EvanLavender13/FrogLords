@@ -33,21 +33,21 @@ Use both tools with principles and conventions as context. Craft your audit prom
 
 **Gemini (massive context):**
 ```bash
-gemini -p "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
+bash scripts/bash/gemini.sh "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
 ```
 
 **Codex (independent opinion):**
 ```bash
-echo "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" | codex e 2>/dev/null
+bash scripts/bash/codex.sh "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
 ```
 
-**Waiting for completion:**
-Both tools can take time to analyze, especially Codex. If needed, check status every 20 seconds until output completes. Codex in particular may think for extended periods.
+**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
 
-**Note**: Codex can resume with `codex e resume --last 2>/dev/null` for follow-up questions.
+**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
+
+**Note**: Codex can resume with `bash scripts/bash/codex.sh --resume "[follow-up question]"`.
 
 **Your audit prompt should:**
-- Reference the six principles explicitly
 - Specify what you're looking for (violations, patterns, specific principles)
 - Define the output format you want
 - Be tailored to current codebase state

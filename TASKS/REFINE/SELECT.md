@@ -12,8 +12,8 @@ Choose highest-impact violation from backlog. Classify complexity. Determine pat
 
 ## Prerequisites
 
-- Foundation ≥70% (`DEPENDENCY_STACK.md`)
-- `BACKLOG_REFINEMENTS.md` populated
+- Foundation ≥70% (`TASKS/DEPENDENCY_STACK.md`)
+- `TASKS/BACKLOG_REFINEMENTS.md` populated
 - Between features (not during builds)
 
 ---
@@ -22,7 +22,7 @@ Choose highest-impact violation from backlog. Classify complexity. Determine pat
 
 ### 1. Check Foundation
 
-Open `DEPENDENCY_STACK.md`:
+Open `TASKS/DEPENDENCY_STACK.md`:
 - Overall: ___%
 - **≥70%**: Proceed
 - **<70%**: Defer—strengthen foundation first
@@ -31,7 +31,7 @@ Open `DEPENDENCY_STACK.md`:
 
 ### 2. Select Violation
 
-Open `BACKLOG_REFINEMENTS.md`. Choose by:
+Open `TASKS/BACKLOG_REFINEMENTS.md`. Choose by:
 
 **Priority:**
 1. Severity (Critical > High > Medium > Low)
@@ -217,10 +217,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ## Outputs
 
 - [ ] Violation selected
-- [ ] `PLANS/REFINE_<name>.md` created
+- [ ] `TASKS/PLANS/REFINE_<name>.md` created
 - [ ] Complexity classified
 - [ ] Path determined
-- [ ] `CURRENT_PLAN.md` updated
+- [ ] `TASKS/CURRENT_PLAN.md` updated
 - [ ] Branch created
 
 ---
