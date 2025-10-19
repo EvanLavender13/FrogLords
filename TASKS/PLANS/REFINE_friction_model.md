@@ -335,3 +335,53 @@ Or revert individual commits in reverse order.
 - 1.0 = maximum friction
 
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files changed (code only):**
+- `src/character/tuning.h`: 47 → 47 (0 lines, +12 parameter, -0 removed comments balanced)
+- `src/character/tuning.cpp`: 42 → 33 (-9 lines)
+- `src/character/controller.h`: 126 → 125 (-1 line)
+- `src/character/controller.cpp`: 176 → 178 (+2 lines, minor comment updates)
+
+**Total:** -8 lines of code
+
+**Violations removed:**
+- Non-physical constants (FRICTION_RATIO, NET_FRACTION): 5 → 0 (-5 references)
+- Acceleration inflation logic: 1 → 0 (removed entirely)
+- Friction backwards-calculation: 1 → 0 (replaced with direct physical parameter)
+- Non-physical friction coefficient (μ ≈ 6.12): eliminated
+- Stale documentation references: removed from controller.h
+
+**Principle: Mathematical Foundations**
+- Before: 6/10 (non-physical friction coefficient, backwards calculation)
+- After: 9/10 (+3) (standard kinetic friction, physically valid μ ∈ [0, 1])
+- Improvement: +3 points
+
+**Evidence:**
+- Friction coefficient now clamped to [0.0, 1.0] (physically valid)
+- Standard kinetic friction formula: a_friction = μ * |g|
+- Direct parameter assignment (no inflation or decomposition)
+- Single Source of Truth maintained (documentation matches implementation)
+
+**Foundation:**
+- Layer 1 (Core - Character Tuning): 96.5% → 97%+ (+0.5%)
+- Overall: 97%+ maintained ✓
+
+**Target Impact Met:** Mathematical Foundations 6→9 (+3), Layer 1 improved, Overall maintained
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Tuning parameters derived from gameplay feel (friction ratio) without grounding in physical model, leading to backwards calculation and non-physical friction coefficient.
+
+**Prevention:** Always start with physical parameters (μ, mass, force) and derive gameplay feel through tuning those parameters, never reverse-engineer physics from desired behavior ratios.
+
+**Pattern:** Other tuning parameters may have similar violations—check for backwards-derivation or ratio-based calculations that obscure physical meaning.
+<!-- END: MEASURE/LEARNING -->
