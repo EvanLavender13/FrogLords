@@ -182,9 +182,34 @@ Run:   ✅ Program started successfully
 - [x] Wall-to-floor transition: classification uses threshold 0.707 (45°) ✓ Implemented (collision.cpp:23)
 
 **Consistency:**
-- [ ] Same input → same output (deterministic projection)
-- [ ] Frame-rate independent (no velocity accumulation artifacts)
-- [ ] No special cases (single projection formula for all walls)
+- [x] Same input → same output (deterministic projection) ✓ Pure math, no state
+- [x] Frame-rate independent (no velocity accumulation artifacts) ✓ Instantaneous projection, dt-scaled physics
+- [x] No special cases (single projection formula for all walls) ✓ project_along_wall() uniform for all
+
+---
+
+### Playtest 1
+
+**Date:** 2025-10-18
+**Tester:** User (developer)
+
+**Violations:**
+- [x] Cannot jump when running into wall (Prime Directive violation)
+  - Root cause: Multi-pass collision only returned last contact
+  - Floor contact overwritten by wall contact
+  - Grounding check failed on wall normal
+  - Fix: Added `contacted_floor` flag to track floor across all passes ✓ FIXED
+
+**Emergent:**
+- None observed yet (awaiting continued playtest)
+
+**Fix:**
+- collision.h: Added contacted_floor, floor_normal fields
+- collision.cpp: Track floor contact separately from last contact
+- controller.cpp: Use contacted_floor for grounding logic
+- Commit: 6b58c9a
+- ✅ VERIFIED: User confirms jump works at walls
+
 <!-- END: ITERATE/CONTRACT -->
 
 ---

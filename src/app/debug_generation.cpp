@@ -33,14 +33,8 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         .segments = 12,
     });
 
-    // Velocity indicator
-    if (glm::length(character.velocity) > 0.1f) {
-        list.spheres.push_back(debug::debug_sphere{
-            .center = character.position + character.velocity,
-            .radius = 0.1f,
-            .color = {1, 0, 0, 1},
-        });
-    }
+    // Velocity indicator (replaced by cyan/yellow arrows showing intent vs constrained)
+    // Red sphere removed - arrows show the same information with more detail
 
     // Orientation indicator
     float yaw = visuals.orientation.get_yaw();
@@ -181,22 +175,13 @@ void generate_collision_state_primitives(debug::debug_primitive_list& list,
             .head_size = 0.15f,
         });
 
-        // Draw velocity projection (only for walls)
-        if (debug.is_wall && glm::length(debug.velocity_before) > 0.01f) {
-            // Original velocity (gray)
+        // Velocity arrow (replaces red velocity sphere - shows ground truth)
+        if (glm::length(character.velocity) > 0.01f) {
             list.arrows.push_back(debug::debug_arrow{
                 .start = character.position,
-                .end = character.position + debug.velocity_before * 0.5f,
-                .color = {0.5f, 0.5f, 0.5f, 0.7f},
-                .head_size = 0.1f,
-            });
-
-            // Projected velocity (yellow)
-            list.arrows.push_back(debug::debug_arrow{
-                .start = character.position,
-                .end = character.position + debug.velocity_after * 0.5f,
-                .color = {1, 1, 0, 1},
-                .head_size = 0.1f,
+                .end = character.position + character.velocity,
+                .color = {1.0f, 0.0f, 0.0f, 1.0f}, // Red = actual velocity (ground truth)
+                .head_size = 0.15f,
             });
         }
     }
