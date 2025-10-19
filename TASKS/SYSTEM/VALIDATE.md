@@ -227,7 +227,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 ## Next
 
 **If APPROVED:**
-→ INTEGRATE
+→ STRENGTHEN
 
 **If REVISE:**
 → ITERATE (minor fixes)
