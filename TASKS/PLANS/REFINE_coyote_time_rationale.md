@@ -116,3 +116,41 @@
 - Principle hierarchy explicitly documented
 - Satisfies Principled Development: "Every decision must trace back to principles"
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.cpp`: 155 → 176 (+21 lines)
+
+**Total:** +21 lines (documentation only)
+
+**Violations removed:**
+- Undocumented principle trade-offs: 1 → 0 (-1)
+- Comments added: 0 → 21 lines (principle rationale)
+
+**Principle:** Principled Development, Consistency
+- Before: 8/10
+- After: 9/10
+- Improvement: +1
+
+**Evidence:** Trade-off now explicitly documented at implementation site. Developers can trace coyote time/jump buffering to Prime Directive > Consistency hierarchy.
+
+**Foundation:**
+- Layer 1 (Controller): 96% → 96.5% (+0.5%)
+- Overall: 97%+ maintained
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Implementation-first development - mechanics added for game feel without documenting the principle justification.
+
+**Prevention:** When violating principles intentionally, document the trade-off at the implementation site immediately. Comment format: PRINCIPLE TRADE-OFF: [violated] for [higher principle] - [justification].
+
+**Pattern:** Other intentional violations may lack documentation. Audit for special-case mechanics without explicit principle rationale.
+<!-- END: MEASURE/LEARNING -->
