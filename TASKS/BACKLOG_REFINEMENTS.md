@@ -3,7 +3,7 @@
 **Current violations. Priority order. Patterns to watch.**
 
 **Foundation:** 98%+ ✅ TARGET EXCEEDED
-**Last Updated:** 2025-10-18
+**Last Updated:** 2025-10-19
 **Last Audit:** 2025-10-18 (Gemini + Codex dual analysis)
 
 ---
@@ -37,16 +37,6 @@ None - all high-priority violations resolved ✅
 - **Description:** Hard-coded `for (int pass = 0; pass < 3; ++pass)` for collision resolution. Number `3` is arbitrary, lacks mathematical guarantee.
 - **Fix:** Document - Define as named constant `COLLISION_RESOLUTION_PASSES = 3` with comment explaining empirical choice balancing performance/accuracy.
 - **Impact:** Code clarity
-
-**#10: Unused Delta-Time Parameter**
-- **Location:** `src/camera/camera.cpp:78-86`
-- **Principles:** Radical Simplicity
-- **Severity:** Low
-- **Type:** Dead parameter, Unclear intent
-- **Description:** `set_follow_target()` takes `dt` parameter but never uses it. Obscures whether follow mode is intentionally instantaneous or missing time-based smoothing.
-- **Fix:** Delete - Remove unused parameter. OR Document - Add comment explaining why instantaneous is correct.
-- **Impact:** Code clarity, cognitive load
-- **Audit Source:** **Codex**
 
 **#11: Hardcoded Test Level Literals**
 - **Location:** `src/app/game_world.cpp:62-111`
@@ -112,7 +102,7 @@ None - all high-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 98%+ ✅ - 5 violations found (0 CRITICAL, 0 high, 1 medium, 3 low)**
+**Foundation at 98%+ ✅ - 4 violations found (0 CRITICAL, 0 high, 1 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
@@ -122,7 +112,7 @@ None - all high-priority violations resolved ✅
 **Path to maintain 98%+ Layer 3:**
 1. Continue medium-priority refinements (#7)
 2. OR **Build Layer 4 systems** - Foundation stable at 98%+
-3. Address low-priority violations opportunistically (#9-#12)
+3. Address low-priority violations opportunistically (#9, #11-#12)
 
 **Pattern Discovery:**
 - **Duplication pattern** - ~~Redundant storage~~ ✅ FIXED, ~~per-frame allocation~~ ✅ FIXED
@@ -134,12 +124,10 @@ None - all high-priority violations resolved ✅
 
 ## Recent Activity
 
-**Camera Modes Separation (2025-10-18)**
-- Extracted camera_follow component from camera class
-- Camera: Composable Functions 6→9 (+3)
-- Layer 1: 97% → 98% (+1%)
-- Foundation: 97%+ → 98%+ (+1%)
-- 5 violations remaining (0 critical, 0 high, 1 medium, 3 low)
+**False Positive Removed (2025-10-19)**
+- Verified violation #10 (unused dt parameter) does not exist in codebase
+- Audit tool false positive - function never implemented
+- 4 violations remaining (0 critical, 0 high, 1 medium, 3 low)
 
 ---
 
