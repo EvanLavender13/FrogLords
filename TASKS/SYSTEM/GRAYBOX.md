@@ -81,6 +81,46 @@ Identify which existing functions modified and where new code added.
 
 ---
 
+### 2.5. Validate Plan
+
+**Get a second opinion before implementing:**
+
+Use Codex to validate the implementation plan against principles.
+
+```bash
+echo "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]" | codex e 2>/dev/null
+```
+
+**Evaluate feedback:**
+- Concerns raised? Revise plan
+- Alternative suggested? Consider it
+- Need clarification? Continue with `codex e resume --last 2>/dev/null`
+- Validation confirms? Proceed
+
+**Document the review** in `PLANS/<name>_SYSTEM.md`:
+
+```markdown
+<!-- BEGIN: GRAYBOX/REVIEW -->
+## Implementation Review
+
+**Tool:** Codex CLI
+**Date:** YYYY-MM-DD
+
+**Question asked:**
+[What you asked for validation]
+
+**Feedback received:**
+- [Key points from the review]
+- [Concerns or recommendations]
+
+**Impact on implementation:**
+- [How feedback changed your approach]
+- [What you kept vs modified]
+<!-- END: GRAYBOX/REVIEW -->
+```
+
+---
+
 ### 3. Build Core
 
 **Priority:**

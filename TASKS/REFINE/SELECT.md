@@ -127,6 +127,7 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 - From:
 - To:
 - Derive/Generalize:
+- Check duplicates:
 
 **DOCUMENT:**
 - Why keep:
