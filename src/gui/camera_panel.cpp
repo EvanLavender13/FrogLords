@@ -34,8 +34,7 @@ void draw_camera_panel(camera_panel_state& state, camera& cam, camera_follow& ca
     }
 
     // Height offset slider
-    if (ImGui::SliderFloat("Height Offset", &cam_follow.height_offset, 0.0f, 3.0f,
-                           "%.1f m")) {
+    if (ImGui::SliderFloat("Height Offset", &cam_follow.height_offset, 0.0f, 3.0f, "%.1f m")) {
         // Value updated directly via slider
     }
 

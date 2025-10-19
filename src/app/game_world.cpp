@@ -13,7 +13,7 @@ void game_world::init() {
     character = controller();
     character_params.apply_to(character);
     cam = camera();
-    cam_follow = camera_follow();  // Use default values
+    cam_follow = camera_follow(); // Use default values
     scn = scene();
     setup_test_level(*this);
 }

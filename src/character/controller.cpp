@@ -146,8 +146,8 @@ void controller::update(const collision_world* world, float dt) {
     // Derive wall threshold from max_slope_angle (single source of truth)
     float wall_threshold = glm::cos(glm::radians(max_slope_angle));
     float pre_collision_vertical_velocity = velocity.y;
-    sphere_collision contact = resolve_collisions(collision_sphere, *world, position, velocity,
-                                                   wall_threshold);
+    sphere_collision contact =
+        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
 
     // Store collision debug info
     collision_contact_debug.active = contact.hit;

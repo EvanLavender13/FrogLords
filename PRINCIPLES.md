@@ -84,6 +84,28 @@ State that accumulates drifts toward chaos. State that is calculated remains tru
 
 ### Lists Are Intent, Not History
 
+## ⚠️ STOP: DO NOT CREATE "RECENTLY COMPLETED" SECTIONS ⚠️
+
+**IF YOU ARE ABOUT TO ADD A "RECENTLY COMPLETED" OR "COMPLETED ITEMS" SECTION TO ANY BACKLOG OR LIST:**
+
+# STOP. DELETE IT. YOU ARE VIOLATING CORE PRINCIPLES.
+
+Completed work belongs in:
+1. **Git history** - `git log` shows what was done
+2. **Iteration documents** - `TASKS/PLANS/*_ITERATION_*.md` has the details
+3. **The codebase itself** - the code IS the completed work
+
+**NEVER in backlogs. NEVER in tracking lists. NEVER as "completed" items.**
+
+Backlogs show **what's buildable NOW**. That's it. Nothing else.
+
+If you catch yourself writing "Recently Completed" or "Completed Items" in a backlog:
+- **STOP**
+- **DELETE THE SECTION**
+- **READ THIS AGAIN**
+
+---
+
 Every list must answer: "What remains to be done?" Never: "What was done?"
 
 The completed work lives in three places:

@@ -6,8 +6,8 @@
 struct camera_follow {
     // State
     float distance = 5.0f;
-    float latitude = 15.0f;     // degrees
-    float longitude = 0.0f;     // degrees
+    float latitude = 15.0f; // degrees
+    float longitude = 0.0f; // degrees
     float height_offset = 1.5f;
 
     // Limits

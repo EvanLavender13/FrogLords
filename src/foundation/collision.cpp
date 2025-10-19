@@ -19,12 +19,18 @@ glm::vec3 compute_face_normal(const glm::vec3& closest_point, const aabb& box) {
     glm::vec3 box_max = box.center + box.half_extents;
 
     // Check each face (prioritize Y for floor/ceiling, then X, then Z)
-    if (std::abs(closest_point.y - box_max.y) < epsilon) return glm::vec3(0, 1, 0);  // Top
-    if (std::abs(closest_point.y - box_min.y) < epsilon) return glm::vec3(0, -1, 0); // Bottom
-    if (std::abs(closest_point.x - box_max.x) < epsilon) return glm::vec3(1, 0, 0);  // Right
-    if (std::abs(closest_point.x - box_min.x) < epsilon) return glm::vec3(-1, 0, 0); // Left
-    if (std::abs(closest_point.z - box_max.z) < epsilon) return glm::vec3(0, 0, 1);  // Front
-    if (std::abs(closest_point.z - box_min.z) < epsilon) return glm::vec3(0, 0, -1); // Back
+    if (std::abs(closest_point.y - box_max.y) < epsilon)
+        return glm::vec3(0, 1, 0); // Top
+    if (std::abs(closest_point.y - box_min.y) < epsilon)
+        return glm::vec3(0, -1, 0); // Bottom
+    if (std::abs(closest_point.x - box_max.x) < epsilon)
+        return glm::vec3(1, 0, 0); // Right
+    if (std::abs(closest_point.x - box_min.x) < epsilon)
+        return glm::vec3(-1, 0, 0); // Left
+    if (std::abs(closest_point.z - box_max.z) < epsilon)
+        return glm::vec3(0, 0, 1); // Front
+    if (std::abs(closest_point.z - box_min.z) < epsilon)
+        return glm::vec3(0, 0, -1); // Back
 
     // Fallback: should not reach here if closest_point is truly on box surface
     // If we do, use UP as last resort (same as old behavior)
@@ -156,7 +162,8 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                     if (col.normal.y > 0.0f) { // Upward-facing surface = floor
                         final_contact.contacted_floor = true;
                         final_contact.floor_normal = col.normal;
-                        final_contact.contact_box = col.contact_box; // Store floor box for height query
+                        final_contact.contact_box =
+                            col.contact_box; // Store floor box for height query
                     }
                 }
 

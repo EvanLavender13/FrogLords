@@ -1,6 +1,9 @@
 # Systems Backlog
 
-**Systems to build. Foundation: 97%+ (Layer 3 complete, Layer 4 ready).**
+**Systems to build. Foundation: 98%+ (Layer 3 complete, Layer 4 building).**
+
+**Foundation:** 98%+
+**Last Updated:** 2025-10-19
 
 ---
 
@@ -10,11 +13,6 @@
 - Multiple speed tiers (walk, run, sprint)
 - Smooth transitions between states
 - Input-driven state selection
-
-**Wall Detection & Sliding**
-- Detect wall collisions (distinguish from floor/ceiling)
-- Slide along walls while maintaining player control
-- Prevent sticking or sudden stops
 
 **Dash Mechanic**
 - Burst movement in input direction

@@ -54,7 +54,8 @@ void camera_follow::zoom(float delta) {
 
 glm::vec3 camera_follow::compute_eye_position(const glm::vec3& target_position) const {
     FL_PRECONDITION(std::isfinite(target_position.x) && std::isfinite(target_position.y) &&
-                    std::isfinite(target_position.z), "target_position must be finite");
+                        std::isfinite(target_position.z),
+                    "target_position must be finite");
     FL_PRECONDITION(distance > 0.0f, "distance must be positive");
 
     glm::vec3 center = target_position + glm::vec3(0, height_offset, 0);
@@ -67,7 +68,8 @@ glm::vec3 camera_follow::compute_eye_position(const glm::vec3& target_position) 
 
 glm::vec3 camera_follow::compute_look_target(const glm::vec3& target_position) const {
     FL_PRECONDITION(std::isfinite(target_position.x) && std::isfinite(target_position.y) &&
-                    std::isfinite(target_position.z), "target_position must be finite");
+                        std::isfinite(target_position.z),
+                    "target_position must be finite");
 
     glm::vec3 result = target_position + glm::vec3(0, height_offset, 0);
 
