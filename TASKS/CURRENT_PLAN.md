@@ -1,39 +1,27 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-19 - Debug Draw Batching
+**Status:** 🏗️ System - Dash Mechanic
+**Started:** 2025-10-19
+**Branch:** system/dash
+**Complexity:** Small (3-5 points)
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Recommended Next Action
+## Current Work
 
-**📊 RETRO recommended** - 5 plans completed since start
-**Run:** Review TASKS/RETRO.md and extract patterns
+**System:** On-demand burst movement that respects physics and player control
+**Location:** @TASKS/PLANS/DASH_SYSTEM.md
+**Layer:** 4
+**Foundation:** 99%+
+**Complexity:** Small (3-5 points)
+**Next:** GRAYBOX
 
-**Or proceed with:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Dependencies:**
+- Controller: 97%
+- Input: 95%
+- Physics/Friction: 100%
 
----
-
-## Quick Reference
-
-**Foundation:** 99%+ ✅ TARGET EXCEEDED
-**Target:** 95% (Layer 3) - EXCEEDED, now building Layer 4
-
-**Layer Status:**
-- Layer 1 (Core): 98% ✅ - TARGET EXCEEDED
-- Layer 2 (Primitives): 100% ✅ - COMPLETE
-- Layer 3 (Systems): 99%+ ✅ - TARGET EXCEEDED
-- Layer 4 (Variation): 74% - BUILDING (2 systems complete)
-
-**Path to 95% Layer 4:** 2-3 more systems
-
-**Next Priority:** Skeletal Animation System or Dash Mechanic
-
----
-
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Foundation status
+**Target Impact:**
+- Layer 4: 74% → 79% (+5%)
+- Overall: 99%+ (maintaining foundation)
