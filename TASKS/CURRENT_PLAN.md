@@ -1,15 +1,24 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-19 - Semantic Collision Types
+**Status:** 🔧 Refinement - Debug Draw Batching
+**Started:** 2025-10-19
+**Branch:** refine/debug_draw_batching
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build (recommended - foundation at 99%+)
-- `/REFINE/SELECT` - Pick next violation to fix (3 low-priority violations remain)
+**Refinement:** Remove premature optimization from debug rendering
+**Location:** @TASKS/PLANS/REFINE_debug_draw_batching.md
+**Principle:** Radical Simplicity
+**Approach:** Simplify
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 3: 99%+ → 99%+ (maintain)
+- Overall: 99%+ → 99%+ (maintain quality)
 
 ---
 
