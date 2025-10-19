@@ -397,4 +397,4 @@ Review the implementation plan for principle adherence (physics drives animation
 
 ## Iterations
 
-- [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md) - In Progress
+- [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md) - Ready for VALIDATE

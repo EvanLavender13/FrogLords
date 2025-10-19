@@ -1,7 +1,7 @@
 # Iteration 1: Walk/Run Speed States
 
 **Started:** 2025-10-19
-**Status:** In Progress
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -48,5 +48,89 @@
   - Validated: Code review shows no conditional logic or special paths (controller.cpp:188-211)
 
 <!-- END: ITERATE/CONTRACT -->
+
+---
+
+<!-- BEGIN: ITERATE/PLAYTEST_1 -->
+### Playtest 1
+
+**Date:** 2025-10-19
+**Tester:** User
+
+**Results:** ✅ ALL PASS (18/18 items)
+
+**Mathematical Properties:**
+- ✅ Frame-rate independence: Confirmed stable
+- ✅ Phase wrapping: Smooth 0→1 wrap, no discontinuities
+- ✅ Distance accumulation: Continuous while moving, correctly freezes when airborne
+- ✅ Positive cycle length: No crashes or errors
+- ✅ Deterministic state: Consistent state classification at same speeds
+
+**Edge Cases:**
+- ✅ Stationary: Phase freezes correctly
+- ✅ State transitions: Phase continues smoothly across walk→run→sprint
+- ✅ Backward movement: Character/wheel orientation responds correctly
+- ✅ Strafe movement: Phase accumulates based on speed magnitude
+- ✅ Collision: Wheel stops rotating when blocked (distance stops)
+- ✅ Very high speeds: Stable, no glitches
+- ✅ Rapid oscillation: No flickering or artifacts observed
+
+**Consistency:**
+- ✅ Deterministic: Same movement → same results
+- ✅ No special cases: Uniform behavior across all directions
+
+**Visual:**
+- ✅ Color coding: Walk=green, Run=yellow, Sprint=red, instant transitions
+- ✅ Surveyor wheel: Rotates in movement direction
+- ✅ Wheel size: Matches state (walk=2m, run=3m, sprint=4m)
+- ✅ Debug panel: All values display correctly
+
+**Violations:** None
+
+**Emergent:**
+- Distance correctly doesn't accumulate during jumps (horizontal speed determines phase)
+- Character orientation and wheel respond correctly to input direction
+- Wheel size differences clearly visible (walk smallest, sprint largest)
+
+**Status:** ✅ CONTRACT PROVEN
+<!-- END: ITERATE/PLAYTEST_1 -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Properties:** Validated through debug assertions and mathematical analysis
+- Frame-rate independence: dt > 0 precondition + dt-scaled distance accumulation
+- Phase wrapping: fmod properties proven mathematically + [0,1) postcondition
+- Distance monotonicity: speed >= 0 postcondition ensures never decreases
+- Positive cycle length: cycle_length > 0 precondition prevents divide-by-zero
+- Deterministic classification: Pure threshold functions, no randomness
+
+**Edges:** All 7 cases handled correctly through design + validation
+- Zero velocity: Natural consequence of speed=0 in distance += speed * dt
+- State transitions: distance_traveled never resets, continuous across states
+- Backward/strafe: Uses horizontal speed magnitude, direction-agnostic
+- Collision: Uses post-resolution velocity, naturally stops when blocked
+- High speeds: isfinite assertion catches overflow
+- Rapid oscillation: Stateless classification, no artifacts
+
+**Assertions:** 6 added (controller.cpp)
+- FL_PRECONDITION(dt > 0.0f && isfinite(dt)) - line 106-107
+- FL_POSTCONDITION(speed >= 0.0f && isfinite(speed)) - line 191-192
+- FL_POSTCONDITION(isfinite(distance_traveled)) - line 205-206
+- FL_PRECONDITION(cycle_length > 0.0f) - line 210 (existing)
+- FL_POSTCONDITION(phase >= 0.0f && phase < 1.0f) - line 211-212
+
+**Playtests:** 1 (18/18 items passed, 0 violations)
+
+**Status:**
+- [x] Contract proven (assertions + playtest)
+- [x] Stable (no crashes, no violations)
+- [x] Ready for VALIDATE
+
+<!-- END: ITERATE/COMPLETE -->
 
 ---
