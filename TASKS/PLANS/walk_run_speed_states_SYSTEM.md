@@ -66,7 +66,7 @@ Phase is a fundamental output. Systems that don't exist yet will consume it:
 **At Graybox Level:**
 - Character is a box with color-coded speed states (walk=green, run=yellow, sprint=red)
 - Visualize phase with rotating "+" sign (surveyor wheel):
-  - Wheel SIZE = cycle_length (walk=big wheel, sprint=small wheel)
+  - Wheel SIZE = cycle_length (walk=2m, run=3m, sprint=4m - faster gaits = longer strides = larger wheels)
   - Wheel ROTATION = phase (0° = phase 0, 180° = phase 0.5)
   - Rotates in direction of movement
 - Debug overlay: state name, speed, phase, cycle_length, distance
@@ -136,13 +136,15 @@ locomotion_state { state, phase, cycle_length }
 - Phase calculation is frame-rate independent (distance accumulation correct)
 - Phase wraps cleanly at cycle boundaries (0.99 → 0.0 without jumps)
 - State transitions are immediate (discrete, not smoothed)
-- Cycle_length change preserves phase continuity (or define discontinuity behavior)
+- Cycle_length change causes phase discontinuity (this is correct - distance is source of truth)
 
-**Known uncertainties:**
-- Speed thresholds: walk < 3 m/s? run < 6 m/s? sprint ≥ 6 m/s?
-- Cycle lengths: walk=2m? run=1.5m? sprint=1m? (tune by feel)
-- Phase continuity on state change: preserve phase value, or reset to 0?
-- Distance accumulator: reset on state change, or continuous forever?
+**Resolved decisions (ITERATION_2):**
+- Speed thresholds: walk < 3 m/s, run < 6 m/s, sprint ≥ 6 m/s
+- Cycle lengths: walk=2m, run=3m, sprint=4m (faster = longer stride)
+- Phase continuity: Phase RECALCULATES from distance when cycle_length changes (discontinuity is correct)
+- Distance accumulator: Continuous forever (no reset on state change)
+- Float precision: Acceptable limitation at ~1e7 meters (10,000 km of travel)
+- Output contract: {state, phase, cycle_length} (distance_traveled is internal only)
 <!-- END: SELECT/MATHEMATICAL_FOUNDATION -->
 
 ---
@@ -153,7 +155,7 @@ locomotion_state { state, phase, cycle_length }
 **Visual:**
 - Box character with color-coded states (walk=green, run=yellow, sprint=red)
 - Rotating "+" sign (surveyor wheel) attached to character:
-  - Size scales with cycle_length (walk=big, sprint=small)
+  - Size scales with cycle_length (walk=2m smallest, run=3m medium, sprint=4m largest)
   - Rotates in direction of movement
   - Rotation position shows phase (0° = phase 0, 180° = phase 0.5, 360° = phase 1.0)
 - Grid floor for distance reference
@@ -305,7 +307,7 @@ game_world::update()
 2. Does state change with speed? (accelerate/decelerate and watch color)
 3. Does phase wrap 0→1? (watch numeric display)
 4. Does wheel rotate smoothly? (visual feedback matches motion)
-5. Does wheel size change with state? (walk=big, sprint=small)
+5. Does wheel size change with state? (walk=smallest, run=medium, sprint=largest)
 <!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
 
 ---
