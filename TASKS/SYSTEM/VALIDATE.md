@@ -51,6 +51,8 @@ In current iteration doc (`PLANS/<name>_ITERATION_<N>.md`) — add:
 
 **Independent principle evaluation.**
 
+**Note:** This may take 30-60 seconds. Sit back and chill - thorough review takes time.
+
 ```bash
 echo "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/foundation/<relevant>.cpp [your validation question]" | codex e 2>/dev/null
 ```
