@@ -7,6 +7,30 @@
 
 namespace {
 
+// Compute AABB face normal from closest point on box surface
+// Used as fallback when sphere center is inside/on box (degenerate distance vector)
+// Returns the normal of the face that closest_point lies on
+glm::vec3 compute_face_normal(const glm::vec3& closest_point, const aabb& box) {
+    // Find which face the closest_point is on by checking which component
+    // is at the box extent (within epsilon for numerical stability)
+    constexpr float epsilon = 0.0001f;
+
+    glm::vec3 box_min = box.center - box.half_extents;
+    glm::vec3 box_max = box.center + box.half_extents;
+
+    // Check each face (prioritize Y for floor/ceiling, then X, then Z)
+    if (std::abs(closest_point.y - box_max.y) < epsilon) return glm::vec3(0, 1, 0);  // Top
+    if (std::abs(closest_point.y - box_min.y) < epsilon) return glm::vec3(0, -1, 0); // Bottom
+    if (std::abs(closest_point.x - box_max.x) < epsilon) return glm::vec3(1, 0, 0);  // Right
+    if (std::abs(closest_point.x - box_min.x) < epsilon) return glm::vec3(-1, 0, 0); // Left
+    if (std::abs(closest_point.z - box_max.z) < epsilon) return glm::vec3(0, 0, 1);  // Front
+    if (std::abs(closest_point.z - box_min.z) < epsilon) return glm::vec3(0, 0, -1); // Back
+
+    // Fallback: should not reach here if closest_point is truly on box surface
+    // If we do, use UP as last resort (same as old behavior)
+    return math::UP;
+}
+
 // Surface classification: Determine if collision normal represents a wall
 // A wall is defined as a surface that is more vertical than the threshold angle
 // Returns true if surface is a wall (not floor or ceiling)
@@ -78,9 +102,12 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
         result.hit = true;
         float distance_magnitude = std::sqrt(distance_squared);
 
-        // Safe normalize: prevents division by zero when sphere center inside/on AABB
-        // Fallback to UP pushes sphere upward when distance is degenerate
-        result.normal = math::safe_normalize(distance, math::UP);
+        // Compute collision normal
+        // Normal case: normalize the distance vector (points from surface to sphere center)
+        // Degenerate case: sphere center on/inside box → use face normal from closest_point
+        // This prevents misclassifying deep wall penetrations as floors (no UP fallback)
+        glm::vec3 face_normal = compute_face_normal(closest_point, box);
+        result.normal = math::safe_normalize(distance, face_normal);
         result.penetration = s.radius - distance_magnitude;
         result.contact_box = &box;
 
