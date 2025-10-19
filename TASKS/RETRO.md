@@ -28,10 +28,12 @@ Read "Reflection" and "Learning" sections from each completed plan. Count occurr
 - Same confusion
 
 **Also audit document quality** - measure each plan file:
-- LOC changed in code vs. LOC in documentation
-- Plans >500 lines for <50 LOC changes = bloat
-- Repetitive sections (saying same thing multiple ways)
-- Redundancy across metrics/reflection/summary
+- Repetition within document (same info stated multiple times)
+- Redundancy across sections (metrics/reflection/summary duplicate each other)
+- Verbosity (can sections be said in half the words?)
+- Trivial changes with excessive process documentation (2-line fixes with 200-line plans)
+
+**Note:** Multi-file refactors and architectural changes naturally require more documentation than their net LOC suggests. Judge by repetition and redundancy, not by ratio alone.
 
 **≥3 occurrences = pattern. <3 = noise (defer).**
 
@@ -221,8 +223,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Philosophy
 
-**≥3 occurrences = pattern. <3 = noise, defer.**
-
 Repetition reveals truth. Individual events teach nothing.
 
 **Workflow success (5/5 plans completing smoothly) is not a pattern to fix.**
@@ -240,19 +240,6 @@ Delete workflow steps. Simplify templates. Remove friction.
 **Defer freely.**
 
 No changes needed is valid. It means the process works.
-
----
-
-## Document Quality
-
-**Check each plan:**
-- LOC ratio: 800 lines documenting 4 LOC = bloat
-- Redundancy: Same metrics repeated 3+ times = delete
-- Verbosity: Can you say it in half the words?
-
-**Fix:** Delete sections. Merge duplicates. State facts once.
-
-**Radical Simplicity applies to documentation.**
 
 ---
 

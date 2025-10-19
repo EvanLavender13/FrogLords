@@ -34,7 +34,7 @@ Layer 1: CORE            [96%] ← ✅ TARGET EXCEEDED
 | System | Certainty | Status | Location |
 |--------|-----------|--------|----------|
 | Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
-| Controller | 96% | ✅ Refined | `character/controller.{h,cpp}` |
+| Controller | 96.5% | ✅ Refined | `character/controller.{h,cpp}` |
 | Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
 | Camera | 95% | ✅ Working | `rendering/camera.{h,cpp}` |
 

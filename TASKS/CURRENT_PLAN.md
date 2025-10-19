@@ -1,7 +1,7 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-18 - Controller Input Coupling
+**Last Completed:** 2025-10-18 - Coyote Time Rationale
 
 ---
 
@@ -19,16 +19,16 @@
 **Target:** 95% (Layer 3)
 
 **Layer Status:**
-- Layer 1 (Core): 96% ✅ - Target exceeded
+- Layer 1 (Core): 96.5% ✅ - Target exceeded
 - Layer 2 (Primitives): 100% ✅ - Complete
 - Layer 3 (Systems): 97%+ ✅ - Target exceeded
 - Layer 4 (Variation): <50% ✅ - Ready to build
 
-**Remaining:** 0 high-priority, 4 medium, 3 low
+**Remaining:** 0 high-priority, 3 medium, 3 low
 
 ---
 
 **See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 0 high, 4 medium, 3 low)
+- `BACKLOG_REFINEMENTS.md` - Current violations (0 critical, 0 high, 3 medium, 3 low)
 - `BACKLOG_SYSTEMS.md` - Systems to build (Layer 4 ready)
 - `DEPENDENCY_STACK.md` - Foundation status and build rules

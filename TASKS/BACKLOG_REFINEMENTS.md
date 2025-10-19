@@ -44,15 +44,6 @@ None - all high-priority violations resolved ✅
 - **Impact:** Code clarity, debug visualization consistency
 - **Audit Source:** Gemini + Codex convergence
 
-**#8: Coyote Time / Jump Buffering Lacks Rationale**
-- **Location:** `src/character/controller.cpp:apply_input, update`
-- **Principles:** Consistency, Principled Development
-- **Severity:** Medium
-- **Type:** Undocumented principle violation
-- **Description:** Special-case mechanics create intentional inconsistency - "jumping only when grounded" rule has exceptions for game feel. Implementation exists but lacks explicit comment explaining *why* this trade-off was made (Prime Directive > Consistency).
-- **Fix:** Document - Add comment: "Violates Consistency principle for game feel - forgives near-miss jumps per Prime Directive (Do No Harm to Gameplay)."
-- **Impact:** Future developer understanding, principle communication
-- **Audit Source:** Gemini + Codex convergence
 
 ### Low Priority
 
@@ -139,7 +130,7 @@ None - all high-priority violations resolved ✅
 
 ## Priority Order
 
-**Foundation at 97%+ ✅ - 7 violations found (0 CRITICAL, 0 high, 4 medium, 3 low)**
+**Foundation at 97%+ ✅ - 6 violations found (0 CRITICAL, 0 high, 3 medium, 3 low)**
 
 **Audit Result:**
 - **Convergence**: Excellent - Gemini (broad systematic) + Codex (deep mathematical)
@@ -147,7 +138,7 @@ None - all high-priority violations resolved ✅
 - **Pattern**: All high-priority violations resolved - foundation solid
 
 **Path to maintain 97%+ Layer 3:**
-1. Continue medium-priority refinements (#5-#8)
+1. Continue medium-priority refinements (#5-#7)
 2. OR **Build Layer 4 systems** - Foundation stable at 97%+
 3. Address low-priority violations opportunistically (#9-#12)
 
@@ -161,12 +152,12 @@ None - all high-priority violations resolved ✅
 
 ## Recent Activity
 
-**Controller Input Coupling Fixed (2025-10-18)**
-- Decoupled controller from global input state
-- Controller: Composable Functions 6→9 (+3), pure function restored
-- Layer 1: 95.5% → 96% (+0.5%)
+**Coyote Time Rationale Documented (2025-10-18)**
+- Documented principle trade-off: Prime Directive > Consistency
+- Controller: Principled Development 8→9 (+1)
+- Layer 1: 96% → 96.5% (+0.5%)
 - Foundation: 97%+ maintained
-- 7 violations remaining (0 critical, 0 high, 4 medium, 3 low)
+- 6 violations remaining (0 critical, 0 high, 3 medium, 3 low)
 
 ---
 

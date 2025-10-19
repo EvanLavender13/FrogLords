@@ -46,7 +46,8 @@ controller::controller()
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params,
                              float dt) {
-    // Execute buffered jump on next grounded frame
+    // Execute buffered jump on next grounded frame (jump buffer forgiveness)
+    // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full rationale
     if (is_grounded && jump_buffer_timer > 0.0f) {
         velocity.y = jump_velocity;
         coyote_timer = coyote_window; // Exhaust coyote window
@@ -63,7 +64,27 @@ void controller::apply_input(const controller_input_params& input_params,
     float accel_magnitude = is_grounded ? ground_accel : air_accel;
     acceleration = input_direction * accel_magnitude;
 
-    // Jump input (with coyote time and jump buffer)
+    // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
+    //
+    // These mechanics intentionally violate the Consistency principle (jumping only when grounded)
+    // in service of the Prime Directive (Do No Harm to Gameplay - preserve player intent).
+    //
+    // Coyote time: Allows jumping for brief period after leaving ground edge.
+    //   - Forgives near-miss timing when player presses jump just after walking off ledge
+    //   - Player intent: "I wanted to jump at the edge" > strict physics: "must be grounded"
+    //
+    // Jump buffering: Remembers jump input pressed shortly before landing.
+    //   - Forgives near-miss timing when player presses jump just before hitting ground
+    //   - Executes jump on next grounded frame instead of discarding input
+    //
+    // Principle hierarchy: Prime Directive (player control) > Consistency (behavioral rules).
+    // These forgiveness mechanics preserve player intent, which is the higher truth.
+    //
+    // Design reference: Super Mario Bros (1985) - "press jump button a few frames early
+    // and Mario will automatically jump the moment he touches down" (NOTES/DesigningGames/DG_Interface.md)
+    //
+    // See PRINCIPLES.md - Prime Directive: "Do No Harm to Gameplay"
+    //
     bool jump_input = input_params.jump_pressed;
     bool can_jump = is_grounded || (coyote_timer < coyote_window);
 
