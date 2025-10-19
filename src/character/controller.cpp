@@ -103,6 +103,9 @@ void controller::apply_input(const controller_input_params& input_params,
 }
 
 void controller::update(const collision_world* world, float dt) {
+    FL_PRECONDITION(dt > 0.0f, "dt must be positive for frame-rate independence");
+    FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
+
     // Physics integration using semi-implicit Euler method (Symplectic Euler):
     //
     // Integration order:
@@ -185,6 +188,8 @@ void controller::update(const collision_world* world, float dt) {
     // Update locomotion state (speed classification + phase calculation)
     // Phase is an OUTPUT computed from movement, never drives physics
     float speed = glm::length(math::project_to_horizontal(velocity));
+    FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
+    FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
 
     // Classify speed into discrete locomotion states
     if (speed < walk_threshold) {
@@ -202,6 +207,8 @@ void controller::update(const collision_world* world, float dt) {
     float cycle_length = get_cycle_length(locomotion.state);
     FL_PRECONDITION(cycle_length > 0.0f, "cycle_length must be positive");
     locomotion.phase = std::fmod(locomotion.distance_traveled, cycle_length) / cycle_length;
+    FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
+                     "phase must be in [0, 1) range");
 
     // Save acceleration for animation system (before reset)
     last_acceleration = acceleration;

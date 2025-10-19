@@ -392,3 +392,9 @@ Review the implementation plan for principle adherence (physics drives animation
 - [x] Can query locomotion state from external systems
 - [ ] Principle scores ≥7.0 average (deferred to ITERATE)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+## Iterations
+
+- [walk_run_speed_states_ITERATION_1.md](walk_run_speed_states_ITERATION_1.md) - In Progress
