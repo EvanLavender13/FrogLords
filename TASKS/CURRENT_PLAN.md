@@ -1,15 +1,24 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-19 - Walk/Run Speed States
+**Status:** 🔧 Refinement - Camera Panel Command Pattern
+**Started:** 2025-10-19
+**Branch:** refine/camera_panel_command_pattern
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
+**Refinement:** Camera panel GUI direct state modification
+**Location:** @TASKS/PLANS/REFINE_camera_panel_command_pattern.md
+**Principle:** Fundamental Composable Functions, Consistency
+**Approach:** Simplify (align with character_panel command pattern)
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 3: 98%+ → 99%+ (+1, architectural consistency)
+- Overall: 98%+ → 99%+ (+1, eliminates high-priority violation)
 
 ---
 
