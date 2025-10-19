@@ -113,12 +113,11 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         // Phase (0-1)
         gui::widget::text("Phase: %.3f", character.locomotion.phase);
 
-        // Cycle length (computed via pure function)
-        float cycle_length = character.get_cycle_length(character.locomotion.state);
-        gui::widget::text("Cycle Length: %.2f m", cycle_length);
+        // Cycle length (from locomotion_state output)
+        gui::widget::text("Cycle Length: %.2f m", character.locomotion.cycle_length);
 
-        // Distance traveled
-        gui::widget::text("Distance Traveled: %.2f m", character.locomotion.distance_traveled);
+        // Distance traveled (internal state on controller)
+        gui::widget::text("Distance Traveled: %.2f m", character.distance_traveled);
     }
 
     return commands;

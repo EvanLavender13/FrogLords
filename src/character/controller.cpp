@@ -39,7 +39,11 @@ controller::controller()
     , velocity(0.0f)
     , acceleration(0.0f)
     , ground_normal(math::UP)
-    , locomotion{locomotion_speed_state::walk, 0.0f, 0.0f} {
+    , locomotion{locomotion_speed_state::walk, 0.0f, walk_cycle_length} {
+    // Validate threshold ordering (prevents state collapse)
+    FL_PRECONDITION(walk_threshold < run_threshold,
+                    "walk_threshold must be less than run_threshold to define distinct states");
+
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
@@ -201,14 +205,19 @@ void controller::update(const collision_world* world, float dt) {
     }
 
     // Accumulate distance traveled (frame-rate independent)
-    locomotion.distance_traveled += speed * dt;
-    FL_POSTCONDITION(std::isfinite(locomotion.distance_traveled),
+    // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
+    distance_traveled += speed * dt;
+    FL_POSTCONDITION(std::isfinite(distance_traveled),
                      "distance_traveled must remain finite");
 
     // Calculate phase (0-1 normalized position within cycle)
-    float cycle_length = get_cycle_length(locomotion.state);
-    FL_PRECONDITION(cycle_length > 0.0f, "cycle_length must be positive");
-    locomotion.phase = std::fmod(locomotion.distance_traveled, cycle_length) / cycle_length;
+    // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
+    // When state changes → cycle_length changes → phase recalculates from same distance
+    // This causes phase value to jump, but preserves physical correctness
+    // (the surveyor wheel re-scales, distance/rotation is preserved)
+    locomotion.cycle_length = get_cycle_length(locomotion.state);
+    FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
+    locomotion.phase = std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
     FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
                      "phase must be in [0, 1) range");
 
@@ -228,5 +237,7 @@ float controller::get_cycle_length(locomotion_speed_state state) const {
     case locomotion_speed_state::sprint:
         return sprint_cycle_length;
     }
-    return walk_cycle_length; // Default fallback
+    // Should never reach here - all enum values handled
+    FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
+    return walk_cycle_length; // Unreachable, but satisfies compiler
 }

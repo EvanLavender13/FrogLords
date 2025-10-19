@@ -127,11 +127,14 @@ struct controller {
 
     struct locomotion_state {
         locomotion_speed_state state;
-        float phase;             // 0-1 normalized position within cycle
-        float distance_traveled; // Accumulated horizontal distance (meters)
+        float phase;        // 0-1 normalized position within cycle
+        float cycle_length; // Current cycle length for this state (meters)
     };
 
     locomotion_state locomotion;
+
+    // Internal state (not exposed in locomotion_state output)
+    float distance_traveled = 0.0f; // Accumulated horizontal distance (meters)
 
     // Speed thresholds for state classification (m/s)
     float walk_threshold = 3.0f; // walk < 3 m/s
