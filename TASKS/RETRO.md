@@ -12,7 +12,7 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 
 ## Prerequisites
 
-- ≥5 completed plans in `TASKS/PLANS/`
+- ≥5 completed plans in `TASKS/PLANS/` (refinements or systems)
 - No active work in progress
 
 ---
@@ -21,7 +21,15 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 
 ### 1. Scan Plans - Extract Patterns
 
-Read "Reflection" and "Learning" sections from each completed plan. Count occurrences of:
+**For refinement plans (`REFINE_*.md`):**
+- Read "Reflection" and "Learning" sections
+
+**For system plans (`<name>_ITERATION_*.md`):**
+- Read "VALIDATE/EMERGENCE" sections (learning, surprising behaviors)
+- Read "VALIDATE/SCORES" sections (principle violations, low scores)
+- Read "ITERATE/PLAYTEST_*" sections (violations found during playtests)
+
+**Count occurrences across all plans:**
 - Same principle violated
 - Same mistake repeated
 - Same workflow friction
@@ -39,11 +47,18 @@ Read "Reflection" and "Learning" sections from each completed plan. Count occurr
 
 ### 2. Extract Important Ideas
 
-**Look for new ideas/suggestions in Learning sections:**
+**For refinement plans:**
+- Look in "Learning" sections
+
+**For system plans:**
+- Look in "VALIDATE/EMERGENCE" sections (what was learned, what emerged)
+- Look in final iteration's "Learned" subsection
+
+**Extract:**
 - Patterns discovered that generalize
 - Validation/testing approaches proposed
 - Infrastructure decisions deferred
-- Future work identified
+- Future work identified (what the system enables)
 - System audits suggested
 
 **These become backlog items** - refinements, systems, or infrastructure tasks.
@@ -172,9 +187,8 @@ Read "Reflection" and "Learning" sections from each completed plan. Count occurr
 # Create retro archive directory
 mkdir -p TASKS/RETROS/RETRO_$(date +%Y-%m-%d)
 
-# Move completed plans to archive
-mv TASKS/PLANS/REFINE_*.md TASKS/RETROS/RETRO_$(date +%Y-%m-%d)/
-mv TASKS/PLANS/*_SYSTEM.md TASKS/RETROS/RETRO_$(date +%Y-%m-%d)/ 2>/dev/null || true
+# Move all plans (refinements, systems, iterations, and retro doc itself)
+mv TASKS/PLANS/*.md TASKS/RETROS/RETRO_$(date +%Y-%m-%d)/
 ```
 
 **Clear retrospective notification from CURRENT_PLAN.md:**
@@ -193,7 +207,7 @@ Remove the "Recommended Next Action" section if present:
 
 **Commit:**
 ```bash
-git add TASKS/PLANS/RETRO_<date>.md TASKS/RETROS/ TASKS/CURRENT_PLAN.md
+git add TASKS/RETROS/ TASKS/CURRENT_PLAN.md
 git commit -m "retro: <brief summary of patterns found>
 
 <N> plans analyzed, <X> patterns extracted
