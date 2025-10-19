@@ -40,9 +40,12 @@
   - Validated: Stateless threshold checks, no smoothing (controller.cpp:195-200)
 
 **Consistency:**
-- [ ] Same input → same output (deterministic state classification)
-- [ ] Frame-rate independent (verified through variable dt testing)
-- [ ] No special cases (all movement types use same phase calculation)
+- [x] Same input → same output (deterministic state classification)
+  - Validated: Pure functions, no randomness (see mathematical properties)
+- [x] Frame-rate independent (verified through variable dt testing)
+  - Validated: All calculations scale with dt (see mathematical properties)
+- [x] No special cases (all movement types use same phase calculation)
+  - Validated: Code review shows no conditional logic or special paths (controller.cpp:188-211)
 
 <!-- END: ITERATE/CONTRACT -->
 
