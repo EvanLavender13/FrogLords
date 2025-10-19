@@ -4,7 +4,7 @@
 **Started:** 2025-10-19
 **Branch:** refine/debug_draw_batching
 **Path:** B (Standard)
-**Phase:** SELECT → REFINE
+**Phase:** REFINE → MEASURE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/REFINE_debug_draw_batching.md
 **Principle:** Radical Simplicity
 **Approach:** Simplify
-**Next:** REFINE
+**Next:** MEASURE
 
 **Target Impact:**
 - Layer 3: 99%+ → 99%+ (maintain)
