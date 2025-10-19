@@ -4,7 +4,7 @@
 **Started:** 2025-10-19
 **Branch:** system/walk_run_speed_states
 **Complexity:** Medium (3-5 points)
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 

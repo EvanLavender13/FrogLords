@@ -23,7 +23,7 @@ Use Gemini and Codex to examine the codebase against the six principles. Synthes
 
 ## Process
 
-### 1. Launch Parallel Audits
+### 1. Launch Sequential Audits
 
 Use both tools with principles and conventions as context. Craft your audit prompt based on:
 - Current foundation status
@@ -33,13 +33,16 @@ Use both tools with principles and conventions as context. Craft your audit prom
 
 **Gemini (massive context):**
 ```bash
-gemini -p "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" > audit_gemini.txt
+gemini -p "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
 ```
 
 **Codex (independent opinion):**
 ```bash
-echo "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" | codex e 2>/dev/null > audit_codex.txt
+echo "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" | codex e 2>/dev/null
 ```
+
+**Waiting for completion:**
+Both tools can take time to analyze, especially Codex. If needed, check status every 20 seconds until output completes. Codex in particular may think for extended periods.
 
 **Note**: Codex can resume with `codex e resume --last 2>/dev/null` for follow-up questions.
 
@@ -53,9 +56,9 @@ echo "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]" | codex e 2>/dev
 
 ### 2. Synthesize Findings
 
-**Read both outputs:**
-- `audit_gemini.txt` - Gemini's comprehensive view
-- `audit_codex.txt` - Codex's independent analysis
+**Analyze both outputs:**
+- Gemini's comprehensive view (from terminal output)
+- Codex's independent analysis (from terminal output)
 
 **Identify:**
 - Convergence (both found it = high confidence)
@@ -115,10 +118,7 @@ Look across violations for patterns:
 - Same system causing multiple violations
 - Same root cause in different places
 
-Use tools for pattern analysis if helpful:
-```bash
-gemini -p "@audit_gemini.txt @audit_codex.txt What patterns emerge?"
-```
+Review the terminal output from both audits to identify recurring themes.
 
 Document patterns:
 ```markdown

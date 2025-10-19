@@ -122,9 +122,33 @@ struct controller {
     // Used in: apply_input (lines 40, 77) for buffered jump handling
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
+    // Locomotion state (speed tiers + phase for cyclic motion)
+    enum class locomotion_speed_state { walk, run, sprint };
+
+    struct locomotion_state {
+        locomotion_speed_state state;
+        float phase;             // 0-1 normalized position within cycle
+        float distance_traveled; // Accumulated horizontal distance (meters)
+    };
+
+    locomotion_state locomotion;
+
+    // Speed thresholds for state classification (m/s)
+    float walk_threshold = 3.0f; // walk < 3 m/s
+    float run_threshold = 6.0f;  // run: 3-6 m/s, sprint ≥ 6 m/s
+
+    // Cycle lengths per state (meters)
+    // Faster gaits = longer strides
+    float walk_cycle_length = 2.0f;   // walk: 2m per cycle (two steps)
+    float run_cycle_length = 3.0f;    // run: 3m per cycle
+    float sprint_cycle_length = 4.0f; // sprint: 4m per cycle
+
     controller();
 
     void apply_input(const controller_input_params& input_params,
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
+
+    // Pure function: map state → cycle length
+    float get_cycle_length(locomotion_speed_state state) const;
 };
