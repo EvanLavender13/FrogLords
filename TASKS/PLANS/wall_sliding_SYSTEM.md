@@ -152,7 +152,7 @@ Run:   ✅ Program started successfully
 ## Iterations
 
 - [wall_sliding_ITERATION_1.md](wall_sliding_ITERATION_1.md) - REVISE
-- [wall_sliding_ITERATION_2.md](wall_sliding_ITERATION_2.md) - Ready for VALIDATE
+- [wall_sliding_ITERATION_2.md](wall_sliding_ITERATION_2.md) - APPROVED
 
 ---
 
