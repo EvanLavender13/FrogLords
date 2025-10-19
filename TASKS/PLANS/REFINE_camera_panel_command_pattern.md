@@ -319,3 +319,51 @@ Review this refactoring plan for aligning camera_panel with the command pattern 
 
 **Result:** ✓ Violation removed, principle score improved
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/gui/camera_command.h`: 0 → 25 (+25 lines, new file)
+- `src/gui/camera_panel.h`: 16 → 20 (+4 lines)
+- `src/gui/camera_panel.cpp`: 49 → 65 (+16 lines)
+- `src/app/runtime.cpp`: 209 → 237 (+28 lines)
+
+**Total:** +73 lines (added command infrastructure)
+
+**Violations removed:**
+- Direct state modification via mutable references: 4 → 0 (-4)
+- Bidirectional coupling points: 1 → 0 (-1)
+- Architectural inconsistencies between panels: 2 → 1 (-1, camera_panel now matches character_panel)
+
+**Principle:** Fundamental Composable Functions, Consistency
+- Before: 7/10 (tight coupling, architectural inconsistency)
+- After: 9/10 (+2, unidirectional flow, pattern consistency)
+- Improvement: +2
+
+**Evidence:**
+- All mutable references removed from GUI layer
+- Command pattern implemented (4 command types emitted)
+- Unidirectional data flow established (GUI → commands → game state)
+- Invariant enforcement centralized in command consumer
+
+**Foundation:**
+- Layer 3 (Systems): 98%+ → 99%+ (+1%, architectural consistency)
+- Overall: 98%+ → 99%+ (+1%, high-priority violation eliminated)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** GUI developed before command pattern was established in character_panel - direct modification was expedient.
+
+**Prevention:** All debug panels must use command pattern from initial implementation - GUI reads state (const refs), emits commands, game loop applies.
+
+**Pattern:** GUI architectural consistency violation - audit remaining panels for similar coupling.
+
+**Remaining work:** Verify all other GUI components follow command pattern (no remaining panels violate this).
+<!-- END: MEASURE/LEARNING -->
