@@ -313,17 +313,69 @@ Does this refinement plan properly maintain separation between mathematical prim
 
 ---
 
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Date:** 2025-10-19
+
+### Changes Made
+
+**Step 1:** Added collision_surface_type enum and collision_box struct
+- enum class collision_surface_type (NONE, FLOOR, WALL, PLATFORM, DYNAMIC)
+- struct collision_box composes aabb + type
+- aabb remains pure mathematical primitive
+- collision_world now uses collision_box
+
+**Step 2:** Updated collision resolution to use collision_box
+- resolve_collisions accesses box.bounds for geometry
+
+**Step 3:** Skipped (contact_box change not needed)
+
+**Step 4:** Tagged test arena boxes with semantic types
+- ground_plane → FLOOR
+- platforms (5x) → FLOOR
+- walls (5x) → WALL
+- steps (4x) → FLOOR
+
+**Step 5:** Updated debug visualization to use semantic types
+- FLOOR → Green (unchanged from before)
+- WALL → Magenta (now distinct)
+- PLATFORM → Yellow
+- GENERIC → Gray
+- Deleted dimension-based heuristic comment
+
+### Tests
+✓ Build passes
+✓ Visual verification confirmed (floors green, walls magenta)
+✓ No behavioral regressions
+✓ Gameplay identical to before
+
+### Result
+✓ Violation removed
+✓ Mathematical primitives remain pure (aabb unchanged)
+✓ Semantic types properly composed in collision_box
+✓ Debug visualization now uses explicit types, not dimension inference
+✓ Foundation for future wall-run, ledge-grab, platform systems
+
+**Principle improvements:**
+- Radical Simplicity: Removed dimension inference heuristics
+- Composable Functions: collision_box properly composes geometry + semantics
+- Consistency: Intent now explicit, no ambiguity
+<!-- END: REFINE/COMPLETED -->
+
+---
+
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] `collision_surface_type` enum added to `collision_primitives.h`
-- [ ] `collision_box` struct created (composes aabb + type)
-- [ ] `aabb` remains pure mathematical primitive (unchanged)
-- [ ] `collision_world` uses `collision_box` instead of raw `aabb`
-- [ ] Test arena boxes tagged with semantic types
-- [ ] Debug visualization uses types directly (no dimension inference)
-- [ ] All collision tests passing
-- [ ] No behavioral regressions
+- [x] `collision_surface_type` enum added to `collision_primitives.h`
+- [x] `collision_box` struct created (composes aabb + type)
+- [x] `aabb` remains pure mathematical primitive (unchanged)
+- [x] `collision_world` uses `collision_box` instead of raw `aabb`
+- [x] Test arena boxes tagged with semantic types
+- [x] Debug visualization uses types directly (no dimension inference)
+- [x] All collision tests passing
+- [x] No behavioral regressions
 
 **Metrics:**
 - Before: LOC ~400, Principle 7.5/10, Complexity 6 (inference heuristics)
