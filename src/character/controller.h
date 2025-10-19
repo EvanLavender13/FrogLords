@@ -94,10 +94,12 @@ struct controller {
     // Used in: velocity integration (line 83), friction calculation (line 92), jump calculations
     float gravity = -9.8f; // m/s²
 
-    // TUNED: Maximum walkable slope angle threshold
+    // TUNED: Maximum walkable slope angle threshold (SINGLE SOURCE OF TRUTH)
     // Surfaces steeper than this are walls, not ground
     // Industry standard: 30-50° (Quake/Half-Life: ~45°)
-    // Used in: resolve_box_collisions via cos(radians(max_slope_angle)) for normal check
+    // Used in: controller::move - derived as wall_threshold = cos(radians(max_slope_angle))
+    //          Passed to collision system for surface classification (is_wall)
+    // Note: This is the authoritative value - collision system derives threshold from this
     float max_slope_angle = 45.0f; // degrees
 
     // CALCULATED: Vertical velocity required to reach target jump height

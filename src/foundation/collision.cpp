@@ -7,21 +7,19 @@
 
 namespace {
 
-// TUNED: Wall classification threshold (angle from vertical)
-// Surfaces with normal.y above this are floors, below this are walls/ceilings
-// Threshold = cos(45°) ≈ 0.707 (45° slope)
-// Used in: is_wall() to classify collision surfaces
-constexpr float WALL_THRESHOLD = 0.707f; // dimensionless (cos of angle)
-
 // Surface classification: Determine if collision normal represents a wall
 // A wall is defined as a surface that is more vertical than the threshold angle
 // Returns true if surface is a wall (not floor or ceiling)
-bool is_wall(const glm::vec3& normal) {
+//
+// wall_threshold: cos of the maximum walkable slope angle (from controller)
+//   Example: 45° slope → threshold = cos(45°) ≈ 0.707
+//   Single source of truth: derived from controller.max_slope_angle
+bool is_wall(const glm::vec3& normal, float wall_threshold) {
     // Compare absolute value to handle both upward (floor) and downward (ceiling) normals
     // abs(dot(normal, UP)) gives how "vertical" the surface is:
     //   1.0 = horizontal surface (floor/ceiling)
     //   0.0 = vertical surface (wall)
-    return std::abs(normal.y) < WALL_THRESHOLD;
+    return std::abs(normal.y) < wall_threshold;
 }
 
 // Project velocity along wall surface (remove component into wall normal)
@@ -95,7 +93,8 @@ sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box) {
 }
 
 sphere_collision resolve_box_collisions(sphere& collision_sphere, const collision_world& world,
-                                        glm::vec3& position, glm::vec3& velocity) {
+                                        glm::vec3& position, glm::vec3& velocity,
+                                        float wall_threshold) {
     sphere_collision final_contact; // Default: hit=false, contact_box=nullptr
 
     // TUNED: Multi-pass collision resolution iteration limit
@@ -118,7 +117,7 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
                 glm::vec3 velocity_before = velocity;
 
                 // Wall sliding: Classify surface and apply appropriate velocity response
-                bool is_wall_contact = is_wall(col.normal);
+                bool is_wall_contact = is_wall(col.normal, wall_threshold);
                 if (is_wall_contact) {
                     // Wall collision: Project velocity along wall surface
                     // This preserves player intent to move parallel to the wall
@@ -165,10 +164,11 @@ sphere_collision resolve_box_collisions(sphere& collision_sphere, const collisio
 }
 
 sphere_collision resolve_collisions(sphere& collision_sphere, const collision_world& world,
-                                    glm::vec3& position, glm::vec3& velocity) {
+                                    glm::vec3& position, glm::vec3& velocity,
+                                    float wall_threshold) {
     // Update collision sphere position to match integrated position
     collision_sphere.center = position;
 
     // Box collision resolution (unified collision system)
-    return resolve_box_collisions(collision_sphere, world, position, velocity);
+    return resolve_box_collisions(collision_sphere, world, position, velocity, wall_threshold);
 }

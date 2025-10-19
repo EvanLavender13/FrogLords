@@ -21,6 +21,7 @@ struct sphere_collision {
     glm::vec3 velocity_after{0.0f};
 };
 
-sphere_collision resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&);
+sphere_collision resolve_collisions(sphere&, const collision_world&, glm::vec3&, glm::vec3&,
+                                    float wall_threshold);
 
 sphere_collision resolve_sphere_aabb(const sphere& s, const aabb& box);
