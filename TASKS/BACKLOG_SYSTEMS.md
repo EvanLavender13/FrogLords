@@ -27,6 +27,14 @@ None - All movement mechanics blocked by friction refactor (#17)
 - Blends stride lengths for walk/run transitions
 - Complements: Walk/run speed states (complete)
 
+**Drift Movement Mechanics**
+- Low acceleration creates racing-game drift (velocity lags orientation)
+- Environmental modifiers (ice, mud, oil slicks)
+- Character abilities or movement modes (drift boost, slide)
+- Emerges naturally from physics/animation independence
+- Discovery: REFINE_FRICTION testing revealed drift at ~2s time-to-max-speed
+- Source: Retrospective pattern analysis (RETRO_2025-10-20)
+
 ---
 
 ## Camera

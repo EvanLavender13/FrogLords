@@ -171,7 +171,8 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 - Important Ideas: <count>
 - Actions: <count> context files, <count> workflow updates, <count> backlog
 - Execute: Context files first, then workflow updates
-- Is workflow working? <brief reflection>
+- Work status: <X completed, Y deferred/rejected> - Distinguish completion from process success
+- Workflow status: <brief reflection on whether process caught issues appropriately>
 
 ---
 ```
