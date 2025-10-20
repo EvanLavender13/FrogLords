@@ -83,4 +83,12 @@ on_scroll(event):
 **Metrics:**
 - Before: LOC 1, Principle 7/10, Complexity 1
 - After: LOC 1 (±0), Principle 9/10 (+2), Complexity 1 (±0)
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Changed assignment to accumulation in `src/input/input.cpp:75`
+**Tests:** Build passing, manual verification successful
+**Result:** ✓ Violation removed - all scroll events now accumulate
+<!-- END: REFINE/COMPLETED -->
 <!-- END: SELECT/SUCCESS -->
