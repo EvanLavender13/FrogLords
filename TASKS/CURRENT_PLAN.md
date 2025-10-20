@@ -1,26 +1,35 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Friction Frame Independence
-**Started:** 2025-10-19
-**Branch:** refine/friction-frame-independence
-**Path:** B (Standard)
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-19 - Friction Frame Independence
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Frame-rate independent friction/acceleration update
-**Location:** @TASKS/PLANS/REFINE_FRICTION_FRAME_INDEPENDENCE.md
-**Principle:** Solid Mathematical Foundations, Time-Independence
-**Approach:** Simplify - Derive analytical solution replacing sequential updates
-**Next:** REFINE
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
-**Blocks:**
-- Dash mechanic (GRAYBOX complete, awaiting foundation fix)
-- All Layer 4 movement variations requiring overspeed
+---
 
-**Target Impact:**
-- Layer 1 (Controller): 97% → 100% (+3%)
-- Overall: 99%+ → 99%+ (foundation stability)
-- Unblocks: Dash system, future movement mechanics
+## Quick Reference
+
+**Foundation:** 99%+
+**Target:** 95% (Layer 3)
+
+**Layer Status:**
+- Layer 1 (Core): 100% ✅ - Complete
+- Layer 2 (Primitives): 100% ✅ - Complete
+- Layer 3 (Systems): 99%+ ✅ - Target exceeded
+- Layer 4 (Variation): 74% - Building (2 systems complete)
+
+**Next Priority:** #12 Collision Face Normal Fallback (Critical)
+**Estimated Path:** 3 critical violations remaining to 100%
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Foundation status

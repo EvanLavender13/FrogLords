@@ -12,17 +12,6 @@
 
 ### Critical Priority
 
-**#17: Friction/Acceleration Sequential Update Frame-Rate Dependent**
-- **Location:** `src/character/controller.cpp:68,151`
-- **Principles:** Solid Mathematical Foundations, Consistency, Time-Independence
-- **Severity:** Critical
-- **Type:** Mathematical foundation error
-- **Description:** Sequential update (add acceleration, then subtract friction) produces frame-rate dependent terminal velocity. Equilibrium occurs at `max_speed - ground_accel * dt`, not `max_speed`. At 60fps: ~7.67 m/s, at 30fps: ~7.33 m/s. Unaccounted `drag * ground_accel * dt²` error term. Violates Time-Independence pattern. Blocks dash mechanic and any movement requiring temporary overspeed.
-- **Fix:** Derive combined friction/acceleration update with analytically proven frame-rate independent equilibrium exactly at max_speed. Add automated cross-FPS verification tests (30/60/120fps).
-- **Impact:** Foundation stability - blocks Layer 4 movement mechanics requiring overspeed
-- **Audit Source:** **Codex** (via dash system VALIDATE rejection)
-- **Blocks:** Dash mechanic, any burst movement system
-
 **#12: Collision Face Normal Fallback Enables Wall Climbing**
 - **Location:** `src/foundation/collision.cpp:35-37`
 - **Principles:** Mathematical Foundations, Emergent Behavior
