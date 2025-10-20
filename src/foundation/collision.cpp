@@ -32,9 +32,47 @@ glm::vec3 compute_face_normal(const glm::vec3& closest_point, const aabb& box) {
     if (std::abs(closest_point.z - box_min.z) < epsilon)
         return glm::vec3(0, 0, -1); // Back
 
-    // Fallback: should not reach here if closest_point is truly on box surface
-    // If we do, use UP as last resort (same as old behavior)
-    return math::UP;
+    // Fallback: closest_point is inside box (deep penetration case)
+    // Compute distance to each face, return normal of nearest face
+    // This handles low frame rate, teleport, or deep penetration scenarios
+    // without introducing arbitrary UP bias that converts walls to floors
+    float dist_to_top = std::abs(closest_point.y - box_max.y);
+    float dist_to_bottom = std::abs(closest_point.y - box_min.y);
+    float dist_to_right = std::abs(closest_point.x - box_max.x);
+    float dist_to_left = std::abs(closest_point.x - box_min.x);
+    float dist_to_front = std::abs(closest_point.z - box_max.z);
+    float dist_to_back = std::abs(closest_point.z - box_min.z);
+
+    // Find minimum distance (tie-breaking: Y > X > Z, matches priority above)
+    float min_dist = dist_to_top;
+    glm::vec3 normal = glm::vec3(0, 1, 0); // Top
+
+    if (dist_to_bottom < min_dist) {
+        min_dist = dist_to_bottom;
+        normal = glm::vec3(0, -1, 0); // Bottom
+    }
+    if (dist_to_right < min_dist) {
+        min_dist = dist_to_right;
+        normal = glm::vec3(1, 0, 0); // Right
+    }
+    if (dist_to_left < min_dist) {
+        min_dist = dist_to_left;
+        normal = glm::vec3(-1, 0, 0); // Left
+    }
+    if (dist_to_front < min_dist) {
+        min_dist = dist_to_front;
+        normal = glm::vec3(0, 0, 1); // Front
+    }
+    if (dist_to_back < min_dist) {
+        normal = glm::vec3(0, 0, -1); // Back
+    }
+
+    // Postconditions: returned normal must be valid
+    FL_POSTCONDITION(glm::length(normal) > 0.0f, "normal must be non-zero");
+    FL_ASSERT_NORMALIZED(normal, "computed face normal");
+    FL_ASSERT_FINITE(normal, "computed face normal");
+
+    return normal;
 }
 
 // Surface classification: Determine if collision normal represents a wall
