@@ -325,3 +325,9 @@ This allows dash to temporarily exceed max_speed while friction naturally brings
 - Defer if friction refactor too complex
 <!-- END: GRAYBOX/RESULTS -->
 
+---
+
+## Iterations
+
+- [DASH_ITERATION_1.md](DASH_ITERATION_1.md) - In Progress
+

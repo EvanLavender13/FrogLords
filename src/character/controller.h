@@ -66,6 +66,10 @@ struct controller {
 
     // Dash state
     float dash_timer = 0.0f; // Time remaining until next dash available (cooldown)
+    float dash_active_timer = 0.0f; // Time remaining in committed dash state
+
+    // Jump state (to preserve momentum when jumping)
+    bool skip_friction_this_frame = false; // True when jump triggered, prevents friction from eating momentum
 
     // Tunable parameters
     // CALCULATED: Ground acceleration (derived from tuning.h defaults)
@@ -131,6 +135,7 @@ struct controller {
     // Higher values = stronger burst, longer time to decelerate
     // Used in: apply_input for dash mechanic
     float dash_impulse = 6.0f; // m/s (velocity boost)
+    float dash_active_duration = 0.3f; // seconds (committed dash state duration)
 
     // TUNED: Dash cooldown - time between dash uses
     // Prevents spam while allowing fluid movement
@@ -168,8 +173,9 @@ struct controller {
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
 
-    // Query helper for dash availability (used by debug viz)
-    bool can_dash() const { return is_grounded && dash_timer <= 0.0f; }
+    // Query helpers (used by debug viz)
+    bool can_dash() const { return is_grounded && dash_timer <= 0.0f && dash_active_timer <= 0.0f; }
+    bool is_dashing() const { return dash_active_timer > 0.0f; }
 
   private:
     // Pure function: map state → cycle length (INTERNAL USE ONLY)
