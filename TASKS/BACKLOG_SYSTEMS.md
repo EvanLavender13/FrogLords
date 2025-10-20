@@ -1,8 +1,7 @@
 # Systems Backlog
 
-**Systems to build. Foundation: 100% (Layer 3 complete, Layer 4 building).**
+**Systems to build.**
 
-**Foundation:** 100%
 **Last Updated:** 2025-10-20
 
 ---
@@ -156,7 +155,7 @@
 
 ## Future (Keep Liquid)
 
-**Layer 5 - Defer until Layer 4 ≥95%:**
+**Layer 5 - Polish:**
 - Visual hierarchy system (UI/HUD polish)
 - Input assistance framework (feel refinement)
 - Audio system
@@ -172,9 +171,8 @@
 ## Selection Criteria
 
 **Before building:**
-1. Foundation must support it (Layer 3 at 95%+) ✅
-2. Dependencies must be complete
-3. Problem must be understood (not guessed)
-4. Create `/SYSTEM/SELECT` plan before starting
+1. Dependencies must exist (check DEPENDENCY_STACK.md)
+2. Problem must be understood (not guessed)
+3. Create `/SYSTEM/SELECT` plan before starting
 
 **Don't build from uncertainty. Build from clarity.**
