@@ -5,13 +5,10 @@
 namespace character {
 
 void tuning_params::apply_to(controller& c) const {
-    // Copy high-level parameters (source of truth)
+    // Copy parameters directly (no derivation)
     c.max_speed = max_speed;
     c.gravity = gravity;
-
-    // Copy acceleration directly (no derivation)
-    c.ground_accel = accel;
-    c.air_accel = accel; // Will be removed in Step 7
+    c.accel = accel;
 
     // Calculate jump velocity
     float gravity_mag = std::abs(gravity);

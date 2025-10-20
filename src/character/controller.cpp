@@ -68,9 +68,8 @@ void controller::apply_input(const controller_input_params& input_params,
     input_direction =
         forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
-    // Direct acceleration (instant response)
-    float accel_magnitude = is_grounded ? ground_accel : air_accel;
-    acceleration = input_direction * accel_magnitude;
+    // Direct acceleration (instant response, no ground/air distinction)
+    acceleration = input_direction * accel;
 
     // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
     //
@@ -118,7 +117,7 @@ void controller::update(const collision_world* world, float dt) {
     //   Solution: v(t+dt) = v(t)*exp(-k*dt) + (a/k)*(1 - exp(-k*dt))
     //
     //   Guarantees:
-    //   - Equilibrium at max_speed when a = ground_accel (full input)
+    //   - Equilibrium at max_speed when a = accel (full input)
     //   - Frame-rate independent: identical behavior at any dt
     //   - Allows overspeed: dash mechanics can exceed max_speed, decay back naturally
     //   - Exponential convergence: smooth approach to equilibrium
@@ -134,9 +133,9 @@ void controller::update(const collision_world* world, float dt) {
     // Calculate drag coefficient from equilibrium constraint
     // Derivation: At equilibrium dv/dt = 0, so a - k*v_eq = 0
     //             Therefore: v_eq = a/k
-    //             Want: v_eq = max_speed when a = ground_accel
-    //             Therefore: k = ground_accel / max_speed
-    float k = ground_accel / max_speed;
+    //             Want: v_eq = max_speed when a = accel (full input)
+    //             Therefore: k = accel / max_speed
+    float k = accel / max_speed;
 
     FL_POSTCONDITION(k > 0.0f && std::isfinite(k),
                      "drag coefficient must be positive and finite");
