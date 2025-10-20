@@ -138,3 +138,42 @@ get_right():
 **Tests:** All passing - debug assertions validate outputs every frame
 **Result:** ✓ Violation removed - NaN propagation blocked, mathematical correctness guaranteed
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/camera/camera.cpp`: 27 → 51 (+24 lines)
+
+**Total:** +24 lines (guards and fallbacks)
+
+**Violations removed:**
+- Unguarded `glm::normalize()`: 3 → 0 (-3)
+- Replaced with `math::safe_normalize()`: 0 → 3 (+3)
+- Zero-length guards added: 3 locations
+
+**Principle:** Mathematical Foundations, Consistency
+- Before: Critical (NaN propagation risk)
+- After: 10/10
+- Improvement: Critical → Complete
+
+**Evidence:** All normalization operations now protected with zero-length checks and fallback values. NaN propagation eliminated.
+
+**Foundation:**
+- Layer 3: 99% → 100% (+1%)
+- Overall: 99% → 100% (+1%)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Normalization assumed non-zero vectors; edge cases (eye == center, forward parallel to UP) created zero-length inputs.
+
+**Prevention:** Always guard normalization with zero-length checks. Use `math::safe_normalize()` pattern that returns validated fallback.
+
+**Pattern:** This is part of epsilon validation for mathematical operations (see ACCUMULATED_STATE.md: validate before division/normalization/inversion).
+<!-- END: MEASURE/LEARNING -->
