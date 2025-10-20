@@ -5,6 +5,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
+#include <cmath>
 
 namespace {
 // Single-sphere collision configuration (experiment branch)
@@ -110,43 +111,54 @@ void controller::update(const collision_world* world, float dt) {
     FL_PRECONDITION(dt > 0.0f, "dt must be positive for frame-rate independence");
     FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
 
-    // Physics integration using semi-implicit Euler method (Symplectic Euler):
+    // Frame-rate independent physics integration
     //
-    // Integration order:
-    //   1. v(t+dt) = v(t) + a(t)·dt     (velocity first, using current acceleration)
-    //   2. x(t+dt) = x(t) + v(t+dt)·dt  (position second, using NEW velocity)
+    // Horizontal velocity: Exponential drag model (exact solution)
+    //   Solves: dv/dt = a - k*v  where k = accel/max_speed
+    //   Solution: v(t+dt) = v(t)*exp(-k*dt) + (a/k)*(1 - exp(-k*dt))
     //
-    // Properties:
-    //   - Stable for damped systems (friction, collision resolution)
-    //   - Better energy conservation than explicit Euler
-    //   - Sufficient accuracy for platformer physics (no rigid body dynamics)
-    //   - First-order accuracy: O(dt)
+    //   Guarantees:
+    //   - Equilibrium at max_speed when a = ground_accel (full input)
+    //   - Frame-rate independent: identical behavior at any dt
+    //   - Allows overspeed: dash mechanics can exceed max_speed, decay back naturally
+    //   - Exponential convergence: smooth approach to equilibrium
     //
-    // Alternatives considered:
-    //   - Verlet integration: Better energy conservation, but requires code refactor
-    //   - RK4 (Runge-Kutta): Overkill for platformer (4x computational cost)
+    // Vertical velocity: Standard Euler integration (gravity only)
+    //   No drag on vertical component - jump/fall physics unchanged
     //
-    // Trade-off accepted: Semi-implicit Euler is fast, stable, and sufficient.
-    // See PRINCIPLES.md for accumulated state exception (physics integration).
+    // See PRINCIPLES.md: Time-Independence, Solid Mathematical Foundations
 
-    // Apply gravity
+    // Apply gravity to vertical acceleration
     acceleration.y += gravity;
 
-    // Integrate velocity (accumulate - required for physics)
-    velocity += acceleration * dt;
+    // Calculate drag coefficient from equilibrium constraint
+    // Derivation: At equilibrium dv/dt = 0, so a - k*v_eq = 0
+    //             Therefore: v_eq = a/k
+    //             Want: v_eq = max_speed when a = ground_accel
+    //             Therefore: k = ground_accel / max_speed
+    float k = ground_accel / max_speed;
 
-    // Apply friction (if grounded)
-    if (is_grounded) {
-        float speed = glm::length(math::project_to_horizontal(velocity));
-        if (speed > 0.0f) {
-            float friction_decel = friction * std::abs(gravity) * dt;
-            float new_speed = std::max(0.0f, speed - friction_decel);
-            clamp_horizontal_speed(velocity, new_speed);
-        }
+    // Extract horizontal components
+    glm::vec3 horizontal_accel = math::project_to_horizontal(acceleration);
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+
+    // Apply frame-rate independent horizontal update
+    if (k < 1e-6f) {
+        // Fallback for degenerate case (near-zero accel or very large max_speed)
+        // Standard Euler integration when drag is negligible
+        horizontal_velocity += horizontal_accel * dt;
+    } else {
+        // Exact exponential solution
+        float decay = std::exp(-k * dt);
+        horizontal_velocity = horizontal_velocity * decay + (horizontal_accel / k) * (1.0f - decay);
     }
 
-    // Apply speed cap
-    clamp_horizontal_speed(velocity, max_speed);
+    // Integrate vertical velocity (standard Euler - no drag)
+    velocity.y += acceleration.y * dt;
+
+    // Reconstruct full velocity (horizontal + vertical)
+    velocity.x = horizontal_velocity.x;
+    velocity.z = horizontal_velocity.z;
 
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
