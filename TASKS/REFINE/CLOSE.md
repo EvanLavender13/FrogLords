@@ -202,11 +202,11 @@ head -10 TASKS/CURRENT_PLAN.md
 ### 7. Check Retrospective Threshold
 
 ```bash
-# List completed plans (count manually, check if at least 5)
-ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null
+# Count completed plans (REFINE_* and *_SYSTEM only - NOT *_ITERATION_*)
+ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null | wc -l
 ```
 
-**If count is at least 5**, add to `CURRENT_PLAN.md`:
+**If count is ≥5**, add to `CURRENT_PLAN.md`:
 
 ```markdown
 ## Recommended Next Action
