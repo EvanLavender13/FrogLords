@@ -1,18 +1,25 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-20 - Collision Face Normal Fallback
+**Status:** 🔧 Refinement - Camera Basis NaN Propagation
+**Started:** 2025-10-20
+**Branch:** refine/camera-basis-nan-propagation
+**Path:** A (trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Recommended Next Action
+## Current Work
 
-**📊 RETRO recommended** - 5 plans completed since start
-**Run:** Review TASKS/RETRO.md and extract patterns
+**Refinement:** Guard camera basis vectors against zero-length normalization
+**Location:** @TASKS/PLANS/REFINE_camera_basis_nan_propagation.md
+**Principle:** Mathematical Foundations, Consistency
+**Approach:** Simplify - Add zero-length guards, return valid fallbacks
+**Next:** REFINE
 
-**Or proceed with:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Target Impact:**
+- Layer 3: 99% → 100% (+1%)
+- Overall: 99% → 100% (+1%)
+- Removes critical NaN propagation risk
 
 ---
 
