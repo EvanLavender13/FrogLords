@@ -1,27 +1,19 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-20 - Mouse Scroll Accumulation
+**Last Completed:** 2025-10-20 - Input Scaling
 
 ---
 
-## Quick Reference
+## Ready for Next Task
 
-**Foundation:** 100% ✅ PERFECT
-**Target:** 95% (Layer 3) ✅ EXCEEDED
-
-**Layer Status:**
-- Layer 1 (Core): 100% ✅ - Complete
-- Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): 100% ✅ - Complete
-- Layer 4 (Variation): 74% - Building (2 systems complete)
-
-**Next Priority:** Build variation systems to strengthen Layer 4
-**Path:** 2-3 more systems to reach 95% Layer 4
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 
 **See:**
 - `BACKLOG_REFINEMENTS.md` - Current violations
 - `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Foundation status
+- `DEPENDENCY_STACK.md` - Current capabilities

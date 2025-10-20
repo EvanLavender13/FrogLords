@@ -76,6 +76,7 @@ High-level gameplay and interaction systems. Compose primitives into behavior.
 
 - **Camera Follow System** - Orbit/zoom constraints, computes eye/target from lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
   - Uses: Layer 2 math utilities, Layer 1 assertions
+  - Refinement: Moved input scaling from runtime layer into camera system as tunable sensitivity parameters
 - **Character Movement System** - Input→acceleration, drag, gravity, jump buffering, collision resolution, locomotion state (`src/character/controller.{h,cpp}`)
   - Uses: Layer 2 collision + math, Layer 1 assertions
 - **Character Reactive Visuals** - Orientation yaw spring + landing spring for render transform (`src/character/character_reactive_systems.{h,cpp}`)
