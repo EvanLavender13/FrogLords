@@ -114,12 +114,27 @@ get_right():
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved
-- [ ] Principle score improved
-- [ ] Tests passing (debug assertions)
-- [ ] No regressions
+- [x] Violation resolved
+- [x] Principle score improved
+- [x] Tests passing (debug assertions)
+- [x] No regressions
 
 **Metrics:**
 - Before: LOC ~20, Principle Critical (NaN propagation), Complexity Low
 - After: LOC ~30 (+10 guards), Principle 10/10 (+Critical fix), Complexity Low (guards are simple)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Added zero-length guards to `camera::get_forward_horizontal()` and `camera::get_right()`
+**Implementation:**
+- `camera.cpp:12-28` - Guard both normalization steps in get_forward_horizontal(), return -Z fallback
+- `camera.cpp:31-45` - Guard cross product normalization in get_right(), return X axis fallback
+- Added postconditions: verify finite and normalized outputs
+
+**Tests:** All passing - debug assertions validate outputs every frame
+**Result:** ✓ Violation removed - NaN propagation blocked, mathematical correctness guaranteed
+<!-- END: REFINE/COMPLETED -->
