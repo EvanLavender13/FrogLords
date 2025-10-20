@@ -1,4 +1,4 @@
-# VALIDATE - Principle Scoring
+# VALIDATE - Principle Evaluation
 
 **Principles judge all work equally. No exceptions.**
 
@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Score system against principles. External validation. Approve, revise, or reject.
+Evaluate system against principles. External validation. Approve, revise, or reject.
 
 ---
 
@@ -47,13 +47,13 @@ bash scripts/bash/codex.sh --resume "[follow-up question]"
 **Tool:** Codex | Gemini
 **Date:** YYYY-MM-DD
 
-**Scores:**
-[Codex/Gemini scores for each principle]
+**Principle Violations:**
+- [Principle]: [violation description with evidence]
 
-**Critical Violations Identified:**
-- [List of violations with evidence]
+**Strengths:**
+- [What aligns well with principles]
 
-**Final Average:** [score]/10
+**Assessment:** [Overall quality evaluation]
 <!-- END: VALIDATE/REVIEW -->
 ```
 
@@ -61,10 +61,10 @@ bash scripts/bash/codex.sh --resume "[follow-up question]"
 
 ### 2. Make Decision
 
-**Thresholds:**
-- Average ≥7.0 + all ≥6 = **APPROVED**
-- Average 5.0-6.9 or any <6 = **REVISE**
-- Average <5.0 = **REJECT**
+**Guidelines:**
+- **APPROVED** = Principles upheld, violations minor or non-existent
+- **REVISE** = Fixable violations exist, core is sound
+- **REJECT** = Fundamental principle violations, unfixable without restart
 
 **Update** iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
@@ -74,10 +74,10 @@ bash scripts/bash/codex.sh --resume "[follow-up question]"
 
 **Status:** APPROVED | REVISE | REJECT
 
-**Reasoning:** [why this decision]
+**Reasoning:** [why this decision based on principle alignment]
 
 **Required changes (if REVISE):**
-- [specific fixes needed]
+- [specific fixes to align with principles]
 
 **Learning (if REJECT):**
 - [what violated principles]
@@ -174,9 +174,7 @@ Commit:
 git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
 git commit -m "validate: <name> iteration <N> - <APPROVED|REVISE|REJECT>
 
-Average: <score>/10
-Scores: [1,2,3,4,5,6]
-Decision: <reasoning>
+<Brief reasoning for decision>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com)"
@@ -210,4 +208,4 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ---
 
-**Score honestly. Validate externally. Principles over shipping.**
+**Evaluate honestly. Validate externally. Principles over shipping.**

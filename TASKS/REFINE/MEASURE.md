@@ -101,39 +101,7 @@ grep -c "<duplicated_code>" <file>                     # After
 
 ---
 
-### 4. Principle Score
-
-**Re-score the violated principle (1-10)**
-
-Before refinement: ___/10
-After refinement: ___/10
-
-**Update plan** (add to MEASURE/METRICS section):
-```markdown
-**Principle:** <name>
-- Before: ___/10
-- After: ___/10
-- Improvement: +___
-
-**Evidence:** [What changed]
-```
-
-**Score must improve or refinement failed.**
-
----
-
-### 5. Foundation Impact
-
-**Update plan** (add to MEASURE/METRICS section):
-```markdown
-**Foundation:**
-- Layer X: ___% → ___% (+___%)
-- Overall: ___% → ___% (+___%)
-```
-
----
-
-### 6. Document Learning
+### 4. Document Learning
 
 **This is the critical output.**
 
@@ -162,8 +130,6 @@ After refinement: ___/10
 
 - [ ] Lines removed counted
 - [ ] Specific violation counted
-- [ ] Principle score improved
-- [ ] Foundation updated (if changed)
 - [ ] Learning documented
 - [ ] `TASKS/PLANS/REFINE_<name>.md` complete
 

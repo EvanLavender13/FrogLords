@@ -29,11 +29,10 @@ Update backlogs to current state. Archive detailed metrics in plan file. Prepare
 
 Update header:
 ```markdown
-**Foundation:** NEW_% → Target: 95%
 **Last Updated:** YYYY-MM-DD
 ```
 
-Remove or update fixed violation in "Active Violations"
+Remove fixed violation from "Active Violations"
 
 Add new pattern if discovered:
 ```markdown
@@ -49,12 +48,8 @@ Update priority order:
 ```markdown
 ## Priority Order
 
-**Path to 95% foundation:**
-
-1. **Next violation** (X pts) ← NEXT
-2. **Another violation** (Y pts)
-
-**Estimated:** ~X refinements remaining
+1. **Next violation** ← NEXT
+2. **Another violation**
 ```
 
 ---
@@ -63,35 +58,25 @@ Update priority order:
 
 **In `TASKS/DEPENDENCY_STACK.md`:**
 
-Update header, layer diagram, and cascade:
+Update header:
 ```markdown
-**Overall Foundation:** NEW_%
 **Last Updated:** YYYY-MM-DD
-
-Layer 3: SYSTEMS         [NEW_%]
-
-**Cascade:** 0.XX × 0.XX × 0.XX = **NEW_% survival**
 ```
 
-Update affected layer table and status:
+Update affected layer's "Provides" section:
 ```markdown
-| System | Certainty | Status | Location |
-|--------|-----------|--------|----------|
-| <System> | NEW_% | ✅ Refined | `path/to/file` |
+## Layer N: <LAYER>
+
+**Provides:**
+
+- <System> - <what it provides> (`path/to/file`)
+  - Refinement: <brief description of what was fixed>
 ```
 
-Update blocking issues and next actions:
+Note what this refinement now enables (if applicable):
 ```markdown
-**Blocking:**
-1. ~~Fixed issue~~ ✅ COMPLETE
-2. Remaining issue (priority)
-
-## Next Actions
-
-**To reach 95% Layer 3:**
-1. Next refinement (X points)
-
-**Estimated:** ~X refinements remaining
+**Dependencies to build something new here:**
+- <System> now supports <capability>
 ```
 
 ---
@@ -116,25 +101,10 @@ Update blocking issues and next actions:
 
 ---
 
-## Quick Reference
-
-**Foundation:** NEW_%
-**Target:** 95% (Layer 3)
-
-**Layer Status:**
-- Layer 1 (Core): __% - Status
-- Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): NEW_% - X refinements to target
-
-**Next Priority:** <Next violation>
-**Estimated Path:** ~X refinements to 95%
-
----
-
 **See:**
 - `BACKLOG_REFINEMENTS.md` - Current violations
 - `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Foundation status
+- `DEPENDENCY_STACK.md` - Current capabilities
 ```
 
 ---
@@ -146,10 +116,7 @@ git add TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md TASKS/CURRENT_PLA
 
 git commit -m "close: <name> refinement
 
-Foundation: OLD_% → NEW_% (+__%)
-Layer 3: OLD_% → NEW_% (+__%)
-
-Next: <Next refinement or milestone>
+<One-line description of what was fixed>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -166,8 +133,7 @@ git checkout main
 # Merge with no-fast-forward
 git merge --no-ff refine/<name> -m "Merge refine/<name>
 
-<Principle> +X.X points
-Foundation +__% (OLD% → NEW_%)
+<One-line description of what was fixed>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -187,8 +153,8 @@ git log --oneline -3
 # Verify main is clean
 git status
 
-# Verify foundation updated
-grep "Overall Foundation" TASKS/DEPENDENCY_STACK.md
+# Verify stack updated
+grep "Last Updated" TASKS/DEPENDENCY_STACK.md
 
 # Verify active violations updated
 grep -A10 "Active Violations" TASKS/BACKLOG_REFINEMENTS.md

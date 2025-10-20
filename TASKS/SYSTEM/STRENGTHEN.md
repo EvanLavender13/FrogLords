@@ -29,48 +29,23 @@ Update backlogs to current state. Archive detailed metrics in plan file. Merge t
 
 Update header:
 ```markdown
-**Overall Foundation:** NEW_%
 **Last Updated:** YYYY-MM-DD
 ```
 
-Update layer diagram and cascade:
-```markdown
-Layer [N]: [NAME]         [NEW_%]
-
-**Cascade:** 0.XX × 0.XX × 0.XX = **NEW_% survival**
-```
-
-Update affected layer table:
-```markdown
-| System | Certainty | Status | Location |
-|--------|-----------|--------|----------|
-| <name> | NEW_% | ✅ Complete | `src/path/to/system` |
-```
-
-**Calculation:**
+Add system to affected layer's "Provides" section:
 ```markdown
 ## Layer [N]: [NAME]
 
-**Certainty:** NEW_%
-**Last Updated:** YYYY-MM-DD
+**Provides:**
 
-**Systems at this layer:**
-- [existing system 1]
-- [existing system 2]
-- **<name>** (principle avg: X.X/10 = XX%)
-
-**Layer calculation:**
-Average all systems: ([sys1]% + [sys2]% + [new]%) / count = NEW_%
+- <name> - <what it provides> (`src/path/to/system`)
 ```
 
-Update next actions:
+Update what this system enables:
 ```markdown
-## Next Actions
-
-**To reach 95% Layer [N+1]:**
-1. [Next system needed] (dependency ready: yes/no)
-
-**Systems now buildable:** [list]
+**Dependencies to build something new here:**
+- <name> provides <capability>
+- Enables building: [list of now-buildable systems]
 ```
 
 ---
@@ -81,31 +56,18 @@ Update next actions:
 
 Update header:
 ```markdown
-**Foundation:** NEW_%
 **Last Updated:** YYYY-MM-DD
 ```
 
-Move completed system:
-```markdown
-## Recently Completed
+Remove completed system from backlog (history lives in git, not lists).
 
-- **<name>**: [description]
-  - Completed: YYYY-MM-DD
-  - Layer: [N]
-  - Score: X.X/10
-  - Enables: [systems now buildable]
-```
-
-Update "Buildable Now" sections:
-
-For each layer where foundation now ≥90%, move systems from "Waiting" to "Buildable Now":
+Update affected layer - note systems that are now buildable:
 ```markdown
 ## Layer [N]: [NAME]
 
-**Buildable Now:**
-- **[System]**: [description] ← NOW BUILDABLE (dependency <name> complete)
-  - Depends on: [list including <name>]
-  - Certainty needed: XX% (current: YY%)
+**[System]** ← NOW BUILDABLE (<name> dependency complete)
+- Description
+- Requires: [list including <name>]
 ```
 
 ---
@@ -130,25 +92,10 @@ For each layer where foundation now ≥90%, move systems from "Waiting" to "Buil
 
 ---
 
-## Quick Reference
-
-**Foundation:** NEW_%
-**Target:** 95% (Layer 3)
-
-**Layer Status:**
-- Layer 1 (Core): __% - Status
-- Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): NEW_% - [status]
-- Layer 4 (Variation): __% - [status]
-
-**Next Priority:** [Next system or refinement]
-
----
-
 **See:**
 - `BACKLOG_SYSTEMS.md` - Systems to build
 - `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Foundation status
+- `DEPENDENCY_STACK.md` - Current capabilities
 ```
 
 ---
@@ -160,9 +107,7 @@ git add TASKS/DEPENDENCY_STACK.md TASKS/BACKLOG_SYSTEMS.md TASKS/CURRENT_PLAN.md
 
 git commit -m "strengthen: complete <name> system
 
-Foundation: OLD_% → NEW_% (+X.X%)
-Layer [N]: OLD_% → NEW_% (+X.X%)
-Score: X.X/10
+<One-line description of what this provides>
 
 Enables: [systems now buildable]
 
@@ -181,8 +126,7 @@ git checkout main
 # Merge with no-fast-forward
 git merge --no-ff system/<name> -m "Merge system/<name>
 
-Score: X.X/10
-Foundation: OLD_% → NEW_% (+X.X%)
+<One-line description of what this provides>
 Enables: [systems]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -203,11 +147,11 @@ git log --oneline -3
 # Verify main is clean
 git status
 
-# Verify foundation updated
-grep "Overall Foundation" TASKS/DEPENDENCY_STACK.md
+# Verify stack updated
+grep "Last Updated" TASKS/DEPENDENCY_STACK.md
 
-# Verify system moved to completed
-grep -A5 "Recently Completed" TASKS/BACKLOG_SYSTEMS.md
+# Verify system removed from backlog
+grep -c "<name>" TASKS/BACKLOG_SYSTEMS.md  # Should be 0 or only in "enables" references
 
 # Verify current plan cleared
 head -10 TASKS/CURRENT_PLAN.md

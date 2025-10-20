@@ -1,175 +1,161 @@
 # Dependency Stack
 
-**Foundation certainty. Build order. What's possible now.**
+**What exists. What it provides. What can be built.**
 
-**Overall Foundation:** 100% ✅ PERFECT
-**Last Updated:** 2025-10-20
-
----
-
-## Current Stack
-
-```
-Layer 5: POLISH          [<50%] ← liquid backlog
-    ↓
-Layer 4: VARIATION       [74%] ← ✅ BUILDING (2 systems complete)
-    ↓
-Layer 3: SYSTEMS         [100%] ← ✅ COMPLETE
-    ↓
-Layer 2: PRIMITIVES      [100%] ← ✅ COMPLETE
-    ↓
-Layer 1: CORE            [100%] ← ✅ COMPLETE
-```
-
-**Cascade:** 1.00 × 1.00 × 1.00 × 0.74 = **74.0% survival**
-
-**Perfect foundation:** All critical layers at 100%
+**Last Updated:** 2025-10-20 (Populated from codebase audit)
 
 ---
 
-## Layer 1: CORE (100%)
+## Purpose
 
-**Status:** ✅ **COMPLETE** - Perfect foundation
+Inventory of capabilities organized by architectural layer.
 
-| System | Certainty | Status | Location |
-|--------|-----------|--------|----------|
-| Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
-| Camera | 100% | ✅ Refined (2025-10-20) | `camera/camera.{h,cpp}` + `camera/camera_follow.{h,cpp}` |
-| Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
-| Input | 98% | ✅ Refined (2025-10-20) | `app/input.{h,cpp}` |
+**Answers:**
+- What does each layer provide?
+- What can be built with what exists?
+- What dependencies does X require?
 
-**Blocking:** None - layer complete
+**Single Source of Truth:** The codebase. This is a derived view.
 
 ---
 
-## Layer 2: PRIMITIVES (100%)
+## Layer 1: CORE
 
-**Status:** ✅ **COMPLETE** - Fully validated foundation
+Software infrastructure required to run the application.
 
-| System | Certainty | Validation | Location |
-|--------|-----------|------------|----------|
-| Spring-Damper | 100% | ✅ Tested | `foundation/spring_damper.{h,cpp}` |
-| Collision | 100% | ✅ Refined (2025-10-20) | `foundation/collision.{h,cpp}`, `collision_primitives.h` |
-| Math Utils | 100% | ✅ Asserted | `foundation/math_utils.h` |
-| Easing | 100% | ✅ Standard | `foundation/easing.{h,cpp}` |
-| Debug Viz | 100% | ✅ Battle-tested | `rendering/debug_*` |
-| Procedural Mesh | 100% | ✅ Working | `foundation/procedural_mesh.{h,cpp}` |
-| Mesh Renderer | 100% | ✅ Refined | `rendering/renderer.{h,cpp}` |
+**Provides:**
 
-**Blocking:** None
+- **App Entry** - Sokol callback wiring (`src/main.cpp`, `src/sokol_impl.cpp`)
+- **Runtime Orchestrator** - Main loop, initialization, update/render (`src/app/runtime.{h,cpp}`)
+- **Input System** - Keyboard/mouse event handling and state queries (`src/input/input.{h,cpp}`, `src/input/keycodes.h`)
+- **GUI Framework** - ImGui wrapper with lifecycle and plotting (`src/gui/gui.{h,cpp}`)
+- **GUI Commands** - Unidirectional flow command types (`src/gui/parameter_command.h`, `src/gui/camera_command.h`)
+- **Character Panel** - Tuning sliders and state display (`src/gui/character_panel.{h,cpp}`)
+- **Camera Panel** - Follow camera controls (`src/gui/camera_panel.{h,cpp}`)
+- **Rendering Camera** - View/projection matrices from eye/target/FOV (`src/camera/camera.{h,cpp}`)
+- **Wireframe Renderer** - Sokol pipeline for line meshes (`src/rendering/renderer.{h,cpp}`)
+- **Scene Container** - Mesh list for world rendering (`src/rendering/scene.{h,cpp}`)
+- **Debug Primitives** - Sphere/line/box/arrow/text rendering (`src/rendering/debug_primitives.h`, `src/rendering/debug_draw.{h,cpp}`)
+- **Debug Viz Toggle** - Global debug visualization on/off (`src/rendering/debug_visualization.{h,cpp}`)
+- **Debug Validation** - Startup checks for math invariants (`src/rendering/debug_validation.{h,cpp}`)
+- **Debug Helpers** - Convenience functions for debug drawing (`src/rendering/debug_helpers.h`)
+- **Debug Generation** - Translates game state to debug visuals (`src/app/debug_generation.{h,cpp}`)
 
----
-
-## Layer 3: SYSTEMS (100%)
-
-**Status:** ✅ **COMPLETE** - Perfect foundation
-
-| System | Certainty | Status | Location |
-|--------|-----------|--------|----------|
-| Rendering | 100% | ✅ Solid | `rendering/scene.{h,cpp}` |
-| GUI | 100% | ✅ Refined | `gui/*` |
-| Game World | 98% | ✅ Refined | `app/game_world.{h,cpp}` |
-| Tuning | 97%+ | ✅ Physical | `character/tuning.{h,cpp}` |
-| Landing Anim | 96% | ✅ Exemplary | `character/animation.{h,cpp}` |
-| Orientation | 100% | ✅ Refined | `character/orientation.{h,cpp}` |
-| Reactive Systems | 100% | ✅ Clean | `character/character_reactive_systems.{h,cpp}` |
-| Debug Draw | 100% | ✅ Refined | `rendering/debug_draw.cpp` |
-
-**Blocking:** None - Layer 3 complete, foundation at 100%
+**Dependencies to build something new here:**
+- Sokol app/gfx initialized
+- Shader headers generated (`generated/wireframe_shader.h`)
+- GUI and input lifecycle wired via runtime
 
 ---
 
-## Layer 4: VARIATION (74%)
+## Layer 2: PRIMITIVES
 
-**Status:** ✅ **BUILDING** - 2 systems complete
+Mathematical building blocks. Pure functions with no side effects.
 
-**Certainty:** 74%
-**Last Updated:** 2025-10-19
+**Provides:**
 
-**Systems at this layer:**
-- **Wall Sliding** (principle avg: 9.3/10 = 93%)
-- **Walk/Run Speed States** (principle avg: 8.7/10 = 87%)
+- **Math Utilities** - World UP, horizontal projection, safe normalize, angle operations (`src/foundation/math_utils.h`)
+- **Spring-Damper** - 1D time-step integration with critical damping (`src/foundation/spring_damper.{h,cpp}`)
+- **Easing** - Cubic smoothstep, smooth mixes, cubic Hermite (`src/foundation/easing.{h,cpp}`)
+- **Procedural Mesh** - Generates sphere/box/grid/arrow/circle/spring wireframes (`src/foundation/procedural_mesh.{h,cpp}`)
+- **Collision Primitives** - Sphere/AABB types, collision world, surface types (`src/foundation/collision_primitives.h`)
+- **Collision Math** - Sphere-AABB tests, multi-pass resolution, wall-slide projection (`src/foundation/collision.{h,cpp}`)
 
-**Layer calculation:**
-(93% + 87%) / 2 systems = 90% actual
-Conservative estimate: 74% (accounting for breadth needed - 2-3 more systems to 95%)
-
-| System | Certainty | Status | Location |
-|--------|-----------|--------|----------|
-| Wall Sliding | 93% | ✅ Complete | `foundation/collision.{h,cpp}` |
-| Walk/Run Speed States | 87% | ✅ Complete | `character/controller.{h,cpp}` |
-
-**Ready to build:**
-- Skeletal Animation System (5-8 points)
-- Dash Mechanic (3-5 points)
-- IK Systems (8 points - requires skeletal animation)
-
-**Foundation:** Building on 100% Layer 3 = 100% survival (perfect foundation)
+**Dependencies to build something new here:**
+- GLM available
+- CORE assertions optional for validation
+- No runtime/GUI/renderer coupling required
 
 ---
 
-## Layer 5: POLISH (<50%)
+## Layer 3: SYSTEMS
 
-**Status:** 🚫 Liquid backlog only
+High-level gameplay and interaction systems. Compose primitives into behavior.
 
-Defer until Layer 4 solid:
-- Audio system
-- UI/HUD
-- Visual effects
-- Terrain
-- Combat
+**Provides:**
 
----
+- **Camera Follow System** - Orbit/zoom constraints, computes eye/target from lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
+  - Uses: Layer 2 math utilities, Layer 1 assertions
+- **Character Movement System** - Input→acceleration, drag, gravity, jump buffering, collision resolution, locomotion state (`src/character/controller.{h,cpp}`)
+  - Uses: Layer 2 collision + math, Layer 1 assertions
+- **Character Reactive Visuals** - Orientation yaw spring + landing spring for render transform (`src/character/character_reactive_systems.{h,cpp}`)
+  - Uses: Layer 2 springs + math
+- **Character Tuning** - Applies max speed/accel/gravity/jump parameters to controller (`src/character/tuning.{h,cpp}`)
+- **Game World** - Composes all systems, handles update loop, input polling, velocity trail (`src/app/game_world.{h,cpp}`)
+  - Uses: Layer 1 input/scene/debug, Layer 2 math + collision
 
-## Build Rules
-
-### ✅ Can Build
-- Layer 2 primitives (if needed)
-- Foundation ≥98% at Layer 2 ✓
-- **Current:** Layer 2 complete, can add new primitives
-
-### 🔧 Should Repair (Optional)
-- Foundation at 100% ✅ PERFECT
-- No known critical or high-priority violations
-- **Current:** Foundation perfect at 100%, ready for Layer 4
-
-### 🚫 Cannot Build
-- Layer 5 blocked (need Layer 4 ≥95%)
-- Polish deferred until variation solid
-- **Current:** Layer 4 unblocked, can build variations
+**Dependencies to build something new here:**
+- Layer 1: Runtime loop, input, rendering camera
+- Layer 2: Math, collision, springs
+- Prefer unidirectional flow (GUI emits commands, systems apply)
 
 ---
 
-## Certainty Scores
+## Layer 4: VARIATION
 
-**How scores are calculated:**
+Variations within systems. Different modes, states, or behaviors.
 
-Rate each system 1-10 on these criteria:
-1. Mathematical correctness proven
-2. Emergent behaviors documented
-3. Debug visualization functional
-4. No special cases
-5. Composable with siblings
-6. Player control preserved
-7. Consistent behavior
-8. Can't be simplified further
-9. Passed multiple playtests
-10. Survived integration
+**Provides:**
 
-**Score × 10% = certainty**
+- **Locomotion Tiers** - Walk/run/sprint speed classification with per-tier cycle lengths (`src/character/controller.h`)
+  - Extends: Character Movement System
+- **Wall Slide Behavior** - Projects velocity along wall surfaces on contact (`src/foundation/collision.cpp`)
+  - Extends: Character Movement System
+- **Follow Orbit Mode** - Maya-style orbit + zoom with clamped lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
+  - Extends: Camera Follow System
 
----
-
-## Next Actions
-
-**To reach 95% Layer 4:**
-1. Build 2-3 more variation systems (currently 2/4-5)
-2. Each system should score ≥8.5/10 average
-
-**Systems now buildable:**
-- Skeletal Animation System (5-8 points) - No new dependencies
-- Dash Mechanic (3-5 points) - No new dependencies
+**Dependencies to build something new here:**
+- Target parent system in Layer 3
+- Layer 2 primitives as needed
+- No direct renderer coupling
 
 ---
 
-**Build upward. Never skip layers. Strengthen continuously.**
+## Layer 5: POLISH
+
+Feel, aesthetics, and refinement.
+
+**Provides:**
+
+- **Landing Spring Crouch** - Vertical offset spring on landing scaled by impact velocity (`src/character/animation.{h,cpp}`)
+  - Uses: Layer 2 spring-damper
+- **Yaw Smoothing** - Critically damped yaw spring for stable facing while moving (`src/character/orientation.{h,cpp}`)
+  - Uses: Layer 2 spring-damper + math
+- **Velocity Trail Visual** - Time-sampled position trail for motion feedback (`src/rendering/velocity_trail.h`)
+  - Uses: Layer 1 debug viz
+- **Debug Visual Polish** - Speed gradient ring, tuned arrows, surveyor wheel, color-coded collision boxes (`src/app/debug_generation.cpp`)
+  - Uses: Layer 1 debug viz + Layer 2 procedural meshes
+
+**Dependencies to build something new here:**
+- Layer 3 systems producing motion/contacts
+- Layer 2 springs/easing
+- Layer 1 debug viz or renderer to display effects
+
+---
+
+## Build Guidelines
+
+### Bottom-Up Construction
+Build from Layer 1 → Layer 5. Never skip. Each layer depends on everything below.
+
+### Dependency Flow
+Truth flows upward. Layer N can only depend on Layers 1 through N-1.
+
+### When to Add vs Build Up
+- **Layer 1-2 incomplete?** → Add missing infrastructure/primitives
+- **Layer 3 thin?** → Build core systems
+- **Layer 3 solid?** → Explore variations (Layer 4)
+- **Layer 4 rich?** → Polish (Layer 5)
+
+### Recognition Test
+Not sure what layer something belongs in? Ask:
+
+- "Could the game run without this?" → No = Layer 1
+- "Is this pure math with no side effects?" → Yes = Layer 2
+- "Does this define a core gameplay system?" → Yes = Layer 3
+- "Is this one way to do something that already exists?" → Yes = Layer 4
+- "Does this make existing gameplay feel better?" → Yes = Layer 5
+
+---
+
+**Truth from codebase. Layers from concept. Build from certainty.**
