@@ -57,16 +57,6 @@ None - All high-priority violations resolved ✅
 - **Impact:** Input integrity, player responsiveness
 - **Source:** Retrospective pattern analysis (RETRO_2025-10-20)
 
-**Input Scaling Outside Camera System**
-- **Location:** `src/app/runtime.cpp:76-77,83`
-- **Principles:** Consistency, Composable Functions
-- **Severity:** Medium
-- **Type:** Lost responsiveness
-- **Description:** Mouse delta and scroll are scaled by magic `0.5f` before passing to camera system. This violates "Input is Intent" - input should be pure player intent, scaling should live in camera system as tunable parameters. Makes camera feel less responsive and harder to tune.
-- **Fix:** Delete - Remove scaling from input processing. Move sensitivity parameters into camera system.
-- **Impact:** Camera tuning difficulty, responsiveness perception
-- **Audit Source:** **Gemini**
-
 ### Low Priority
 
 **Function Complexity - app_runtime::frame**

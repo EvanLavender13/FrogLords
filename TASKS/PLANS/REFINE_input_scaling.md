@@ -98,19 +98,28 @@ world.apply_camera_zoom(-scroll_delta * 0.5f);
 
 ---
 
-<!-- BEGIN: REFINE/COMPLETED -->
-## Completed
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
 
-**Change:** Moved input scaling from runtime layer into camera system as tunable sensitivity parameters
+**Files:**
+- `src/app/runtime.cpp`: 80 → 80 (+0 lines, -3 violations)
+- `src/camera/camera_follow.h`: 26 → 30 (+4 lines)
+- `src/camera/camera_follow.cpp`: 54 → 54 (+0 lines)
 
-**Files Modified:**
-- `src/camera/camera_follow.h`: Added orbit_sensitivity and zoom_sensitivity fields
-- `src/camera/camera_follow.cpp`: Applied sensitivity scaling in orbit() and zoom() methods
-- `src/app/runtime.cpp`: Removed magic 0.5f scaling factors from input deltas
+**Total:** +4 lines (net addition of tunable parameters)
 
-**Tests:** All passing (debug assertions validate preconditions/postconditions)
+**Violations removed:**
+- Magic constants in input layer: 3 → 0 (-3)
+<!-- END: MEASURE/METRICS -->
 
-**Manual Verification:** Camera orbit and zoom behavior confirmed identical to before
+---
 
-**Result:** ✓ Violation removed - Input layer now passes pure intent, camera system owns all scaling
-<!-- END: REFINE/COMPLETED -->
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Input scaling applied at wrong layer - runtime owns intent, camera owns interpretation
+
+**Prevention:** Input functions should pass raw values; systems that consume input own their own scaling/sensitivity
+
+**Remaining work:** None - this was the only location where input layer modified intent before passing to systems
+<!-- END: MEASURE/LEARNING -->
