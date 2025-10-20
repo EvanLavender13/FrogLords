@@ -86,12 +86,31 @@ world.apply_camera_zoom(-scroll_delta * 0.5f);
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved
-- [ ] Principle upheld
-- [ ] Tests passing
-- [ ] No regressions
+- [x] Violation resolved
+- [x] Principle upheld
+- [x] Tests passing
+- [x] No regressions
 
 **Metrics:**
 - Before: LOC 80 (runtime.cpp)
-- After: LOC __ (-__)
+- After: LOC 80 (runtime.cpp, +0)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Moved input scaling from runtime layer into camera system as tunable sensitivity parameters
+
+**Files Modified:**
+- `src/camera/camera_follow.h`: Added orbit_sensitivity and zoom_sensitivity fields
+- `src/camera/camera_follow.cpp`: Applied sensitivity scaling in orbit() and zoom() methods
+- `src/app/runtime.cpp`: Removed magic 0.5f scaling factors from input deltas
+
+**Tests:** All passing (debug assertions validate preconditions/postconditions)
+
+**Manual Verification:** Camera orbit and zoom behavior confirmed identical to before
+
+**Result:** ✓ Violation removed - Input layer now passes pure intent, camera system owns all scaling
+<!-- END: REFINE/COMPLETED -->

@@ -28,8 +28,8 @@ void camera_follow::orbit(float delta_x, float delta_y) {
                     "orbit deltas must be finite");
     FL_PRECONDITION(min_latitude <= max_latitude, "min_latitude must be <= max_latitude");
 
-    longitude += delta_x;
-    latitude = std::clamp(latitude + delta_y, min_latitude, max_latitude);
+    longitude += delta_x * orbit_sensitivity;
+    latitude = std::clamp(latitude + delta_y * orbit_sensitivity, min_latitude, max_latitude);
 
     // Wrap longitude to [-180, 180]
     longitude = math::wrap_angle_degrees(longitude);
@@ -45,7 +45,7 @@ void camera_follow::zoom(float delta) {
     FL_PRECONDITION(min_distance <= max_distance, "min_distance must be <= max_distance");
     FL_PRECONDITION(min_distance > 0.0f, "min_distance must be positive");
 
-    distance = std::clamp(distance + delta, min_distance, max_distance);
+    distance = std::clamp(distance + delta * zoom_sensitivity, min_distance, max_distance);
 
     FL_POSTCONDITION(distance >= min_distance && distance <= max_distance,
                      "distance must be clamped to limits");

@@ -16,9 +16,13 @@ struct camera_follow {
     float min_latitude = -85.0f;
     float max_latitude = 85.0f;
 
+    // Sensitivity
+    float orbit_sensitivity = 0.5f; // degrees per pixel
+    float zoom_sensitivity = 0.5f;  // distance per scroll unit
+
     /// Update camera orientation (Maya-style orbit)
-    /// @param delta_x Horizontal rotation delta (degrees)
-    /// @param delta_y Vertical rotation delta (degrees)
+    /// @param delta_x Horizontal rotation delta (pixels)
+    /// @param delta_y Vertical rotation delta (pixels)
     void orbit(float delta_x, float delta_y);
 
     /// Update camera distance from target
