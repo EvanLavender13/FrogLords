@@ -36,7 +36,7 @@ Layer 1: CORE            [100%] ← ✅ COMPLETE
 | Runtime/Camera | 100% | ✅ Refined | `app/runtime.{h,cpp}` |
 | Camera | 100% | ✅ Refined (2025-10-20) | `camera/camera.{h,cpp}` + `camera/camera_follow.{h,cpp}` |
 | Controller | 100% | ✅ Refined | `character/controller.{h,cpp}` |
-| Input | 95% | ✅ Clean | `app/input.{h,cpp}` |
+| Input | 98% | ✅ Refined (2025-10-20) | `app/input.{h,cpp}` |
 
 **Blocking:** None - layer complete
 

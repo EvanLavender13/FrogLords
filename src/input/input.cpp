@@ -72,7 +72,7 @@ void process_event(const sapp_event* event) {
         break;
 
     case SAPP_EVENTTYPE_MOUSE_SCROLL:
-        mouse_scroll_delta_y = event->scroll_y;
+        mouse_scroll_delta_y += event->scroll_y;
         break;
 
     default:

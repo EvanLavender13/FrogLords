@@ -47,15 +47,6 @@ None - All high-priority violations resolved ✅
 - **Fix:** Initialize in constructor or document sokol lifecycle dependency
 - **Impact:** Potential undefined behavior if accessed before sokol initialization
 
-**#14: Mouse Scroll Events Overwrite Instead of Accumulate**
-- **Location:** `src/input/input.cpp:75`
-- **Principles:** Consistency
-- **Severity:** Medium
-- **Type:** Lost responsiveness
-- **Description:** Scroll events overwrite `mouse_scroll_delta_y` instead of accumulating. Multiple wheel ticks in a single frame reduce to only the last one. Players lose chunks of intended zoom input, undermining "same input → same outcome" contract.
-- **Fix:** Simplify - Accumulate scroll deltas or process events immediately.
-- **Impact:** Input loss, unpredictable camera zoom response
-- **Audit Source:** **Codex**
 
 **#15: Input Scaling Outside Camera System**
 - **Location:** `src/app/runtime.cpp:76-77,83`
