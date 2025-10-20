@@ -1,27 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-20 - Mouse Scroll Accumulation
+**Status:** 🔧 Refinement - Input Scaling
+**Started:** 2025-10-20
+**Branch:** refine/input_scaling
+**Path:** A
+**Phase:** SELECT → REFINE
 
 ---
 
-## Quick Reference
+## Current Work
 
-**Foundation:** 100% ✅ PERFECT
-**Target:** 95% (Layer 3) ✅ EXCEEDED
-
-**Layer Status:**
-- Layer 1 (Core): 100% ✅ - Complete
-- Layer 2 (Primitives): 100% ✅ - Complete
-- Layer 3 (Systems): 100% ✅ - Complete
-- Layer 4 (Variation): 74% - Building (2 systems complete)
-
-**Next Priority:** Build variation systems to strengthen Layer 4
-**Path:** 2-3 more systems to reach 95% Layer 4
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Foundation status
+**Refinement:** Move magic input scaling from runtime into camera system as tunable parameters
+**Location:** @TASKS/PLANS/REFINE_input_scaling.md
+**Principle:** Consistency (Input is Intent), Composable Functions
+**Approach:** Delete + Simplify
+**Next:** REFINE
