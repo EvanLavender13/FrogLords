@@ -158,7 +158,10 @@ In `TASKS/PLANS/REFINE_<name>.md`, add:
 A. Make change (one step only)
 B. Run tests
 C. Verify: passing, correct behavior, no regressions
-D. If changes affect runtime behavior: list what to verify, ask user to run app and verify, wait for confirmation
+D. **Manual verification** (if changes affect runtime behavior):
+   - List what user must verify
+   - Ask user to run app and verify
+   - Wait for confirmation
 E. Commit:
 
 ```bash

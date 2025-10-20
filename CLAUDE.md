@@ -31,6 +31,12 @@ The current refinement or system build in progress:
 
 @TASKS/CURRENT_PLAN.md
 
+## Task Context
+
+@TASKS/CONTEXT/INDEX.md
+
+Maps context cards to task types. Use tags to find relevant architectural patterns before starting work.
+
 ## Analysis and Validation
 
 Verification is cheap. Mistakes compound. Use these tools liberally.

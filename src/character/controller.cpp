@@ -137,8 +137,7 @@ void controller::update(const collision_world* world, float dt) {
     //             Therefore: k = accel / max_speed
     float k = accel / max_speed;
 
-    FL_POSTCONDITION(k > 0.0f && std::isfinite(k),
-                     "drag coefficient must be positive and finite");
+    FL_POSTCONDITION(k > 0.0f && std::isfinite(k), "drag coefficient must be positive and finite");
 
     // Extract horizontal components
     glm::vec3 horizontal_accel = math::project_to_horizontal(acceleration);
