@@ -386,5 +386,15 @@ During Step 1 testing, lowering acceleration (increasing time to max speed to ~2
 **Principle validated:** Emergent Behavior - "magic happens in the space between rules"
 
 **Future exploration:** Consider dedicated drift mechanics exploration after movement foundation complete.
+
+**Debug Visualization Issue Identified:**
+
+Debug trail effect uses position change to detect stopping, but smooth exponential decay causes slow approach to zero. Trail continues rendering during decay tail.
+
+**Fix needed:** Trail should check velocity threshold (e.g., < VELOCITY_EPSILON) instead of position delta.
+
+**Location:** Debug visualization system (unrelated to physics)
+
+**Priority:** Low - cosmetic debug visualization issue, does not affect gameplay
 <!-- END: REFINE/DISCOVERY -->
 <!-- END: REFINE/PLAN -->

@@ -160,6 +160,16 @@ void controller::update(const collision_world* world, float dt) {
     velocity.x = horizontal_velocity.x;
     velocity.z = horizontal_velocity.z;
 
+    // Zero-velocity tolerance: exponential decay never fully stops
+    // When horizontal speed drops below perceptible threshold, snap to zero
+    // Prevents residual drift from numerical precision limits
+    constexpr float VELOCITY_EPSILON = 0.01f; // m/s (imperceptible at 60fps)
+    float horizontal_speed = glm::length(horizontal_velocity);
+    if (horizontal_speed < VELOCITY_EPSILON) {
+        velocity.x = 0.0f;
+        velocity.z = 0.0f;
+    }
+
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
 
