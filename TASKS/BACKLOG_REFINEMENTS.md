@@ -3,7 +3,7 @@
 **Current violations. Priority order. Patterns to watch.**
 
 **Foundation:** 99%+ ✅ TARGET EXCEEDED
-**Last Updated:** 2025-10-19
+**Last Updated:** 2025-10-20
 **Last Scan:** 2025-10-19 (format, lint, analyze complete)
 
 ---
@@ -11,16 +11,6 @@
 ## Active Violations
 
 ### Critical Priority
-
-**#12: Collision Face Normal Fallback Enables Wall Climbing**
-- **Location:** `src/foundation/collision.cpp:35-37`
-- **Principles:** Mathematical Foundations, Emergent Behavior
-- **Severity:** Critical
-- **Type:** Special case
-- **Description:** When sphere is deeply penetrated into box (low frame rate, teleport), `compute_face_normal` cannot classify the contact and returns `math::UP` as fallback. This makes wall contacts degrade into floor normals, allowing player to stick to or climb walls instead of sliding off. Breaks physics truth layer and destabilizes emergent movement.
-- **Fix:** Delete - Compute real face normal from penetration geometry (largest axis, box bounds). Never return arbitrary UP.
-- **Impact:** Foundation stability - enables physics-breaking wall climbing exploit
-- **Audit Source:** **Codex** (High severity, elevated to Critical)
 
 **#13: Camera Basis NaN Propagation**
 - **Location:** `src/camera/camera.cpp:12,21`
