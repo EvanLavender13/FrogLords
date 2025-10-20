@@ -156,7 +156,6 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
     // Get character facing direction from orientation system
     float yaw = visuals.orientation.get_yaw();
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-    glm::vec3 right_dir = glm::normalize(glm::cross(math::UP, forward_dir));
 
     // Draw circle (vertical, in forward-up plane like a bicycle wheel)
     constexpr int circle_segments = 24;

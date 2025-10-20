@@ -92,7 +92,7 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
     // Locomotion State (speed tiers + phase for cyclic motion)
     if (ImGui::CollapsingHeader("Locomotion State")) {
         // State name
-        const char* state_name = "UNKNOWN";
+        const char* state_name;
         switch (character.locomotion.state) {
         case controller::locomotion_speed_state::walk:
             state_name = "WALK";
@@ -102,6 +102,9 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
             break;
         case controller::locomotion_speed_state::sprint:
             state_name = "SPRINT";
+            break;
+        default:
+            state_name = "UNKNOWN";
             break;
         }
         gui::widget::text("State: %s", state_name);
