@@ -20,7 +20,7 @@ None - All high-priority violations resolved ✅
 
 ### Medium Priority
 
-**#18: Enum Naming Convention Violations**
+**Enum Naming Convention Violations**
 - **Location:** Multiple files (22 instances)
   - `src/character/controller.h:126` - locomotion_speed_state: walk, run, sprint
   - `src/gui/parameter_command.h:20-28` - parameter_type: 9 constants
@@ -31,7 +31,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Mechanical rename of all enum constants to UPPER_CASE. Update all usage sites.
 - **Impact:** Code style consistency across codebase
 
-**#20: Const-Correctness for Local Arrays**
+**Const-Correctness for Local Arrays**
 - **Location:** `src/app/debug_generation.cpp:54,60,162`, `src/foundation/collision.cpp:16`
 - **Tool:** clang-tidy
 - **Severity:** Medium
@@ -39,7 +39,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Rename to UPPER_CASE: gradient→GRADIENT, num_stops→NUM_STOPS, circle_segments→CIRCLE_SEGMENTS, epsilon→EPSILON
 - **Impact:** Code style consistency
 
-**#21: Uninitialized Renderer Buffer Members**
+**Uninitialized Renderer Buffer Members**
 - **Location:** `src/rendering/renderer.cpp:6`
 - **Tool:** cppcheck (uninitMemberVar)
 - **Severity:** Medium
@@ -48,7 +48,7 @@ None - All high-priority violations resolved ✅
 - **Impact:** Potential undefined behavior if accessed before sokol initialization
 
 
-**#30: Input Event Accumulation Audit**
+**Input Event Accumulation Audit**
 - **Location:** `src/input/input.cpp` (keyboard, mouse buttons, touch handlers)
 - **Principles:** Consistency (Input is Intent)
 - **Severity:** Medium
@@ -58,7 +58,7 @@ None - All high-priority violations resolved ✅
 - **Impact:** Input integrity, player responsiveness
 - **Source:** Retrospective pattern analysis (RETRO_2025-10-20)
 
-**#15: Input Scaling Outside Camera System**
+**Input Scaling Outside Camera System**
 - **Location:** `src/app/runtime.cpp:76-77,83`
 - **Principles:** Consistency, Composable Functions
 - **Severity:** Medium
@@ -70,7 +70,7 @@ None - All high-priority violations resolved ✅
 
 ### Low Priority
 
-**#22: Function Complexity - app_runtime::frame**
+**Function Complexity - app_runtime::frame**
 - **Location:** `src/app/runtime.cpp:61`
 - **Tool:** lizard
 - **Severity:** Low
@@ -78,7 +78,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Extract subsystems: input handling, update phase, render phase
 - **Impact:** Maintainability, testability of game loop
 
-**#23: Function Complexity - gui::draw_character_panel**
+**Function Complexity - gui::draw_character_panel**
 - **Location:** `src/gui/character_panel.cpp:9`
 - **Tool:** lizard
 - **Severity:** Low
@@ -86,7 +86,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Extract parameter sections into helper functions
 - **Impact:** GUI code maintainability
 
-**#24: Function Length - controller::update**
+**Function Length - controller::update**
 - **Location:** `src/character/controller.cpp:109`
 - **Tool:** lizard
 - **Severity:** Low
@@ -94,7 +94,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Extract sub-phases: ground detection, movement, collision response
 - **Impact:** Controller maintainability
 
-**#25: Function Length - debug_viz::validation::run_startup_checks**
+**Function Length - debug_viz::validation::run_startup_checks**
 - **Location:** `src/rendering/debug_validation.cpp:9`
 - **Tool:** lizard
 - **Severity:** Low
@@ -102,7 +102,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Extract validation categories into separate functions or accept for debug code
 - **Impact:** Debug code maintainability
 
-**#26: Excessive Function Arguments**
+**Excessive Function Arguments**
 - **Location:** `src/gui/gui.cpp:126,157`
 - **Tool:** lizard
 - **Severity:** Low
@@ -110,7 +110,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Group parameters into config struct or accept for utility functions
 - **Impact:** API usability
 
-**#27: Variable Scope Reduction**
+**Variable Scope Reduction**
 - **Location:** `src/character/controller.cpp:157`
 - **Tool:** cppcheck (variableScope)
 - **Severity:** Low
@@ -118,7 +118,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Move declaration closer to usage
 - **Impact:** Code clarity
 
-**#28: Const Parameter References**
+**Const Parameter References**
 - **Location:** `src/gui/character_panel.cpp:9`, `src/gui/camera_panel.cpp:8`
 - **Tool:** cppcheck (constParameterReference)
 - **Severity:** Low
@@ -126,7 +126,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Add const to parameter declarations
 - **Impact:** API clarity, const-correctness
 
-**#29: Unused API Functions**
+**Unused API Functions**
 - **Location:** Multiple files (14 functions)
   - `src/gui/gui.cpp`: button, checkbox, color_edit, plot_value, plot_histogram, wants_keyboard
   - `src/input/input.cpp`: is_key_released, is_mouse_button_pressed/released, get_mouse_position variants
@@ -140,7 +140,7 @@ None - All high-priority violations resolved ✅
 - **Fix:** Accept - API functions reserved for future use, or remove if truly unnecessary
 - **Impact:** Code bloat
 
-**#16: Unused Controller State Fields**
+**Unused Controller State Fields**
 - **Location:** `src/character/controller.h:59-60`
 - **Principles:** Radical Simplicity
 - **Severity:** Low
@@ -150,7 +150,7 @@ None - All high-priority violations resolved ✅
 - **Impact:** Code clarity, state bloat
 - **Audit Source:** **Codex**
 
-**#9: Magic Number for Collision Passes**
+**Magic Number for Collision Passes**
 - **Location:** `src/foundation/collision.cpp:136`
 - **Principles:** Mathematical Foundations
 - **Severity:** Low
@@ -160,7 +160,7 @@ None - All high-priority violations resolved ✅
 - **Impact:** Code clarity
 - **Status:** Effectively resolved via documentation ✅
 
-**#11: Hardcoded Test Level Literals**
+**Hardcoded Test Level Literals**
 - **Location:** `src/app/game_world.cpp:62-111`
 - **Principles:** Radical Simplicity, Emergent Behavior
 - **Severity:** Low

@@ -1,9 +1,26 @@
 # Systems Backlog
 
-**Systems to build. Foundation: 98%+ (Layer 3 complete, Layer 4 building).**
+**Systems to build. Foundation: 100% (Layer 3 complete, Layer 4 building).**
 
-**Foundation:** 98%+
-**Last Updated:** 2025-10-19
+**Foundation:** 100%
+**Last Updated:** 2025-10-20
+
+---
+
+## Layer 2 - Primitives
+
+**Quaternion Swing-Twist Decomposition**
+- Decompose rotation into swing (directional pointing) + twist (axial roll)
+- Anatomical joint limits (swing cone + twist range)
+- Prevents "candy-wrapper" bone twisting effect
+- Drives twist helper bones for mesh deformation
+- Requires: None (pure mathematical primitive)
+
+**Quaternion Interpolation (Slerp)**
+- Spherical linear interpolation for smooth rotation between keyframes
+- Constant angular velocity interpolation
+- Shortest-path rotation handling
+- Requires: None (pure mathematical primitive)
 
 ---
 
@@ -11,7 +28,11 @@
 
 **Layer 4 - Buildable Now (No Dependencies):**
 
-None - All movement mechanics blocked by friction refactor (#17)
+**Acceleration Tilt**
+- Character model tilts in direction of acceleration
+- Visual feedback for movement dynamics
+- Procedural rotation applied to character mesh
+- Requires: None (works with current physics system)
 
 **Layer 4 - Blocked (Requires Friction Refactor #17):**
 
@@ -26,6 +47,7 @@ None - All movement mechanics blocked by friction refactor (#17)
 - Eliminates foot sliding at any speed
 - Blends stride lengths for walk/run transitions
 - Complements: Walk/run speed states (complete)
+- Requires: Skeletal animation system
 
 **Drift Movement Mechanics**
 - Low acceleration creates racing-game drift (velocity lags orientation)
@@ -57,6 +79,7 @@ None - All movement mechanics blocked by friction refactor (#17)
 - Procedural pose generation
 - Integration with physics-driven character
 - Debug visualization for skeleton
+- Requires: Quaternion swing-twist decomposition, quaternion interpolation
 
 **Layer 4 - Requires Skeletal Animation:**
 
@@ -65,7 +88,7 @@ None - All movement mechanics blocked by friction refactor (#17)
 - Swing cone + twist range per joint
 - Prevents unrealistic bone twisting ("candy-wrapper" effect)
 - Drives twist helper bones for mesh deformation
-- Requires: Skeletal animation system
+- Requires: Skeletal animation system, quaternion swing-twist decomposition
 
 **IK Systems**
 - Inverse kinematics solver (two-bone, simple trigonometry)
@@ -121,6 +144,13 @@ None - All movement mechanics blocked by friction refactor (#17)
 - Automated validation tests
 - World-scale reference measurements
 - Validates contract: Designer Intent → Math → Implementation → Measured Reality
+
+**Level Editor**
+- Replace hard-coded game world with editable environment
+- Simple text file format for level data
+- Save/load level state to/from disk
+- Object placement and world composition
+- Requires: Game world system (existing)
 
 ---
 

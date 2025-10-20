@@ -51,4 +51,13 @@ High-level systems validated through gameplay and observation.
 
 ---
 
+## Documentation Hygiene
+
+- Directness Over Demonstration (see `PRINCIPLES.md`): Do not include examples in principles or plans. Examples live in code and tests; include in responses only when explicitly requested.
+- Lists Are Intent, Not History (see `PRINCIPLES.md`): Backlogs list only what remains to be done now. Do not add “Recently Completed” or “Completed Items” sections; remove items when finished.
+
+These are enforced in reviews and may be checked by simple doc lints (flag phrases like “For example”, “Recently Completed”).
+
+---
+
 Principles override conventions.
