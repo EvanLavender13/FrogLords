@@ -45,11 +45,8 @@ struct controller {
     contact_debug_info collision_contact_debug;
 
     // Properties
-    // COEFFICIENT: Friction as multiple of gravity magnitude
-    // Deceleration when grounded: friction · |g| = 0.9 · 9.8 ≈ 8.82 m/s²
-    // Provides rapid stopping while maintaining control
-    // Used in: controller::update (line 92)
-    float friction = 0.9f; // dimensionless
+    // NOTE: Friction removed - drag now derived from accel/max_speed
+    // See controller::update for exponential drag model: k = ground_accel / max_speed
 
     // Ground state
     bool is_grounded = false;
@@ -89,7 +86,7 @@ struct controller {
     // PHYSICAL: Earth's gravitational acceleration at sea level
     // Standard value in game physics for familiar jump feel
     // Sign convention: Negative because Y-up coordinate system (gravity pulls down)
-    // Used in: velocity integration (line 83), friction calculation (line 92), jump calculations
+    // Used in: velocity integration, jump calculations
     float gravity = -9.8f; // m/s²
 
     // TUNED: Maximum walkable slope angle threshold (SINGLE SOURCE OF TRUTH)

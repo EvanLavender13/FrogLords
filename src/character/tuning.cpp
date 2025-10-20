@@ -9,9 +9,8 @@ void tuning_params::apply_to(controller& c) const {
     c.max_speed = max_speed;
     c.gravity = gravity;
 
-    // Clamp friction coefficient to physically valid range [0.0, 1.0]
-    // μ > 1.0 is non-physical for kinetic friction
-    c.friction = std::clamp(friction_coefficient, 0.0f, 1.0f);
+    // Friction removed - drag now derived from accel/max_speed (Step 4)
+    // Was: c.friction = std::clamp(friction_coefficient, 0.0f, 1.0f);
 
     // Calculate derived values
     if (time_to_max_speed <= 0.0f) {
