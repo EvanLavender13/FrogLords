@@ -138,9 +138,15 @@ void controller::update(const collision_world* world, float dt) {
     //             Therefore: k = ground_accel / max_speed
     float k = ground_accel / max_speed;
 
+    FL_POSTCONDITION(k > 0.0f && std::isfinite(k),
+                     "drag coefficient must be positive and finite");
+
     // Extract horizontal components
     glm::vec3 horizontal_accel = math::project_to_horizontal(acceleration);
     glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+
+    // Store pre-update horizontal speed for assertion
+    float speed_before = glm::length(horizontal_velocity);
 
     // Apply frame-rate independent horizontal update
     if (k < 1e-6f) {
@@ -168,6 +174,18 @@ void controller::update(const collision_world* world, float dt) {
     if (horizontal_speed < VELOCITY_EPSILON) {
         velocity.x = 0.0f;
         velocity.z = 0.0f;
+        horizontal_speed = 0.0f;
+    }
+
+    // Validate frame-rate independent drag behavior
+    // When no input applied, drag should decrease speed (or maintain zero)
+    float accel_magnitude = glm::length(horizontal_accel);
+    constexpr float ACCEL_EPSILON = 0.01f; // m/s² (negligible acceleration)
+    if (accel_magnitude < ACCEL_EPSILON) {
+        // No input: speed must decrease or stay at zero
+        // Allow small epsilon for numerical precision (1% tolerance)
+        FL_POSTCONDITION(horizontal_speed <= speed_before * 1.01f,
+                         "horizontal speed must decrease when no input applied");
     }
 
     // Integrate position (accumulate - required for physics)
