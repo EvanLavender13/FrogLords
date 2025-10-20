@@ -1,24 +1,15 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Mouse Scroll Accumulation
-**Started:** 2025-10-20
-**Branch:** refine/mouse-scroll-accumulation
-**Path:** A (trivial)
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-20 - Mouse Scroll Accumulation
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Mouse scroll events overwrite instead of accumulate - players lose input
-**Location:** @TASKS/PLANS/REFINE_mouse_scroll_accumulation.md
-**Principle:** Consistency (Input is Intent)
-**Approach:** Simplify
-**Next:** REFINE
-
-**Target Impact:**
-- Input system: 95% → 98% (+3%)
-- Overall: 100% → 100% (maintain perfection)
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 
