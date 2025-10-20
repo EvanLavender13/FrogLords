@@ -329,5 +329,5 @@ This allows dash to temporarily exceed max_speed while friction naturally brings
 
 ## Iterations
 
-- [DASH_ITERATION_1.md](DASH_ITERATION_1.md) - In Progress
+- [DASH_ITERATION_1.md](DASH_ITERATION_1.md) - Design Blocker - Ready for VALIDATE
 
