@@ -1,27 +1,26 @@
 # Current Plan
 
-**Status:** 🏗️ System - Dash Mechanic
+**Status:** 🔧 Refinement - Friction Frame Independence
 **Started:** 2025-10-19
-**Branch:** system/dash
-**Complexity:** Small (3-5 points)
-**Phase:** GRAYBOX Complete → User Testing
+**Branch:** refine/friction-frame-independence
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
 ## Current Work
 
-**System:** On-demand burst movement that respects physics and player control
-**Location:** @TASKS/PLANS/DASH_SYSTEM.md
-**Layer:** 4
-**Foundation:** 99%+
-**Complexity:** Small (3-5 points)
-**Next:** User testing, then ITERATE or defer
+**Refinement:** Frame-rate independent friction/acceleration update
+**Location:** @TASKS/PLANS/REFINE_FRICTION_FRAME_INDEPENDENCE.md
+**Principle:** Solid Mathematical Foundations, Time-Independence
+**Approach:** Simplify - Derive analytical solution replacing sequential updates
+**Next:** REFINE
 
-**Dependencies:**
-- Controller: 97%
-- Input: 95%
-- Physics/Friction: 100%
+**Blocks:**
+- Dash mechanic (GRAYBOX complete, awaiting foundation fix)
+- All Layer 4 movement variations requiring overspeed
 
 **Target Impact:**
-- Layer 4: 74% → 79% (+5%)
-- Overall: 99%+ (maintaining foundation)
+- Layer 1 (Controller): 97% → 100% (+3%)
+- Overall: 99%+ → 99%+ (foundation stability)
+- Unblocks: Dash system, future movement mechanics
