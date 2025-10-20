@@ -29,6 +29,17 @@ None - All movement mechanics blocked by friction refactor (#17)
 
 ---
 
+## Camera
+
+**Orientation-Locked Camera Mode**
+- Camera locks behind character orientation (forward direction)
+- Automatically rotates to follow character facing
+- Toggle between free orbit mode and locked mode
+- Maintains distance and height offset behavior
+- Complements: Existing orbit camera system
+
+---
+
 ## Animation
 
 **Layer 4 - Foundation (Unlocks All Below):**
@@ -77,6 +88,12 @@ None - All movement mechanics blocked by friction refactor (#17)
 ---
 
 ## Infrastructure & Tools
+
+**Drift Angle Visualization**
+- Circular arc on speed ring showing angle between heading and course
+- Visualizes difference between orientation (where character faces) and velocity direction
+- Enhances understanding of momentum and drift behavior during turning
+- Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
 
 **Test Infrastructure**
 - Test runner script and discovery

@@ -36,17 +36,22 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
     // Velocity indicator (replaced by cyan/yellow arrows showing intent vs constrained)
     // Red sphere removed - arrows show the same information with more detail
 
-    // Orientation indicator
-    float yaw = visuals.orientation.get_yaw();
-    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-    list.spheres.push_back(debug::debug_sphere{
-        .center = character.position + forward_dir * 0.8f,
-        .radius = 0.1f,
-        .color = {0, 1, 0, 1},
-    });
+    // Calculate horizontal speed once (used by both orientation arrow and speed ring)
+    float current_speed = glm::length(math::project_to_horizontal(character.velocity));
+
+    // Orientation indicator (scales with horizontal speed)
+    if (current_speed > 0.05f) {
+        float yaw = visuals.orientation.get_yaw();
+        glm::vec3 forward_dir = math::yaw_to_forward(yaw);
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + forward_dir * current_speed,
+            .color = {0.0f, 1.0f, 0.0f, 1.0f}, // Green = orientation
+            .head_size = 0.15f,
+        });
+    }
 
     // Speed gradient ring - continuous interpolation
-    float current_speed = glm::length(math::project_to_horizontal(character.velocity));
     if (current_speed > 0.05f) {
         float speed_ratio = glm::clamp(current_speed / character.max_speed, 0.0f, 1.0f);
 

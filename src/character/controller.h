@@ -63,10 +63,9 @@ struct controller {
     // Tunable parameters
     // TUNED: Horizontal acceleration (direct from tuning system)
     // Controls responsiveness - higher = snappier movement feel
-    // Default: 20.0 m/s² (copied from tuning_params::accel)
     // Used in: apply_input to set acceleration magnitude
     // Used in: update to calculate drag coefficient k = accel / max_speed
-    float accel = 20.0f; // m/s²
+    float accel = 5.0f; // m/s²
 
     // TUNED: Maximum horizontal movement speed
     // Real-world context: 8.0 m/s ≈ 17.9 mph (fast jogging pace)

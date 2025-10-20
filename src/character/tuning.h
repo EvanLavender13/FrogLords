@@ -12,9 +12,8 @@ struct tuning_params {
 
     // TUNED: Horizontal acceleration (direct physical parameter)
     // Controls responsiveness - higher = snappier feel
-    // Default: 20.0 m/s² (reaches max_speed in 0.4s with exponential approach)
     // Used in: apply_to to copy to controller.accel
-    float accel = 20.0f; // m/s²
+    float accel = 5.0f; // m/s²
 
     // TUNED: Target vertical jump height (world-space distance)
     // With BUMPER_RADIUS=0.5m: Character can reach platforms at Y = 0.5 + 1.3 = 1.8m
