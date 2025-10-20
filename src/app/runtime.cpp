@@ -116,8 +116,8 @@ void app_runtime::frame() {
                 world.character_params.max_speed = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::time_to_max_speed:
-                world.character_params.time_to_max_speed = cmd.value;
+            case gui::parameter_type::accel:
+                world.character_params.accel = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
             case gui::parameter_type::jump_height:
