@@ -20,7 +20,9 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
     if (ImGui::CollapsingHeader("Character Tuning", ImGuiTreeNodeFlags_DefaultOpen)) {
         // Local copies for slider interaction (GUI needs mutable values)
         float max_speed = params.max_speed;
-        float time_to_max_speed = params.time_to_max_speed;
+        float ground_accel = params.ground_accel;
+        float base_friction = params.base_friction;
+        float dash_impulse = params.dash_impulse;
         float jump_height = params.jump_height;
         float gravity = params.gravity;
         float coyote_window = character.coyote_window;
@@ -29,9 +31,20 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         if (gui::widget::slider_float("Max Speed (m/s)", &max_speed, 1.0f, 15.0f)) {
             commands.push_back({parameter_type::max_speed, max_speed});
         }
-        if (gui::widget::slider_float("Time to Max Speed (s)", &time_to_max_speed, 0.1f, 2.0f)) {
-            commands.push_back({parameter_type::time_to_max_speed, time_to_max_speed});
+        if (gui::widget::slider_float("Ground Accel (m/s^2)", &ground_accel, 5.0f, 50.0f)) {
+            commands.push_back({parameter_type::ground_accel, ground_accel});
         }
+        if (gui::widget::slider_float("Base Friction", &base_friction, 0.0f, 1.0f)) {
+            commands.push_back({parameter_type::base_friction, base_friction});
+        }
+
+        // Display calculated drag coefficient (read-only)
+        gui::widget::text("Drag Coefficient: %.3f s^-1", character.drag_coefficient);
+
+        if (gui::widget::slider_float("Dash Impulse (m/s)", &dash_impulse, 0.0f, 20.0f)) {
+            commands.push_back({parameter_type::dash_impulse, dash_impulse});
+        }
+
         if (gui::widget::slider_float("Jump Height (m)", &jump_height, 0.5f, 3.0f)) {
             commands.push_back({parameter_type::jump_height, jump_height});
         }

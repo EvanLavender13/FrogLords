@@ -18,7 +18,9 @@ namespace gui {
 
 enum class parameter_type {
     max_speed,
-    time_to_max_speed,
+    ground_accel,
+    base_friction,
+    dash_impulse,
     jump_height,
     gravity,
     coyote_window,

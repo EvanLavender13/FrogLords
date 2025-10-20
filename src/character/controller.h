@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <cmath>
 #include "foundation/collision_primitives.h"
+#include "foundation/debug_assert.h"
 
 struct collision_world;
 
@@ -46,11 +48,19 @@ struct controller {
     contact_debug_info collision_contact_debug;
 
     // Properties
-    // COEFFICIENT: Friction as multiple of gravity magnitude
-    // Deceleration when grounded: friction · |g| = 0.9 · 9.8 ≈ 8.82 m/s²
-    // Provides rapid stopping while maintaining control
-    // Used in: controller::update (line 92)
-    float friction = 0.9f; // dimensionless
+    // COEFFICIENT: Base friction (velocity-independent component)
+    // At low speeds, provides rapid stopping: 0.6 · 9.8 ≈ 5.88 m/s²
+    // Velocity-dependent drag added on top to create equilibrium at max_speed
+    // Used in: controller::update for friction calculation
+    float base_friction = 0.6f; // dimensionless (multiple of |gravity|)
+
+    // CALCULATED: Velocity-dependent drag coefficient
+    // Creates equilibrium: ground_accel = base_friction·|g| + drag·max_speed
+    // Solving for drag: drag = (ground_accel - base_friction·|g|) / max_speed
+    // Default: (20.0 - 5.88) / 8.0 ≈ 1.765 s⁻¹
+    // Recalculated when ground_accel, base_friction, or max_speed changes
+    // Used in: controller::update for speed-dependent friction
+    float drag_coefficient = 1.765f; // s⁻¹ (per-second)
 
     // Ground state
     bool is_grounded = false;
@@ -66,10 +76,6 @@ struct controller {
 
     // Dash state
     float dash_timer = 0.0f; // Time remaining until next dash available (cooldown)
-    float dash_active_timer = 0.0f; // Time remaining in committed dash state
-
-    // Jump state (to preserve momentum when jumping)
-    bool skip_friction_this_frame = false; // True when jump triggered, prevents friction from eating momentum
 
     // Tunable parameters
     // CALCULATED: Ground acceleration (derived from tuning.h defaults)
@@ -133,9 +139,9 @@ struct controller {
     // TUNED: Dash impulse - instant velocity boost magnitude
     // Applied directly to velocity in input direction
     // Higher values = stronger burst, longer time to decelerate
+    // Velocity-dependent friction naturally decelerates from overspeed
     // Used in: apply_input for dash mechanic
     float dash_impulse = 6.0f; // m/s (velocity boost)
-    float dash_active_duration = 0.3f; // seconds (committed dash state duration)
 
     // TUNED: Dash cooldown - time between dash uses
     // Prevents spam while allowing fluid movement
@@ -173,9 +179,28 @@ struct controller {
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
 
+    // Recalculate drag coefficient to maintain equilibrium at max_speed
+    // Call when ground_accel, base_friction, or max_speed changes
+    void recalculate_drag_coefficient() {
+        FL_PRECONDITION(max_speed > 0.0f, "max_speed must be positive");
+        FL_PRECONDITION(ground_accel > 0.0f, "ground_accel must be positive");
+
+        float base_friction_decel = base_friction * std::abs(gravity);
+
+        // If base friction alone exceeds acceleration, equilibrium is impossible
+        // Auto-reduce base friction to make room for drag component
+        if (base_friction_decel >= ground_accel) {
+            // Reserve 10% of ground_accel for drag, rest for base friction
+            base_friction_decel = ground_accel * 0.9f;
+            base_friction = base_friction_decel / std::abs(gravity);
+        }
+
+        drag_coefficient = (ground_accel - base_friction_decel) / max_speed;
+        FL_POSTCONDITION(drag_coefficient >= 0.0f, "drag_coefficient must be non-negative");
+    }
+
     // Query helpers (used by debug viz)
-    bool can_dash() const { return is_grounded && dash_timer <= 0.0f && dash_active_timer <= 0.0f; }
-    bool is_dashing() const { return dash_active_timer > 0.0f; }
+    bool can_dash() const { return is_grounded && dash_timer <= 0.0f; }
 
   private:
     // Pure function: map state → cycle length (INTERNAL USE ONLY)

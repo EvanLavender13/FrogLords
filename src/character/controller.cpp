@@ -22,16 +22,6 @@ constexpr float BUMPER_RADIUS = 0.50f; // meters
 // Used in: controller constructor (line 29) to set initial position.y
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // meters (= 0.5m)
 
-void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
-    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
-    float speed = glm::length(horizontal_velocity);
-    if (speed > max_speed) {
-        horizontal_velocity = horizontal_velocity * (max_speed / speed);
-        velocity.x = horizontal_velocity.x;
-        velocity.z = horizontal_velocity.z;
-    }
-}
-
 } // namespace
 
 controller::controller()
@@ -50,13 +40,13 @@ controller::controller()
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
+
+    // Calculate drag coefficient for equilibrium at max_speed
+    recalculate_drag_coefficient();
 }
 
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
-    // Track if jump was triggered this frame (to skip friction in update())
-    bool jumped_this_frame = false;
-
     // Execute buffered jump on next grounded frame (jump buffer forgiveness)
     // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full
     // rationale
@@ -64,7 +54,6 @@ void controller::apply_input(const controller_input_params& input_params,
         velocity.y = jump_velocity;
         coyote_timer = coyote_window; // Exhaust coyote window
         jump_buffer_timer = 0.0f;     // Clear buffer
-        jumped_this_frame = true;
     }
 
     // Convert 2D input to 3D acceleration (camera-relative)
@@ -74,16 +63,9 @@ void controller::apply_input(const controller_input_params& input_params,
     input_direction =
         forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
-    // Direct acceleration (ground only, not during dash)
-    // During dash: committed state, no input acceleration
-    // When airborne: maintain momentum, physics only
-    if (dash_active_timer > 0.0f) {
-        acceleration = glm::vec3(0.0f); // Dash: committed, no steering
-    } else if (is_grounded) {
-        acceleration = input_direction * ground_accel; // Ground: full control
-    } else {
-        acceleration = glm::vec3(0.0f); // Air: no control, just gravity and momentum
-    }
+    // Direct acceleration (same in air and on ground)
+    // Velocity-dependent friction creates equilibrium, prevents infinite acceleration
+    acceleration = input_direction * ground_accel;
 
     // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
     //
@@ -114,25 +96,20 @@ void controller::apply_input(const controller_input_params& input_params,
         velocity.y = jump_velocity;
         coyote_timer = coyote_window; // Exhaust coyote window
         jump_buffer_timer = 0.0f;     // Clear any buffered input
-        jumped_this_frame = true;
     } else if (jump_input && !can_jump) {
         // Store buffered input for next valid grounded frame
         jump_buffer_timer = jump_buffer_window;
     }
 
-    // Store jump state for update() to skip friction on jump frames
-    skip_friction_this_frame = jumped_this_frame;
-
-    // Dash: Apply instant impulse and enter committed dash state
-    // During dash state: no input acceleration, no speed clamp (committed burst)
-    // Exit when: speed <= max_speed AND active timer expires
+    // Dash: Apply instant impulse in input direction
+    // Cooldown prevents spam
+    // Velocity-dependent friction naturally decelerates from overspeed
     bool dash_input = input_params.dash_pressed;
-    bool can_dash_now = is_grounded && dash_timer <= 0.0f && dash_active_timer <= 0.0f;
+    bool can_dash_now = is_grounded && dash_timer <= 0.0f;
 
     if (dash_input && can_dash_now) {
         velocity += input_direction * dash_impulse;
-        dash_timer = dash_cooldown;           // Start cooldown
-        dash_active_timer = dash_active_duration; // Enter committed dash state
+        dash_timer = dash_cooldown; // Start cooldown
     }
 }
 
@@ -165,23 +142,26 @@ void controller::update(const collision_world* world, float dt) {
     // Integrate velocity (accumulate - required for physics)
     velocity += acceleration * dt;
 
-    // Apply friction (if grounded and not jumping)
-    // Skip friction on jump frames to preserve dash momentum
-    if (is_grounded && !skip_friction_this_frame) {
-        float speed = glm::length(math::project_to_horizontal(velocity));
+    // Apply velocity-dependent friction (same everywhere - ground and air)
+    // Total friction = base_friction·|g| (contact/air resistance) + drag·speed (velocity-dependent)
+    // At max_speed: friction = ground_accel (equilibrium, net acceleration = 0)
+    // Below max_speed: friction < accel (net positive acceleration)
+    // Above max_speed: friction > accel (net negative acceleration, natural deceleration)
+    {
+        glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+        float speed = glm::length(horizontal_velocity);
         if (speed > 0.0f) {
-            float friction_decel = friction * std::abs(gravity) * dt;
-            float new_speed = std::max(0.0f, speed - friction_decel);
-            clamp_horizontal_speed(velocity, new_speed);
+            // Apply full friction everywhere (consistent physics)
+            float base_friction_decel = base_friction * std::abs(gravity);
+            float drag_decel = drag_coefficient * speed;
+            float total_friction_decel = (base_friction_decel + drag_decel) * dt;
+
+            // Apply friction by reducing speed
+            float new_speed = std::max(0.0f, speed - total_friction_decel);
+            glm::vec3 direction = horizontal_velocity / speed; // Normalize
+            velocity.x = direction.x * new_speed;
+            velocity.z = direction.z * new_speed;
         }
-    }
-
-    // Reset jump flag for next frame
-    skip_friction_this_frame = false;
-
-    // Apply speed cap (skip during dash state - committed burst allowed)
-    if (dash_active_timer <= 0.0f) {
-        clamp_horizontal_speed(velocity, max_speed);
     }
 
     // Integrate position (accumulate - required for physics)
@@ -227,18 +207,6 @@ void controller::update(const collision_world* world, float dt) {
 
     // Update dash cooldown timer (frame-rate independent decay)
     dash_timer = std::max(0.0f, dash_timer - dt);
-
-    // Update dash active state timer and exit when conditions met
-    // Exit condition: speed <= max_speed AND timer <= 0 (both must be true)
-    // This allows smooth deceleration before clamping speed
-    if (dash_active_timer > 0.0f) {
-        dash_active_timer -= dt;
-
-        float speed = glm::length(math::project_to_horizontal(velocity));
-        if (speed <= max_speed && dash_active_timer <= 0.0f) {
-            dash_active_timer = 0.0f; // Exit dash state
-        }
-    }
 
     // Update locomotion state (speed classification + phase calculation)
     // Phase is an OUTPUT computed from movement, never drives physics

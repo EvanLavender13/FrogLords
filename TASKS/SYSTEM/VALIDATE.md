@@ -26,7 +26,7 @@ Score system against principles. External validation. Approve, revise, or reject
 **Independent principle evaluation.**
 
 ```bash
-bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/foundation/<relevant>.cpp [your validation question]"
+bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md @src/<relevant>.cpp [your validation question]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in Bash tool call.

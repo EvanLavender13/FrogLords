@@ -103,10 +103,14 @@ Update iteration list in `PLANS/<name>_SYSTEM.md`:
 **One contract item at a time. Validate, then commit.**
 
 For each unchecked contract item:
-- Implement the fix (small changes only, maintain debug visualization)
-- Build and test until it passes
-- Document validation in contract (check box, add commit hash and what was validated)
-- Commit on success, revert on failure
+1. **Implement** the fix (small changes only, maintain debug visualization)
+2. **Build** successfully
+3. **Manual verification** (if changes affect runtime behavior):
+   - List what user must verify
+   - Ask user to run app and verify
+   - Wait for confirmation
+4. **Document** validation in contract (check box, add commit hash and what was validated)
+5. **Commit** on success, revert on failure
 
 If resuming from VALIDATE/REVISE, turn violations into contract items and prioritize them.
 

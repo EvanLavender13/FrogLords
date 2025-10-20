@@ -180,6 +180,8 @@ Attempting to build dash revealed a crack in the foundation. The speed cap shoul
 3. OR: Accept limited dash (no momentum carry) and defer full implementation
 
 **Status:** Iteration 1 incomplete - prerequisite system identified
+
+**Action:** Continue to ITERATE phase with velocity-dependent friction refactor
 <!-- END: VALIDATE/DECISION -->
 
 ---
