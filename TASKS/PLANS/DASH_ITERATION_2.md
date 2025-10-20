@@ -34,33 +34,33 @@ Properties to validate through iteration:
   - Net acceleration = 0 when speed = max_speed (validated via user testing)
   - Net acceleration < 0 when speed > max_speed (dash deceleration validated)
   - No hard clamp needed (removed clamp_horizontal_speed function)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Friction balances propulsion mathematically
   - drag_coefficient calculated from ground_accel, base_friction, max_speed
   - Auto-adjusts base_friction if ground_accel too low (prevents crash)
   - Frame-rate independent (dt multiplied throughout)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Dash impulse naturally decelerates from overspeed
   - Apply impulse → speed exceeds max_speed (validated)
   - Friction brings speed back to equilibrium smoothly (validated)
   - No special-case logic (removed dash_active_timer, skip_friction)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Unified ground/air physics (momentum preserved)
   - Ground and air use same friction/acceleration (consistent feel validated)
   - Dash→jump carries momentum naturally (no abrupt clamp)
   - Air control restored (can steer mid-jump)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Ground-only dash constraint enforced
   - is_grounded check in apply_input (controller.cpp:112)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Dash cooldown prevents spam
   - Cooldown timer decay (controller.cpp:213)
-  - Commit: (pending)
+  - Commit: 5702c98
 - [x] Tuning system honest (bonus fix)
   - Removed time_to_max_speed (broken abstraction)
   - Exposed ground_accel, base_friction, dash_impulse
   - drag_coefficient shown as read-only calculated value
-  - Commit: (pending)
+  - Commit: 5702c98
 <!-- END: ITERATE/CONTRACT -->
 
 ---
