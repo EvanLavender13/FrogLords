@@ -85,73 +85,36 @@ Never infer semantic meaning from geometry. If intent matters, encode it explici
 
 ## The Architecture of Information
 
-## ⚠️ STOP: DO NOT ADD EXAMPLES ⚠️
+### Directness Over Demonstration
 
-**IF YOU ARE ABOUT TO ADD AN EXAMPLE:**
-
-# STOP. DELETE IT. STATE THE FACT DIRECTLY.
-
-Examples are not clarity—they are clutter. If you cannot state the concept directly, the concept is unclear. Fix the concept, not the explanation.
-
-Examples belong in:
-1. **Code itself** - the implementation IS the example
-2. **Tests** - demonstrate behavior through validation
-3. **User requests** - when explicitly asked
-
-**NEVER in principles. NEVER in plans. NEVER in documentation.**
-
-If you catch yourself writing:
-- "For example..."
-- "Example:"
-- Showing sample code in documentation
-- Demonstrating instead of stating
-
-**STOP. DELETE IT. STATE THE RULE DIRECTLY.**
-
-This applies everywhere. Code, documentation, plans, responses, explanations. State the truth. Delete everything else.
-
----
+State rules and contracts directly. If a concept requires examples to be understood, the concept is unclear—refine the concept until it stands on its own. Examples live in code and tests, and appear in responses only when explicitly requested. Principles and plans assert truths; they do not demonstrate them.
 
 ### Lists Are Intent, Not History
 
-## ⚠️ STOP: DO NOT CREATE "RECENTLY COMPLETED" SECTIONS ⚠️
+Backlogs express intent: what remains to be done now. Completed work belongs elsewhere:
+1. The codebase (truth)
+2. Git history (timeline)
+3. Retrospectives (insight)
 
-**IF YOU ARE ABOUT TO ADD A "RECENTLY COMPLETED" OR "COMPLETED ITEMS" SECTION TO ANY BACKLOG OR LIST:**
+A list item has two states: pending or deleted. When work finishes, remove it; history already exists. If a list needs periodic pruning, it has failed—lists should shrink to zero as work completes. Version control is eternal; lists are ephemeral.
 
-# STOP. DELETE IT. YOU ARE VIOLATING CORE PRINCIPLES.
+### Assert Truth, Not Negation
 
-Completed work belongs in:
-1. **Git history** - `git log` shows what was done
-2. **Iteration documents** - `TASKS/PLANS/*_ITERATION_*.md` has the details
-3. **The codebase itself** - the code IS the completed work
+State what something is, not what it is not. Positive assertions are direct and clear. Negative statements require the reader to infer the positive truth. Define by presence, not by absence.
 
-**NEVER in backlogs. NEVER in tracking lists. NEVER as "completed" items.**
+A document titled "what this is" is clearer than "what this is not." A principle that says "use named constants" is stronger than "don't use magic numbers." When you find yourself listing what something excludes, ask: what does it include?
 
-Backlogs show **what's buildable NOW**. That's it. Nothing else.
+Negation teaches nothing. Assertion teaches everything.
 
-If you catch yourself writing "Recently Completed" or "Completed Items" in a backlog:
-- **STOP**
-- **DELETE THE SECTION**
-- **READ THIS AGAIN**
+### Process Inherits Principles
 
----
+The Six Pillars govern code, documentation, and process equally. Every principle that applies to implementation applies to planning.
 
-Every list must answer: "What remains to be done?" Never: "What was done?"
+Single Source of Truth: The codebase is truth; documents derive from it, never duplicate it. Accumulated State: Percentages and projections compound error; inventory states current existence. Time Independence: Document what exists now, not predictions of completion. Consistency: Process behavior must be predictable, without special cases. Radical Simplicity: Remove ceremony, delete ritual, stop when honest.
 
-The completed work lives in three places:
-1. The codebase itself (the truth)
-2. The git history (the timeline)
-3. The retrospective documents (the wisdom)
+When tracking feels therapeutic rather than informative, principles have been violated. When documents claim certainty about unknowable futures, accumulated state has corrupted truth. When process multiplies complexity instead of dividing it, simplicity has been abandoned.
 
-**Nowhere else. Especially not in lists.**
-
-A list item has two valid states: pending or deleted. "Completed" is not a state—it's a failure to delete. When work finishes, remove the item. The repository remembers everything. The list remembers nothing.
-
-Historical change lists are documentation rot disguised as diligence. They grow without bound, they demand maintenance, they duplicate truth that git already preserves.
-
-**The rule**: If a list needs "periodic pruning," it has already failed. Lists should shrink to zero as work completes, then disappear entirely.
-
-Version control is eternal. Lists are ephemeral. Respect the boundary.
+Code and process are both systems. The same laws govern both.
 
 ## The Warning Signs
 
