@@ -6,15 +6,15 @@
 
 ## Purpose
 
-Select a system from TASKS/BACKLOG_SYSTEMS.md based on dependency readiness and foundation certainty.
+Select a system from TASKS/BACKLOG_SYSTEMS.md based on dependency readiness.
 
-**This is not about priority or excitement. This is about what we can build without building on sand.**
+**This is not about priority or excitement. This is about what we can build with what exists.**
 
 ---
 
 ## Prerequisites
 
-- Foundation ≥90% (`DEPENDENCY_STACK.md`)
+- `DEPENDENCY_STACK.md` populated with current capabilities
 - `BACKLOG_SYSTEMS.md` populated
 - No system currently in progress
 
@@ -22,14 +22,9 @@ Select a system from TASKS/BACKLOG_SYSTEMS.md based on dependency readiness and 
 
 ## Process
 
-### 1. Check Foundation
+### 1. Review Capabilities
 
-Open `DEPENDENCY_STACK.md`:
-- Current certainty: ___%
-- **≥90%**: Proceed to layer selection
-- **<90%**: Defer—strengthen foundation first
-
-**Ready layer:** Layer __ (≥90%)
+Open `DEPENDENCY_STACK.md` - understand what exists at each layer and what it enables
 
 ---
 
@@ -38,7 +33,7 @@ Open `DEPENDENCY_STACK.md`:
 Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
 
 **For each candidate, verify:**
-- Dependencies ≥90%? (all prerequisites)
+- Dependencies exist? (check DEPENDENCY_STACK.md)
 - Core identified? (irreducible minimum)
 - Mathematically provable? (can verify correctness)
 - Enables emergence? (not just features)
@@ -100,7 +95,6 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 **Date:** [Today]
 **Layer:** [N]
-**Foundation:** [%]
 **Complexity:** Small | Medium | Large
 <!-- END: SELECT/SELECTED -->
 
@@ -131,9 +125,9 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 <!-- BEGIN: SELECT/DEPENDENCIES -->
 ## Dependencies
 
-**Required (≥90%):**
-- System A: __%
-- System B: __%
+**Required:**
+- System A (exists in Layer X)
+- System B (exists in Layer Y)
 
 **Enables (will become buildable):**
 - System X
@@ -187,7 +181,7 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 - [ ] Mathematical correctness proven
 - [ ] Debug visualization shows behavior
 - [ ] Emergent behaviors appear
-- [ ] Principle scores ≥7.0 average
+- [ ] Principles upheld
 <!-- END: SELECT/SUCCESS -->
 ```
 
@@ -213,17 +207,12 @@ Update `TASKS/CURRENT_PLAN.md`:
 **System:** <description>
 **Location:** @TASKS/PLANS/<name>_SYSTEM.md
 **Layer:** [N]
-**Foundation:** [%]
 **Complexity:** Small | Medium | Large
 **Next:** GRAYBOX
 
 **Dependencies:**
-- System A: __%
-- System B: __%
-
-**Target Impact:**
-- Layer [N]: __% → __% (+__)
-- Overall: __% → __% (+__)
+- System A (Layer X)
+- System B (Layer Y)
 ```
 
 **CRITICAL:** `@` reference ensures plan loads automatically via `CLAUDE.md`.
@@ -238,7 +227,6 @@ git add TASKS/PLANS/<name>_SYSTEM.md TASKS/CURRENT_PLAN.md
 git commit -m "select: <name> system for layer <N>
 
 Dependencies: <list>
-Foundation: <%>
 Complexity: Small | Medium | Large
 Core: <one-line>
 
@@ -266,11 +254,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 **Always → GRAYBOX** (build simplest possible version)
 
 **Defer if:**
-- Dependencies not actually ≥90%
+- Dependencies don't actually exist
 - Core unclear or too complex
-- Foundation not ready
 - Better choice available
 
 ---
 
-**Build from certainty. Choose by foundation. Enable emergence.**
+**Build from what exists. Choose by dependencies. Enable emergence.**

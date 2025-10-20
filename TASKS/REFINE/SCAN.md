@@ -13,8 +13,6 @@ Use automated tools to find code quality issues. Fix trivial violations immediat
 ---
 
 ## Prerequisites
-
-- Foundation ≥70% stable
 - Between system builds
 - `TASKS/BACKLOG_REFINEMENTS.md` exists
 - Code quality scripts available

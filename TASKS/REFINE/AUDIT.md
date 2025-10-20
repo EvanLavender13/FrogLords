@@ -14,7 +14,6 @@ Use Gemini and Codex to examine the codebase against the six principles. Synthes
 
 ## Prerequisites
 
-- Foundation ≥70% stable
 - Between system builds
 - `TASKS/BACKLOG_REFINEMENTS.md` exists
 - Gemini CLI and Codex CLI available

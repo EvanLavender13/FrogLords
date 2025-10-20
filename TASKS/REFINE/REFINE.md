@@ -192,7 +192,7 @@ F. Mark step complete in plan
 - [ ] Violation fixed
 - [ ] All tests passing
 - [ ] No regressions
-- [ ] Principle score improved
+- [ ] Principle upheld
 - [ ] Steps committed
 - [ ] Documentation updated
 
@@ -203,7 +203,7 @@ F. Mark step complete in plan
 **→ MEASURE when:**
 - Fix complete
 - Tests passing
-- Principle score improved
+- Principle upheld
 
 **Defer if:**
 - Blocker discovered

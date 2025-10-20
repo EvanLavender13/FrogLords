@@ -16,7 +16,7 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 
 - `PLANS/<name>_SYSTEM.md` exists with core identified
 - Branch `system/<name>` active
-- Dependencies ≥90%
+- Dependencies exist (check DEPENDENCY_STACK.md)
 - Mathematical approach clear
 
 ---

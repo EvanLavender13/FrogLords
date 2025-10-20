@@ -12,7 +12,6 @@ Choose highest-impact violation from backlog. Classify complexity. Determine pat
 
 ## Prerequisites
 
-- Foundation ≥70% (`TASKS/DEPENDENCY_STACK.md`)
 - `TASKS/BACKLOG_REFINEMENTS.md` populated
 - Between features (not during builds)
 
@@ -20,12 +19,9 @@ Choose highest-impact violation from backlog. Classify complexity. Determine pat
 
 ## Process
 
-### 1. Check Foundation
+### 1. Review Current Capabilities
 
-Open `TASKS/DEPENDENCY_STACK.md`:
-- Overall: ___%
-- **≥70%**: Proceed
-- **<70%**: Defer—strengthen foundation first
+Open `TASKS/DEPENDENCY_STACK.md` - understand what exists and what the violation affects
 
 ---
 
@@ -72,7 +68,7 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 ## Violation
 
 **Location:** `<file>:<line>` | System: <name>
-**Principle:** <violated> | Score: __/10
+**Principle:** <violated>
 **Severity:** Critical | High | Medium | Low
 **Type:** <describe the nature of the violation>
 
@@ -88,7 +84,6 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 **Impact:**
 - Blocks:
 - Cascades to:
-- Foundation: __%
 <!-- END: SELECT/VIOLATION -->
 
 ---
@@ -123,13 +118,13 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 ## Success
 
 - [ ] Violation resolved
-- [ ] Principle score improved
+- [ ] Principle upheld
 - [ ] Tests passing
 - [ ] No regressions
 
 **Metrics:**
-- Before: LOC __, Principle __/10, Complexity __
-- After: LOC __ (-__), Principle __/10 (+__), Complexity __ (-__)
+- Before: LOC __
+- After: LOC __ (-__)
 <!-- END: SELECT/SUCCESS -->
 ```
 
@@ -167,10 +162,6 @@ Update `TASKS/CURRENT_PLAN.md`:
 **Principle:** <which>
 **Approach:** Delete | Simplify | Document
 **Next:** REFINE
-
-**Target Impact:**
-- Layer X: __% → __% (+__)
-- Overall: __% → __% (+__)
 ```
 
 **CRITICAL:** `@` reference ensures plan loads automatically via `CLAUDE.md`.
