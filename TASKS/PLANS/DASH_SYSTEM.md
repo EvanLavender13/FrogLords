@@ -330,5 +330,5 @@ This allows dash to temporarily exceed max_speed while friction naturally brings
 ## Iterations
 
 - [DASH_ITERATION_1.md](DASH_ITERATION_1.md) - REVISE
-- [DASH_ITERATION_2.md](DASH_ITERATION_2.md) - Ready for VALIDATE
+- [DASH_ITERATION_2.md](DASH_ITERATION_2.md) - REJECT
 
