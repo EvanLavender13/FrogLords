@@ -5,6 +5,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/trigonometric.hpp>
 #include <algorithm>
+#include <cmath>
 
 namespace {
 // Single-sphere collision configuration (experiment branch)
@@ -67,9 +68,8 @@ void controller::apply_input(const controller_input_params& input_params,
     input_direction =
         forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
-    // Direct acceleration (instant response)
-    float accel_magnitude = is_grounded ? ground_accel : air_accel;
-    acceleration = input_direction * accel_magnitude;
+    // Direct acceleration (instant response, no ground/air distinction)
+    acceleration = input_direction * accel;
 
     // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
     //
@@ -110,43 +110,82 @@ void controller::update(const collision_world* world, float dt) {
     FL_PRECONDITION(dt > 0.0f, "dt must be positive for frame-rate independence");
     FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
 
-    // Physics integration using semi-implicit Euler method (Symplectic Euler):
+    // Frame-rate independent physics integration
     //
-    // Integration order:
-    //   1. v(t+dt) = v(t) + a(t)·dt     (velocity first, using current acceleration)
-    //   2. x(t+dt) = x(t) + v(t+dt)·dt  (position second, using NEW velocity)
+    // Horizontal velocity: Exponential drag model (exact solution)
+    //   Solves: dv/dt = a - k*v  where k = accel/max_speed
+    //   Solution: v(t+dt) = v(t)*exp(-k*dt) + (a/k)*(1 - exp(-k*dt))
     //
-    // Properties:
-    //   - Stable for damped systems (friction, collision resolution)
-    //   - Better energy conservation than explicit Euler
-    //   - Sufficient accuracy for platformer physics (no rigid body dynamics)
-    //   - First-order accuracy: O(dt)
+    //   Guarantees:
+    //   - Equilibrium at max_speed when a = accel (full input)
+    //   - Frame-rate independent: identical behavior at any dt
+    //   - Allows overspeed: dash mechanics can exceed max_speed, decay back naturally
+    //   - Exponential convergence: smooth approach to equilibrium
     //
-    // Alternatives considered:
-    //   - Verlet integration: Better energy conservation, but requires code refactor
-    //   - RK4 (Runge-Kutta): Overkill for platformer (4x computational cost)
+    // Vertical velocity: Standard Euler integration (gravity only)
+    //   No drag on vertical component - jump/fall physics unchanged
     //
-    // Trade-off accepted: Semi-implicit Euler is fast, stable, and sufficient.
-    // See PRINCIPLES.md for accumulated state exception (physics integration).
+    // See PRINCIPLES.md: Time-Independence, Solid Mathematical Foundations
 
-    // Apply gravity
+    // Apply gravity to vertical acceleration
     acceleration.y += gravity;
 
-    // Integrate velocity (accumulate - required for physics)
-    velocity += acceleration * dt;
+    // Calculate drag coefficient from equilibrium constraint
+    // Derivation: At equilibrium dv/dt = 0, so a - k*v_eq = 0
+    //             Therefore: v_eq = a/k
+    //             Want: v_eq = max_speed when a = accel (full input)
+    //             Therefore: k = accel / max_speed
+    float k = accel / max_speed;
 
-    // Apply friction (if grounded)
-    if (is_grounded) {
-        float speed = glm::length(math::project_to_horizontal(velocity));
-        if (speed > 0.0f) {
-            float friction_decel = friction * std::abs(gravity) * dt;
-            float new_speed = std::max(0.0f, speed - friction_decel);
-            clamp_horizontal_speed(velocity, new_speed);
-        }
+    FL_POSTCONDITION(k > 0.0f && std::isfinite(k),
+                     "drag coefficient must be positive and finite");
+
+    // Extract horizontal components
+    glm::vec3 horizontal_accel = math::project_to_horizontal(acceleration);
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+
+    // Store pre-update horizontal speed for assertion
+    float speed_before = glm::length(horizontal_velocity);
+
+    // Apply frame-rate independent horizontal update
+    if (k < 1e-6f) {
+        // Fallback for degenerate case (near-zero accel or very large max_speed)
+        // Standard Euler integration when drag is negligible
+        horizontal_velocity += horizontal_accel * dt;
+    } else {
+        // Exact exponential solution
+        float decay = std::exp(-k * dt);
+        horizontal_velocity = horizontal_velocity * decay + (horizontal_accel / k) * (1.0f - decay);
     }
 
-    // Apply speed cap
-    clamp_horizontal_speed(velocity, max_speed);
+    // Integrate vertical velocity (standard Euler - no drag)
+    velocity.y += acceleration.y * dt;
+
+    // Reconstruct full velocity (horizontal + vertical)
+    velocity.x = horizontal_velocity.x;
+    velocity.z = horizontal_velocity.z;
+
+    // Zero-velocity tolerance: exponential decay never fully stops
+    // When horizontal speed drops below perceptible threshold, snap to zero
+    // Prevents residual drift from numerical precision limits
+    constexpr float VELOCITY_EPSILON = 0.01f; // m/s (imperceptible at 60fps)
+    float horizontal_speed = glm::length(horizontal_velocity);
+    if (horizontal_speed < VELOCITY_EPSILON) {
+        velocity.x = 0.0f;
+        velocity.z = 0.0f;
+        horizontal_speed = 0.0f;
+    }
+
+    // Validate frame-rate independent drag behavior
+    // When no input applied, drag should decrease speed (or maintain zero)
+    float accel_magnitude = glm::length(horizontal_accel);
+    constexpr float ACCEL_EPSILON = 0.01f; // m/s² (negligible acceleration)
+    if (accel_magnitude < ACCEL_EPSILON) {
+        // No input: speed must decrease or stay at zero
+        // Allow small epsilon for numerical precision (1% tolerance)
+        FL_POSTCONDITION(horizontal_speed <= speed_before * 1.01f,
+                         "horizontal speed must decrease when no input applied");
+    }
 
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;

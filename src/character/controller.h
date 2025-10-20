@@ -45,11 +45,8 @@ struct controller {
     contact_debug_info collision_contact_debug;
 
     // Properties
-    // COEFFICIENT: Friction as multiple of gravity magnitude
-    // Deceleration when grounded: friction · |g| = 0.9 · 9.8 ≈ 8.82 m/s²
-    // Provides rapid stopping while maintaining control
-    // Used in: controller::update (line 92)
-    float friction = 0.9f; // dimensionless
+    // NOTE: Friction removed - drag now derived from accel/max_speed
+    // See controller::update for exponential drag model: k = accel / max_speed
 
     // Ground state
     bool is_grounded = false;
@@ -64,21 +61,12 @@ struct controller {
     float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
 
     // Tunable parameters
-    // CALCULATED: Ground acceleration (derived from tuning.h defaults)
-    // Derived from time_to_max_speed via: ground_accel = max_speed / time
-    // Default: 20.0 m/s² matches tuning.h time_to_max_speed=0.4s
-    // Formula: 8.0 m/s / 0.4s = 20.0 m/s²
-    // NOTE: Will be overwritten if tuning_params::apply_to() is called
-    // Used in: apply_input (line 64) to set acceleration magnitude when grounded
-    float ground_accel = 20.0f; // m/s²
-
-    // CALCULATED: Air acceleration (derived from tuning.h defaults)
-    // Derived from time_to_max_speed via: air_accel = max_speed / time
-    // Default: 20.0 m/s² matches tuning.h time_to_max_speed=0.4s
-    // Formula: 8.0 m/s / 0.4s = 20.0 m/s²
-    // NOTE: Will be overwritten if tuning_params::apply_to() is called
-    // Used in: apply_input (line 64) to set acceleration magnitude when airborne
-    float air_accel = 20.0f; // m/s²
+    // TUNED: Horizontal acceleration (direct from tuning system)
+    // Controls responsiveness - higher = snappier movement feel
+    // Default: 20.0 m/s² (copied from tuning_params::accel)
+    // Used in: apply_input to set acceleration magnitude
+    // Used in: update to calculate drag coefficient k = accel / max_speed
+    float accel = 20.0f; // m/s²
 
     // TUNED: Maximum horizontal movement speed
     // Real-world context: 8.0 m/s ≈ 17.9 mph (fast jogging pace)
@@ -89,7 +77,7 @@ struct controller {
     // PHYSICAL: Earth's gravitational acceleration at sea level
     // Standard value in game physics for familiar jump feel
     // Sign convention: Negative because Y-up coordinate system (gravity pulls down)
-    // Used in: velocity integration (line 83), friction calculation (line 92), jump calculations
+    // Used in: velocity integration, jump calculations
     float gravity = -9.8f; // m/s²
 
     // TUNED: Maximum walkable slope angle threshold (SINGLE SOURCE OF TRUTH)

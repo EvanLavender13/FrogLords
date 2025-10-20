@@ -7,15 +7,14 @@ namespace character {
 struct tuning_params {
     // TUNED: Maximum horizontal movement speed (source of truth)
     // Real-world context: 8.0 m/s ≈ 17.9 mph (fast jogging pace)
-    // Foundation for acceleration calculations
     // Used in: apply_to to copy to controller.max_speed
     float max_speed = 8.0f; // m/s
 
-    // TUNED: Time from rest to max_speed (responsiveness feel)
-    // Platformer typical range: 300-500ms (fighting games: 100-200ms)
-    // Current: 400ms provides responsive but not twitchy control
-    // Used in: apply_to to calculate ground_accel and air_accel
-    float time_to_max_speed = 0.4f; // seconds
+    // TUNED: Horizontal acceleration (direct physical parameter)
+    // Controls responsiveness - higher = snappier feel
+    // Default: 20.0 m/s² (reaches max_speed in 0.4s with exponential approach)
+    // Used in: apply_to to copy to controller.accel
+    float accel = 20.0f; // m/s²
 
     // TUNED: Target vertical jump height (world-space distance)
     // With BUMPER_RADIUS=0.5m: Character can reach platforms at Y = 0.5 + 1.3 = 1.8m
@@ -29,17 +28,9 @@ struct tuning_params {
     // Used in: apply_to to copy to controller.gravity and calculate jump_velocity
     float gravity = -9.8f; // m/s²
 
-    // TUNED: Kinetic friction coefficient (μ)
-    // Physical meaning: Dimensionless coefficient for kinetic friction
-    // Friction force: F_friction = μ · |F_normal| = μ · m · |g|
-    // Friction decel: a_friction = μ · |g|
-    // Range: [0.0, 1.0] physically valid (will be clamped)
-    //   - 0.0 = ice (no friction, no stopping)
-    //   - 0.3 = slippery (gentle deceleration)
-    //   - 0.7 = rubber on asphalt (snappy stopping)
-    //   - 1.0 = maximum practical friction
-    // Used in: apply_to to copy to controller.friction
-    float friction_coefficient = 0.7f; // dimensionless
+    // NOTE: Friction removed - drag now derived from accel/max_speed
+    // Drag coefficient k = accel / max_speed guarantees equilibrium at max_speed
+    // See controller::update for exponential drag model implementation
 
     void apply_to(controller& c) const;
 };

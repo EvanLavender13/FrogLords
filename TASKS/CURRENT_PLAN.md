@@ -1,27 +1,35 @@
 # Current Plan
 
-**Status:** 🏗️ System - Dash Mechanic
-**Started:** 2025-10-19
-**Branch:** system/dash
-**Complexity:** Small (3-5 points)
-**Phase:** GRAYBOX Complete → User Testing
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-19 - Friction Frame Independence
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**System:** On-demand burst movement that respects physics and player control
-**Location:** @TASKS/PLANS/DASH_SYSTEM.md
-**Layer:** 4
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+
+---
+
+## Quick Reference
+
 **Foundation:** 99%+
-**Complexity:** Small (3-5 points)
-**Next:** User testing, then ITERATE or defer
+**Target:** 95% (Layer 3)
 
-**Dependencies:**
-- Controller: 97%
-- Input: 95%
-- Physics/Friction: 100%
+**Layer Status:**
+- Layer 1 (Core): 100% ✅ - Complete
+- Layer 2 (Primitives): 100% ✅ - Complete
+- Layer 3 (Systems): 99%+ ✅ - Target exceeded
+- Layer 4 (Variation): 74% - Building (2 systems complete)
 
-**Target Impact:**
-- Layer 4: 74% → 79% (+5%)
-- Overall: 99%+ (maintaining foundation)
+**Next Priority:** #12 Collision Face Normal Fallback (Critical)
+**Estimated Path:** 3 critical violations remaining to 100%
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Foundation status
