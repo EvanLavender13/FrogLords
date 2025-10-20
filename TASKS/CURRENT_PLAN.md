@@ -1,15 +1,24 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-19 - Friction Frame Independence
+**Status:** 🔧 Refinement - Collision Face Normal Fallback
+**Started:** 2025-10-20
+**Branch:** refine/collision-face-normal-fallback
+**Path:** B (Standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**Refinement:** Delete arbitrary UP fallback, compute real contact normal from penetration geometry
+**Location:** @TASKS/PLANS/REFINE_collision_face_normal_fallback.md
+**Principle:** Mathematical Foundations
+**Approach:** Delete special case, derive from geometry
+**Next:** REFINE
+
+**Target Impact:**
+- Layer 2 (Primitives): 100% → 100% (maintain)
+- Overall: 99%+ → 100% (eliminate critical violation)
 
 ---
 
