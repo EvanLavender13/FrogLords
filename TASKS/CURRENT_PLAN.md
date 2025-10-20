@@ -18,10 +18,13 @@ No critical or high-priority violations remain. Ready for Layer 4 variation syst
 
 ---
 
-## Ready for Next Task
+## Recommended Next Action
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next variation system to build (recommended)
+**📊 RETRO recommended** - 6 plans completed (3 refinements + 3 system docs)
+**Run:** Review TASKS/RETRO.md and extract patterns
+
+**Or proceed with:**
+- `/SYSTEM/SELECT` - Pick next variation system to build
 - `/REFINE/SELECT` - Pick next refinement from medium/low priority violations
 
 ---
