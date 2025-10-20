@@ -116,16 +116,8 @@ void app_runtime::frame() {
                 world.character_params.max_speed = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::ground_accel:
-                world.character_params.ground_accel = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::base_friction:
-                world.character_params.base_friction = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::dash_impulse:
-                world.character_params.dash_impulse = cmd.value;
+            case gui::parameter_type::time_to_max_speed:
+                world.character_params.time_to_max_speed = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
             case gui::parameter_type::jump_height:

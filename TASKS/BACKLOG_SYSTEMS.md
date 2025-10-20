@@ -11,10 +11,15 @@
 
 **Layer 4 - Buildable Now (No Dependencies):**
 
-**Dash Mechanic**
+None - All movement mechanics blocked by friction refactor (#17)
+
+**Layer 4 - Blocked (Requires Friction Refactor #17):**
+
+**Dash Mechanic** - @TASKS/PLANS/DASH_SYSTEM.md (DEFERRED)
 - Burst movement in input direction
 - Cooldown/resource management
 - Maintains responsiveness (no control loss)
+- Status: Rejected iteration 2 - requires frame-rate independent friction foundation
 
 **Surveyor Wheel Locomotion**
 - Distance-based keyframe triggering (pass pose + reach pose)

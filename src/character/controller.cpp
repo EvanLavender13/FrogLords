@@ -22,6 +22,16 @@ constexpr float BUMPER_RADIUS = 0.50f; // meters
 // Used in: controller constructor (line 29) to set initial position.y
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // meters (= 0.5m)
 
+void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+    float speed = glm::length(horizontal_velocity);
+    if (speed > max_speed) {
+        horizontal_velocity = horizontal_velocity * (max_speed / speed);
+        velocity.x = horizontal_velocity.x;
+        velocity.z = horizontal_velocity.z;
+    }
+}
+
 } // namespace
 
 controller::controller()
@@ -34,15 +44,9 @@ controller::controller()
     FL_PRECONDITION(walk_threshold < run_threshold,
                     "walk_threshold must be less than run_threshold to define distinct states");
 
-    // Validate dash parameters (prevent division by zero in debug viz)
-    FL_PRECONDITION(dash_cooldown > 0.0f, "dash_cooldown must be positive");
-
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
-
-    // Calculate drag coefficient for equilibrium at max_speed
-    recalculate_drag_coefficient();
 }
 
 void controller::apply_input(const controller_input_params& input_params,
@@ -63,9 +67,9 @@ void controller::apply_input(const controller_input_params& input_params,
     input_direction =
         forward * input_params.move_direction.y + right * input_params.move_direction.x;
 
-    // Direct acceleration (same in air and on ground)
-    // Velocity-dependent friction creates equilibrium, prevents infinite acceleration
-    acceleration = input_direction * ground_accel;
+    // Direct acceleration (instant response)
+    float accel_magnitude = is_grounded ? ground_accel : air_accel;
+    acceleration = input_direction * accel_magnitude;
 
     // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
     //
@@ -100,17 +104,6 @@ void controller::apply_input(const controller_input_params& input_params,
         // Store buffered input for next valid grounded frame
         jump_buffer_timer = jump_buffer_window;
     }
-
-    // Dash: Apply instant impulse in input direction
-    // Cooldown prevents spam
-    // Velocity-dependent friction naturally decelerates from overspeed
-    bool dash_input = input_params.dash_pressed;
-    bool can_dash_now = is_grounded && dash_timer <= 0.0f;
-
-    if (dash_input && can_dash_now) {
-        velocity += input_direction * dash_impulse;
-        dash_timer = dash_cooldown; // Start cooldown
-    }
 }
 
 void controller::update(const collision_world* world, float dt) {
@@ -142,27 +135,18 @@ void controller::update(const collision_world* world, float dt) {
     // Integrate velocity (accumulate - required for physics)
     velocity += acceleration * dt;
 
-    // Apply velocity-dependent friction (same everywhere - ground and air)
-    // Total friction = base_friction·|g| (contact/air resistance) + drag·speed (velocity-dependent)
-    // At max_speed: friction = ground_accel (equilibrium, net acceleration = 0)
-    // Below max_speed: friction < accel (net positive acceleration)
-    // Above max_speed: friction > accel (net negative acceleration, natural deceleration)
-    {
-        glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
-        float speed = glm::length(horizontal_velocity);
+    // Apply friction (if grounded)
+    if (is_grounded) {
+        float speed = glm::length(math::project_to_horizontal(velocity));
         if (speed > 0.0f) {
-            // Apply full friction everywhere (consistent physics)
-            float base_friction_decel = base_friction * std::abs(gravity);
-            float drag_decel = drag_coefficient * speed;
-            float total_friction_decel = (base_friction_decel + drag_decel) * dt;
-
-            // Apply friction by reducing speed
-            float new_speed = std::max(0.0f, speed - total_friction_decel);
-            glm::vec3 direction = horizontal_velocity / speed; // Normalize
-            velocity.x = direction.x * new_speed;
-            velocity.z = direction.z * new_speed;
+            float friction_decel = friction * std::abs(gravity) * dt;
+            float new_speed = std::max(0.0f, speed - friction_decel);
+            clamp_horizontal_speed(velocity, new_speed);
         }
     }
+
+    // Apply speed cap
+    clamp_horizontal_speed(velocity, max_speed);
 
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
@@ -204,9 +188,6 @@ void controller::update(const collision_world* world, float dt) {
         coyote_timer += dt; // Accumulate time since leaving ground
     }
     jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
-
-    // Update dash cooldown timer (frame-rate independent decay)
-    dash_timer = std::max(0.0f, dash_timer - dt);
 
     // Update locomotion state (speed classification + phase calculation)
     // Phase is an OUTPUT computed from movement, never drives physics

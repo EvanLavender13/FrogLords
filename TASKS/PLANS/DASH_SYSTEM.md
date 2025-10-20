@@ -332,3 +332,15 @@ This allows dash to temporarily exceed max_speed while friction naturally brings
 - [DASH_ITERATION_1.md](DASH_ITERATION_1.md) - REVISE
 - [DASH_ITERATION_2.md](DASH_ITERATION_2.md) - REJECT
 
+---
+
+## Status: DEFERRED
+
+**Reason:** Foundation dependency not met
+
+**Blocker:** Friction/acceleration system uses sequential updates (add accel, subtract friction) that produce frame-rate dependent equilibrium. Actual terminal velocity is `max_speed - ground_accel * dt`, not `max_speed`.
+
+**Required foundation:** Velocity-dependent friction system with analytically proven frame-rate independent equilibrium at max_speed.
+
+**Returns to backlog until:** Friction refactor complete and validated
+

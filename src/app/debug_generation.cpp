@@ -306,50 +306,6 @@ void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
     }
 }
 
-void generate_dash_state_primitives(debug::debug_primitive_list& list,
-                                     const controller& character) {
-    // Dash ready/cooldown indicator - sphere above character
-    glm::vec3 indicator_position = character.position + glm::vec3(0.0f, 1.2f, 0.0f);
-
-    bool ready = character.can_dash();
-    glm::vec4 indicator_color = ready ? glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)  // Green = ready
-                                      : glm::vec4(1.0f, 0.3f, 0.3f, 0.7f); // Red = cooldown
-
-    list.spheres.push_back(debug::debug_sphere{
-        .center = indicator_position,
-        .radius = 0.1f,
-        .color = indicator_color,
-        .segments = 8,
-    });
-
-    // Cooldown timer bar (only show during cooldown)
-    if (!ready && character.dash_cooldown > 0.0f) {
-        float progress = character.dash_timer / character.dash_cooldown;
-        float bar_width = 0.6f;
-        float bar_height = 0.05f;
-
-        // Bar background (full width)
-        glm::vec3 bar_center = character.position + glm::vec3(0.0f, 1.4f, 0.0f);
-        glm::vec3 bar_start = bar_center - glm::vec3(bar_width * 0.5f, 0.0f, 0.0f);
-        glm::vec3 bar_end = bar_center + glm::vec3(bar_width * 0.5f, 0.0f, 0.0f);
-
-        // Draw background bar (gray)
-        list.lines.push_back(debug::debug_line{
-            bar_start,
-            bar_end,
-            {0.3f, 0.3f, 0.3f, 0.5f}
-        });
-
-        // Draw progress bar (orange, shrinks from right to left as cooldown expires)
-        glm::vec3 progress_end = bar_start + glm::vec3(bar_width * progress, 0.0f, 0.0f);
-        list.lines.push_back(debug::debug_line{
-            bar_start,
-            progress_end,
-            {1.0f, 0.6f, 0.2f, 1.0f}
-        });
-    }
-}
-
 } // namespace
 
 namespace app {
@@ -362,7 +318,6 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_physics_springs_primitives(list, world.character, world.character_visuals);
     generate_character_body_primitives(list, world.character, world.character_visuals);
     generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals);
-    generate_dash_state_primitives(list, world.character);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);
