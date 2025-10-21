@@ -19,14 +19,6 @@ None - All high-priority violations resolved ✅
 
 ### Medium Priority
 
-**Const-Correctness for Local Arrays**
-- **Location:** `src/app/debug_generation.cpp:54,60,162`, `src/foundation/collision.cpp:16`
-- **Tool:** clang-tidy
-- **Severity:** Medium
-- **Issue:** Local constant arrays/variables not marked UPPER_CASE per conventions
-- **Fix:** Rename to UPPER_CASE: gradient→GRADIENT, num_stops→NUM_STOPS, circle_segments→CIRCLE_SEGMENTS, epsilon→EPSILON
-- **Impact:** Code style consistency
-
 **Uninitialized Renderer Buffer Members**
 - **Location:** `src/rendering/renderer.cpp:6`
 - **Tool:** cppcheck (uninitMemberVar)
