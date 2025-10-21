@@ -8,6 +8,8 @@
 //
 // Pattern mirrors parameter_command.h for consistency.
 
+#include "camera/camera_follow.h" // For camera_mode enum
+
 namespace gui {
 
 enum class camera_parameter_type {
@@ -15,11 +17,13 @@ enum class camera_parameter_type {
     HEIGHT_OFFSET,
     MIN_DISTANCE,
     MAX_DISTANCE,
+    MODE,
 };
 
 struct camera_command {
     camera_parameter_type type;
-    float value;
+    float value;       // Used for numeric parameters
+    camera_mode mode;  // Used for MODE parameter
 };
 
 } // namespace gui

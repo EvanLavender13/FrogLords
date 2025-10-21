@@ -76,14 +76,6 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         gui::widget::text("Spring Velocity: %.3f", visuals.animation.landing_spring.get_velocity());
     }
 
-    // Camera controls
-    if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
-        ImGui::RadioButton("Free Orbit", reinterpret_cast<int*>(&state.cam_mode),
-                           static_cast<int>(camera_mode::FREE_ORBIT));
-        ImGui::RadioButton("Lock to Orientation", reinterpret_cast<int*>(&state.cam_mode),
-                           static_cast<int>(camera_mode::LOCK_TO_ORIENTATION));
-    }
-
     // Orientation parameters
     if (ImGui::CollapsingHeader("Orientation")) {
         // Read-only for now (no parameter commands needed for orientation spring)

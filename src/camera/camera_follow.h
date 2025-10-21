@@ -2,9 +2,12 @@
 
 #include <glm/glm.hpp>
 
+enum class camera_mode { FREE_ORBIT, LOCK_TO_ORIENTATION };
+
 /// Follow camera component - maintains spherical offset from target
 struct camera_follow {
     // State
+    camera_mode mode = camera_mode::FREE_ORBIT;
     float distance = 5.0f;
     float latitude = 15.0f; // degrees
     float longitude = 0.0f; // degrees

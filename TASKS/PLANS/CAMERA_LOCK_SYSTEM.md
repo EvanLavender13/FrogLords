@@ -179,3 +179,9 @@ Does this implementation plan follow the principles? Specifically: 1) Is the pur
 - [ ] Emergent behaviors appear
 - [x] Principles upheld
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+## Iterations
+
+- [CAMERA_LOCK_ITERATION_1.md](CAMERA_LOCK_ITERATION_1.md) - In Progress

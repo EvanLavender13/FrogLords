@@ -19,7 +19,7 @@ void game_world::init() {
     setup_test_level(*this);
 }
 
-void game_world::update(float dt, const gui::character_panel_state& panel_state) {
+void game_world::update(float dt) {
     debug_list.clear();
 
     // Toggle control scheme
@@ -114,7 +114,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     // Update camera position based on mode
     glm::vec3 eye_position;
-    if (panel_state.cam_mode == gui::camera_mode::LOCK_TO_ORIENTATION) {
+    if (cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION) {
         // Compute forward direction from orientation system
         float yaw = character_visuals.orientation.get_yaw();
         glm::vec3 forward_dir = math::yaw_to_forward(yaw);
