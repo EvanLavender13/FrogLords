@@ -77,3 +77,26 @@ glm::vec3 camera_follow::compute_look_target(const glm::vec3& target_position) c
                      "look target must be finite");
     return result;
 }
+
+glm::vec3 camera_follow::compute_locked_eye_position(const glm::vec3& target_position,
+                                                     const glm::vec3& forward_dir, float distance,
+                                                     float height_offset) {
+    FL_PRECONDITION(std::isfinite(target_position.x) && std::isfinite(target_position.y) &&
+                        std::isfinite(target_position.z),
+                    "target_position must be finite");
+    FL_PRECONDITION(std::isfinite(forward_dir.x) && std::isfinite(forward_dir.y) &&
+                        std::isfinite(forward_dir.z),
+                    "forward_dir must be finite");
+    FL_PRECONDITION(distance > 0.0f, "distance must be positive");
+
+    float dir_length = glm::length(forward_dir);
+    FL_PRECONDITION(dir_length > 1e-6f, "forward_dir must be non-zero");
+
+    glm::vec3 normalized_dir = forward_dir / dir_length;
+    glm::vec3 center = target_position + glm::vec3(0, height_offset, 0);
+    glm::vec3 result = center - normalized_dir * distance;
+
+    FL_POSTCONDITION(std::isfinite(result.x) && std::isfinite(result.y) && std::isfinite(result.z),
+                     "eye position must be finite");
+    return result;
+}

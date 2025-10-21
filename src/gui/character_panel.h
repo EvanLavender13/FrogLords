@@ -9,9 +9,12 @@
 
 namespace gui {
 
+enum class camera_mode { FREE_ORBIT, LOCK_TO_ORIENTATION };
+
 struct character_panel_state {
     bool show = true;
     bool show_velocity_trail = true;
+    camera_mode cam_mode = camera_mode::FREE_ORBIT;
 };
 
 std::vector<parameter_command> draw_character_panel(character_panel_state& state,

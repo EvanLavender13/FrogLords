@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md
 **Layer:** 4
 **Complexity:** Small
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - Camera Follow System (Layer 3) ✓

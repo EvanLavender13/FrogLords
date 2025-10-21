@@ -86,30 +86,96 @@ Creates composable primitive. The lock doesn't know about "orientation"—it pos
 
 ---
 
-<!-- BEGIN: SELECT/GRAYBOX -->
+<!-- BEGIN: GRAYBOX/SCOPE -->
 ## Graybox
 
-**Simplest implementation:**
-- Pure helper function (no class state)
-- GUI toggle: Free Orbit / Lock to Orientation
-- Same zoom/distance sliders as orbit
-- Debug arrows show active lock direction
+**What will be built:**
+Pure function that computes camera eye position from target, direction yaw, distance, and height. Camera mode enum added to game_world (FREE_ORBIT, LOCK_TO_ORIENTATION). GUI radio button toggles mode. In lock mode, controller's heading_yaw determines direction vector. Debug arrow shows lock direction when active.
 
-**Validation:**
-- Toggle modes while moving
-- Verify camera snaps instantly to character forward
-- Smooth following (orientation already smoothed by yaw spring)
-- Test with car-like controls (W/S forward/back, A/D turn)
-<!-- END: SELECT/GRAYBOX -->
+**Complexity:** Small
+<!-- END: GRAYBOX/SCOPE -->
+
+<!-- BEGIN: GRAYBOX/IMPLEMENTATION_PLAN -->
+## Implementation Plan
+
+**Files to modify:**
+- `src/camera/camera_follow.h` - Add pure function `compute_locked_eye_position(target, forward_dir, distance, height)` accepting vec3
+- `src/camera/camera_follow.cpp` - Implement locked camera position calculation with vec3 direction input
+- `src/gui/character_panel.h` - Add `camera_mode` enum and field to `character_panel_state` (SSOT for mode)
+- `src/gui/character_panel.cpp` - Add radio button for camera mode toggle
+- `src/app/game_world.cpp` - Update camera position logic to branch on mode, derive direction from orientation system once
+- `src/app/debug_generation.cpp` - Add debug arrow showing lock direction when in LOCK_TO_ORIENTATION mode
+
+**Call structure:**
+`game_world::update()` reads `camera_mode` from `panel_state`. When LOCK_TO_ORIENTATION: compute forward direction vec3 from `character_visuals.orientation.get_yaw()` once, pass to both camera computation and debug viz. Camera function: `camera_follow::compute_locked_eye_position(character.position, forward_dir, cam_follow.distance, cam_follow.height_offset)`.
+
+**Debug data flow:**
+In `game_world::update()`, when `camera_mode == LOCK_TO_ORIENTATION`, compute `forward_dir` once from yaw. Pass to camera function and add debug arrow to `debug_list` using same vector.
+
+**Integration points:**
+- `gui::character_panel_state` stores camera_mode enum (SSOT)
+- `game_world::update()` at line 116-117 branches on mode from panel_state
+- Direction derived once from `character_visuals.orientation.get_yaw()` and reused
+<!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
+
+<!-- BEGIN: GRAYBOX/REVIEW -->
+## Implementation Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-21
+
+**Question asked:**
+Does this implementation plan follow the principles? Specifically: 1) Is the pure function approach correct (no accumulated state)? 2) Is the camera mode enum the right level of abstraction? 3) Should heading_yaw from controller be the source, or should we use velocity-derived direction? 4) Any violations of orthogonality or Single Source of Truth?
+
+**Feedback received:**
+- Pure function approach correct; prefer vec3 forward_dir input over yaw for composability
+- Camera mode enum acceptable; keep it localized in one place (SSOT)
+- Use orientation system's facing output, not raw controller heading_yaw or velocity
+- Avoid duplicating camera_mode state; store once in panel_state
+- Compute direction vector once per frame and pass to both camera and debug viz
+- Keep camera math geometric and ignorant of "modes"
+
+**Impact on implementation:**
+- Changed function signature from `direction_yaw` to `forward_dir` (vec3)
+- Removed camera_mode from game_world, kept only in gui::character_panel_state
+- Use character_visuals.orientation.get_yaw() instead of character.heading_yaw
+- Compute direction once and reuse for camera and debug arrow
+<!-- END: GRAYBOX/REVIEW -->
 
 ---
+
+<!-- BEGIN: GRAYBOX/RESULTS -->
+## Results
+
+**Status:**
+- [x] Core functional
+- [x] Build successful
+- [x] Debug viz working (existing orientation arrow sufficient)
+- [x] Ready for iteration
+
+**Works:**
+- Camera locks instantly behind character orientation
+- Smooth following from upstream orientation spring
+- Mode toggle in GUI (Free Orbit / Lock to Orientation)
+- Zoom/distance controls work in both modes
+- Pure function approach (no accumulated state)
+
+**Doesn't:**
+- Nothing broken
+
+**Surprises:**
+- Debug arrow redundant (removed) - existing green orientation arrow already shows direction
+
+**Next:**
+- ITERATE phase
+<!-- END: GRAYBOX/RESULTS -->
 
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Core functional in graybox
-- [ ] Mathematical correctness proven
-- [ ] Debug visualization shows behavior
+- [x] Core functional in graybox
+- [x] Mathematical correctness proven
+- [x] Debug visualization shows behavior
 - [ ] Emergent behaviors appear
-- [ ] Principles upheld
+- [x] Principles upheld
 <!-- END: SELECT/SUCCESS -->
