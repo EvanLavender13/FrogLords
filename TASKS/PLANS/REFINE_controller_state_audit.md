@@ -57,3 +57,17 @@ Comment claims "for animation" but no animation system reads it.
 
 **Note:** Other fields (`input_direction`, `collision_contact_debug`) ARE used by reactive systems and debug generation - keep these.
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Deleted write-only `last_acceleration` field
+**Files Modified:**
+- `src/character/controller.h:30` - Removed field declaration
+- `src/character/controller.cpp:280` - Removed write assignment and comment
+
+**Tests:** All passing (clean build)
+**Result:** ✓ Violation removed - no animation system reads this field
+<!-- END: REFINE/COMPLETED -->
