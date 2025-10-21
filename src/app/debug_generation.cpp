@@ -310,63 +310,6 @@ void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
     }
 }
 
-void generate_camera_lock_primitives(debug::debug_primitive_list& list,
-                                     const controller& character,
-                                     const character_reactive_systems& visuals,
-                                     camera_mode mode) {
-    // Only show camera lock debug in lock modes
-    if (mode == camera_mode::FREE_ORBIT) {
-        return;
-    }
-
-    glm::vec3 base = character.position + glm::vec3(0, 0.5f, 0); // Above character center
-
-    // Character orientation (green arrow) - always show in lock modes
-    float yaw = visuals.orientation.get_yaw();
-    glm::vec3 forward = math::yaw_to_forward(yaw);
-    list.arrows.push_back(debug::debug_arrow{
-        .start = base,
-        .end = base + forward * 2.0f,
-        .color = {0.0f, 1.0f, 0.0f, 0.8f}, // Green = orientation
-        .head_size = 0.2f,
-    });
-
-    // Character velocity (blue arrow) - only show if moving
-    glm::vec3 vel_horizontal = math::project_to_horizontal(character.velocity);
-    if (glm::length(vel_horizontal) > 0.01f) {
-        glm::vec3 vel_dir = glm::normalize(vel_horizontal);
-        float vel_magnitude = glm::length(vel_horizontal);
-        list.arrows.push_back(debug::debug_arrow{
-            .start = base,
-            .end = base + vel_dir * 2.0f * glm::min(vel_magnitude / 2.0f, 1.0f),
-            .color = {0.0f, 0.5f, 1.0f, 0.8f}, // Bright blue = velocity
-            .head_size = 0.2f,
-        });
-    }
-
-    // Active lock direction (red arrow) - shows what camera is using
-    glm::vec3 active_direction;
-    switch (mode) {
-    case camera_mode::LOCK_ORIENTATION:
-        active_direction = forward;
-        break;
-    case camera_mode::LOCK_VELOCITY: {
-        glm::vec3 vel_horizontal_local = math::project_to_horizontal(character.velocity);
-        active_direction = math::safe_normalize(vel_horizontal_local, forward);
-        break;
-    }
-    case camera_mode::FREE_ORBIT:
-        return; // Already handled above
-    }
-
-    list.arrows.push_back(debug::debug_arrow{
-        .start = base,
-        .end = base + active_direction * 2.5f,
-        .color = {1.0f, 0.0f, 0.0f, 1.0f}, // Red = active lock direction
-        .head_size = 0.25f,
-    });
-}
-
 } // namespace
 
 namespace app {
@@ -379,8 +322,6 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_physics_springs_primitives(list, world.character, world.character_visuals);
     generate_character_body_primitives(list, world.character, world.character_visuals);
     generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals);
-    generate_camera_lock_primitives(list, world.character, world.character_visuals,
-                                    world.current_camera_mode);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);

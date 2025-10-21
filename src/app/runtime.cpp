@@ -147,18 +147,12 @@ void app_runtime::frame() {
         }
 
         // Camera section
-        auto camera_panel_result =
-            gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow,
-                                   world.current_camera_mode);
-
-        // Apply camera mode commands
-        for (const auto& mode_cmd : camera_panel_result.mode_commands) {
-            world.set_camera_mode(mode_cmd.mode);
-        }
+        auto camera_commands =
+            gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
 
         // Apply camera commands (unidirectional flow: GUI → commands → game state)
         // Enforce invariants: min_distance <= distance <= max_distance
-        for (const auto& cmd : camera_panel_result.commands) {
+        for (const auto& cmd : camera_commands) {
             switch (cmd.type) {
             case gui::camera_parameter_type::DISTANCE:
                 world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,

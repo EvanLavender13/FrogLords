@@ -16,8 +16,6 @@ namespace gui {
 struct character_panel_state;
 }
 
-enum class camera_mode { FREE_ORBIT, LOCK_ORIENTATION, LOCK_VELOCITY };
-
 struct game_world {
     camera cam;
     camera_follow cam_follow;
@@ -30,15 +28,12 @@ struct game_world {
 
     debug::debug_primitive_list debug_list;
 
-    camera_mode current_camera_mode = camera_mode::FREE_ORBIT;
-
     void init();
     void update(float dt, const gui::character_panel_state& panel_state);
 
     // Camera input forwarding
     void apply_camera_orbit(float delta_x, float delta_y);
     void apply_camera_zoom(float delta);
-    void set_camera_mode(camera_mode mode);
 };
 
 void setup_test_level(game_world& world);

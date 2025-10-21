@@ -8,8 +8,6 @@
 //
 // Pattern mirrors parameter_command.h for consistency.
 
-enum class camera_mode;
-
 namespace gui {
 
 enum class camera_parameter_type {
@@ -22,10 +20,6 @@ enum class camera_parameter_type {
 struct camera_command {
     camera_parameter_type type;
     float value;
-};
-
-struct camera_mode_command {
-    camera_mode mode;
 };
 
 } // namespace gui
