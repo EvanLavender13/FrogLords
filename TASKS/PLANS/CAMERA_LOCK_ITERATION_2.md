@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-21
 **Previous:** [CAMERA_LOCK_ITERATION_1.md](CAMERA_LOCK_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -88,5 +88,47 @@ None - refinement only
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex
+**Date:** 2025-10-21
+
+**Principle Violations:**
+- **Process Inherits Principles (SSOT)**: Plan documentation claims camera_mode should live in GUI panel state (CAMERA_LOCK_SYSTEM.md:104,116,140), but implementation stores it in camera_follow component (src/camera/camera_follow.h:5,10; src/app/runtime.cpp:176). This is Contract/Implementation Mismatch (PATTERNS.md:9). The code has a single source (cam_follow.mode), so runtime behavior is consistent, but docs are out of sync.
+- **Lists Are Intent, Not History**: Iteration doc lists commit IDs (lines 82-84), duplicating git history. Per CONVENTIONS.md:54-59 and PRINCIPLES.md:94-99, history belongs to git; docs should not duplicate it.
+- **Plan Section Divergence**: CAMERA_LOCK_SYSTEM.md references `gui/character_panel.*` (line 104-107) but actual system uses `gui/camera_panel.*`. Impact section claims SSOT in panel_state (line 140) but code differs.
+
+**Strengths:**
+- Mathematical correctness: Direction-lock formula is correct and implemented as pure function with proper pre/postcondition checks (src/camera/camera_follow.cpp:95-101)
+- Orthonormal basis construction validated for car-like input using yaw_to_forward/right helpers (src/app/game_world.cpp:73-80)
+- Radical Simplicity: Pure, composable math core with minimal parameters; no accumulated state
+- Consistency: Deterministic mapping produces consistent output; pure function plus explicit branch
+- Clean data flow: Direction derived once per frame, reused in composition layer
+- Assertions enforce invariants throughout
+
+**Assessment:**
+Implementation is excellent: math is correct, behavior is consistent and simple, composition is sound. Core design aligns strongly with Six Pillars. Violations are documentation/process drift issues, not fundamental design flaws. The code itself demonstrates proper adherence to principles; the plans need to be synchronized with reality.
+
+**Notable:** Referenced src/gameplay/camera_controller.{h,cpp} do not exist; actual implementation is in src/app/game_world.cpp:117 and src/camera/camera_follow.{h,cpp}.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** Implementation demonstrates excellent adherence to the Six Pillars—math is correct, behavior is consistent, composition is sound. All violations are documentation/process drift issues, not fundamental design flaws. The code already follows principles; documentation must be synchronized with implemented reality. These are fixable without changing any implementation.
+
+**Required changes:**
+- Update CAMERA_LOCK_SYSTEM.md to document actual SSOT location (camera_mode lives in cam_follow component, not GUI panel state)
+- Fix file path references in CAMERA_LOCK_SYSTEM.md (camera_panel not character_panel)
+- Remove commit history duplication from iteration docs (lines 82-84)
+<!-- END: VALIDATE/DECISION -->
 
 ---
