@@ -12,6 +12,7 @@ struct controller {
 
     struct controller_input_params {
         glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
+        float turn_input;         // Turn input for heading integration [-1,1]
         bool jump_pressed;        // True on frame of jump press
     };
 
@@ -110,7 +111,7 @@ struct controller {
     // TUNED: Turn rate for car-like control heading
     // Controls rotational speed when using heading-based movement
     // Higher values = faster turning (arcade feel)
-    // Used in: apply_input to integrate heading_yaw from lateral input
+    // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
     float turn_rate = 3.0f; // radians/second
 
     // Locomotion state (speed tiers + phase for cyclic motion)
@@ -145,7 +146,8 @@ struct controller {
     controller();
 
     void apply_input(const controller_input_params& input_params,
-                     const camera_input_params& cam_params, float dt);
+                     const camera_input_params& cam_params,
+                     float dt);
     void update(const collision_world* world, float dt);
 
   private:

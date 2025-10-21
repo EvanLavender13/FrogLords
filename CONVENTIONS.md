@@ -49,6 +49,8 @@ High-level systems validated through gameplay and observation.
 
 **Comments explain why, not what.** Document contracts and non-obvious behavior.
 
+**Consistency:** Before adding code, read the file to identify existing patterns. Match existing patterns unless insufficient.
+
 ---
 
 ## Documentation Hygiene

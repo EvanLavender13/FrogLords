@@ -34,48 +34,21 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     input_params.move_direction = glm::vec2(0.0f, 0.0f);
     input_params.move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
     input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
-    input_params.move_direction.x -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
-    input_params.move_direction.x += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
 
-    // Update heading in CAR_LIKE mode (composition layer responsibility)
-    if (current_control_scheme == control_scheme::CAR_LIKE) {
-        // Time-independent heading integration
-        FL_PRECONDITION(dt > 0.0f && std::isfinite(dt), "dt must be positive and finite for time-independent integration");
-        FL_PRECONDITION(std::isfinite(character.turn_rate), "turn_rate must be finite");
-        FL_PRECONDITION(std::isfinite(character.heading_yaw), "heading_yaw must be finite before integration");
+    // A/D input serves two purposes:
+    // 1. Turn input (always drives heading integration in controller)
+    // 2. Lateral movement (only in FREE_STRAFE mode)
+    float lateral_input = 0.0f;
+    lateral_input -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
+    lateral_input += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
 
-        float old_heading = character.heading_yaw;
+    // Always set turn_input (drives heading physics)
+    input_params.turn_input = lateral_input;
 
-        // Speed-dependent turning (arcade car feel)
-        // Scale turn rate by current speed: 0 at rest, 1.0 at turn_speed_threshold
-        float horizontal_speed = glm::length(math::project_to_horizontal(character.velocity));
-        constexpr float TURN_SPEED_THRESHOLD = 2.5f; // m/s - speed for full turn rate (between walk and run)
-        float speed_factor = std::min(horizontal_speed / TURN_SPEED_THRESHOLD, 1.0f);
-
-        FL_POSTCONDITION(speed_factor >= 0.0f && speed_factor <= 1.0f, "speed_factor must be in [0, 1]");
-        FL_POSTCONDITION(std::isfinite(speed_factor), "speed_factor must be finite");
-
-        // Integrate heading from turn input
-        // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
-        // Input convention: negative x = left movement, positive x = right movement
-        // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
-        // Therefore: negate x to map left input → +yaw, right input → -yaw
-        float effective_turn_rate = character.turn_rate * speed_factor;
-        character.heading_yaw += -input_params.move_direction.x * effective_turn_rate * dt;
-        character.heading_yaw = math::wrap_angle_radians(character.heading_yaw);
-
-        // Validate time-independent integration
-        FL_POSTCONDITION(std::isfinite(character.heading_yaw), "heading_yaw must remain finite after integration");
-        FL_POSTCONDITION(character.heading_yaw >= -glm::pi<float>() && character.heading_yaw <= glm::pi<float>(),
-                         "heading_yaw must be wrapped to [-π, π]");
-
-        // Zero lateral input for controller (car control = no strafing)
-        input_params.move_direction.x = 0.0f;
-
-        // Validate input transformation: lateral input zeroed in car mode
-        FL_POSTCONDITION(input_params.move_direction.x == 0.0f,
-                         "CAR_LIKE mode must zero lateral input (no strafing)");
-    }
+    // Mode-dependent: lateral movement only in FREE_STRAFE
+    input_params.move_direction.x = (current_control_scheme == control_scheme::FREE_STRAFE)
+                                     ? lateral_input   // FREE_STRAFE: lateral input creates strafing
+                                     : 0.0f;           // CAR_LIKE: no lateral movement (turn only)
 
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
