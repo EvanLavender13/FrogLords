@@ -54,34 +54,7 @@ Update priority order:
 
 ---
 
-### 2. Update Dependency Stack
-
-**In `TASKS/DEPENDENCY_STACK.md`:**
-
-Update header:
-```markdown
-**Last Updated:** YYYY-MM-DD
-```
-
-Update affected layer's "Provides" section:
-```markdown
-## Layer N: <LAYER>
-
-**Provides:**
-
-- <System> - <what it provides> (`path/to/file`)
-  - Refinement: <brief description of what was fixed>
-```
-
-Note what this refinement now enables (if applicable):
-```markdown
-**Dependencies to build something new here:**
-- <System> now supports <capability>
-```
-
----
-
-### 3. Update Current Plan
+### 2. Update Current Plan
 
 **In `TASKS/CURRENT_PLAN.md`:**
 
@@ -109,10 +82,10 @@ Note what this refinement now enables (if applicable):
 
 ---
 
-### 4. Create Final Commit
+### 3. Create Final Commit
 
 ```bash
-git add TASKS/BACKLOG_REFINEMENTS.md TASKS/DEPENDENCY_STACK.md TASKS/CURRENT_PLAN.md TASKS/PLANS/REFINE_<name>.md
+git add TASKS/BACKLOG_REFINEMENTS.md TASKS/CURRENT_PLAN.md TASKS/PLANS/REFINE_<name>.md
 
 git commit -m "close: <name> refinement
 
@@ -124,7 +97,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### 5. Merge to Main
+### 4. Merge to Main
 
 ```bash
 # Ensure on main
@@ -147,14 +120,11 @@ git log --oneline -3
 
 ---
 
-### 6. Verify System State
+### 5. Verify System State
 
 ```bash
 # Verify main is clean
 git status
-
-# Verify stack updated
-grep "Last Updated" TASKS/DEPENDENCY_STACK.md
 
 # Verify active violations updated
 grep -A10 "Active Violations" TASKS/BACKLOG_REFINEMENTS.md
@@ -165,7 +135,7 @@ head -10 TASKS/CURRENT_PLAN.md
 
 ---
 
-### 7. Check Retrospective Threshold
+### 6. Check Retrospective Threshold
 
 ```bash
 # Count completed plans (REFINE_* and *_SYSTEM only - NOT *_ITERATION_*)
@@ -190,7 +160,6 @@ ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null | wc -l
 ## Outputs
 
 - [ ] BACKLOG_REFINEMENTS.md updated (current state only)
-- [ ] DEPENDENCY_STACK.md updated (current state only)
 - [ ] CURRENT_PLAN.md updated
 - [ ] Final commit created
 - [ ] Merged to main
@@ -204,7 +173,6 @@ ls TASKS/PLANS/REFINE_*.md TASKS/PLANS/*_SYSTEM.md 2>/dev/null | wc -l
 
 **Complete when:**
 - Backlogs show current state (not history)
-- Stack shows what's possible now (not past)
 - Detailed metrics archived in plan file
 - Changes merged to main
 - Ready to select next task

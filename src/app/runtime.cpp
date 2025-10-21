@@ -112,35 +112,35 @@ void app_runtime::frame() {
         // Apply parameter commands (unidirectional flow: GUI → commands → game state)
         for (const auto& cmd : param_commands) {
             switch (cmd.type) {
-            case gui::parameter_type::max_speed:
+            case gui::parameter_type::MAX_SPEED:
                 world.character_params.max_speed = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::accel:
+            case gui::parameter_type::ACCEL:
                 world.character_params.accel = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::jump_height:
+            case gui::parameter_type::JUMP_HEIGHT:
                 world.character_params.jump_height = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::gravity:
+            case gui::parameter_type::GRAVITY:
                 world.character_params.gravity = cmd.value;
                 world.character_params.apply_to(world.character);
                 break;
-            case gui::parameter_type::coyote_window:
+            case gui::parameter_type::COYOTE_WINDOW:
                 world.character.coyote_window = cmd.value;
                 break;
-            case gui::parameter_type::jump_buffer_window:
+            case gui::parameter_type::JUMP_BUFFER_WINDOW:
                 world.character.jump_buffer_window = cmd.value;
                 break;
-            case gui::parameter_type::landing_stiffness:
+            case gui::parameter_type::LANDING_STIFFNESS:
                 world.character_visuals.animation.landing_spring.stiffness = cmd.value;
                 break;
-            case gui::parameter_type::landing_damping:
+            case gui::parameter_type::LANDING_DAMPING:
                 world.character_visuals.animation.landing_spring.damping = cmd.value;
                 break;
-            case gui::parameter_type::landing_impulse_scale:
+            case gui::parameter_type::LANDING_IMPULSE_SCALE:
                 world.character_visuals.animation.landing_impulse_scale = cmd.value;
                 break;
             }
@@ -154,20 +154,20 @@ void app_runtime::frame() {
         // Enforce invariants: min_distance <= distance <= max_distance
         for (const auto& cmd : camera_commands) {
             switch (cmd.type) {
-            case gui::camera_parameter_type::distance:
+            case gui::camera_parameter_type::DISTANCE:
                 world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
                                                        world.cam_follow.max_distance);
                 break;
-            case gui::camera_parameter_type::height_offset:
+            case gui::camera_parameter_type::HEIGHT_OFFSET:
                 world.cam_follow.height_offset = cmd.value;
                 break;
-            case gui::camera_parameter_type::min_distance:
+            case gui::camera_parameter_type::MIN_DISTANCE:
                 world.cam_follow.min_distance = cmd.value;
                 // Clamp distance and max_distance to respect new minimum
                 world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
                 world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
                 break;
-            case gui::camera_parameter_type::max_distance:
+            case gui::camera_parameter_type::MAX_DISTANCE:
                 world.cam_follow.max_distance = cmd.value;
                 // Clamp distance and min_distance to respect new maximum
                 world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);

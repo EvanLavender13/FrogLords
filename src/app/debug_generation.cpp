@@ -116,13 +116,13 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
     // Color-code character body by locomotion state
     glm::vec4 body_color;
     switch (character.locomotion.state) {
-    case controller::locomotion_speed_state::walk:
+    case controller::locomotion_speed_state::WALK:
         body_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
         break;
-    case controller::locomotion_speed_state::run:
+    case controller::locomotion_speed_state::RUN:
         body_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
         break;
-    case controller::locomotion_speed_state::sprint:
+    case controller::locomotion_speed_state::SPRINT:
         body_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
         break;
     }
@@ -182,13 +182,13 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
     // Draw "+" cross rotated by phase (rolling around right_dir axis)
     glm::vec4 cross_color;
     switch (character.locomotion.state) {
-    case controller::locomotion_speed_state::walk:
+    case controller::locomotion_speed_state::WALK:
         cross_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
         break;
-    case controller::locomotion_speed_state::run:
+    case controller::locomotion_speed_state::RUN:
         cross_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
         break;
-    case controller::locomotion_speed_state::sprint:
+    case controller::locomotion_speed_state::SPRINT:
         cross_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
         break;
     }

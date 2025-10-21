@@ -27,22 +27,22 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         float jump_buffer_window = character.jump_buffer_window;
 
         if (gui::widget::slider_float("Max Speed (m/s)", &max_speed, 1.0f, 15.0f)) {
-            commands.push_back({parameter_type::max_speed, max_speed});
+            commands.push_back({parameter_type::MAX_SPEED, max_speed});
         }
         if (gui::widget::slider_float("Acceleration (m/s^2)", &accel, 1.0f, 50.0f)) {
-            commands.push_back({parameter_type::accel, accel});
+            commands.push_back({parameter_type::ACCEL, accel});
         }
         if (gui::widget::slider_float("Jump Height (m)", &jump_height, 0.5f, 3.0f)) {
-            commands.push_back({parameter_type::jump_height, jump_height});
+            commands.push_back({parameter_type::JUMP_HEIGHT, jump_height});
         }
         if (gui::widget::slider_float("Gravity (m/s^2)", &gravity, -20.0f, -5.0f)) {
-            commands.push_back({parameter_type::gravity, gravity});
+            commands.push_back({parameter_type::GRAVITY, gravity});
         }
         if (gui::widget::slider_float("Coyote Window (s)", &coyote_window, 0.0f, 0.5f)) {
-            commands.push_back({parameter_type::coyote_window, coyote_window});
+            commands.push_back({parameter_type::COYOTE_WINDOW, coyote_window});
         }
         if (gui::widget::slider_float("Jump Buffer Window (s)", &jump_buffer_window, 0.0f, 0.5f)) {
-            commands.push_back({parameter_type::jump_buffer_window, jump_buffer_window});
+            commands.push_back({parameter_type::JUMP_BUFFER_WINDOW, jump_buffer_window});
         }
 
         // Debug displays for jump timing forgiveness
@@ -62,13 +62,13 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         float landing_impulse_scale = visuals.animation.landing_impulse_scale;
 
         if (gui::widget::slider_float("Stiffness", &landing_stiffness, 100.0f, 1000.0f)) {
-            commands.push_back({parameter_type::landing_stiffness, landing_stiffness});
+            commands.push_back({parameter_type::LANDING_STIFFNESS, landing_stiffness});
         }
         if (gui::widget::slider_float("Damping", &landing_damping, 10.0f, 100.0f)) {
-            commands.push_back({parameter_type::landing_damping, landing_damping});
+            commands.push_back({parameter_type::LANDING_DAMPING, landing_damping});
         }
         if (gui::widget::slider_float("Impulse Scale", &landing_impulse_scale, 0.1f, 1.5f)) {
-            commands.push_back({parameter_type::landing_impulse_scale, landing_impulse_scale});
+            commands.push_back({parameter_type::LANDING_IMPULSE_SCALE, landing_impulse_scale});
         }
 
         // Read-only spring state display
@@ -94,13 +94,13 @@ std::vector<parameter_command> draw_character_panel(character_panel_state& state
         // State name
         const char* state_name;
         switch (character.locomotion.state) {
-        case controller::locomotion_speed_state::walk:
+        case controller::locomotion_speed_state::WALK:
             state_name = "WALK";
             break;
-        case controller::locomotion_speed_state::run:
+        case controller::locomotion_speed_state::RUN:
             state_name = "RUN";
             break;
-        case controller::locomotion_speed_state::sprint:
+        case controller::locomotion_speed_state::SPRINT:
             state_name = "SPRINT";
             break;
         default:

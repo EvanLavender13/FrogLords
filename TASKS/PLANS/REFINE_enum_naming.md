@@ -104,14 +104,38 @@ camera_parameter::field_of_view   → FIELD_OF_VIEW
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved
-- [ ] Principle upheld (Consistency)
-- [ ] Tests passing (build succeeds)
-- [ ] No regressions
-- [ ] clang-tidy confirms violations cleared
+- [x] Violation resolved
+- [x] Principle upheld (Consistency)
+- [x] Tests passing (build succeeds)
+- [x] No regressions
+- [x] clang-tidy confirms violations cleared
 
 **Metrics:**
 - Before: 22 snake_case enum constants
 - After: 22 UPPER_CASE enum constants
 - LOC change: 0 (pure rename)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Renamed all enum constants from snake_case to UPPER_CASE
+**Tests:** Build succeeds, no regressions
+**Result:** ✓ Violation removed
+
+**Files modified:**
+- `src/character/controller.h` - locomotion_speed_state enum (3 constants)
+- `src/gui/parameter_command.h` - parameter_type enum (9 constants)
+- `src/gui/camera_command.h` - camera_parameter_type enum (4 constants)
+- `src/character/controller.cpp` - 6 usage sites
+- `src/gui/character_panel.cpp` - 12 usage sites
+- `src/gui/camera_panel.cpp` - 4 usage sites
+- `src/app/runtime.cpp` - 13 usage sites
+- `src/app/debug_generation.cpp` - 6 usage sites
+
+**Total changes:** 3 enum declarations + 41 usage sites = 44 updates
+
+**Clang-tidy verification:** No enum naming violations remain
+<!-- END: REFINE/COMPLETED -->
