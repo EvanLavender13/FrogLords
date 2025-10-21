@@ -69,11 +69,11 @@ struct controller {
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] `ground_normal` and `ground_height` deleted from struct
-- [ ] All writes to these fields removed
-- [ ] Build passes
-- [ ] Game runs with no behavioral changes
-- [ ] No references remain in codebase
+- [x] `ground_normal` and `ground_height` deleted from struct
+- [x] All writes to these fields removed
+- [x] Build passes
+- [x] Game runs with no behavioral changes
+- [x] No references remain in codebase
 
 **Metrics:**
 - Before: LOC (controller.h + writes in collision code)
@@ -94,3 +94,29 @@ struct controller {
 **Tests:** All passing - build successful, runtime verified
 **Result:** ✓ Violation removed - controller state reduced, no behavioral changes
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.h`: 146 → 144 (-2 lines)
+- `src/character/controller.cpp`: 281 → 277 (-4 lines)
+
+**Total:** -6 lines
+
+**Violations removed:**
+- Unused state fields: 2 → 0 (-2 fields)
+- Unnecessary writes: 3 → 0 (-3 operations)
+<!-- END: MEASURE/METRICS -->
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Fields were added for potential future use but no consumer ever materialized.
+
+**Prevention:** Only add state fields when a consumer exists in the same commit. Delete immediately if consumer is removed.
+
+**Remaining work:** Audit controller state for other unused fields or write-only state.
+<!-- END: MEASURE/LEARNING -->

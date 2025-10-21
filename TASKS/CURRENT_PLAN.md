@@ -1,17 +1,19 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Unused Controller State
-**Started:** 2025-10-20
-**Branch:** refine/unused_controller_state
-**Path:** A
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-20 - Unused Controller State
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Delete unused ground_normal and ground_height fields
-**Location:** @TASKS/PLANS/REFINE_unused_controller_state.md
-**Principle:** Radical Simplicity, Single Source of Truth
-**Approach:** Delete
-**Next:** REFINE
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Current capabilities
