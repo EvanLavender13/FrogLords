@@ -105,11 +105,15 @@ Variations within systems. Different modes, states, or behaviors.
   - Extends: Character Movement System
 - **Follow Orbit Mode** - Maya-style orbit + zoom with clamped lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
   - Extends: Camera Follow System
+- **Orientation-Locked Camera** - Camera locks behind character facing direction (`src/camera/camera_follow.{h,cpp}`, `src/gui/camera_panel.{h,cpp}`)
+  - Extends: Camera Follow System
+  - Enables: Velocity-locked camera, look-ahead camera, WoW-style right-click rotation
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
 - Layer 2 primitives as needed
 - No direct renderer coupling
+- Orientation-locked camera enables: WoW-style camera (right-click drag rotates character), more sophisticated lock modes (look-ahead, path prediction)
 
 ---
 

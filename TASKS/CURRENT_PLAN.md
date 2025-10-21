@@ -1,23 +1,19 @@
 # Current Plan
 
-**Status:** 🏗️ System - Orientation-Locked Camera
-**Started:** 2025-10-21
-**Branch:** system/camera_lock
-**Complexity:** Small
-**Phase:** SELECT → GRAYBOX
+**Status:** ✅ System Complete
+**Last Completed:** 2025-10-21 - Orientation-Locked Camera
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**System:** Camera locks behind character facing direction
-**Location:** @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md
-**Layer:** 4
-**Complexity:** Small
-**Next:** ITERATE
+**Choose next action:**
+- `/SYSTEM/SELECT` - Pick next system to build
+- `/REFINE/SELECT` - Pick violation to fix
 
-**Dependencies:**
-- Camera Follow System (Layer 3) ✓
-- Character Orientation System (Layer 5) ✓
-- Car-Like Control Scheme (Layer 2) ✓
-- GUI Framework (Layer 1) ✓
+---
+
+**See:**
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `BACKLOG_REFINEMENTS.md` - Violations backlog
+- `DEPENDENCY_STACK.md` - Current capabilities
