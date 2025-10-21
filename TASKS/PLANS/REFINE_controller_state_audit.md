@@ -71,3 +71,31 @@ Comment claims "for animation" but no animation system reads it.
 **Tests:** All passing (clean build)
 **Result:** ✓ Violation removed - no animation system reads this field
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.h`: 156 → 155 (-1 line)
+- `src/character/controller.cpp`: 298 → 295 (-3 lines)
+
+**Total:** -4 lines (code only, excluding documentation)
+
+**Violations removed:**
+- Write-only fields: 1 → 0 (-1)
+- Unused field references: 2 → 0 (-2)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Optimistic field added for future animation system that never materialized.
+
+**Prevention:** Delete speculative fields immediately when consumer doesn't exist within same work session.
+
+**Pattern:** Controller audit reveals write-only pattern - other structs may have similar violations.
+<!-- END: MEASURE/LEARNING -->
