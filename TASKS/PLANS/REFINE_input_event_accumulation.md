@@ -93,3 +93,29 @@ Boolean state (keyboard keys, mouse buttons) differs from delta values (scroll).
 
 **Result:** ✓ No violations found - pattern is correct as implemented
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `TASKS/PLANS/REFINE_input_event_accumulation.md`: 74 → 95 (+21 lines)
+
+**Total:** +21 lines (documentation only, no code changes)
+
+**Violations removed:**
+- Suspected input accumulation violations: 0 (audit confirmed correct implementation)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Retrospective analysis after mouse scroll fix incorrectly assumed similar pattern violations existed elsewhere.
+
+**Prevention:** Distinguish between delta values (require accumulation) and boolean state (assignment is correct). Delta values like scroll accumulate intent; boolean events like key presses represent state, where multiple DOWN events are duplicates, not cumulative.
+
+**Pattern:** Verification audits can reveal absence of violations—this is valuable learning that prevents unnecessary refactoring.
+<!-- END: MEASURE/LEARNING -->
