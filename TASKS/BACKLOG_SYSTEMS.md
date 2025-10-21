@@ -25,6 +25,16 @@
 
 ## Movement & Character
 
+**Layer 2 - Control Scheme:**
+
+**Car-Like Control Scheme**
+- W/S = forward/backward relative to character orientation
+- A/D = turn character (rotate orientation directly, not strafe)
+- Character orientation driven by input intent (not velocity result)
+- Enables: Orientation-locked camera, racing/driving feel, reversing mechanics
+- Discovered: Camera lock graybox revealed WASD world-space controls conflict with orientation lock
+- Requires: Character orientation system (exists)
+
 **Layer 4 - Buildable Now (No Dependencies):**
 
 **Acceleration Tilt**
