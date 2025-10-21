@@ -13,23 +13,23 @@ namespace {
 glm::vec3 compute_face_normal(const glm::vec3& closest_point, const aabb& box) {
     // Find which face the closest_point is on by checking which component
     // is at the box extent (within epsilon for numerical stability)
-    constexpr float epsilon = 0.0001f;
+    constexpr float EPSILON = 0.0001f;
 
     glm::vec3 box_min = box.center - box.half_extents;
     glm::vec3 box_max = box.center + box.half_extents;
 
     // Check each face (prioritize Y for floor/ceiling, then X, then Z)
-    if (std::abs(closest_point.y - box_max.y) < epsilon)
+    if (std::abs(closest_point.y - box_max.y) < EPSILON)
         return glm::vec3(0, 1, 0); // Top
-    if (std::abs(closest_point.y - box_min.y) < epsilon)
+    if (std::abs(closest_point.y - box_min.y) < EPSILON)
         return glm::vec3(0, -1, 0); // Bottom
-    if (std::abs(closest_point.x - box_max.x) < epsilon)
+    if (std::abs(closest_point.x - box_max.x) < EPSILON)
         return glm::vec3(1, 0, 0); // Right
-    if (std::abs(closest_point.x - box_min.x) < epsilon)
+    if (std::abs(closest_point.x - box_min.x) < EPSILON)
         return glm::vec3(-1, 0, 0); // Left
-    if (std::abs(closest_point.z - box_max.z) < epsilon)
+    if (std::abs(closest_point.z - box_max.z) < EPSILON)
         return glm::vec3(0, 0, 1); // Front
-    if (std::abs(closest_point.z - box_min.z) < epsilon)
+    if (std::abs(closest_point.z - box_min.z) < EPSILON)
         return glm::vec3(0, 0, -1); // Back
 
     // Fallback: closest_point is inside box (deep penetration case)

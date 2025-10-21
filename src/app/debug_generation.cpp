@@ -56,21 +56,21 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         float speed_ratio = glm::clamp(current_speed / character.max_speed, 0.0f, 1.0f);
 
         // Gradient: blue → cyan → yellow → red
-        constexpr glm::vec3 gradient[] = {
+        constexpr glm::vec3 GRADIENT[] = {
             {0.0f, 0.0f, 1.0f}, // Blue
             {0.0f, 1.0f, 1.0f}, // Cyan
             {1.0f, 1.0f, 0.0f}, // Yellow
             {1.0f, 0.0f, 0.0f}, // Red
         };
-        constexpr int num_stops = sizeof(gradient) / sizeof(gradient[0]);
+        constexpr int NUM_STOPS = sizeof(GRADIENT) / sizeof(GRADIENT[0]);
 
         // Map speed_ratio to continuous position in gradient
-        float position = speed_ratio * (num_stops - 1);
-        int index = glm::clamp(static_cast<int>(position), 0, num_stops - 2);
+        float position = speed_ratio * (NUM_STOPS - 1);
+        int index = glm::clamp(static_cast<int>(position), 0, NUM_STOPS - 2);
         float t = position - index;
 
         // Interpolate between adjacent stops
-        glm::vec3 rgb = glm::mix(gradient[index], gradient[index + 1], t);
+        glm::vec3 rgb = glm::mix(GRADIENT[index], GRADIENT[index + 1], t);
         glm::vec4 color = glm::vec4(rgb, 0.8f);
 
         foundation::wireframe_mesh speed_ring =
@@ -163,12 +163,12 @@ void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
     glm::vec3 forward_dir = math::yaw_to_forward(yaw);
 
     // Draw circle (vertical, in forward-up plane like a bicycle wheel)
-    constexpr int circle_segments = 24;
+    constexpr int CIRCLE_SEGMENTS = 24;
     glm::vec4 circle_color = {1.0f, 1.0f, 1.0f, 0.8f}; // White
 
-    for (int i = 0; i < circle_segments; ++i) {
-        float angle0 = (static_cast<float>(i) / circle_segments) * 2.0f * glm::pi<float>();
-        float angle1 = (static_cast<float>(i + 1) / circle_segments) * 2.0f * glm::pi<float>();
+    for (int i = 0; i < CIRCLE_SEGMENTS; ++i) {
+        float angle0 = (static_cast<float>(i) / CIRCLE_SEGMENTS) * 2.0f * glm::pi<float>();
+        float angle1 = (static_cast<float>(i + 1) / CIRCLE_SEGMENTS) * 2.0f * glm::pi<float>();
 
         // Circle in forward-up plane (rotates around right_dir axis)
         glm::vec3 p0 = wheel_center + forward_dir * std::cos(angle0) * wheel_radius +
