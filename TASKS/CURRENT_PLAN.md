@@ -1,19 +1,26 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-20 - Camera Lock (DEFERRED)
+**Status:** 🏗️ System - Car-Like Control Scheme
+**Started:** 2025-10-20
+**Branch:** system/car_control
+**Complexity:** Small (2-3 pts)
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
+**System:** Transform WASD input from world-space strafe to character-relative forward/back and turn
+**Location:** @TASKS/PLANS/CAR_CONTROL_SYSTEM.md
+**Layer:** 2 (Primitives)
+**Complexity:** Small
+**Next:** GRAYBOX
 
----
+**Dependencies:**
+- Character orientation system (Layer 3)
+- Input system (Layer 1)
+- Character controller (Layer 3)
 
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Enables:**
+- Orientation-locked camera mode (deferred prerequisite)
+- Drift movement mechanics
