@@ -16,8 +16,17 @@ std::vector<camera_command> draw_camera_panel(camera_panel_state& state, const c
     if (!ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
         return commands;
 
-    // Camera mode display (always FOLLOW now)
-    ImGui::Text("Mode: FOLLOW");
+    // Camera mode
+    ImGui::Text("Mode");
+    if (ImGui::RadioButton("Free Orbit", cam_follow.mode == camera_mode::FREE_ORBIT)) {
+        commands.push_back({camera_parameter_type::MODE, 0.0f, camera_mode::FREE_ORBIT});
+    }
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Lock to Orientation", cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION)) {
+        commands.push_back({camera_parameter_type::MODE, 0.0f, camera_mode::LOCK_TO_ORIENTATION});
+    }
+
+    ImGui::Spacing();
 
     // Current state (read-only)
     ImGui::Text("Distance: %.2f m", cam_follow.distance);

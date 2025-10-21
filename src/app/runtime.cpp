@@ -88,7 +88,7 @@ void app_runtime::frame() {
     last_mouse_x = input::mouse_x();
     last_mouse_y = input::mouse_y();
 
-    world.update(dt, panel_state);
+    world.update(dt);
 
     // Handle F3 key press to toggle debug visualization
     if (input::is_key_pressed(SAPP_KEYCODE_F3)) {
@@ -172,6 +172,9 @@ void app_runtime::frame() {
                 // Clamp distance and min_distance to respect new maximum
                 world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
                 world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
+                break;
+            case gui::camera_parameter_type::MODE:
+                world.cam_follow.mode = cmd.mode;
                 break;
             }
         }

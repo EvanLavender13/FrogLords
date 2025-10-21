@@ -2,9 +2,12 @@
 
 #include <glm/glm.hpp>
 
+enum class camera_mode { FREE_ORBIT, LOCK_TO_ORIENTATION };
+
 /// Follow camera component - maintains spherical offset from target
 struct camera_follow {
     // State
+    camera_mode mode = camera_mode::FREE_ORBIT;
     float distance = 5.0f;
     float latitude = 15.0f; // degrees
     float longitude = 0.0f; // degrees
@@ -38,4 +41,14 @@ struct camera_follow {
     /// @param target_position Target world position to follow
     /// @return Look-at target in world space
     glm::vec3 compute_look_target(const glm::vec3& target_position) const;
+
+    /// Compute camera eye position locked behind a direction vector
+    /// @param target_position Target world position to follow
+    /// @param forward_dir Direction to lock behind (will be normalized)
+    /// @param distance Distance from target
+    /// @param height_offset Height offset above target
+    /// @return Eye position in world space
+    static glm::vec3 compute_locked_eye_position(const glm::vec3& target_position,
+                                                 const glm::vec3& forward_dir, float distance,
+                                                 float height_offset);
 };

@@ -1,7 +1,7 @@
 # Current Plan
 
 **Status:** ✅ System Complete
-**Last Completed:** 2025-10-21 - Car-Like Control Scheme
+**Last Completed:** 2025-10-21 - Orientation-Locked Camera
 
 ---
 

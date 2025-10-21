@@ -19,6 +19,14 @@ Validate mathematical foundations. Handle edge cases. Stabilize through testing.
 
 ---
 
+## Anti-Patterns
+
+Before implementing, review @TASKS/PATTERNS.md for known code and process anti-patterns.
+
+Prevention is cheaper than detection.
+
+---
+
 ## Process
 
 ### 1. Create or Resume Iteration Document
@@ -153,7 +161,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 **Document in iteration doc** (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
-<!-- BEGIN: ITERATE/PLAYTEST_<N> -->
+<!-- BEGIN: ITERATE/PLAYTEST -->
 ### Playtest <N>
 
 **Date:** [YYYY-MM-DD]
@@ -171,7 +179,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - [files changed]
 - Commit: [hash]
 - ✅ VERIFIED: [confirmation]
-<!-- END: ITERATE/PLAYTEST_<N> -->
+<!-- END: ITERATE/PLAYTEST -->
 ```
 
 **Stop when no new violations found.**

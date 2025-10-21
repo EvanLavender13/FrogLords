@@ -19,14 +19,14 @@ void game_world::init() {
     setup_test_level(*this);
 }
 
-void game_world::update(float dt, const gui::character_panel_state& panel_state) {
+void game_world::update(float dt) {
     debug_list.clear();
 
     // Toggle control scheme
     if (input::is_key_pressed(SAPP_KEYCODE_T)) {
         current_control_scheme = (current_control_scheme == control_scheme::FREE_STRAFE)
-                                      ? control_scheme::CAR_LIKE
-                                      : control_scheme::FREE_STRAFE;
+                                     ? control_scheme::CAR_LIKE
+                                     : control_scheme::FREE_STRAFE;
     }
 
     // Poll input and construct controller input params
@@ -46,9 +46,10 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     input_params.turn_input = lateral_input;
 
     // Mode-dependent: lateral movement only in FREE_STRAFE
-    input_params.move_direction.x = (current_control_scheme == control_scheme::FREE_STRAFE)
-                                     ? lateral_input   // FREE_STRAFE: lateral input creates strafing
-                                     : 0.0f;           // CAR_LIKE: no lateral movement (turn only)
+    input_params.move_direction.x =
+        (current_control_scheme == control_scheme::FREE_STRAFE)
+            ? lateral_input // FREE_STRAFE: lateral input creates strafing
+            : 0.0f;         // CAR_LIKE: no lateral movement (turn only)
 
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
@@ -58,8 +59,7 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     // Validate normalized input direction
     float input_length = glm::length(input_params.move_direction);
-    FL_POSTCONDITION(input_length == 0.0f ||
-                     glm::epsilonEqual(input_length, 1.0f, 0.001f),
+    FL_POSTCONDITION(input_length == 0.0f || glm::epsilonEqual(input_length, 1.0f, 0.001f),
                      "input direction must be zero or normalized");
 
     // Construct camera input params (basis selection based on control scheme)
@@ -71,8 +71,8 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     } else {
         // Heading-relative basis (car-like control)
         float yaw = character.heading_yaw;
-        cam_params.forward = glm::vec3(glm::sin(yaw), 0.0f, glm::cos(yaw));
-        cam_params.right = glm::vec3(glm::cos(yaw), 0.0f, -glm::sin(yaw));
+        cam_params.forward = math::yaw_to_forward(yaw);
+        cam_params.right = math::yaw_to_right(yaw);
 
         // Validate orthonormal basis from heading
         FL_ASSERT_NORMALIZED(cam_params.forward, "heading-derived forward vector");
@@ -112,8 +112,21 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         }
     }
 
-    // Update camera position from follow controller
-    cam.set_position(cam_follow.compute_eye_position(character.position));
+    // Update camera position based on mode
+    glm::vec3 eye_position;
+    if (cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION) {
+        // Compute forward direction from orientation system
+        float yaw = character_visuals.orientation.get_yaw();
+        glm::vec3 forward_dir = math::yaw_to_forward(yaw);
+
+        eye_position = camera_follow::compute_locked_eye_position(
+            character.position, forward_dir, cam_follow.distance, cam_follow.height_offset);
+    } else {
+        // Free orbit mode (existing behavior)
+        eye_position = cam_follow.compute_eye_position(character.position);
+    }
+
+    cam.set_position(eye_position);
     cam.set_target(cam_follow.compute_look_target(character.position));
 }
 

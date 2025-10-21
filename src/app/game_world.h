@@ -12,10 +12,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-namespace gui {
-struct character_panel_state;
-}
-
 enum class control_scheme { FREE_STRAFE, CAR_LIKE };
 
 struct game_world {
@@ -33,7 +29,7 @@ struct game_world {
     debug::debug_primitive_list debug_list;
 
     void init();
-    void update(float dt, const gui::character_panel_state& panel_state);
+    void update(float dt);
 
     // Camera input forwarding
     void apply_camera_orbit(float delta_x, float delta_y);
