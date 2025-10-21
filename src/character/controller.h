@@ -53,8 +53,6 @@ struct controller {
     bool was_grounded = false;
     bool just_landed = false; // Set when landing occurs, cleared after animation reads it
     float vertical_velocity_on_land = 0.0f;
-    glm::vec3 ground_normal;
-    float ground_height = 0.0f;
 
     // Jump timing forgiveness
     float coyote_timer = 0.0f;      // Time since leaving ground (for coyote time)

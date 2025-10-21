@@ -79,3 +79,18 @@ struct controller {
 - Before: LOC (controller.h + writes in collision code)
 - After: LOC (reduced)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Deleted `ground_normal` and `ground_height` from controller state
+**Files Modified:**
+- `src/character/controller.h:56-57` - Removed field declarations
+- `src/character/controller.cpp:42` - Removed ground_normal initializer
+- `src/character/controller.cpp:210-212` - Removed writes to both fields
+
+**Tests:** All passing - build successful, runtime verified
+**Result:** ✓ Violation removed - controller state reduced, no behavioral changes
+<!-- END: REFINE/COMPLETED -->
