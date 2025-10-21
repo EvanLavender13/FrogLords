@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-21 - Controller State Audit
+**Status:** 🔧 Refinement - Uninitialized Buffers
+**Started:** 2025-10-21
+**Branch:** refine/uninitialized_buffers
+**Path:** A
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Initialize renderer buffer members to match sokol handle pattern
+**Location:** @TASKS/PLANS/REFINE_uninitialized_buffers.md
+**Principle:** Consistency
+**Approach:** Simplify
+**Next:** REFINE
