@@ -39,7 +39,6 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , ground_normal(math::UP)
     , locomotion{locomotion_speed_state::walk, 0.0f, walk_cycle_length} {
     // Validate threshold ordering (prevents state collapse)
     FL_PRECONDITION(walk_threshold < run_threshold,
@@ -207,9 +206,6 @@ void controller::update(const collision_world* world, float dt) {
     is_grounded = false;
     if (contact.contacted_floor) {
         is_grounded = true;
-        ground_normal = contact.floor_normal;
-        // Query box geometry directly (no interpretation in collision system)
-        ground_height = contact.contact_box->center.y + contact.contact_box->half_extents.y;
     }
 
     // Landing detection (after collision resolution, using pre-collision velocity)

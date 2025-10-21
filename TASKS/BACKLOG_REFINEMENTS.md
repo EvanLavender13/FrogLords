@@ -120,15 +120,6 @@ None - All high-priority violations resolved ✅
 - **Fix:** Accept - API functions reserved for future use, or remove if truly unnecessary
 - **Impact:** Code bloat
 
-**Unused Controller State Fields**
-- **Location:** `src/character/controller.h:59-60`
-- **Principles:** Radical Simplicity
-- **Severity:** Low
-- **Type:** Complexity
-- **Description:** `ground_normal` and `ground_height` are maintained but never read anywhere. They duplicate derived state without consumers, bloating controller state and inviting future divergence from single source of truth.
-- **Fix:** Delete - Remove unused fields or justify their existence.
-- **Impact:** Code clarity, state bloat
-- **Audit Source:** **Codex**
 
 **Magic Number for Collision Passes**
 - **Location:** `src/foundation/collision.cpp:136`
