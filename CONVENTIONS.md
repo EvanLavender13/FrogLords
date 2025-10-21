@@ -18,26 +18,24 @@ Standards that enforce principles.
 
 ## Testing
 
-### Foundations/Primitives: Debug Assertions
+### Unit Tests: Stable Layer 1 Primitives
 
-Foundation and primitive code validates contracts with `foundation/debug_assert.h`.
+Write unit tests for stable, battle-tested foundation primitives that:
+- Are pure mathematical functions with complex behavioral properties
+- Won't change once validated
+- Require trajectory or multi-step analysis to verify correctness
 
-Assert preconditions, postconditions, and invariants:
+Reference: `tests/foundation/test_spring_damper.cpp`
 
-```cpp
-void camera_follow::zoom(float delta) {
-    FL_PRECONDITION(std::isfinite(delta), "zoom delta must be finite");
-    distance = std::clamp(distance + delta, min_distance, max_distance);
-    FL_POSTCONDITION(distance >= min_distance && distance <= max_distance,
-                     "distance must be clamped to limits");
-}
-```
+### Debug Assertions: Active Development
 
-**Why:** Continuous validation every frame. Zero release overhead. Immediate failure at violation point.
+All code under active development validates contracts with `foundation/debug_assert.h`.
+
+Assert preconditions, postconditions, and invariants. Continuous validation every frame. Zero release overhead. Immediate failure at violation point.
 
 Assertion failures are show-stoppers.
 
-### Systems/Integration: Manual Testing
+### Manual Testing: Systems and Integration
 
 High-level systems validated through gameplay and observation.
 
@@ -48,6 +46,8 @@ High-level systems validated through gameplay and observation.
 **Formatting:** Use `.clang-format` via `scripts/bash/format.sh`.
 
 **Comments explain why, not what.** Document contracts and non-obvious behavior.
+
+**Consistency:** Before adding code, read the file to identify existing patterns. Match existing patterns unless insufficient.
 
 ---
 

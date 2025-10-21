@@ -109,7 +109,7 @@ For each unchecked contract item:
    - List what user must verify
    - Ask user to run app and verify
    - Wait for confirmation
-4. **Document** validation in contract (check box, add commit hash and what was validated)
+4. **Document** validation in contract
 5. **Commit** on success, revert on failure
 
 If resuming from VALIDATE/REVISE, turn violations into contract items and prioritize them.
@@ -140,7 +140,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 **Solo playtest workflow:**
 
-1. **Build and run** (DO NOT commit yet)
+1. **Build**
 2. **Claude presents checklist** from contract
 3. **Test each item** - report violations or "all pass"
 4. **Violations found?**

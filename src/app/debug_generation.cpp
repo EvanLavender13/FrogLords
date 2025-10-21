@@ -310,6 +310,21 @@ void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
     }
 }
 
+void generate_car_control_primitives(debug::debug_primitive_list& list, const controller& character,
+                                     control_scheme scheme) {
+    if (scheme == control_scheme::CAR_LIKE) {
+        // Draw heading yaw arrow (yellow for car control)
+        float yaw = character.heading_yaw;
+        glm::vec3 forward = math::yaw_to_forward(yaw);
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + forward * 1.5f,
+            .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
+            .head_size = 0.2f,
+        });
+    }
+}
+
 } // namespace
 
 namespace app {
@@ -322,6 +337,7 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_physics_springs_primitives(list, world.character, world.character_visuals);
     generate_character_body_primitives(list, world.character, world.character_visuals);
     generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals);
+    generate_car_control_primitives(list, world.character, world.current_control_scheme);
 
     if (panel_state.show_velocity_trail) {
         generate_velocity_trail_primitives(list, world.trail_state);

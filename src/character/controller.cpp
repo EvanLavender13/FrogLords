@@ -50,7 +50,8 @@ controller::controller()
 }
 
 void controller::apply_input(const controller_input_params& input_params,
-                             const camera_input_params& cam_params, float dt) {
+                             const camera_input_params& cam_params,
+                             float dt) {
     // Execute buffered jump on next grounded frame (jump buffer forgiveness)
     // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full
     // rationale
@@ -60,7 +61,26 @@ void controller::apply_input(const controller_input_params& input_params,
         jump_buffer_timer = 0.0f;     // Clear buffer
     }
 
-    // Convert 2D input to 3D acceleration (camera-relative)
+    // Integrate heading from turn input (physics primitive - always runs)
+    // Time-independent heading integration: heading_yaw += turn_input * turn_rate * dt
+    // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
+    // Input convention: negative = left turn, positive = right turn
+    // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
+    // Therefore: negate turn_input to map left → +yaw, right → -yaw
+    FL_PRECONDITION(dt > 0.0f && std::isfinite(dt), "dt must be positive and finite for time-independent integration");
+    FL_PRECONDITION(std::isfinite(turn_rate), "turn_rate must be finite");
+    FL_PRECONDITION(std::isfinite(input_params.turn_input), "turn_input must be finite");
+    FL_PRECONDITION(std::isfinite(heading_yaw), "heading_yaw must be finite before integration");
+
+    heading_yaw += -input_params.turn_input * turn_rate * dt;
+    heading_yaw = math::wrap_angle_radians(heading_yaw);
+
+    FL_POSTCONDITION(std::isfinite(heading_yaw), "heading_yaw must remain finite after integration");
+    FL_POSTCONDITION(heading_yaw >= -glm::pi<float>() && heading_yaw <= glm::pi<float>(),
+                     "heading_yaw must be wrapped to [-π, π]");
+
+    // Convert 2D input to 3D acceleration (basis-relative)
+    // Basis provided by composition layer: camera vectors or heading vectors
     glm::vec3 forward = cam_params.forward;
     glm::vec3 right = cam_params.right;
 

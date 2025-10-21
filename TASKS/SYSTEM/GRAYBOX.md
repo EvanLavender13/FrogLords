@@ -112,29 +112,38 @@ bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVEN
 
 ---
 
-### 3. Build Core
+### 3. Implement Core and Debug Visualization
 
 **Prove correctness. Make it visible. Keep it minimal.**
 
-Build only what validates the mathematical foundation. Everything else defers.
+- Implement primitive/system code
+- Add debug visualization (make state visible)
+- Add debug assertions for preconditions/postconditions
+- Build successfully
 
 ---
 
-### 4. Debug Visualization
+### 4. Provide Testing Instructions
 
-**Make the invisible visible.**
+**DO NOT run the application. Provide instructions and wait for user to test.**
 
-Visualize the mathematical state, decision points, and relationships that drive behavior.
+Present testing instructions covering:
+- How to build and run
+- What behaviors to validate
+- Expected outcomes
+- Edge cases to check
 
-Can't see it? Can't validate it.
+Wait for user to report results.
 
 ---
 
-### 5. Self-Test
+### 5. Iterate Based on Feedback
 
-**Build, run, break it.**
+User reports: works, broken, or surprises.
 
-Validate the core works. Document what works, what doesn't, and what surprises emerge.
+**If broken:** Fix, rebuild, provide new instructions, repeat step 4.
+
+**If works:** Proceed to document results.
 
 ---
 

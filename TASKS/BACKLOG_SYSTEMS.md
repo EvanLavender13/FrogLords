@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-20
+**Last Updated:** 2025-10-21
 
 ---
 
@@ -24,16 +24,6 @@
 ---
 
 ## Movement & Character
-
-**Layer 2 - Control Scheme:**
-
-**Car-Like Control Scheme**
-- W/S = forward/backward relative to character orientation
-- A/D = turn character (rotate orientation directly, not strafe)
-- Character orientation driven by input intent (not velocity result)
-- Enables: Orientation-locked camera, racing/driving feel, reversing mechanics
-- Discovered: Camera lock graybox revealed WASD world-space controls conflict with orientation lock
-- Requires: Character orientation system (exists)
 
 **Layer 4 - Buildable Now (No Dependencies):**
 
@@ -70,13 +60,13 @@
 
 ## Camera
 
-**Orientation-Locked Camera Mode** - @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md (DEFERRED)
+**Orientation-Locked Camera Mode** - @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md (NOW BUILDABLE)
 - Camera locks behind character orientation (forward direction)
 - Automatically rotates to follow character facing
 - Toggle between free orbit mode and locked mode
 - Maintains distance and height offset behavior
-- Status: Graybox validated math, discovered prerequisite
-- Requires: Car-like control scheme (Layer 2) - current WASD world-space controls conflict with orientation lock
+- Status: Graybox validated math, prerequisite complete
+- Requires: Car-like control scheme (complete)
 - Complements: Existing orbit camera system
 
 ---

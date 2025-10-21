@@ -12,6 +12,7 @@ struct controller {
 
     struct controller_input_params {
         glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
+        float turn_input;         // Turn input for heading integration [-1,1]
         bool jump_pressed;        // True on frame of jump press
     };
 
@@ -107,6 +108,12 @@ struct controller {
     // Used in: apply_input (lines 40, 77) for buffered jump handling
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
+    // TUNED: Turn rate for car-like control heading
+    // Controls rotational speed when using heading-based movement
+    // Higher values = faster turning (arcade feel)
+    // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
+    float turn_rate = 3.0f; // radians/second
+
     // Locomotion state (speed tiers + phase for cyclic motion)
     enum class locomotion_speed_state { WALK, RUN, SPRINT };
 
@@ -121,6 +128,11 @@ struct controller {
     // Internal state (not exposed in locomotion_state output)
     float distance_traveled = 0.0f; // Accumulated horizontal distance (meters)
 
+    // Car-like control heading (physics state)
+    // Updated from turn input (A/D keys), used when composition layer
+    // selects heading-based movement basis (instead of camera basis)
+    float heading_yaw = 0.0f; // radians
+
     // Speed thresholds for state classification (m/s)
     float walk_threshold = 3.0f; // walk < 3 m/s
     float run_threshold = 6.0f;  // run: 3-6 m/s, sprint ≥ 6 m/s
@@ -134,7 +146,8 @@ struct controller {
     controller();
 
     void apply_input(const controller_input_params& input_params,
-                     const camera_input_params& cam_params, float dt);
+                     const camera_input_params& cam_params,
+                     float dt);
     void update(const collision_world* world, float dt);
 
   private:
