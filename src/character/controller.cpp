@@ -276,9 +276,6 @@ void controller::update(const collision_world* world, float dt) {
     FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
                      "phase must be in [0, 1) range");
 
-    // Save acceleration for animation system (before reset)
-    last_acceleration = acceleration;
-
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
 }

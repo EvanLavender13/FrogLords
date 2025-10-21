@@ -27,7 +27,6 @@ struct controller {
     glm::vec3 position; // meters (integrated from velocity)
     glm::vec3 velocity; // meters/second (integrated from acceleration)
     glm::vec3 acceleration;
-    glm::vec3 last_acceleration; // Previous frame's acceleration (for animation)
 
     // Input intent (for animation/orientation when velocity is blocked)
     glm::vec3 input_direction;
