@@ -122,6 +122,16 @@ None - All high-priority violations resolved ✅
 - **Impact:** Code clarity, maintainability (non-critical - test only)
 - **Audit Source:** **Codex** + Gemini convergence
 
+**Controller State Audit**
+- **Location:** `src/character/controller.h`
+- **Principles:** Radical Simplicity, Single Source of Truth
+- **Severity:** Low
+- **Type:** State bloat - potential unused/write-only fields
+- **Description:** Systematic audit for unused or write-only fields similar to removed ground_normal/ground_height
+- **Fix:** Audit all controller fields, delete unused state
+- **Impact:** State clarity, reduced bloat
+- **Source:** Retrospective 2025-10-20 (unused_controller_state learning)
+
 ---
 
 ## Patterns Library
