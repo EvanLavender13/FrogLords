@@ -1,8 +1,8 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Input Event Accumulation
+**Status:** 🔧 Refinement - Unused Controller State
 **Started:** 2025-10-20
-**Branch:** refine/input_event_accumulation
+**Branch:** refine/unused_controller_state
 **Path:** A
 **Phase:** SELECT → REFINE
 
@@ -10,8 +10,8 @@
 
 ## Current Work
 
-**Refinement:** Audit input event handlers to verify accumulation pattern
-**Location:** @TASKS/PLANS/REFINE_input_event_accumulation.md
-**Principle:** Consistency (Input is Intent)
-**Approach:** Document
+**Refinement:** Delete unused ground_normal and ground_height fields
+**Location:** @TASKS/PLANS/REFINE_unused_controller_state.md
+**Principle:** Radical Simplicity, Single Source of Truth
+**Approach:** Delete
 **Next:** REFINE
