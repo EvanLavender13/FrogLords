@@ -1,17 +1,23 @@
 # Current Plan
 
-**Status:** ✅ Retrospective Complete
-**Last Completed:** 2025-10-20 - Retrospective Analysis
+**Status:** 🏗️ System - Camera Lock Behavior
+**Started:** 2025-10-20
+**Branch:** system/camera_lock
+**Complexity:** Small
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-**Next:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+## Current Work
 
----
+**System:** Camera positioning from direction vectors - enables orientation lock and velocity lock modes
+**Location:** @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md
+**Layer:** 3
+**Complexity:** Small
+**Next:** GRAYBOX
 
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Dependencies:**
+- Camera math (Layer 1)
+- Character controller - velocity (Layer 3)
+- Character orientation - forward direction (Layer 5)
+- GUI framework (Layer 1)
