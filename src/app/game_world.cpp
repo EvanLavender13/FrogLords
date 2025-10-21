@@ -46,12 +46,22 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
         float old_heading = character.heading_yaw;
 
+        // Speed-dependent turning (arcade car feel)
+        // Scale turn rate by current speed: 0 at rest, 1.0 at turn_speed_threshold
+        float horizontal_speed = glm::length(math::project_to_horizontal(character.velocity));
+        constexpr float TURN_SPEED_THRESHOLD = 2.5f; // m/s - speed for full turn rate (between walk and run)
+        float speed_factor = std::min(horizontal_speed / TURN_SPEED_THRESHOLD, 1.0f);
+
+        FL_POSTCONDITION(speed_factor >= 0.0f && speed_factor <= 1.0f, "speed_factor must be in [0, 1]");
+        FL_POSTCONDITION(std::isfinite(speed_factor), "speed_factor must be finite");
+
         // Integrate heading from turn input
         // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
         // Input convention: negative x = left movement, positive x = right movement
         // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
         // Therefore: negate x to map left input → +yaw, right input → -yaw
-        character.heading_yaw += -input_params.move_direction.x * character.turn_rate * dt;
+        float effective_turn_rate = character.turn_rate * speed_factor;
+        character.heading_yaw += -input_params.move_direction.x * effective_turn_rate * dt;
         character.heading_yaw = math::wrap_angle_radians(character.heading_yaw);
 
         // Validate time-independent integration

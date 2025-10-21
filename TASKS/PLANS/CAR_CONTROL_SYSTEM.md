@@ -263,7 +263,7 @@ Current `character_reactive_systems::orientation` derives yaw from velocity (cor
 
 ## Iterations
 
-- [ITERATION_1.md](CAR_CONTROL_ITERATION_1.md) - In Progress
+- [ITERATION_1.md](CAR_CONTROL_ITERATION_1.md) - Ready for VALIDATE
 
 ---
 

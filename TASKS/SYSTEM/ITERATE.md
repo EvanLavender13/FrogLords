@@ -140,7 +140,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 **Solo playtest workflow:**
 
-1. **Build and run** (DO NOT commit yet)
+1. **Build**
 2. **Claude presents checklist** from contract
 3. **Test each item** - report violations or "all pass"
 4. **Violations found?**
