@@ -2,7 +2,7 @@
 
 **What exists. What it provides. What can be built.**
 
-**Last Updated:** 2025-10-20 (Populated from codebase audit)
+**Last Updated:** 2025-10-21
 
 ---
 
@@ -60,11 +60,13 @@ Mathematical building blocks. Pure functions with no side effects.
 - **Procedural Mesh** - Generates sphere/box/grid/arrow/circle/spring wireframes (`src/foundation/procedural_mesh.{h,cpp}`)
 - **Collision Primitives** - Sphere/AABB types, collision world, surface types (`src/foundation/collision_primitives.h`)
 - **Collision Math** - Sphere-AABB tests, multi-pass resolution, wall-slide projection (`src/foundation/collision.{h,cpp}`)
+- **Car-Like Control Scheme** - Transforms WASD input to character-relative forward/back and turn rate (`src/character/controller.h`, `src/app/game_world.{h,cpp}`)
 
 **Dependencies to build something new here:**
 - GLM available
 - CORE assertions optional for validation
 - No runtime/GUI/renderer coupling required
+- Car-like control scheme enables: Orientation-locked camera mode, drift movement mechanics
 
 ---
 
