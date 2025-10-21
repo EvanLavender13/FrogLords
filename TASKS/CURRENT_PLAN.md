@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-20 - Enum Naming Conventions
+**Status:** 🔧 Refinement - Const Naming
+**Started:** 2025-10-20
+**Branch:** refine/const_naming
+**Path:** A
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Rename local constant arrays and values to UPPER_CASE
+**Location:** @TASKS/PLANS/REFINE_const_naming.md
+**Principle:** Consistency
+**Approach:** Simplify
+**Next:** REFINE
