@@ -60,11 +60,13 @@
 
 ## Camera
 
-**Orientation-Locked Camera Mode**
+**Orientation-Locked Camera Mode** - @TASKS/PLANS/CAMERA_LOCK_SYSTEM.md (DEFERRED)
 - Camera locks behind character orientation (forward direction)
 - Automatically rotates to follow character facing
 - Toggle between free orbit mode and locked mode
 - Maintains distance and height offset behavior
+- Status: Graybox validated math, discovered prerequisite
+- Requires: Car-like control scheme (Layer 2) - current WASD world-space controls conflict with orientation lock
 - Complements: Existing orbit camera system
 
 ---
