@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-20 - Input Scaling
+**Status:** 🔧 Refinement - Input Event Accumulation
+**Started:** 2025-10-20
+**Branch:** refine/input_event_accumulation
+**Path:** A
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Audit input event handlers to verify accumulation pattern
+**Location:** @TASKS/PLANS/REFINE_input_event_accumulation.md
+**Principle:** Consistency (Input is Intent)
+**Approach:** Document
+**Next:** REFINE

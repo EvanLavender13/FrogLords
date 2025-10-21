@@ -47,15 +47,6 @@ None - All high-priority violations resolved ✅
 - **Impact:** Potential undefined behavior if accessed before sokol initialization
 
 
-**Input Event Accumulation Audit**
-- **Location:** `src/input/input.cpp` (keyboard, mouse buttons, touch handlers)
-- **Principles:** Consistency (Input is Intent)
-- **Severity:** Medium
-- **Type:** Potential input loss
-- **Description:** Mouse scroll events were overwriting instead of accumulating (fixed in REFINE_mouse_scroll_accumulation). Pattern suggests other input handlers may have same issue. Need audit: keyboard presses, mouse button clicks, touch events - verify all accumulate rather than overwrite when multiple events occur in single frame.
-- **Fix:** Audit all input event handlers, change assignment (=) to accumulation (+=) where needed
-- **Impact:** Input integrity, player responsiveness
-- **Source:** Retrospective pattern analysis (RETRO_2025-10-20)
 
 ### Low Priority
 
