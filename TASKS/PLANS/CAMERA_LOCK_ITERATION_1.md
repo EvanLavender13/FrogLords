@@ -1,7 +1,7 @@
 # Iteration 1: Orientation-Locked Camera
 
 **Started:** 2025-10-21
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -79,5 +79,41 @@ Define what must be proven about this system.
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-21
+
+**Principle Violations:**
+- **Radical Simplicity**: Unused `min_dist`/`max_dist` fields in `camera_panel_state` (src/gui/camera_panel.h:12-13) duplicate concept and risk drift
+- **Radical Simplicity**: Inline trig for heading basis (src/app/game_world.cpp:74-75) should use `math::yaw_to_forward/right` helpers for consistency
+- **Minor duplication**: Camera target height offset computed in two places (acceptable but could be unified)
+
+**Strengths:**
+- Pure function is stateless and deterministic (src/camera/camera_follow.cpp:81-102)
+- Single Source of Truth maintained for camera_mode
+- Consistent behavior across modes with predictable results
+- Minimal core with no extra state or smoothing
+- Zero-length direction vectors properly rejected via preconditions
+
+**Assessment:** Core principles upheld. Pure function implementation is exemplary. SSOT maintained for primary state. Minor cleanup needed to fully align with Radical Simplicity. Foundation is sound and violations are fixable.
+<!-- END: VALIDATE/REVIEW -->
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** Core implementation exemplifies Pure Functions and Consistency principles. SSOT maintained for primary state (camera_mode). However, unused GUI fields violate both Radical Simplicity ("could anything be removed?") and SSOT (duplicate concept). Inline trig inconsistent with established math helpers. These are fixable refinements that strengthen principle adherence without touching the proven foundation.
+
+**Required changes:**
+- Remove unused `min_dist`/`max_dist` from `camera_panel_state` (GUI cleanup)
+- Replace inline trig with `math::yaw_to_forward/right` helpers in heading basis construction
+- Optional: Unify camera target height offset computation
+<!-- END: VALIDATE/DECISION -->
 
 ---
