@@ -25,16 +25,46 @@ if [ ! -f "$COMPILE_DB" ]; then
     exit 1
 fi
 
-# Find all .cpp files under src/, sorted
-mapfile -t CPP_FILES < <(find "$SRC_DIR" -type f -name "*.cpp" | sort)
+# Determine which files to analyze
+if [ $# -gt 0 ]; then
+    # Use provided arguments as file paths
+    CPP_FILES=()
+    for arg in "$@"; do
+        # Convert to absolute path if relative
+        if [[ "$arg" != /* ]]; then
+            arg="$REPO_ROOT/$arg"
+        fi
 
-if [ ${#CPP_FILES[@]} -eq 0 ]; then
-    echo "No translation units found under $SRC_DIR"
-    exit 0
+        # Validate file exists and is a .cpp file
+        if [ ! -f "$arg" ]; then
+            print_error "File not found: $arg"
+            exit 1
+        fi
+
+        if [[ "$arg" != *.cpp ]]; then
+            print_warning "Skipping non-.cpp file: $arg"
+            continue
+        fi
+
+        CPP_FILES+=("$arg")
+    done
+
+    if [ ${#CPP_FILES[@]} -eq 0 ]; then
+        print_error "No valid .cpp files provided"
+        exit 1
+    fi
+else
+    # Find all .cpp files under src/, sorted
+    mapfile -t CPP_FILES < <(find "$SRC_DIR" -type f -name "*.cpp" | sort)
+
+    if [ ${#CPP_FILES[@]} -eq 0 ]; then
+        echo "No translation units found under $SRC_DIR"
+        exit 0
+    fi
 fi
 
 print_info "Starting clang-tidy..."
-echo "Analyzing ${#CPP_FILES[@]} translation unit(s) from $SRC_DIR"
+echo "Analyzing ${#CPP_FILES[@]} translation unit(s)"
 echo ""
 
 EXIT_CODE=0

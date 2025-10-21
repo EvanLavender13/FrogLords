@@ -107,6 +107,8 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 
 **Create `TASKS/PLANS/RETRO_<date>.md` - Keep it SHORT:**
 
+**Note:** If `RETRO_<date>.md` already exists, use `RETRO_<date>_2.md`, `RETRO_<date>_3.md`, etc.
+
 ```markdown
 # Retrospective: <Date>
 
@@ -185,7 +187,7 @@ Find patterns (≥3 occurrences). Create context files for technical details. Up
 
 **Archive completed plans:**
 ```bash
-# Create retro archive directory
+# Create retro archive directory (reuse if exists)
 mkdir -p TASKS/RETROS/RETRO_$(date +%Y-%m-%d)
 
 # Move all plans (refinements, systems, iterations, and retro doc itself)

@@ -20,7 +20,11 @@ bash scripts/bash/dev.sh --all        # Clean, configure, build, run
 ## Code Quality
 
 **format.sh** - Format all C/C++ sources with clang-format
-**lint.sh** - Run clang-tidy on all translation units
+**lint.sh** - Run clang-tidy on all translation units or specified files
+```bash
+bash scripts/bash/lint.sh                           # All .cpp files
+bash scripts/bash/lint.sh src/physics/spring.cpp    # Specific file
+```
 **analyze.sh** - Run cppcheck static analysis
 
 All call Windows `.exe` binaries. All require compile database except format.
