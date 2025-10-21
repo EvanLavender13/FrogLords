@@ -60,7 +60,8 @@ void controller::apply_input(const controller_input_params& input_params,
         jump_buffer_timer = 0.0f;     // Clear buffer
     }
 
-    // Convert 2D input to 3D acceleration (camera-relative)
+    // Convert 2D input to 3D acceleration (basis-relative)
+    // Basis provided by composition layer: camera vectors or heading vectors
     glm::vec3 forward = cam_params.forward;
     glm::vec3 right = cam_params.right;
 

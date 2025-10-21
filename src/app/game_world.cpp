@@ -21,6 +21,13 @@ void game_world::init() {
 void game_world::update(float dt, const gui::character_panel_state& panel_state) {
     debug_list.clear();
 
+    // Toggle control scheme
+    if (input::is_key_pressed(SAPP_KEYCODE_T)) {
+        current_control_scheme = (current_control_scheme == control_scheme::FREE_STRAFE)
+                                      ? control_scheme::CAR_LIKE
+                                      : control_scheme::FREE_STRAFE;
+    }
+
     // Poll input and construct controller input params
     controller::controller_input_params input_params;
     input_params.move_direction = glm::vec2(0.0f, 0.0f);
@@ -28,15 +35,36 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
     input_params.move_direction.x -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
     input_params.move_direction.x += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
+
+    // Update heading in CAR_LIKE mode (composition layer responsibility)
+    if (current_control_scheme == control_scheme::CAR_LIKE) {
+        // Integrate heading from turn input (A/D)
+        // Negated: A (negative x) turns left (increase yaw), D (positive x) turns right (decrease yaw)
+        character.heading_yaw += -input_params.move_direction.x * character.turn_rate * dt;
+        character.heading_yaw = math::wrap_angle_radians(character.heading_yaw);
+
+        // Zero lateral input for controller (car control = no strafing)
+        input_params.move_direction.x = 0.0f;
+    }
+
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
+
     input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
 
-    // Construct camera input params
+    // Construct camera input params (basis selection based on control scheme)
     controller::camera_input_params cam_params;
-    cam_params.forward = cam.get_forward_horizontal();
-    cam_params.right = cam.get_right();
+    if (current_control_scheme == control_scheme::FREE_STRAFE) {
+        // Camera-relative basis (existing behavior)
+        cam_params.forward = cam.get_forward_horizontal();
+        cam_params.right = cam.get_right();
+    } else {
+        // Heading-relative basis (car-like control)
+        float yaw = character.heading_yaw;
+        cam_params.forward = glm::vec3(glm::sin(yaw), 0.0f, glm::cos(yaw));
+        cam_params.right = glm::vec3(glm::cos(yaw), 0.0f, -glm::sin(yaw));
+    }
 
     character.apply_input(input_params, cam_params, dt);
 

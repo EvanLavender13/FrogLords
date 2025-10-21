@@ -4,7 +4,7 @@
 **Started:** 2025-10-20
 **Branch:** system/car_control
 **Complexity:** Small (2-3 pts)
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/CAR_CONTROL_SYSTEM.md
 **Layer:** 2 (Primitives)
 **Complexity:** Small
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - Character orientation system (Layer 3)

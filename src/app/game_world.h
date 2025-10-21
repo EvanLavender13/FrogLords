@@ -16,6 +16,8 @@ namespace gui {
 struct character_panel_state;
 }
 
+enum class control_scheme { FREE_STRAFE, CAR_LIKE };
+
 struct game_world {
     camera cam;
     camera_follow cam_follow;
@@ -25,6 +27,8 @@ struct game_world {
     character_reactive_systems character_visuals;
     character::tuning_params character_params;
     velocity_trail_state trail_state;
+
+    control_scheme current_control_scheme = control_scheme::FREE_STRAFE;
 
     debug::debug_primitive_list debug_list;
 

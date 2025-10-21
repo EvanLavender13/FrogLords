@@ -107,6 +107,12 @@ struct controller {
     // Used in: apply_input (lines 40, 77) for buffered jump handling
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
+    // TUNED: Turn rate for car-like control heading
+    // Controls rotational speed when using heading-based movement
+    // Higher values = faster turning (arcade feel)
+    // Used in: apply_input to integrate heading_yaw from lateral input
+    float turn_rate = 3.0f; // radians/second
+
     // Locomotion state (speed tiers + phase for cyclic motion)
     enum class locomotion_speed_state { WALK, RUN, SPRINT };
 
@@ -120,6 +126,11 @@ struct controller {
 
     // Internal state (not exposed in locomotion_state output)
     float distance_traveled = 0.0f; // Accumulated horizontal distance (meters)
+
+    // Car-like control heading (physics state)
+    // Updated from turn input (A/D keys), used when composition layer
+    // selects heading-based movement basis (instead of camera basis)
+    float heading_yaw = 0.0f; // radians
 
     // Speed thresholds for state classification (m/s)
     float walk_threshold = 3.0f; // walk < 3 m/s
