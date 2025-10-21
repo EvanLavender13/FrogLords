@@ -1,5 +1,6 @@
 #include "app/game_world.h"
 #include "foundation/math_utils.h"
+#include "foundation/debug_assert.h"
 
 #include "gui/character_panel.h"
 #include "rendering/velocity_trail.h"
@@ -38,10 +39,22 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
     // Update heading in CAR_LIKE mode (composition layer responsibility)
     if (current_control_scheme == control_scheme::CAR_LIKE) {
+        // Time-independent heading integration
+        FL_PRECONDITION(dt > 0.0f && std::isfinite(dt), "dt must be positive and finite for time-independent integration");
+        FL_PRECONDITION(std::isfinite(character.turn_rate), "turn_rate must be finite");
+        FL_PRECONDITION(std::isfinite(character.heading_yaw), "heading_yaw must be finite before integration");
+
+        float old_heading = character.heading_yaw;
+
         // Integrate heading from turn input (A/D)
         // Negated: A (negative x) turns left (increase yaw), D (positive x) turns right (decrease yaw)
         character.heading_yaw += -input_params.move_direction.x * character.turn_rate * dt;
         character.heading_yaw = math::wrap_angle_radians(character.heading_yaw);
+
+        // Validate time-independent integration
+        FL_POSTCONDITION(std::isfinite(character.heading_yaw), "heading_yaw must remain finite after integration");
+        FL_POSTCONDITION(character.heading_yaw >= -glm::pi<float>() && character.heading_yaw <= glm::pi<float>(),
+                         "heading_yaw must be wrapped to [-π, π]");
 
         // Zero lateral input for controller (car control = no strafing)
         input_params.move_direction.x = 0.0f;
@@ -64,6 +77,11 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         float yaw = character.heading_yaw;
         cam_params.forward = glm::vec3(glm::sin(yaw), 0.0f, glm::cos(yaw));
         cam_params.right = glm::vec3(glm::cos(yaw), 0.0f, -glm::sin(yaw));
+
+        // Validate orthonormal basis from heading
+        FL_ASSERT_NORMALIZED(cam_params.forward, "heading-derived forward vector");
+        FL_ASSERT_NORMALIZED(cam_params.right, "heading-derived right vector");
+        FL_ASSERT_ORTHOGONAL(cam_params.forward, cam_params.right, "heading-derived basis vectors");
     }
 
     character.apply_input(input_params, cam_params, dt);
