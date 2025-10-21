@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-21
 **Previous:** [ITERATION_1.md](CAR_CONTROL_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** APPROVED
 
 ---
 
@@ -151,5 +151,96 @@ Baseline contract from ITERATION_1 (already proven, must remain valid after revi
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-21
+
+**Principle Violations:**
+
+*Minor documentation inconsistencies:*
+- Comment drift in controller.h:114 - says "input.x" instead of "turn_input"
+- Stale line-number references in header comments
+- Semantic naming: `camera_input_params` used for both camera basis and heading basis (minor typing concern)
+
+**Strengths:**
+- Radical Simplicity: Pass - lean, mode-agnostic primitive, no unnecessary complexity
+- Mathematical Foundations: Pass - correct time-independent heading integration, orthonormal basis
+- Orthogonality: Pass - clear separation (controller = physics, game_world = composition)
+- Consistency: Pass - no mode awareness, consistent behavior given same inputs
+- Single Source of Truth: Pass - physics state authoritative, derived values not duplicated
+- Removed speed-gated turning complexity as planned
+- Controller remains a pure primitive with no special cases
+
+**Assessment:**
+
+All fundamental principles upheld. Core system is mathematically correct, architecturally sound, and behaviorally consistent. Violations are purely documentation/comments, not behavioral. The heading integration is time-independent, layer separation is clean, and the primitive remains orthogonal and composable.
+
+Minor documentation cleanup recommended but not blocking.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:**
+
+System fundamentally upholds all FrogLords principles. Violations are minor documentation inconsistencies (comment drift, stale line references) that don't affect behavioral correctness or architectural soundness. The core physics is mathematically correct, time-independent, and properly layered. Controller remains a pure orthogonal primitive. Game_world cleanly composes behavior without coupling.
+
+Minor documentation issues can be addressed in polish phase. System is production-ready.
+
+**Required changes:** None blocking (documentation cleanup deferred to polish)
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/TESTS -->
+## Foundation Tests
+
+**Validation approach:** Debug assertions (6 added in iteration)
+
+**Reasoning:**
+- Controller is Layer 3 (Systems), not Layer 1 (Foundation)
+- Heading integration contract already enforced by runtime assertions
+- Formula trivial: `heading += -input * rate * dt`
+- Unit tests appropriate for stable Layer 1 primitives only
+
+**Assertions validate:**
+- Preconditions: dt, turn_rate, turn_input, heading_yaw finiteness
+- Postconditions: heading_yaw finite and wrapped to [-π, π]
+- Proven through playtest (no assertion failures)
+
+**Note:** Unit test suite for stable Layer 1 primitives (math_utils, collision primitives) deferred to refinement phase.
+<!-- END: VALIDATE/TESTS -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- Separation of turn_input from move_direction created cleaner API than expected
+- Heading always integrating (even in FREE_STRAFE) eliminated stale state without complexity
+- Controller remained completely mode-agnostic - composition layer owns all behavior selection
+
+**Enables (future):**
+- Orientation-locked camera mode (heading provides stable reference frame)
+- Drift mechanics (heading direction decoupled from velocity direction)
+- Tank control schemes (heading-relative movement patterns)
+- Speed-dependent turn scaling (deferred, but foundation exists)
+
+**Learned:**
+- Physics responsibility must live in physics layer - cross-layer integration violates orthogonality
+- Explicit struct fields clarify intent better than dual-purpose parameters
+- Unconditional updates prevent stale state better than conditional logic
+- Turn rate as constant (not speed-gated) simplified iteration significantly
+<!-- END: VALIDATE/EMERGENCE -->
 
 ---
