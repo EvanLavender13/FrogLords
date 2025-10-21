@@ -100,3 +100,30 @@ constexpr float epsilon = 0.0001f;
 - Before: LOC 4 violations
 - After: LOC 0 violations (-4)
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/app/debug_generation.cpp`: 330 → 330 (0 lines, 3 constants renamed)
+- `src/foundation/collision.cpp`: 233 → 233 (0 lines, 1 constant renamed)
+
+**Total:** 0 lines changed (rename-only refactor)
+
+**Violations removed:**
+- snake_case constants: 4 → 0 (-4)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Constants declared locally without following UPPER_CASE convention for constant values.
+
+**Prevention:** Apply UPPER_CASE to all constexpr declarations, not just enum constants. Clang-tidy catches this.
+
+**Remaining work:** None - all snake_case constant violations resolved.
+<!-- END: MEASURE/LEARNING -->
