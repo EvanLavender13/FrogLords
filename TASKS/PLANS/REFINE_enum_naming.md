@@ -139,3 +139,37 @@ camera_parameter::field_of_view   → FIELD_OF_VIEW
 
 **Clang-tidy verification:** No enum naming violations remain
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.h`: 144 → 144 (0 lines, 3 constants renamed)
+- `src/gui/parameter_command.h`: 36 → 36 (0 lines, 9 constants renamed)
+- `src/gui/camera_command.h`: 25 → 25 (0 lines, 4 constants renamed)
+- `src/character/controller.cpp`: 277 → 277 (0 lines, 6 usage sites)
+- `src/gui/character_panel.cpp`: 119 → 119 (0 lines, 12 usage sites)
+- `src/gui/camera_panel.cpp`: 64 → 64 (0 lines, 4 usage sites)
+- `src/app/runtime.cpp`: 199 → 199 (0 lines, 13 usage sites)
+- `src/app/debug_generation.cpp`: 220 → 220 (0 lines, 6 usage sites)
+
+**Total:** 91 insertions, 100 deletions (-9 lines net)
+
+**Violations removed:**
+- snake_case enum constants: 16 declarations → 0 (-16)
+- Total snake_case enum references: 42 → 0 (-42 including usage sites)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Enums added before `.clang-tidy` enforcement enabled or rules incomplete.
+
+**Prevention:** Run `clang-tidy` after adding new enums. Enforce in CI/pre-commit hooks.
+
+**Remaining work:** 4 local constant arrays still use snake_case (separate backlog item).
+<!-- END: MEASURE/LEARNING -->
