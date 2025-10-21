@@ -19,6 +19,14 @@ Validate mathematical foundations. Handle edge cases. Stabilize through testing.
 
 ---
 
+## Anti-Patterns
+
+Before implementing, review @TASKS/PATTERNS.md for known code and process anti-patterns.
+
+Prevention is cheaper than detection.
+
+---
+
 ## Process
 
 ### 1. Create or Resume Iteration Document
