@@ -74,13 +74,27 @@ constexpr float epsilon = 0.0001f;
 
 ---
 
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Renamed 4 local constant declarations to UPPER_CASE
+**Tests:** All passing
+**Result:** ✓ Violation removed
+
+**Renamed constants:**
+- `src/app/debug_generation.cpp:59` - `gradient` → `GRADIENT`
+- `src/app/debug_generation.cpp:65` - `num_stops` → `NUM_STOPS`
+- `src/app/debug_generation.cpp:166` - `circle_segments` → `CIRCLE_SEGMENTS`
+- `src/foundation/collision.cpp:16` - `epsilon` → `EPSILON`
+<!-- END: REFINE/COMPLETED -->
+
 <!-- BEGIN: SELECT/SUCCESS -->
 ## Success
 
-- [ ] Violation resolved
-- [ ] Principle upheld
-- [ ] Tests passing
-- [ ] No regressions
+- [x] Violation resolved
+- [x] Principle upheld
+- [x] Tests passing
+- [x] No regressions
 
 **Metrics:**
 - Before: LOC 4 violations
