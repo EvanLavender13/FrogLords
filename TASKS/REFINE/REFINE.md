@@ -23,6 +23,8 @@ Execute planned refinement—remove violation, restore principle, reduce complex
 
 **Extremely simple deletions:** Skip formal plan if documentation would substantially exceed code change. Fix, commit with learning note in commit message, skip MEASURE. Use judgment.
 
+**Target: Plan <100 lines.** For naming changes, deletions, and audits, apply "Radical Simplicity" to documentation itself. Delete repetition, state facts once, stop when done.
+
 ### 1. Execute
 
 Delete code, simplify logic, or document justification.
@@ -56,6 +58,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 ## Completed
 
 **Change:** [deleted/simplified/documented what]
+**Files Modified:** [list files and line changes]
 **Tests:** All passing | Updated: [list]
 **Result:** ✓ Violation removed
 <!-- END: REFINE/COMPLETED -->

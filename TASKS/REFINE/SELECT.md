@@ -35,11 +35,13 @@ Choose the highest-impact violation. Apply the principles.
 
 ### 3. Classify Complexity
 
-**Trivial (1-2 pts):** Single concern, isolated to one location. Fix path obvious. Deletion or documentation. No behavior changes. Zero cascade risk.
+**Trivial (1-2 pts):** Single concern, isolated to one location. Fix path obvious. Deletion or documentation. No behavior changes. Zero cascade risk. **Target: Plan <100 lines total.**
 
 **Standard (3-8 pts):** Crosses file boundaries. Requires deriving from first principles or extracting primitives. Changes behavior. Moderate cascade risk. Must validate existing systems remain unaffected.
 
 **Complex (>8 pts):** System-wide implications. Requires new primitives or fundamental restructuring. High cascade risk across multiple layers. **Don't refine—build new system instead.**
+
+**Brevity principle:** Documentation should not substantially exceed the work. For naming changes, deletions, and audits, keep plans concise. Delete repetition, state facts once, stop when done.
 
 ---
 
@@ -93,7 +95,7 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 
 **Approach:** Delete | Simplify | Document
 
-**CRITICAL:** Describe the approach conceptually. Use pseudocode and high-level explanations. Do NOT write actual source code—that happens during REFINE.
+**CRITICAL:** State the approach directly in plain language. No code examples, no pseudocode demonstrations. "Directness Over Demonstration"—if approach needs examples to be clear, the approach is unclear.
 
 **DELETE:**
 - Remove:
@@ -111,21 +113,6 @@ Create `TASKS/PLANS/REFINE_<name>.md`:
 - Derivation:
 - Trade-off:
 <!-- END: SELECT/FIX -->
-
----
-
-<!-- BEGIN: SELECT/SUCCESS -->
-## Success
-
-- [ ] Violation resolved
-- [ ] Principle upheld
-- [ ] Tests passing
-- [ ] No regressions
-
-**Metrics:**
-- Before: LOC __
-- After: LOC __ (-__)
-<!-- END: SELECT/SUCCESS -->
 ```
 
 ---
