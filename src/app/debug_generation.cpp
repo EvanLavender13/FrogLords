@@ -313,15 +313,18 @@ void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
 void generate_car_control_primitives(debug::debug_primitive_list& list, const controller& character,
                                      control_scheme scheme) {
     if (scheme == control_scheme::CAR_LIKE) {
-        // Draw heading yaw arrow (yellow for car control)
-        float yaw = character.heading_yaw;
-        glm::vec3 forward = math::yaw_to_forward(yaw);
-        list.arrows.push_back(debug::debug_arrow{
-            .start = character.position,
-            .end = character.position + forward * 1.5f,
-            .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
-            .head_size = 0.2f,
-        });
+        // Draw heading yaw arrow (yellow for car control, scales with speed like green arrow)
+        float current_speed = glm::length(math::project_to_horizontal(character.velocity));
+        if (current_speed > 0.05f) {
+            float yaw = character.heading_yaw;
+            glm::vec3 forward = math::yaw_to_forward(yaw);
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + forward * current_speed,
+                .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
+                .head_size = 0.2f,
+            });
+        }
     }
 }
 
