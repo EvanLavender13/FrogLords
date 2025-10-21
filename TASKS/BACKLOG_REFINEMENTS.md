@@ -19,17 +19,6 @@ None - All high-priority violations resolved ✅
 
 ### Medium Priority
 
-**Enum Naming Convention Violations**
-- **Location:** Multiple files (22 instances)
-  - `src/character/controller.h:126` - locomotion_speed_state: walk, run, sprint
-  - `src/gui/parameter_command.h:20-28` - parameter_type: 9 constants
-  - `src/gui/camera_command.h:14-17` - camera_parameter: 4 constants
-- **Tool:** clang-tidy
-- **Severity:** Medium
-- **Issue:** Enum constants use snake_case instead of UPPER_CASE, violating CONVENTIONS.md
-- **Fix:** Mechanical rename of all enum constants to UPPER_CASE. Update all usage sites.
-- **Impact:** Code style consistency across codebase
-
 **Const-Correctness for Local Arrays**
 - **Location:** `src/app/debug_generation.cpp:54,60,162`, `src/foundation/collision.cpp:16`
 - **Tool:** clang-tidy

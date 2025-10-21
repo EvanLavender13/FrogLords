@@ -39,7 +39,7 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , locomotion{locomotion_speed_state::walk, 0.0f, walk_cycle_length} {
+    , locomotion{locomotion_speed_state::WALK, 0.0f, walk_cycle_length} {
     // Validate threshold ordering (prevents state collapse)
     FL_PRECONDITION(walk_threshold < run_threshold,
                     "walk_threshold must be less than run_threshold to define distinct states");
@@ -231,11 +231,11 @@ void controller::update(const collision_world* world, float dt) {
 
     // Classify speed into discrete locomotion states
     if (speed < walk_threshold) {
-        locomotion.state = locomotion_speed_state::walk;
+        locomotion.state = locomotion_speed_state::WALK;
     } else if (speed < run_threshold) {
-        locomotion.state = locomotion_speed_state::run;
+        locomotion.state = locomotion_speed_state::RUN;
     } else {
-        locomotion.state = locomotion_speed_state::sprint;
+        locomotion.state = locomotion_speed_state::SPRINT;
     }
 
     // Accumulate distance traveled (frame-rate independent)
@@ -264,11 +264,11 @@ void controller::update(const collision_world* world, float dt) {
 
 float controller::get_cycle_length(locomotion_speed_state state) const {
     switch (state) {
-    case locomotion_speed_state::walk:
+    case locomotion_speed_state::WALK:
         return walk_cycle_length;
-    case locomotion_speed_state::run:
+    case locomotion_speed_state::RUN:
         return run_cycle_length;
-    case locomotion_speed_state::sprint:
+    case locomotion_speed_state::SPRINT:
         return sprint_cycle_length;
     }
     // Should never reach here - all enum values handled

@@ -17,15 +17,15 @@
 namespace gui {
 
 enum class parameter_type {
-    max_speed,
-    accel,
-    jump_height,
-    gravity,
-    coyote_window,
-    jump_buffer_window,
-    landing_stiffness,
-    landing_damping,
-    landing_impulse_scale,
+    MAX_SPEED,
+    ACCEL,
+    JUMP_HEIGHT,
+    GRAVITY,
+    COYOTE_WINDOW,
+    JUMP_BUFFER_WINDOW,
+    LANDING_STIFFNESS,
+    LANDING_DAMPING,
+    LANDING_IMPULSE_SCALE,
 };
 
 struct parameter_command {

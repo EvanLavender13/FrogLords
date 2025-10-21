@@ -108,7 +108,7 @@ struct controller {
     float jump_buffer_window = 0.15f; // seconds (150ms)
 
     // Locomotion state (speed tiers + phase for cyclic motion)
-    enum class locomotion_speed_state { walk, run, sprint };
+    enum class locomotion_speed_state { WALK, RUN, SPRINT };
 
     struct locomotion_state {
         locomotion_speed_state state;

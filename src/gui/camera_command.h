@@ -11,10 +11,10 @@
 namespace gui {
 
 enum class camera_parameter_type {
-    distance,
-    height_offset,
-    min_distance,
-    max_distance,
+    DISTANCE,
+    HEIGHT_OFFSET,
+    MIN_DISTANCE,
+    MAX_DISTANCE,
 };
 
 struct camera_command {
