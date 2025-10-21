@@ -71,8 +71,8 @@ void game_world::update(float dt) {
     } else {
         // Heading-relative basis (car-like control)
         float yaw = character.heading_yaw;
-        cam_params.forward = glm::vec3(glm::sin(yaw), 0.0f, glm::cos(yaw));
-        cam_params.right = glm::vec3(glm::cos(yaw), 0.0f, -glm::sin(yaw));
+        cam_params.forward = math::yaw_to_forward(yaw);
+        cam_params.right = math::yaw_to_right(yaw);
 
         // Validate orthonormal basis from heading
         FL_ASSERT_NORMALIZED(cam_params.forward, "heading-derived forward vector");
