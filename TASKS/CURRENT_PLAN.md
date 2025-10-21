@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-21 - Orientation-Locked Camera
+**Status:** 🔧 Refinement - Controller State Audit
+**Started:** 2025-10-21
+**Branch:** refine/controller_state_audit
+**Path:** A (trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
-
----
-
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Remove write-only `last_acceleration` field
+**Location:** @TASKS/PLANS/REFINE_controller_state_audit.md
+**Principle:** Radical Simplicity
+**Approach:** Delete
+**Next:** REFINE
