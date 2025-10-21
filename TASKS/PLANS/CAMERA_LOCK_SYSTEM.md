@@ -99,22 +99,21 @@ Pure function that computes camera eye position from target, direction yaw, dist
 ## Implementation Plan
 
 **Files to modify:**
-- `src/camera/camera_follow.h` - Add pure function `compute_locked_eye_position(target, forward_dir, distance, height)` accepting vec3
+- `src/camera/camera_follow.h` - Add pure function `compute_locked_eye_position(target, forward_dir, distance, height)` accepting vec3; Add `camera_mode` enum and field to `camera_follow_component` (SSOT for mode)
 - `src/camera/camera_follow.cpp` - Implement locked camera position calculation with vec3 direction input
-- `src/gui/character_panel.h` - Add `camera_mode` enum and field to `character_panel_state` (SSOT for mode)
-- `src/gui/character_panel.cpp` - Add radio button for camera mode toggle
+- `src/gui/camera_panel.h` - Add radio button for camera mode toggle
+- `src/gui/camera_panel.cpp` - Implement mode toggle UI
 - `src/app/game_world.cpp` - Update camera position logic to branch on mode, derive direction from orientation system once
-- `src/app/debug_generation.cpp` - Add debug arrow showing lock direction when in LOCK_TO_ORIENTATION mode
 
 **Call structure:**
-`game_world::update()` reads `camera_mode` from `panel_state`. When LOCK_TO_ORIENTATION: compute forward direction vec3 from `character_visuals.orientation.get_yaw()` once, pass to both camera computation and debug viz. Camera function: `camera_follow::compute_locked_eye_position(character.position, forward_dir, cam_follow.distance, cam_follow.height_offset)`.
+`game_world::update()` reads `camera_mode` from `cam_follow.mode`. When LOCK_TO_ORIENTATION: compute forward direction vec3 from `character_visuals.orientation.get_yaw()` once, pass to camera computation. Camera function: `camera_follow::compute_locked_eye_position(character.position, forward_dir, cam_follow.distance, cam_follow.height_offset)`.
 
 **Debug data flow:**
 In `game_world::update()`, when `camera_mode == LOCK_TO_ORIENTATION`, compute `forward_dir` once from yaw. Pass to camera function and add debug arrow to `debug_list` using same vector.
 
 **Integration points:**
-- `gui::character_panel_state` stores camera_mode enum (SSOT)
-- `game_world::update()` at line 116-117 branches on mode from panel_state
+- `camera_follow_component::mode` stores camera_mode enum (SSOT)
+- `game_world::update()` at line 117 branches on mode from cam_follow component
 - Direction derived once from `character_visuals.orientation.get_yaw()` and reused
 <!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
 
@@ -131,15 +130,15 @@ Does this implementation plan follow the principles? Specifically: 1) Is the pur
 - Pure function approach correct; prefer vec3 forward_dir input over yaw for composability
 - Camera mode enum acceptable; keep it localized in one place (SSOT)
 - Use orientation system's facing output, not raw controller heading_yaw or velocity
-- Avoid duplicating camera_mode state; store once in panel_state
-- Compute direction vector once per frame and pass to both camera and debug viz
+- Avoid duplicating camera_mode state; store once in camera_follow_component
+- Compute direction vector once per frame and pass to camera function
 - Keep camera math geometric and ignorant of "modes"
 
 **Impact on implementation:**
 - Changed function signature from `direction_yaw` to `forward_dir` (vec3)
-- Removed camera_mode from game_world, kept only in gui::character_panel_state
+- Removed camera_mode from game_world, kept only in camera_follow_component
 - Use character_visuals.orientation.get_yaw() instead of character.heading_yaw
-- Compute direction once and reuse for camera and debug arrow
+- Compute direction once and reuse for camera function
 <!-- END: GRAYBOX/REVIEW -->
 
 ---
@@ -186,3 +185,4 @@ Does this implementation plan follow the principles? Specifically: 1) Is the pur
 
 - [CAMERA_LOCK_ITERATION_1.md](CAMERA_LOCK_ITERATION_1.md) - REVISE
 - [CAMERA_LOCK_ITERATION_2.md](CAMERA_LOCK_ITERATION_2.md) - REVISE
+- [CAMERA_LOCK_ITERATION_3.md](CAMERA_LOCK_ITERATION_3.md) - Ready for VALIDATE

@@ -79,10 +79,6 @@ None - refinement only
 - Removed unused `min_dist`/`max_dist` from camera_panel_state (src/gui/camera_panel.h)
 - Replaced inline trig with `math::yaw_to_forward/right` helpers (src/app/game_world.cpp:74-75)
 
-**Commits:**
-- e879aed - Remove unused fields
-- f83c1b2 - Use math helpers
-
 **Status:**
 - [x] Contract proven
 - [x] Stable
