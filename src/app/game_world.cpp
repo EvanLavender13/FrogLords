@@ -46,8 +46,11 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
         float old_heading = character.heading_yaw;
 
-        // Integrate heading from turn input (A/D)
-        // Negated: A (negative x) turns left (increase yaw), D (positive x) turns right (decrease yaw)
+        // Integrate heading from turn input
+        // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
+        // Input convention: negative x = left movement, positive x = right movement
+        // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
+        // Therefore: negate x to map left input → +yaw, right input → -yaw
         character.heading_yaw += -input_params.move_direction.x * character.turn_rate * dt;
         character.heading_yaw = math::wrap_angle_radians(character.heading_yaw);
 
@@ -58,6 +61,10 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
 
         // Zero lateral input for controller (car control = no strafing)
         input_params.move_direction.x = 0.0f;
+
+        // Validate input transformation: lateral input zeroed in car mode
+        FL_POSTCONDITION(input_params.move_direction.x == 0.0f,
+                         "CAR_LIKE mode must zero lateral input (no strafing)");
     }
 
     if (glm::length(input_params.move_direction) > 0.0f) {
@@ -65,6 +72,12 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
     }
 
     input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
+
+    // Validate normalized input direction
+    float input_length = glm::length(input_params.move_direction);
+    FL_POSTCONDITION(input_length == 0.0f ||
+                     glm::epsilonEqual(input_length, 1.0f, 0.001f),
+                     "input direction must be zero or normalized");
 
     // Construct camera input params (basis selection based on control scheme)
     controller::camera_input_params cam_params;
