@@ -98,23 +98,23 @@ Pure function that computes camera eye position from target, direction yaw, dist
 <!-- BEGIN: GRAYBOX/IMPLEMENTATION_PLAN -->
 ## Implementation Plan
 
-**Files to modify:**
-- `src/camera/camera_follow.h` - Add pure function `compute_locked_eye_position(target, forward_dir, distance, height)` accepting vec3; Add `camera_mode` enum and field to `camera_follow_component` (SSOT for mode)
-- `src/camera/camera_follow.cpp` - Implement locked camera position calculation with vec3 direction input
-- `src/gui/camera_panel.h` - Add radio button for camera mode toggle
-- `src/gui/camera_panel.cpp` - Implement mode toggle UI
-- `src/app/game_world.cpp` - Update camera position logic to branch on mode, derive direction from orientation system once
+**Files modified:**
+- `src/camera/camera_follow.h` - Added pure function `compute_locked_eye_position(target, forward_dir, distance, height)` accepting vec3; Added `camera_mode` enum and `mode` field to `camera_follow` struct (SSOT)
+- `src/camera/camera_follow.cpp` - Implemented locked camera position calculation with vec3 direction input
+- `src/gui/camera_panel.h` - Added radio button for camera mode toggle
+- `src/gui/camera_panel.cpp` - Implemented mode toggle UI
+- `src/app/game_world.cpp` - Updated camera position logic to branch on mode, derives direction from orientation system
 
-**Call structure:**
-`game_world::update()` reads `camera_mode` from `cam_follow.mode`. When LOCK_TO_ORIENTATION: compute forward direction vec3 from `character_visuals.orientation.get_yaw()` once, pass to camera computation. Camera function: `camera_follow::compute_locked_eye_position(character.position, forward_dir, cam_follow.distance, cam_follow.height_offset)`.
+**Actual implementation:**
+`game_world::update()` reads `camera_mode` from `cam_follow.mode` (camera_follow.h:10). When LOCK_TO_ORIENTATION: computes forward direction vec3 from `character_visuals.orientation.get_yaw()` using `math::yaw_to_forward()` helper (game_world.cpp:119-120), passes to `camera_follow::compute_locked_eye_position(character.position, forward_dir, cam_follow.distance, cam_follow.height_offset)` (game_world.cpp:122-123).
 
-**Debug data flow:**
-In `game_world::update()`, when `camera_mode == LOCK_TO_ORIENTATION`, compute `forward_dir` once from yaw. Pass to camera function and add debug arrow to `debug_list` using same vector.
+**Debug visualization:**
+Existing green orientation arrow sufficient—no additional debug arrow needed.
 
 **Integration points:**
-- `camera_follow_component::mode` stores camera_mode enum (SSOT)
+- `camera_follow::mode` stores camera_mode enum (SSOT) (camera_follow.h:10)
 - `game_world::update()` at line 117 branches on mode from cam_follow component
-- Direction derived once from `character_visuals.orientation.get_yaw()` and reused
+- Direction derived once from `character_visuals.orientation.get_yaw()` via `math::yaw_to_forward()` and passed to camera function
 <!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
 
 <!-- BEGIN: GRAYBOX/REVIEW -->
@@ -185,4 +185,4 @@ Does this implementation plan follow the principles? Specifically: 1) Is the pur
 
 - [CAMERA_LOCK_ITERATION_1.md](CAMERA_LOCK_ITERATION_1.md) - REVISE
 - [CAMERA_LOCK_ITERATION_2.md](CAMERA_LOCK_ITERATION_2.md) - REVISE
-- [CAMERA_LOCK_ITERATION_3.md](CAMERA_LOCK_ITERATION_3.md) - Ready for VALIDATE
+- [CAMERA_LOCK_ITERATION_3.md](CAMERA_LOCK_ITERATION_3.md) - APPROVED
