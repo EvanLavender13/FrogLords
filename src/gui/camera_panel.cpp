@@ -1,23 +1,36 @@
 #include "gui/camera_panel.h"
 #include "gui/gui.h"
+#include "app/game_world.h"
 #include <imgui.h>
 #include <vector>
 
 namespace gui {
 
-std::vector<camera_command> draw_camera_panel(camera_panel_state& state, const camera& cam,
-                                              const camera_follow& cam_follow) {
-    std::vector<camera_command> commands;
+camera_panel_result draw_camera_panel(camera_panel_state& state, const camera& cam,
+                                       const camera_follow& cam_follow,
+                                       camera_mode current_mode) {
+    camera_panel_result result;
 
     if (!state.show)
-        return commands;
+        return result;
 
     // Draw as collapsible section (no window wrapper)
     if (!ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
-        return commands;
+        return result;
 
-    // Camera mode display (always FOLLOW now)
-    ImGui::Text("Mode: FOLLOW");
+    // Camera mode selection
+    ImGui::Text("Mode:");
+    int mode_index = static_cast<int>(current_mode);
+    if (ImGui::RadioButton("Free Orbit", &mode_index, 0)) {
+        result.mode_commands.push_back({camera_mode::FREE_ORBIT});
+    }
+    if (ImGui::RadioButton("Lock to Orientation", &mode_index, 1)) {
+        result.mode_commands.push_back({camera_mode::LOCK_ORIENTATION});
+    }
+    if (ImGui::RadioButton("Lock to Velocity", &mode_index, 2)) {
+        result.mode_commands.push_back({camera_mode::LOCK_VELOCITY});
+    }
+    ImGui::Spacing();
 
     // Current state (read-only)
     ImGui::Text("Distance: %.2f m", cam_follow.distance);
@@ -39,12 +52,12 @@ std::vector<camera_command> draw_camera_panel(camera_panel_state& state, const c
 
     // Distance slider
     if (ImGui::SliderFloat("Distance", &distance, min_distance, max_distance, "%.1f m")) {
-        commands.push_back({camera_parameter_type::DISTANCE, distance});
+        result.commands.push_back({camera_parameter_type::DISTANCE, distance});
     }
 
     // Height offset slider
     if (ImGui::SliderFloat("Height Offset", &height_offset, 0.0f, 3.0f, "%.1f m")) {
-        commands.push_back({camera_parameter_type::HEIGHT_OFFSET, height_offset});
+        result.commands.push_back({camera_parameter_type::HEIGHT_OFFSET, height_offset});
     }
 
     ImGui::Spacing();
@@ -52,13 +65,13 @@ std::vector<camera_command> draw_camera_panel(camera_panel_state& state, const c
     // Zoom limits
     ImGui::Text("Zoom Limits");
     if (ImGui::SliderFloat("Min Distance", &min_distance, 0.5f, 10.0f, "%.1f m")) {
-        commands.push_back({camera_parameter_type::MIN_DISTANCE, min_distance});
+        result.commands.push_back({camera_parameter_type::MIN_DISTANCE, min_distance});
     }
     if (ImGui::SliderFloat("Max Distance", &max_distance, 5.0f, 30.0f, "%.1f m")) {
-        commands.push_back({camera_parameter_type::MAX_DISTANCE, max_distance});
+        result.commands.push_back({camera_parameter_type::MAX_DISTANCE, max_distance});
     }
 
-    return commands;
+    return result;
 }
 
 } // namespace gui

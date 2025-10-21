@@ -1,5 +1,6 @@
 #include "app/game_world.h"
 #include "foundation/math_utils.h"
+#include "foundation/debug_assert.h"
 
 #include "gui/character_panel.h"
 #include "rendering/velocity_trail.h"
@@ -8,6 +9,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <algorithm>
+
+namespace {
+/// Pure function: compute camera eye position from direction vector
+glm::vec3 compute_eye_from_direction(const glm::vec3& target_position,
+                                      const glm::vec3& direction, float distance,
+                                      float height_offset) {
+    FL_PRECONDITION(std::isfinite(target_position.x) && std::isfinite(target_position.y) &&
+                        std::isfinite(target_position.z),
+                    "target_position must be finite");
+    FL_PRECONDITION(std::isfinite(direction.x) && std::isfinite(direction.y) &&
+                        std::isfinite(direction.z),
+                    "direction must be finite");
+    FL_PRECONDITION(distance > 0.0f, "distance must be positive");
+
+    glm::vec3 look_target = target_position + glm::vec3(0, height_offset, 0);
+    glm::vec3 eye = look_target - direction * distance;
+
+    FL_POSTCONDITION(std::isfinite(eye.x) && std::isfinite(eye.y) && std::isfinite(eye.z),
+                     "eye position must be finite");
+    return eye;
+}
+} // namespace
 
 void game_world::init() {
     character = controller();
@@ -70,8 +93,31 @@ void game_world::update(float dt, const gui::character_panel_state& panel_state)
         }
     }
 
-    // Update camera position from follow controller
-    cam.set_position(cam_follow.compute_eye_position(character.position));
+    // Update camera position based on mode
+    glm::vec3 eye_position;
+    switch (current_camera_mode) {
+    case camera_mode::FREE_ORBIT:
+        eye_position = cam_follow.compute_eye_position(character.position);
+        break;
+    case camera_mode::LOCK_ORIENTATION: {
+        float yaw = character_visuals.orientation.get_yaw();
+        glm::vec3 forward = math::yaw_to_forward(yaw);
+        eye_position = compute_eye_from_direction(character.position, forward,
+                                                   cam_follow.distance, cam_follow.height_offset);
+        break;
+    }
+    case camera_mode::LOCK_VELOCITY: {
+        glm::vec3 vel_horizontal = math::project_to_horizontal(character.velocity);
+        float yaw = character_visuals.orientation.get_yaw();
+        glm::vec3 forward_fallback = math::yaw_to_forward(yaw);
+        glm::vec3 direction = math::safe_normalize(vel_horizontal, forward_fallback);
+        eye_position = compute_eye_from_direction(character.position, direction,
+                                                   cam_follow.distance, cam_follow.height_offset);
+        break;
+    }
+    }
+
+    cam.set_position(eye_position);
     cam.set_target(cam_follow.compute_look_target(character.position));
 }
 
@@ -81,6 +127,10 @@ void game_world::apply_camera_orbit(float delta_x, float delta_y) {
 
 void game_world::apply_camera_zoom(float delta) {
     cam_follow.zoom(delta);
+}
+
+void game_world::set_camera_mode(camera_mode mode) {
+    current_camera_mode = mode;
 }
 
 void setup_test_level(game_world& world) {
