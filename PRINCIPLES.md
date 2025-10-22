@@ -10,6 +10,8 @@ Every element must justify its existence. Complexity is not added—it emerges f
 ### 2. Fundamental Composable Functions
 Build from orthogonal primitives. Each piece does exactly one thing, does it perfectly, and combines cleanly with others. Like mathematical functions that compose into equations, game systems must compose into experiences without special cases or exceptions.
 
+Cognitive simplicity follows structural simplicity. When mechanical details obscure semantic structure, the function serves multiple masters. Extract ceremony to reveal intent. A function that requires mental filtering to understand has failed its reader.
+
 ### 3. Solid Mathematical Foundations
 Mathematics is truth. Physics is law. Every behavior must be mathematically correct before it can be aesthetically pleasing. A beautiful lie is still a lie, and lies compound into chaos.
 
@@ -131,6 +133,8 @@ When these appear, principles have been violated:
 **Special Cases**: Consistency has been sacrificed for convenience.
 
 **Surprising Instability**: Mathematical foundations were not validated.
+
+**Cognitive Overload**: Mechanical details obscure semantic structure.
 
 ## The Process of Creation
 
