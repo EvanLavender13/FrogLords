@@ -61,3 +61,29 @@ After deletion, codebase will contain only code that actually executes. Zero beh
 **Tests:**
 Compilation confirms no consumers exist. Runtime behavior unchanged.
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Deleted 12 unused API functions (2 fewer than initially identified)
+
+**Files Modified:**
+- `src/gui/gui.h` - Removed 5 function declarations (button, checkbox, color_edit, plot_value, wants_keyboard)
+- `src/gui/gui.cpp` - Removed 5 function implementations
+- `src/input/input.h` - Removed 3 function declarations (is_key_released, is_mouse_button_pressed, is_mouse_button_released, get_mouse_position_i)
+- `src/input/input.cpp` - Removed 3 function implementations
+- `src/foundation/easing.h` - Removed 3 function declarations (cubic_hermite float, cubic_hermite vec3, smooth_mix scalar_span)
+- `src/foundation/easing.cpp` - Removed 3 function implementations
+- `src/foundation/spring_damper.h` - Removed 1 function declaration (reset)
+- `src/foundation/spring_damper.cpp` - Removed 1 function implementation
+- `src/camera/camera.h` - Removed 2 inline function definitions (set_fov, set_clip_planes)
+
+**Correction During Implementation:**
+Initially planned to remove mouse_x() and mouse_y(), but discovered they ARE used in `src/app/runtime.cpp:76,77,88,89` for camera orbit control. Kept these functions. Actual count: 12 functions removed (not 14).
+
+**Tests:** All passing - build successful with zero errors
+
+**Result:** ✓ Violation removed - codebase now contains only functions that are actually called
+<!-- END: REFINE/COMPLETED -->

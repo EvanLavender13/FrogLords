@@ -37,24 +37,12 @@ bool is_key_down(int key);
 // Check if a key was just pressed this frame
 bool is_key_pressed(int key);
 
-// Check if a key was just released this frame
-bool is_key_released(int key);
-
 // === MOUSE ===
 // Check if a mouse button is currently pressed (use SAPP_MOUSEBUTTON_* constants)
 bool is_mouse_button_down(int button);
 
-// Check if a mouse button was just pressed this frame
-bool is_mouse_button_pressed(int button);
-
-// Check if a mouse button was just released this frame
-bool is_mouse_button_released(int button);
-
 // Get current mouse position
 cursor_position get_mouse_position();
-
-// Get mouse position as integers
-cursor_position_i get_mouse_position_i();
 
 // Get mouse position (shorthand accessors)
 float mouse_x();

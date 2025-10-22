@@ -16,11 +16,6 @@ void spring_damper::add_impulse(float impulse) {
     velocity += impulse;
 }
 
-void spring_damper::reset(float pos) {
-    position = pos;
-    velocity = 0.0f;
-}
-
 float critical_damping(float stiffness, float mass) {
     // DERIVED: Critical damping formula from harmonic oscillator theory
     // Equation: c = 2√(k·m)

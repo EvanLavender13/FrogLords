@@ -28,9 +28,8 @@ void shutdown();
 // Forward sokol app events to the GUI system
 void handle_event(const sapp_event* event);
 
-// Check if GUI wants to capture mouse/keyboard input
+// Check if GUI wants to capture mouse input
 bool wants_mouse();
-bool wants_keyboard();
 
 // GUI Panel/Window helpers
 namespace panel {
@@ -45,18 +44,8 @@ void end();
 // Common GUI widgets
 namespace widget {
 void text(const char* fmt, ...);
-bool button(const char* label);
-bool checkbox(const char* label, bool* value);
 bool slider_float(const char* label, float* value, float min, float max);
-void color_edit(const char* label, float* color); // RGB or RGBA
 } // namespace widget
-
-// Plot temporal data over time
-// Automatically maintains a rolling window buffer per label
-// min_value/max_value: Y-axis range (use FLT_MAX for auto-scale)
-// max_samples: Maximum number of samples to retain in buffer
-void plot_value(const char* label, float current_value, float time_window = 5.0f,
-                float min_value = FLT_MAX, float max_value = FLT_MAX, size_t max_samples = 500);
 
 // Plot temporal data as histogram
 // Same interface as plot_value but renders as histogram instead of line graph

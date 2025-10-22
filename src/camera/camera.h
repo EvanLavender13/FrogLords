@@ -27,17 +27,6 @@ class camera {
     /// Set camera look-at target in world space
     void set_target(const glm::vec3& target) { center = target; }
 
-    /// Set field of view angle
-    /// @param fov Field of view in degrees
-    void set_fov(float fov) { fov_degrees = fov; }
-
-    /// Set near/far clip planes
-    /// @param planes Pair of near/far clip distances
-    void set_clip_planes(clip_planes planes) {
-        z_near = planes.near_plane;
-        z_far = planes.far_plane;
-    }
-
     /// Get current camera eye position in world space
     const glm::vec3& get_position() const { return eye_pos; }
 
