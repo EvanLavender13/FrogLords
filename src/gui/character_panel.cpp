@@ -40,11 +40,11 @@ std::vector<parameter_command> draw_character_panel(const character_panel_state&
             commands.push_back({parameter_type::GRAVITY, gravity});
         }
 
-        // Legacy sliders (no metadata yet)
-        if (gui::widget::slider_float("Coyote Window (s)", &coyote_window, 0.0f, 0.5f)) {
+        // Metadata-driven tunable parameters (timing forgiveness)
+        if (gui::widget::tunable_param(&coyote_window, controller::coyote_window_meta)) {
             commands.push_back({parameter_type::COYOTE_WINDOW, coyote_window});
         }
-        if (gui::widget::slider_float("Jump Buffer Window (s)", &jump_buffer_window, 0.0f, 0.5f)) {
+        if (gui::widget::tunable_param(&jump_buffer_window, controller::jump_buffer_window_meta)) {
             commands.push_back({parameter_type::JUMP_BUFFER_WINDOW, jump_buffer_window});
         }
 
