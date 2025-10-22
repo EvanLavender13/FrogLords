@@ -53,7 +53,7 @@ std::vector<parameter_command> draw_character_panel(const character_panel_state&
             "Jump Velocity", "m/s", 0.0f, 10.0f, param_type::DERIVED
         };
         gui::widget::derived_param("Jump Velocity", character.jump_velocity, jump_velocity_meta,
-                                    "√(2·|g|·h)");
+                                    "sqrt(2*|g|*h)");
 
         // Real-time feedback: horizontal speed plot
         float horizontal_speed = glm::length(glm::vec3(character.velocity.x, 0.0f, character.velocity.z));
