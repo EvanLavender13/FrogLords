@@ -1,17 +1,19 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Frame Complexity
-**Started:** 2025-10-22
-**Branch:** refine/frame_complexity
-**Path:** B
-**Phase:** SELECT → REFINE
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-22 - Frame Complexity
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Extract command dispatch to reveal game loop structure
-**Location:** @TASKS/PLANS/REFINE_frame_complexity.md
-**Principle:** Fundamental Composable Functions
-**Approach:** Simplify
-**Next:** CLOSE
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Current capabilities
