@@ -87,3 +87,45 @@ Initially planned to remove mouse_x() and mouse_y(), but discovered they ARE use
 
 **Result:** ✓ Violation removed - codebase now contains only functions that are actually called
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files Modified:**
+- `src/gui/gui.h`: 67 → 54 (-13 lines)
+- `src/gui/gui.cpp`: 189 → 140 (-49 lines)
+- `src/input/input.h`: 67 → 55 (-12 lines)
+- `src/input/input.cpp`: 142 → 120 (-22 lines)
+- `src/foundation/easing.h`: 25 → 17 (-8 lines)
+- `src/foundation/easing.cpp`: 50 → 22 (-28 lines)
+- `src/foundation/spring_damper.h`: 40 → 39 (-1 line)
+- `src/foundation/spring_damper.cpp`: 35 → 30 (-5 lines)
+- `src/camera/camera.h`: 67 → 56 (-11 lines)
+- `TASKS/PLANS/REFINE_unused_api.md`: 64 → 90 (+26 lines documentation)
+
+**Total Code:** -149 lines (excluding plan documentation)
+
+**Violations Removed:**
+- Unused function declarations: 15 removed
+- Unused function implementations: 12 removed
+- Dead code paths: 27 total references eliminated
+
+**Static Analysis Impact:**
+- cppcheck unusedFunction warnings: 14 → 2 (12 eliminated)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** API functions written speculatively for "future use" without actual consumers - violates "Every element must justify its existence"
+
+**Prevention:** Never add functions until a concrete use case exists in code. Delete any function that becomes unused during refactoring. Run static analysis regularly to catch dead code early.
+
+**Pattern:** API wrapper pattern (thin wrappers around ImGui, Sokol) creates temptation to expose "complete" API surface - resist this. Expose only what's actually needed.
+
+**Remaining work:** 2 unused functions still flagged by cppcheck - verify these are legitimately needed or remove in next refinement pass
+<!-- END: MEASURE/LEARNING -->
