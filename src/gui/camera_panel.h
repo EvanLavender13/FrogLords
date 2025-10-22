@@ -11,7 +11,7 @@ struct camera_panel_state {
     bool show = true;
 };
 
-std::vector<camera_command> draw_camera_panel(camera_panel_state& state, const camera& cam,
+std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, const camera& cam,
                                               const camera_follow& cam_follow);
 
 } // namespace gui
