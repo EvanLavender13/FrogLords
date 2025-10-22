@@ -1,5 +1,6 @@
 #pragma once
 
+#include "foundation/param_meta.h"
 #include <glm/glm.hpp>
 
 enum class camera_mode { FREE_ORBIT, LOCK_TO_ORIENTATION };
@@ -22,6 +23,23 @@ struct camera_follow {
     // Sensitivity
     float orbit_sensitivity = 0.5f; // degrees per pixel
     float zoom_sensitivity = 0.5f;  // distance per scroll unit
+
+    // Parameter metadata for GUI presentation
+    static constexpr param_meta distance_meta = {
+        "Distance", "m", 1.5f, 15.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta height_offset_meta = {
+        "Height Offset", "m", 0.0f, 3.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta min_distance_meta = {
+        "Min Distance", "m", 0.5f, 10.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta max_distance_meta = {
+        "Max Distance", "m", 5.0f, 30.0f, param_type::TUNABLE
+    };
 
     /// Update camera orientation (Maya-style orbit)
     /// @param delta_x Horizontal rotation delta (pixels)

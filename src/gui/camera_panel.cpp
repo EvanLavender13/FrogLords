@@ -46,13 +46,12 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     float min_distance = cam_follow.min_distance;
     float max_distance = cam_follow.max_distance;
 
-    // Distance slider
-    if (ImGui::SliderFloat("Distance", &distance, min_distance, max_distance, "%.1f m")) {
+    // Metadata-driven tunable parameters
+    if (gui::widget::tunable_param(&distance, camera_follow::distance_meta)) {
         commands.push_back({camera_parameter_type::DISTANCE, distance});
     }
 
-    // Height offset slider
-    if (ImGui::SliderFloat("Height Offset", &height_offset, 0.0f, 3.0f, "%.1f m")) {
+    if (gui::widget::tunable_param(&height_offset, camera_follow::height_offset_meta)) {
         commands.push_back({camera_parameter_type::HEIGHT_OFFSET, height_offset});
     }
 
@@ -60,10 +59,10 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
 
     // Zoom limits
     ImGui::Text("Zoom Limits");
-    if (ImGui::SliderFloat("Min Distance", &min_distance, 0.5f, 10.0f, "%.1f m")) {
+    if (gui::widget::tunable_param(&min_distance, camera_follow::min_distance_meta)) {
         commands.push_back({camera_parameter_type::MIN_DISTANCE, min_distance});
     }
-    if (ImGui::SliderFloat("Max Distance", &max_distance, 5.0f, 30.0f, "%.1f m")) {
+    if (gui::widget::tunable_param(&max_distance, camera_follow::max_distance_meta)) {
         commands.push_back({camera_parameter_type::MAX_DISTANCE, max_distance});
     }
 
