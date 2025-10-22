@@ -209,9 +209,13 @@ void controller::update(const collision_world* world, float dt) {
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
 
+    // --- Collision Resolution Phase ---
     // Resolve collisions (pure physics - returns contact data)
     // Derive wall threshold from max_slope_angle (single source of truth)
     float wall_threshold = glm::cos(glm::radians(max_slope_angle));
+
+    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
+    // cppcheck-suppress variableScope
     float pre_collision_vertical_velocity = velocity.y;
     sphere_collision contact =
         resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
@@ -229,7 +233,8 @@ void controller::update(const collision_world* world, float dt) {
         is_grounded = true;
     }
 
-    // Landing detection (after collision resolution, using pre-collision velocity)
+    // --- Landing Detection Phase ---
+    // Uses pre_collision_vertical_velocity captured before collision resolution
     just_landed = !was_grounded && is_grounded;
     if (just_landed) {
         vertical_velocity_on_land = pre_collision_vertical_velocity;

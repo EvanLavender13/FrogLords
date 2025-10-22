@@ -64,14 +64,6 @@ None - All medium-priority violations resolved ✅
 - **Fix:** Group parameters into config struct or accept for utility functions
 - **Impact:** API usability
 
-**Variable Scope Reduction**
-- **Location:** `src/character/controller.cpp:157`
-- **Tool:** cppcheck (variableScope)
-- **Severity:** Low
-- **Issue:** `pre_collision_vertical_velocity` scope can be reduced
-- **Fix:** Move declaration closer to usage
-- **Impact:** Code clarity
-
 **Const Parameter References**
 - **Location:** `src/gui/character_panel.cpp:9`, `src/gui/camera_panel.cpp:8`
 - **Tool:** cppcheck (constParameterReference)
