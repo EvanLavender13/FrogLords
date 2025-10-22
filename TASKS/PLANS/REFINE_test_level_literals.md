@@ -77,3 +77,31 @@ Every adjustment requires hunting through function body to find and understand m
 **Manual verification:** Visual behavior unchanged
 **Result:** ✓ Violation removed
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/app/game_world.cpp`: 199 → 218 (+19 lines)
+- `CONVENTIONS.md`: 64 → 65 (+1 line)
+
+**Total:** +20 lines (added constant declarations, net positive for clarity)
+
+**Violations removed:**
+- Magic number literals: 35 occurrences replaced with 15 named constants
+- Duplicate literals: `0.2f` (6×) → `WALL_THICKNESS` (1 definition)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Test-only code written quickly without extraction discipline—literals used directly in geometry calculations.
+
+**Prevention:** Extract constants immediately when defining test geometry. Group related constants with comment headers. Use UPPER_CASE for all constexpr values per conventions.
+
+**Pattern:** Magic numbers accumulate in test/setup code because "it's just test data"—apply same standards everywhere.
+<!-- END: MEASURE/LEARNING -->
