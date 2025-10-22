@@ -156,3 +156,40 @@ Validate this refinement plan. Does the extraction of command dispatch into dedi
 
 **Result:** ✓ Violation removed, Fundamental Composable Functions principle restored
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/app/runtime.h`: 41 → 43 (+2 lines)
+- `src/app/runtime.cpp`: 240 → 248 (+8 lines)
+
+**frame() function (measured by lizard):**
+- Lines: 131 → 71 (-60, -46%)
+- NLOC: 102 → 45 (-57, -56%)
+- CCN: 23 → 7 (-16, -70%)
+- **Status: Above threshold (CCN>15) → Below threshold ✓**
+
+**Extracted methods:**
+- `apply_parameter_commands()`: CCN=11, Length=37 (below threshold)
+- `apply_camera_commands()`: CCN=7, Length=29 (below threshold)
+
+**Violations removed:**
+- Case statements in frame(): 14 → 0
+- Mechanical switch statements: 2 → 0
+- CCN violations: 1 → 0
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Convenience - easier to inline command dispatch than extract during initial implementation; no complexity check enforced at time of writing.
+
+**Prevention:** Run `bash scripts/bash/analyze.sh` after implementing any function >50 lines. Extract immediately when CCN>15 detected.
+
+**Pattern:** Command pattern naturally segregates mechanical dispatch from semantic orchestration - applies to all GUI command handlers.
+<!-- END: MEASURE/LEARNING -->
