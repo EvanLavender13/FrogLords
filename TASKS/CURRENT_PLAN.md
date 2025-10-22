@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-21 - Unused API Functions
+**Status:** 🔧 Refinement - Test Level Literals
+**Started:** 2025-10-22
+**Branch:** refine/test_level_literals
+**Path:** A (Trivial)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Extract named constants for test arena geometry
+**Location:** @TASKS/PLANS/REFINE_test_level_literals.md
+**Principle:** Radical Simplicity
+**Approach:** Simplify
+**Next:** REFINE
