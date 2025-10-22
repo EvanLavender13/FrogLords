@@ -139,6 +139,25 @@ void game_world::apply_camera_zoom(float delta) {
 }
 
 void setup_test_level(game_world& world) {
+    // Platform system geometry
+    constexpr float PLATFORM_BASE_HEIGHT = 1.0f;
+    constexpr float PLATFORM_HEIGHT_INCREMENT = 1.5f;
+    constexpr float PLATFORM_Z_START = -5.0f;
+    constexpr float PLATFORM_Z_SPACING = 4.0f;
+    constexpr float PLATFORM_HALF_WIDTH = 2.0f;
+    constexpr float PLATFORM_HALF_THICKNESS = 0.2f;
+    constexpr int PLATFORM_COUNT = 5;
+
+    // Wall geometry
+    constexpr float WALL_THICKNESS = 0.2f;
+
+    // Step geometry
+    constexpr float STEP_HEIGHT_INCREMENT = 0.15f;
+    constexpr float STEP_X_START = -5.0f;
+    constexpr float STEP_X_SPACING = 2.0f;
+    constexpr float STEP_HALF_EXTENT = 0.8f;
+    constexpr int STEP_COUNT = 4;
+
     foundation::wireframe_mesh floor = foundation::generate_grid_floor(40.0f, 40);
     world.scn.add_object(floor);
 
@@ -149,50 +168,50 @@ void setup_test_level(game_world& world) {
     ground_plane.type = collision_surface_type::FLOOR;
     world.world_geometry.boxes.push_back(ground_plane);
 
-    for (int i = 0; i < 5; ++i) {
-        float height = 1.0f + static_cast<float>(i) * 1.5f;
+    for (int i = 0; i < PLATFORM_COUNT; ++i) {
+        float height = PLATFORM_BASE_HEIGHT + static_cast<float>(i) * PLATFORM_HEIGHT_INCREMENT;
         collision_box platform;
-        platform.bounds.center = glm::vec3(0.0f, height, -5.0f - static_cast<float>(i) * 4.0f);
-        platform.bounds.half_extents = glm::vec3(2.0f, 0.2f, 2.0f);
+        platform.bounds.center = glm::vec3(0.0f, height, PLATFORM_Z_START - static_cast<float>(i) * PLATFORM_Z_SPACING);
+        platform.bounds.half_extents = glm::vec3(PLATFORM_HALF_WIDTH, PLATFORM_HALF_THICKNESS, PLATFORM_HALF_WIDTH);
         platform.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(platform);
     }
 
     collision_box long_wall;
     long_wall.bounds.center = glm::vec3(6.0f, 2.0f, -10.0f);
-    long_wall.bounds.half_extents = glm::vec3(0.2f, 2.0f, 8.0f);
+    long_wall.bounds.half_extents = glm::vec3(WALL_THICKNESS, 2.0f, 8.0f);
     long_wall.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(long_wall);
 
     collision_box corner_wall_1;
     corner_wall_1.bounds.center = glm::vec3(-6.0f, 1.5f, -8.0f);
-    corner_wall_1.bounds.half_extents = glm::vec3(0.2f, 1.5f, 4.0f);
+    corner_wall_1.bounds.half_extents = glm::vec3(WALL_THICKNESS, 1.5f, 4.0f);
     corner_wall_1.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(corner_wall_1);
 
     collision_box corner_wall_2;
     corner_wall_2.bounds.center = glm::vec3(-4.0f, 1.5f, -12.0f);
-    corner_wall_2.bounds.half_extents = glm::vec3(2.0f, 1.5f, 0.2f);
+    corner_wall_2.bounds.half_extents = glm::vec3(2.0f, 1.5f, WALL_THICKNESS);
     corner_wall_2.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(corner_wall_2);
 
     collision_box gap_wall_1;
     gap_wall_1.bounds.center = glm::vec3(3.0f, 1.0f, 2.0f);
-    gap_wall_1.bounds.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    gap_wall_1.bounds.half_extents = glm::vec3(3.0f, 1.0f, WALL_THICKNESS);
     gap_wall_1.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(gap_wall_1);
 
     collision_box gap_wall_2;
     gap_wall_2.bounds.center = glm::vec3(3.0f, 1.0f, 4.0f);
-    gap_wall_2.bounds.half_extents = glm::vec3(3.0f, 1.0f, 0.2f);
+    gap_wall_2.bounds.half_extents = glm::vec3(3.0f, 1.0f, WALL_THICKNESS);
     gap_wall_2.type = collision_surface_type::WALL;
     world.world_geometry.boxes.push_back(gap_wall_2);
 
-    for (int i = 0; i < 4; ++i) {
-        float height = 0.15f * static_cast<float>(i + 1);
+    for (int i = 0; i < STEP_COUNT; ++i) {
+        float height = STEP_HEIGHT_INCREMENT * static_cast<float>(i + 1);
         collision_box step;
-        step.bounds.center = glm::vec3(-5.0f + static_cast<float>(i) * 2.0f, height * 0.5f, -8.0f);
-        step.bounds.half_extents = glm::vec3(0.8f, height * 0.5f, 0.8f);
+        step.bounds.center = glm::vec3(STEP_X_START + static_cast<float>(i) * STEP_X_SPACING, height * 0.5f, -8.0f);
+        step.bounds.half_extents = glm::vec3(STEP_HALF_EXTENT, height * 0.5f, STEP_HALF_EXTENT);
         step.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(step);
     }

@@ -57,3 +57,23 @@ Every adjustment requires hunting through function body to find and understand m
 
 **Check duplicates:** Platform thickness `0.2f` appears multiple times—consolidate.
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Extracted 15 named constants (UPPER_CASE) for test arena geometry
+**Files Modified:**
+- `src/app/game_world.cpp:141-218` - Added constexpr constants, replaced all magic numbers
+- `CONVENTIONS.md:15-17` - Documented UPPER_CASE convention for constexpr constants
+
+**Constants extracted:**
+- Platform system: base height, height increment, z start/spacing, dimensions, count
+- Wall geometry: thickness (consolidated 5 occurrences of `0.2f`)
+- Step geometry: height increment, x start/spacing, dimensions, count
+
+**Tests:** All passing
+**Manual verification:** Visual behavior unchanged
+**Result:** ✓ Violation removed
+<!-- END: REFINE/COMPLETED -->
