@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Last Updated:** 2025-10-21 (post unused_api refinement)
+**Last Updated:** 2025-10-22
 
 ---
 
@@ -73,15 +73,6 @@ None - All medium-priority violations resolved ✅
 - **Impact:** Code clarity
 - **Status:** Effectively resolved via documentation ✅
 
-**Hardcoded Test Level Literals**
-- **Location:** `src/app/game_world.cpp:62-111`
-- **Principles:** Radical Simplicity, Emergent Behavior
-- **Severity:** Low
-- **Type:** Scattered literals, Special cases
-- **Description:** Test arena hard-coded as scattered literals without named primitives (tile size, offsets). Every tweak requires manual edit, reads as pile of special cases rather than composable system.
-- **Fix:** Simplify - Extract named constants for dimensions/offsets. OR Accept - Temporary test code, note for future data-driven/procedural system.
-- **Impact:** Code clarity, maintainability (non-critical - test only)
-- **Audit Source:** **Codex** + Gemini convergence
 
 ---
 

@@ -12,7 +12,11 @@ Standards that enforce principles.
 - Variables
 - Files
 
-**Exception: Enum constants are UPPER_CASE** (enforced by `.clang-tidy`)
+**Exceptions (UPPER_CASE):**
+- Enum constants
+- Constexpr constants
+
+(enforced by `.clang-tidy`)
 
 ---
 
