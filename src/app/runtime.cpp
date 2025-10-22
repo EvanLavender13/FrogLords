@@ -117,33 +117,7 @@ void app_runtime::frame() {
             gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
 
         // Apply camera commands (unidirectional flow: GUI → commands → game state)
-        // Enforce invariants: min_distance <= distance <= max_distance
-        for (const auto& cmd : camera_commands) {
-            switch (cmd.type) {
-            case gui::camera_parameter_type::DISTANCE:
-                world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
-                                                       world.cam_follow.max_distance);
-                break;
-            case gui::camera_parameter_type::HEIGHT_OFFSET:
-                world.cam_follow.height_offset = cmd.value;
-                break;
-            case gui::camera_parameter_type::MIN_DISTANCE:
-                world.cam_follow.min_distance = cmd.value;
-                // Clamp distance and max_distance to respect new minimum
-                world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
-                world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
-                break;
-            case gui::camera_parameter_type::MAX_DISTANCE:
-                world.cam_follow.max_distance = cmd.value;
-                // Clamp distance and min_distance to respect new maximum
-                world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
-                world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
-                break;
-            case gui::camera_parameter_type::MODE:
-                world.cam_follow.mode = cmd.mode;
-                break;
-            }
-        }
+        apply_camera_commands(camera_commands);
 
         // FPS display at bottom
         ImGui::Spacing();
@@ -207,6 +181,36 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             break;
         case gui::parameter_type::LANDING_IMPULSE_SCALE:
             world.character_visuals.animation.landing_impulse_scale = cmd.value;
+            break;
+        }
+    }
+}
+
+void app_runtime::apply_camera_commands(const std::vector<gui::camera_command>& commands) {
+    // Enforce invariants: min_distance <= distance <= max_distance
+    for (const auto& cmd : commands) {
+        switch (cmd.type) {
+        case gui::camera_parameter_type::DISTANCE:
+            world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
+                                                   world.cam_follow.max_distance);
+            break;
+        case gui::camera_parameter_type::HEIGHT_OFFSET:
+            world.cam_follow.height_offset = cmd.value;
+            break;
+        case gui::camera_parameter_type::MIN_DISTANCE:
+            world.cam_follow.min_distance = cmd.value;
+            // Clamp distance and max_distance to respect new minimum
+            world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
+            world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
+            break;
+        case gui::camera_parameter_type::MAX_DISTANCE:
+            world.cam_follow.max_distance = cmd.value;
+            // Clamp distance and min_distance to respect new maximum
+            world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
+            world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
+            break;
+        case gui::camera_parameter_type::MODE:
+            world.cam_follow.mode = cmd.mode;
             break;
         }
     }
