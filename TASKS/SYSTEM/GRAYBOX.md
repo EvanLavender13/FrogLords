@@ -21,6 +21,14 @@ Build the core mechanic in the simplest possible form. No art, no polish, no ext
 
 ---
 
+## Anti-Patterns
+
+Before implementing, review @TASKS/PATTERNS.md for known code and process anti-patterns.
+
+Prevention is cheaper than detection.
+
+---
+
 ## Process
 
 ### 1. Define Scope

@@ -5,7 +5,9 @@
 
 wireframe_renderer::wireframe_renderer()
     : pipeline({0})
-    , shader({0}) {}
+    , shader({0})
+    , dynamic_vertex_buffer({0})
+    , dynamic_index_buffer({0}) {}
 
 wireframe_renderer::~wireframe_renderer() {
     shutdown();
