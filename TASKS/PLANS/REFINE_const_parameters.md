@@ -38,9 +38,36 @@ Add const to read-only GUI panel parameters
 
 **Approach:** Document (const-correctness)
 
-Add const qualifier to read-only reference parameters in headers and implementations:
-- `character_panel.{h,cpp}`: character, visuals, params
-- `camera_panel.{h,cpp}`: cam, cam_follow
-
-State parameters remain mutable.
+Add const qualifier to state parameters in headers and implementations:
+- `character_panel.{h,cpp}`: state parameter
+- `camera_panel.{h,cpp}`: state parameter
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/gui/camera_panel.h`: 18 → 18 (0 lines, +5 chars)
+- `src/gui/camera_panel.cpp`: 74 → 74 (0 lines, +6 chars)
+- `src/gui/character_panel.h`: 23 → 23 (0 lines, +6 chars)
+- `src/gui/character_panel.cpp`: 130 → 130 (0 lines, +6 chars)
+
+**Total:** 0 lines changed, +23 characters (4 const qualifiers added)
+
+**Violations removed:**
+- constParameterReference warnings: 2 → 0 (-2)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Panel functions only read state.show flag but accepted mutable reference (copy-paste from earlier iteration where state was modified).
+
+**Prevention:** Run cppcheck regularly. Mark all parameters const by default, only remove when mutation is required.
+
+**Remaining work:** None for this pattern - all GUI panel const-correctness violations resolved.
+<!-- END: MEASURE/LEARNING -->
