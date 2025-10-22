@@ -25,6 +25,8 @@ Before implementing, review @TASKS/PATTERNS.md for known code and process anti-p
 
 Prevention is cheaper than detection.
 
+**Documentation-only changes:** Do not create new iterations for documentation synchronization. Edit system doc directly and commit.
+
 ---
 
 ## Process

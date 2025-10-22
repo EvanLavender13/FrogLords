@@ -12,6 +12,7 @@ Cards
 - `TASKS/CONTEXT/PRIMITIVES_GUIDE.md` — Primitives return data; systems decide; dependency flows up. Tags: primitives, systems, architecture, physics
 - `TASKS/CONTEXT/PHYSICS_INTEGRATION_PATTERNS.md` — Integrate only when necessary; semi‑implicit default; dt scaling; bounded drift. Tags: foundation, physics, math, simulation
 - `TASKS/CONTEXT/PHYSICS_FIRST_TUNING.md` — Expose real physical parameters; use standard formulas; tune feel from physics. Tags: systems, variation, physics, tuning
+- `TASKS/CONTEXT/STATIC_ANALYSIS.md` — Verify semantics first; suppress false positives with explanation; verify consumers exist. Tags: hygiene, tools, validation
 - `TASKS/CONTEXT/UNIDIRECTIONAL_FLOW.md` — One source; one direction; delete sync cycles; expose views. Tags: systems, architecture, dataflow
 
 Selection hints (from backlogs/stack)
@@ -19,4 +20,5 @@ Selection hints (from backlogs/stack)
 - Camera tasks → physics, dataflow, architecture
 - Animation/IK/ragdoll → primitives boundary, systems, tuning
 - Tools/Validation → hygiene, architecture, simulation
+- Refinements from static analyzers → hygiene, validation
 

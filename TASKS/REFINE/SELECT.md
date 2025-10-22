@@ -35,7 +35,11 @@ Choose the highest-impact violation. Apply the principles.
 
 ### 3. Classify Complexity
 
-**Trivial (1-2 pts):** Single concern, isolated to one location. Fix path obvious. Deletion or documentation. No behavior changes. Zero cascade risk. **Target: Plan <100 lines total.**
+**Trivial (1-2 pts):** Single concern, isolated to one location. Fix path obvious. Deletion or documentation. No behavior changes. Zero cascade risk.
+
+**Skip plan for immediate fixes:** Single-line changes, obvious deletions, static analyzer fixes with clear semantic validation. Commit directly with descriptive message.
+
+**Create plan when:** Multiple files affected, requires validation approach, or teaches pattern worth documenting.
 
 **Standard (3-8 pts):** Crosses file boundaries. Requires deriving from first principles or extracting primitives. Changes behavior. Moderate cascade risk. Must validate existing systems remain unaffected.
 

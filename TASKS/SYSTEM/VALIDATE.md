@@ -66,6 +66,8 @@ bash scripts/bash/codex.sh --resume "[follow-up question]"
 - **REVISE** = Fixable violations exist, core is sound
 - **REJECT** = Fundamental principle violations, unfixable without restart
 
+**Doc-code divergence:** Plans describe intent, graybox creates reality. Code is truth. Doc-code drift during iteration is acceptable—implementation evolution visible in GRAYBOX/REVIEW section.
+
 **Update** iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
