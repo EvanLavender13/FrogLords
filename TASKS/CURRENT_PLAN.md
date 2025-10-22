@@ -14,4 +14,4 @@
 **Location:** @TASKS/PLANS/REFINE_frame_complexity.md
 **Principle:** Fundamental Composable Functions
 **Approach:** Simplify
-**Next:** REFINE
+**Next:** MEASURE

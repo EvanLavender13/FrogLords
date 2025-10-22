@@ -129,3 +129,30 @@ Validate this refinement plan. Does the extraction of command dispatch into dedi
 - Changed rollback to scoped checkout
 - Added explicit notes about preserving invariant enforcement in both methods
 <!-- END: REFINE/REVIEW -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Extracted two mechanical switch statements from frame() into dedicated methods
+**Files Modified:**
+- `src/app/runtime.h:22-23` - Added two private method declarations
+- `src/app/runtime.cpp:113,120` - Replaced switches with method calls
+- `src/app/runtime.cpp:177-243` - Added apply_parameter_commands() and apply_camera_commands() definitions
+
+**Line changes:**
+- frame() reduced from ~130 lines to ~70 lines
+- Removed ~62 lines of mechanical ceremony (35 + 27 line switch statements)
+- Added 2 semantic function calls revealing unidirectional flow
+
+**Tests:** All passing (manual verification confirmed)
+
+**Semantic clarity achieved:**
+- Game loop structure immediately visible: input → update → GUI → command application → rendering
+- Mechanical details delegated to appropriately named methods
+- Unidirectional flow pattern now obvious
+- Cognitive complexity dramatically reduced
+
+**Result:** ✓ Violation removed, Fundamental Composable Functions principle restored
+<!-- END: REFINE/COMPLETED -->
