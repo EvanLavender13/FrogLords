@@ -3,7 +3,6 @@
 **Current violations. Priority order. Patterns to watch.**
 
 **Last Updated:** 2025-10-21
-**Last Scan:** 2025-10-19 (format, lint, analyze complete)
 
 ---
 
@@ -63,14 +62,6 @@ None - All medium-priority violations resolved ✅
 - **Issue:** plot_value and plot_histogram take 6 arguments (threshold 5)
 - **Fix:** Group parameters into config struct or accept for utility functions
 - **Impact:** API usability
-
-**Const Parameter References**
-- **Location:** `src/gui/character_panel.cpp:9`, `src/gui/camera_panel.cpp:8`
-- **Tool:** cppcheck (constParameterReference)
-- **Severity:** Low
-- **Issue:** State parameters could be const references
-- **Fix:** Add const to parameter declarations
-- **Impact:** API clarity, const-correctness
 
 **Unused API Functions**
 - **Location:** Multiple files (14 functions)
