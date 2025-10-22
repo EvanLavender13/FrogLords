@@ -60,6 +60,10 @@ Standardized GUI system that exposes designer-friendly tunable parameters with r
 - GUI System (exists in Layer 1) - `src/gui/gui.{h,cpp}`
 - Command Pattern (exists in Layer 1) - `parameter_command.h`, `camera_command.h`
 - Runtime orchestration (exists in Layer 1) - `src/app/runtime.{h,cpp}`
+- **Tuning Pattern** (exists in Layer 3) - `src/character/tuning.{h,cpp}`
+  - Already implements designer-friendly params (jump_height) → derived values (jump_velocity)
+  - Already implements apply_to() derivation logic
+  - **Missing:** Metadata layer (this system adds it)
 
 **Enables (will become buildable):**
 - Standardized tuning for all future systems (animation, IK, ragdoll, etc.)
@@ -74,10 +78,17 @@ Standardized GUI system that exposes designer-friendly tunable parameters with r
 ## Core
 
 **Irreducible minimum:**
-A parameter metadata system that separates designer intent (jump_height) from implementation details (jump_velocity), provides clear visual distinction between tunable/read-only/derived values, and establishes extensible patterns for real-time feedback visualization.
+A parameter metadata layer that formalizes the existing tuning pattern (`tuning.h` already separates designer intent from implementation). Metadata describes each parameter's presentation (name, units, range, type), enabling generic GUI widgets and establishing consistent visual vocabulary across all systems.
 
 **Why a system, not a feature:**
-Every future system needs designer-facing parameters. Without standardization, each system invents its own patterns, creating inconsistent UX and maintenance burden. This system establishes the vocabulary (visual hierarchy, grouping, feedback) that enables coherent growth across all future development.
+The tuning pattern already exists but only for character movement. Every future system (camera, animation, IK, ragdoll) will need designer-facing parameters. Without standardized metadata, each system invents its own GUI code, creating inconsistent UX and maintenance burden. This system extracts the pattern from tuning.h, makes it reusable, and establishes the vocabulary (visual hierarchy, grouping, feedback) that enables coherent growth.
+
+**What already exists vs what's new:**
+- **Exists:** Designer params → derived values pattern (tuning.h)
+- **Exists:** Unidirectional command flow (parameter_command)
+- **New:** Metadata layer (param name, units, range, type)
+- **New:** Generic metadata-driven GUI widgets
+- **New:** Real-time feedback visualization patterns
 <!-- END: SELECT/CORE -->
 
 ---
@@ -102,23 +113,40 @@ Every future system needs designer-facing parameters. Without standardization, e
 ## Graybox
 
 **Simplest implementation:**
-Extend existing character_panel with:
-1. Parameter metadata struct (name, range, units, type: tunable/readonly/derived)
-2. Visual distinction via color or formatting (tunable=editable, readonly=gray, derived=italic)
-3. Single plot widget showing one live parameter (e.g., horizontal speed over time)
-4. Derived value display (show jump_velocity calculated from jump_height + gravity)
 
-Use existing systems (character movement) for validation. Defer:
-- Multi-parameter plots
+**Phase 1 - Add metadata to tuning.h:**
+1. Define param_meta struct (name, units, range, type: tunable/readonly/derived)
+2. Add static constexpr metadata for each tuning_params field (max_speed_meta, jump_height_meta, etc.)
+3. Add derived_param_meta for jump_velocity (shows formula: √(2·|g|·h))
+
+**Phase 2 - Generic widgets in gui namespace:**
+1. `tunable_param(value, meta)` - slider with units, color-coded as tunable
+2. `readonly_param(value, meta)` - text display, grayed out
+3. `derived_param(value, meta, formula)` - italic text showing calculation
+4. `plot_param(value, meta, time_window)` - reuse plot_histogram pattern
+
+**Phase 3 - Refactor character_panel.cpp:**
+1. Replace hardcoded sliders with metadata-driven widgets
+2. Add one live plot (horizontal speed over time as validation)
+3. Show jump_velocity as derived parameter with formula visible
+
+**Phase 4 - Extend pattern to camera:**
+1. Add metadata to camera_follow struct (distance_meta, height_offset_meta, etc.)
+2. Refactor camera_panel.cpp to use same widgets
+3. Verify consistency and extensibility
+
+Use existing character movement system for validation. Defer:
+- Multi-parameter correlation plots
 - Parameter presets/save/load
-- Automated validation
-- Cross-system parameter viewers
+- Automated validation tests
+- Cross-system parameter comparison
 
 **Validation:**
 - Can designer understand parameter purpose from name + units?
 - Is visual distinction between parameter types immediately clear?
 - Does real-time plot reveal actual behavior vs designer intent?
-- Can pattern extend to new system (camera) without code duplication?
+- Can pattern extend to camera without code duplication?
+- Does metadata live with data (tuning.h) not GUI code?
 <!-- END: SELECT/GRAYBOX -->
 
 ---
