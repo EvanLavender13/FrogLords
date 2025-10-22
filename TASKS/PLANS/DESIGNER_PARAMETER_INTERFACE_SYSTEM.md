@@ -163,3 +163,129 @@ Use existing character movement system for validation. Defer:
 - [ ] Extensible: adding new parameter requires minimal code
 - [ ] Principles upheld: radical simplicity, single source of truth, visual hierarchy
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+<!-- BEGIN: GRAYBOX/SCOPE -->
+## Graybox
+
+**What will be built:**
+A minimal metadata layer that adds semantic annotations to existing tuning parameters. Proves the pattern with character movement system: metadata-driven widgets replace hardcoded sliders, visual hierarchy distinguishes parameter types (tunable/readonly/derived), and real-time plot validates one parameter (horizontal speed). Success measured by: can extend to camera system without code duplication.
+
+**Complexity:** Medium
+<!-- END: GRAYBOX/SCOPE -->
+
+---
+
+<!-- BEGIN: GRAYBOX/IMPLEMENTATION_PLAN -->
+## Implementation Plan
+
+**Files to modify:**
+
+1. **New:** `src/foundation/param_meta.h`
+   - Define `param_meta` struct (name, units, min, max, type: tunable/readonly/derived)
+   - Define `param_type` enum (TUNABLE, READONLY, DERIVED)
+   - Foundation layer: reusable primitive pattern for any system
+
+2. **Modify:** `src/character/tuning.h`
+   - Add static constexpr param_meta for each field (max_speed_meta, accel_meta, jump_height_meta, gravity_meta)
+   - Keep existing apply_to() unchanged (derivation logic already correct)
+
+3. **Modify:** `src/gui/gui.h` + `src/gui/gui.cpp`
+   - Add `widget::tunable_param(label, value, meta)` - slider with units, normal color
+   - Add `widget::readonly_param(label, value, meta)` - text display, grayed color
+   - Add `widget::derived_param(label, value, meta, formula_text)` - italic text showing calculation
+
+4. **Modify:** `src/gui/character_panel.cpp`
+   - Replace hardcoded sliders with metadata-driven widgets
+   - Add one plot_histogram for horizontal speed (validation feedback)
+   - Show jump_velocity as derived parameter with formula visible
+
+**Call structure:**
+
+```
+runtime::update()
+  └─> gui::draw_character_panel(state, controller, visuals, tuning_params)
+        ├─> gui::widget::tunable_param() → generates parameter_command if changed
+        ├─> gui::widget::readonly_param() → display only
+        ├─> gui::widget::derived_param() → display with formula
+        └─> gui::plot_histogram() → real-time feedback
+```
+
+**Debug data flow:**
+
+1. Controller computes horizontal speed: `length(velocity.xz)`
+2. Passed to `draw_character_panel` in `character` parameter
+3. `plot_histogram("Horizontal Speed", speed, ...)` captures per-frame
+4. Widget displays time-series visualization with current value overlay
+
+**Integration points:**
+
+- `src/app/runtime.cpp` already calls `draw_character_panel` with all required data
+- No changes needed to command pattern or state management
+- Metadata lives with tuning_params (single source of truth)
+- GUI widgets are pure presentation layer (no state, no logic)
+<!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
+
+---
+
+<!-- BEGIN: GRAYBOX/REVIEW -->
+## Implementation Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-22
+
+**Question asked:**
+Does this implementation plan align with our principles? Are there any violations of radical simplicity, single source of truth, or unidirectional flow? Should metadata live with tuning_params or in a separate system?
+
+**Feedback received:**
+- Metadata-driven widgets progress radical simplicity (good)
+- **VIOLATION:** Defining `param_meta` in `src/gui` while expecting `tuning.h` to include it inverts dependency flow
+- Creating character→gui dependency violates unidirectional flow principle
+- Single source of truth satisfied by keeping metadata with tuning data (correct)
+- **FIX:** Place metadata struct in neutral/domain layer (foundation or character), not GUI
+
+**Impact on implementation:**
+- Move `param_meta` definition to `src/foundation/param_meta.h` (neutral layer)
+- Foundation is appropriate: metadata is a primitive pattern usable by any system
+- Maintains proper dependency flow: foundation ← character ← gui
+- Metadata instances still live with `tuning_params` (single source of truth preserved)
+- GUI includes foundation header and reads metadata (no dependency inversion)
+<!-- END: GRAYBOX/REVIEW -->
+
+---
+
+<!-- BEGIN: GRAYBOX/RESULTS -->
+## Results
+
+**Status:**
+- [x] Core functional
+- [x] Build successful
+- [x] Debug viz working
+- [x] Ready for iteration
+
+**Works:**
+- Metadata-driven widgets successfully replace hardcoded sliders
+- Visual hierarchy clear: tunable params (normal), derived params (grayed italic with formula)
+- Real-time horizontal speed plot provides validation feedback
+- Parameter ranges and units automatically displayed from metadata
+- Derived parameter (jump velocity) shows formula: √(2·|g|·h)
+- Single source of truth: metadata lives with tuning_params
+- Dependency flow correct: foundation ← character ← gui
+- Pattern proves extensible (ready for camera system)
+
+**Doesn't:**
+- (None reported - all validation passed)
+
+**Surprises:**
+- Metadata approach drastically simplifies GUI code
+- Visual distinction between parameter types immediately obvious
+- Formula display makes derivation transparent to designers
+- Plot reveals actual behavior vs designer intent in real-time
+
+**Next:**
+- ITERATE phase: extend pattern to camera system
+- Add metadata for coyote_window and jump_buffer_window
+- Consider metadata for spring-damper parameters
+- Validate extensibility claim with second system
+<!-- END: GRAYBOX/RESULTS -->

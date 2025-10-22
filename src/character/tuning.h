@@ -1,6 +1,7 @@
 #pragma once
 
 #include "character/controller.h"
+#include "foundation/param_meta.h"
 
 namespace character {
 
@@ -30,6 +31,23 @@ struct tuning_params {
     // NOTE: Friction removed - drag now derived from accel/max_speed
     // Drag coefficient k = accel / max_speed guarantees equilibrium at max_speed
     // See controller::update for exponential drag model implementation
+
+    // Parameter metadata for GUI presentation
+    static constexpr param_meta max_speed_meta = {
+        "Max Speed", "m/s", 1.0f, 15.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta accel_meta = {
+        "Acceleration", "m/s²", 1.0f, 50.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta jump_height_meta = {
+        "Jump Height", "m", 0.5f, 3.0f, param_type::TUNABLE
+    };
+
+    static constexpr param_meta gravity_meta = {
+        "Gravity", "m/s²", -20.0f, -5.0f, param_type::TUNABLE
+    };
 
     void apply_to(controller& c) const;
 };

@@ -76,6 +76,47 @@ bool slider_float(const char* label, float* value, float min, float max) {
     return ImGui::SliderFloat(label, value, min, max);
 }
 
+bool tunable_param(float* value, const param_meta& meta) {
+    // Format label with units
+    char label[128];
+    if (meta.units[0] != '\0') {
+        snprintf(label, sizeof(label), "%s (%s)", meta.name, meta.units);
+    } else {
+        snprintf(label, sizeof(label), "%s", meta.name);
+    }
+
+    // Slider with metadata-defined range
+    return ImGui::SliderFloat(label, value, meta.min, meta.max);
+}
+
+void readonly_param(const char* label, float value, const param_meta& meta) {
+    // Format display with units
+    char display[128];
+    if (meta.units[0] != '\0') {
+        snprintf(display, sizeof(display), "%s: %.3f %s", label, value, meta.units);
+    } else {
+        snprintf(display, sizeof(display), "%s: %.3f", label, value);
+    }
+
+    // Grayed out text to indicate read-only
+    ImGui::TextDisabled("%s", display);
+}
+
+void derived_param(const char* label, float value, const param_meta& meta, const char* formula) {
+    // Format display with value, units, and formula
+    char display[256];
+    if (meta.units[0] != '\0') {
+        snprintf(display, sizeof(display), "%s: %.3f %s = %s", label, value, meta.units, formula);
+    } else {
+        snprintf(display, sizeof(display), "%s: %.3f = %s", label, value, formula);
+    }
+
+    // Grayed out italic text to indicate derived value
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
+    ImGui::TextWrapped("%s", display);
+    ImGui::PopStyleColor();
+}
+
 } // namespace widget
 
 static void prune_plot_buffer(plot_buffer& buffer, float current_time, size_t max_samples) {

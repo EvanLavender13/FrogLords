@@ -4,7 +4,7 @@
 **Started:** 2025-10-22
 **Branch:** system/designer_parameter_interface
 **Complexity:** Medium
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/DESIGNER_PARAMETER_INTERFACE_SYSTEM.md
 **Layer:** 1 (Infrastructure)
 **Complexity:** Medium
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - GUI System (Layer 1)

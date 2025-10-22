@@ -83,7 +83,7 @@ Identify which existing functions modified and where new code added.
 Use Codex to validate the implementation plan against principles.
 
 ```bash
-bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]"
+bash scripts/bash/codex.sh "Read [TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md relevant files] [your validation question]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in Bash tool call.

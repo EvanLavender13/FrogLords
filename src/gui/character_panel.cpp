@@ -26,24 +26,38 @@ std::vector<parameter_command> draw_character_panel(const character_panel_state&
         float coyote_window = character.coyote_window;
         float jump_buffer_window = character.jump_buffer_window;
 
-        if (gui::widget::slider_float("Max Speed (m/s)", &max_speed, 1.0f, 15.0f)) {
+        // Metadata-driven tunable parameters
+        if (gui::widget::tunable_param(&max_speed, character::tuning_params::max_speed_meta)) {
             commands.push_back({parameter_type::MAX_SPEED, max_speed});
         }
-        if (gui::widget::slider_float("Acceleration (m/s^2)", &accel, 1.0f, 50.0f)) {
+        if (gui::widget::tunable_param(&accel, character::tuning_params::accel_meta)) {
             commands.push_back({parameter_type::ACCEL, accel});
         }
-        if (gui::widget::slider_float("Jump Height (m)", &jump_height, 0.5f, 3.0f)) {
+        if (gui::widget::tunable_param(&jump_height, character::tuning_params::jump_height_meta)) {
             commands.push_back({parameter_type::JUMP_HEIGHT, jump_height});
         }
-        if (gui::widget::slider_float("Gravity (m/s^2)", &gravity, -20.0f, -5.0f)) {
+        if (gui::widget::tunable_param(&gravity, character::tuning_params::gravity_meta)) {
             commands.push_back({parameter_type::GRAVITY, gravity});
         }
+
+        // Legacy sliders (no metadata yet)
         if (gui::widget::slider_float("Coyote Window (s)", &coyote_window, 0.0f, 0.5f)) {
             commands.push_back({parameter_type::COYOTE_WINDOW, coyote_window});
         }
         if (gui::widget::slider_float("Jump Buffer Window (s)", &jump_buffer_window, 0.0f, 0.5f)) {
             commands.push_back({parameter_type::JUMP_BUFFER_WINDOW, jump_buffer_window});
         }
+
+        // Derived parameter: jump velocity (calculated from jump_height and gravity)
+        static constexpr param_meta jump_velocity_meta = {
+            "Jump Velocity", "m/s", 0.0f, 10.0f, param_type::DERIVED
+        };
+        gui::widget::derived_param("Jump Velocity", character.jump_velocity, jump_velocity_meta,
+                                    "√(2·|g|·h)");
+
+        // Real-time feedback: horizontal speed plot
+        float horizontal_speed = glm::length(glm::vec3(character.velocity.x, 0.0f, character.velocity.z));
+        gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f, params.max_speed * 1.2f);
 
         // Debug displays for jump timing forgiveness
         gui::widget::text("Coyote Timer: %.3f s", character.coyote_timer);
