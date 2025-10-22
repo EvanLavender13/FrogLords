@@ -93,12 +93,6 @@ bool is_key_pressed(int key) {
     return key_state[key] && !prev_key_state[key];
 }
 
-bool is_key_released(int key) {
-    if (key < 0 || key >= MAX_KEYS)
-        return false;
-    return !key_state[key] && prev_key_state[key];
-}
-
 // === MOUSE IMPLEMENTATION ===
 bool is_mouse_button_down(int button) {
     if (button < 0 || button >= MAX_MOUSE_BUTTONS)
@@ -106,24 +100,8 @@ bool is_mouse_button_down(int button) {
     return mouse_button_state[button];
 }
 
-bool is_mouse_button_pressed(int button) {
-    if (button < 0 || button >= MAX_MOUSE_BUTTONS)
-        return false;
-    return mouse_button_state[button] && !prev_mouse_button_state[button];
-}
-
-bool is_mouse_button_released(int button) {
-    if (button < 0 || button >= MAX_MOUSE_BUTTONS)
-        return false;
-    return !mouse_button_state[button] && prev_mouse_button_state[button];
-}
-
 cursor_position get_mouse_position() {
     return cursor_position{mouse_pos_x, mouse_pos_y};
-}
-
-cursor_position_i get_mouse_position_i() {
-    return cursor_position_i{static_cast<int>(mouse_pos_x), static_cast<int>(mouse_pos_y)};
 }
 
 float mouse_x() {

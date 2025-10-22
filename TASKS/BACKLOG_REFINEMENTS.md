@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Last Updated:** 2025-10-21
+**Last Updated:** 2025-10-21 (post unused_api refinement)
 
 ---
 
@@ -56,27 +56,12 @@ None - All medium-priority violations resolved ✅
 - **Impact:** Debug code maintainability
 
 **Excessive Function Arguments**
-- **Location:** `src/gui/gui.cpp:126,157`
+- **Location:** `src/gui/gui.cpp:108`
 - **Tool:** lizard
 - **Severity:** Low
-- **Issue:** plot_value and plot_histogram take 6 arguments (threshold 5)
+- **Issue:** plot_histogram takes 6 arguments (threshold 5)
 - **Fix:** Group parameters into config struct or accept for utility functions
 - **Impact:** API usability
-
-**Unused API Functions**
-- **Location:** Multiple files (14 functions)
-  - `src/gui/gui.cpp`: button, checkbox, color_edit, plot_value, plot_histogram, wants_keyboard
-  - `src/input/input.cpp`: is_key_released, is_mouse_button_pressed/released, get_mouse_position variants
-  - `src/foundation/easing.cpp`: cubic_hermite, smooth_mix
-  - `src/foundation/spring_damper.cpp`: reset
-  - `src/camera/camera.h`: set_fov, set_clip_planes
-  - Others
-- **Tool:** cppcheck (unusedFunction)
-- **Severity:** Low
-- **Issue:** Functions defined but never called
-- **Fix:** Accept - API functions reserved for future use, or remove if truly unnecessary
-- **Impact:** Code bloat
-
 
 **Magic Number for Collision Passes**
 - **Location:** `src/foundation/collision.cpp:136`

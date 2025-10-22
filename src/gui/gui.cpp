@@ -48,11 +48,6 @@ bool wants_mouse() {
     return io.WantCaptureMouse;
 }
 
-bool wants_keyboard() {
-    const ImGuiIO& io = ImGui::GetIO();
-    return io.WantCaptureKeyboard;
-}
-
 namespace panel {
 
 bool begin(const char* title, bool* open) {
@@ -77,21 +72,8 @@ void text(const char* fmt, ...) {
     va_end(args);
 }
 
-bool button(const char* label) {
-    return ImGui::Button(label);
-}
-
-bool checkbox(const char* label, bool* value) {
-    return ImGui::Checkbox(label, value);
-}
-
 bool slider_float(const char* label, float* value, float min, float max) {
     return ImGui::SliderFloat(label, value, min, max);
-}
-
-void color_edit(const char* label, float* color) {
-    // Assume RGB by default, but ImGui will auto-detect if 4 floats
-    ImGui::ColorEdit3(label, color);
 }
 
 } // namespace widget
@@ -121,37 +103,6 @@ static void update_plot_buffer(plot_buffer& buffer, float current_value, float t
     buffer.timestamps.push_back(current_time);
 
     prune_plot_buffer(buffer, current_time, max_samples);
-}
-
-void plot_value(const char* label, float current_value, float time_window, float min_value,
-                float max_value, size_t max_samples) {
-    auto& buffer = plot_buffers[label];
-    update_plot_buffer(buffer, current_value, time_window, max_samples);
-
-    // Render plot with axis labels
-    if (!buffer.values.empty()) {
-        // Create overlay label with current value
-        char overlay[64];
-        snprintf(overlay, sizeof(overlay), "%.1f", current_value);
-
-        // Y-axis max label (top-left)
-        if (max_value != FLT_MAX) {
-            ImGui::Text("%.0f", max_value);
-            ImGui::SameLine();
-        }
-
-        ImGui::PlotLines(label, buffer.values.data(), static_cast<int>(buffer.values.size()), 0,
-                         overlay, min_value, max_value, ImVec2(0, 60));
-
-        // Y-axis min and X-axis time range labels (bottom row)
-        if (min_value != FLT_MAX) {
-            ImGui::Text("%.0f", min_value);
-        } else {
-            ImGui::Text(" ");
-        }
-        ImGui::SameLine();
-        ImGui::Text("Time: %.1fs", time_window);
-    }
 }
 
 void plot_histogram(const char* label, float current_value, float time_window, float min_value,

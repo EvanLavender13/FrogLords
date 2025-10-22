@@ -1,7 +1,15 @@
 # Current Plan
 
 **Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-21 - Const Parameters
+**Last Completed:** 2025-10-21 - Unused API Functions
+
+---
+
+## Ready for Next Task
+
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
 
 ---
 

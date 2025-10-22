@@ -23,7 +23,6 @@ struct spring_damper {
 
     void update(spring_step step);
     void add_impulse(float impulse);
-    void reset(float pos = 0.0f);
 
     float get_position() const { return position; }
     float get_velocity() const { return velocity; }
