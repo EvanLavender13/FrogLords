@@ -1,9 +1,11 @@
 #include "gui.h"
+#include "foundation/debug_assert.h"
 #include "sokol_gfx.h"
 #include "sokol_log.h"
 #include "imgui.h"
 #include "sokol_imgui.h"
 #include <cfloat>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
 #include <map>
@@ -73,10 +75,17 @@ void text(const char* fmt, ...) {
 }
 
 bool slider_float(const char* label, float* value, float min, float max) {
+    // Set fixed width for consistency with tunable_param
+    ImGui::SetNextItemWidth(250.0f);
     return ImGui::SliderFloat(label, value, min, max);
 }
 
 bool tunable_param(float* value, const param_meta& meta) {
+    // Validate metadata configuration
+    FL_PRECONDITION(meta.min < meta.max, "param_meta min must be less than max");
+    FL_PRECONDITION(std::isfinite(meta.min) && std::isfinite(meta.max),
+                    "param_meta min/max must be finite");
+
     // Format label with units
     char label[128];
     if (meta.units[0] != '\0') {
@@ -84,6 +93,9 @@ bool tunable_param(float* value, const param_meta& meta) {
     } else {
         snprintf(label, sizeof(label), "%s", meta.name);
     }
+
+    // Set fixed width to prevent panel resizing when values change digit count
+    ImGui::SetNextItemWidth(250.0f);
 
     // Slider with metadata-defined range
     return ImGui::SliderFloat(label, value, meta.min, meta.max);
