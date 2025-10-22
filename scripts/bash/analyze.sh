@@ -45,6 +45,7 @@ cppcheck.exe \
     --suppress=missingIncludeSystem \
     '--suppress=*:external/**' \
     '--suppress=*:generated/**' \
+    --inline-suppr \
     --check-level=exhaustive
 
 EXIT_CODE=$?

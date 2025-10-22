@@ -50,17 +50,34 @@ if (just_landed) {
 <!-- BEGIN: SELECT/FIX -->
 ## Fix
 
-**Approach:** Simplify
+**Approach:** Document (False Positive)
 
-**FROM:**
-Variable declared at function scope, far from single usage point.
+**DISCOVERY:**
+This is a cppcheck false positive. Variable MUST be declared before `resolve_collisions` because that function modifies `velocity` by reference. Moving declaration later would capture post-collision velocity, breaking landing spring calculation.
 
-**TO:**
-Variable declared at innermost block scope, adjacent to usage.
+**ACTUAL FIX:**
+Accept variable scope but improve clarity:
+1. Add phase-based scoping comments (Collision Resolution / Landing Detection)
+2. Add inline suppression comment explaining why scope is correct
+3. Update analyze.sh to enable `--inline-suppr` for cppcheck
 
-**DERIVE/GENERALIZE:**
-Move declaration from line 215 to line 234 (inside the `if (just_landed)` block). The value captured is from the pre-collision state, which is already captured before `resolve_collisions` modifies `velocity`.
+**RATIONALE:**
+Variable scope is semantically minimal - captures pre-state before mutation. Phase structure makes temporal dependency obvious.
 
-**CHECK DUPLICATES:**
-Single occurrence. No similar patterns in function.
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Added phase-based scoping comments and cppcheck inline suppression
+**Files Modified:**
+- `src/character/controller.cpp:212-242` - Added phase comments and suppression
+- `scripts/bash/analyze.sh:48` - Added `--inline-suppr` flag
+
+**Tests:** All passing (build verified)
+**Analysis:** cppcheck variableScope warning now suppressed
+
+**Result:** ✓ False positive handled - code clarity improved, tool noise removed
+<!-- END: REFINE/COMPLETED -->
