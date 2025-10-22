@@ -65,3 +65,30 @@ Members `dynamic_vertex_buffer` and `dynamic_index_buffer` not in initializer li
 **Tests:** All passing
 **Result:** ✓ Violation removed - all sokol handles now consistently zero-initialized
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/rendering/renderer.cpp`: 118 → 120 (+2 lines)
+
+**Total:** +2 lines (initialization added, not removal)
+
+**Violations removed:**
+- Uninitialized sokol handle members: 2 → 0 (-2)
+- Class members: 4 total, 2 initialized → 4 initialized
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Constructor initialized only first 2 of 4 sokol handles, leaving buffers uninitialized.
+
+**Prevention:** When adding members of the same type, initialize all consistently. Static analysis (cppcheck uninitMemberVar) catches this.
+
+**Pattern:** Part of construction contract enforcement - all handles must start in valid zero state.
+<!-- END: MEASURE/LEARNING -->
