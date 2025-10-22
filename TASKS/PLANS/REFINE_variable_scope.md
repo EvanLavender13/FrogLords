@@ -81,3 +81,31 @@ Variable scope is semantically minimal - captures pre-state before mutation. Pha
 
 **Result:** ✓ False positive handled - code clarity improved, tool noise removed
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.cpp`: 295 → 300 (+5 lines)
+- `scripts/bash/analyze.sh`: 93 → 94 (+1 line)
+- `TASKS/PLANS/REFINE_variable_scope.md`: documentation
+
+**Total:** +6 lines (clarity improvement, not deletion)
+
+**Violations removed:**
+- cppcheck variableScope warnings: 1 → 0 (-1)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Static analyzer cannot understand semantic requirements—variable must capture pre-mutation state.
+
+**Prevention:** When tools flag temporal dependencies (pre/post state capture), verify semantic correctness before accepting suggestions. Add inline suppressions with explanations for false positives.
+
+**Pattern:** Tool warnings may indicate clarity issues even when semantically correct—use as signal to improve documentation.
+<!-- END: MEASURE/LEARNING -->
