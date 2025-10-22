@@ -19,6 +19,14 @@ Execute planned refinement—remove violation, restore principle, reduce complex
 
 ---
 
+## Anti-Patterns
+
+Before implementing, review @TASKS/PATTERNS.md for known code and process anti-patterns.
+
+Prevention is cheaper than detection.
+
+---
+
 ## Path A - Trivial
 
 **Extremely simple deletions:** Skip formal plan if documentation would substantially exceed code change. Fix, commit with learning note in commit message, skip MEASURE. Use judgment.

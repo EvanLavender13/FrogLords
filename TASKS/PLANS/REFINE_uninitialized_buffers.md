@@ -54,3 +54,14 @@ Members `dynamic_vertex_buffer` and `dynamic_index_buffer` not in initializer li
 - Derive/Generalize: Match existing pattern for `pipeline` and `shader`
 - Check duplicates: None - single initialization site
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Added `dynamic_vertex_buffer({0})` and `dynamic_index_buffer({0})` to constructor initializer list
+**Files Modified:** `src/rendering/renderer.cpp:6-10` (added 2 initializers)
+**Tests:** All passing
+**Result:** ✓ Violation removed - all sokol handles now consistently zero-initialized
+<!-- END: REFINE/COMPLETED -->
