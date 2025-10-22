@@ -19,6 +19,8 @@ struct app_runtime {
   private:
     void ensure_static_meshes();
     void render_world();
+    void apply_parameter_commands(const std::vector<gui::parameter_command>& commands);
+    void apply_camera_commands(const std::vector<gui::camera_command>& commands);
 
     bool initialized = false;
 

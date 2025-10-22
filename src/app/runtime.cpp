@@ -110,74 +110,14 @@ void app_runtime::frame() {
             panel_state, world.character, world.character_visuals, world.character_params);
 
         // Apply parameter commands (unidirectional flow: GUI → commands → game state)
-        for (const auto& cmd : param_commands) {
-            switch (cmd.type) {
-            case gui::parameter_type::MAX_SPEED:
-                world.character_params.max_speed = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::ACCEL:
-                world.character_params.accel = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::JUMP_HEIGHT:
-                world.character_params.jump_height = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::GRAVITY:
-                world.character_params.gravity = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::COYOTE_WINDOW:
-                world.character.coyote_window = cmd.value;
-                break;
-            case gui::parameter_type::JUMP_BUFFER_WINDOW:
-                world.character.jump_buffer_window = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_STIFFNESS:
-                world.character_visuals.animation.landing_spring.stiffness = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_DAMPING:
-                world.character_visuals.animation.landing_spring.damping = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_IMPULSE_SCALE:
-                world.character_visuals.animation.landing_impulse_scale = cmd.value;
-                break;
-            }
-        }
+        apply_parameter_commands(param_commands);
 
         // Camera section
         auto camera_commands =
             gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
 
         // Apply camera commands (unidirectional flow: GUI → commands → game state)
-        // Enforce invariants: min_distance <= distance <= max_distance
-        for (const auto& cmd : camera_commands) {
-            switch (cmd.type) {
-            case gui::camera_parameter_type::DISTANCE:
-                world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
-                                                       world.cam_follow.max_distance);
-                break;
-            case gui::camera_parameter_type::HEIGHT_OFFSET:
-                world.cam_follow.height_offset = cmd.value;
-                break;
-            case gui::camera_parameter_type::MIN_DISTANCE:
-                world.cam_follow.min_distance = cmd.value;
-                // Clamp distance and max_distance to respect new minimum
-                world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
-                world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
-                break;
-            case gui::camera_parameter_type::MAX_DISTANCE:
-                world.cam_follow.max_distance = cmd.value;
-                // Clamp distance and min_distance to respect new maximum
-                world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
-                world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
-                break;
-            case gui::camera_parameter_type::MODE:
-                world.cam_follow.mode = cmd.mode;
-                break;
-            }
-        }
+        apply_camera_commands(camera_commands);
 
         // FPS display at bottom
         ImGui::Spacing();
@@ -206,6 +146,74 @@ void app_runtime::ensure_static_meshes() {
     unit_sphere_4 = foundation::generate_sphere({4, 4, 1.0f});
 
     static_meshes_initialized = true;
+}
+
+void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_command>& commands) {
+    for (const auto& cmd : commands) {
+        switch (cmd.type) {
+        case gui::parameter_type::MAX_SPEED:
+            world.character_params.max_speed = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::ACCEL:
+            world.character_params.accel = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::JUMP_HEIGHT:
+            world.character_params.jump_height = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::GRAVITY:
+            world.character_params.gravity = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::COYOTE_WINDOW:
+            world.character.coyote_window = cmd.value;
+            break;
+        case gui::parameter_type::JUMP_BUFFER_WINDOW:
+            world.character.jump_buffer_window = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_STIFFNESS:
+            world.character_visuals.animation.landing_spring.stiffness = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_DAMPING:
+            world.character_visuals.animation.landing_spring.damping = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_IMPULSE_SCALE:
+            world.character_visuals.animation.landing_impulse_scale = cmd.value;
+            break;
+        }
+    }
+}
+
+void app_runtime::apply_camera_commands(const std::vector<gui::camera_command>& commands) {
+    // Enforce invariants: min_distance <= distance <= max_distance
+    for (const auto& cmd : commands) {
+        switch (cmd.type) {
+        case gui::camera_parameter_type::DISTANCE:
+            world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
+                                                   world.cam_follow.max_distance);
+            break;
+        case gui::camera_parameter_type::HEIGHT_OFFSET:
+            world.cam_follow.height_offset = cmd.value;
+            break;
+        case gui::camera_parameter_type::MIN_DISTANCE:
+            world.cam_follow.min_distance = cmd.value;
+            // Clamp distance and max_distance to respect new minimum
+            world.cam_follow.distance = std::max(world.cam_follow.distance, cmd.value);
+            world.cam_follow.max_distance = std::max(world.cam_follow.max_distance, cmd.value);
+            break;
+        case gui::camera_parameter_type::MAX_DISTANCE:
+            world.cam_follow.max_distance = cmd.value;
+            // Clamp distance and min_distance to respect new maximum
+            world.cam_follow.distance = std::min(world.cam_follow.distance, cmd.value);
+            world.cam_follow.min_distance = std::min(world.cam_follow.min_distance, cmd.value);
+            break;
+        case gui::camera_parameter_type::MODE:
+            world.cam_follow.mode = cmd.mode;
+            break;
+        }
+    }
 }
 
 void app_runtime::render_world() {

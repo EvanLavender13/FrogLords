@@ -23,14 +23,6 @@ None - All medium-priority violations resolved ✅
 
 ### Low Priority
 
-**Function Complexity - app_runtime::frame**
-- **Location:** `src/app/runtime.cpp:61`
-- **Tool:** lizard
-- **Severity:** Low
-- **Issue:** CCN 22 (threshold 15), Length 128 (threshold 100) - main game loop
-- **Fix:** Extract subsystems: input handling, update phase, render phase
-- **Impact:** Maintainability, testability of game loop
-
 **Function Complexity - gui::draw_character_panel**
 - **Location:** `src/gui/character_panel.cpp:9`
 - **Tool:** lizard
