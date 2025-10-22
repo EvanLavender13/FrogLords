@@ -110,41 +110,7 @@ void app_runtime::frame() {
             panel_state, world.character, world.character_visuals, world.character_params);
 
         // Apply parameter commands (unidirectional flow: GUI → commands → game state)
-        for (const auto& cmd : param_commands) {
-            switch (cmd.type) {
-            case gui::parameter_type::MAX_SPEED:
-                world.character_params.max_speed = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::ACCEL:
-                world.character_params.accel = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::JUMP_HEIGHT:
-                world.character_params.jump_height = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::GRAVITY:
-                world.character_params.gravity = cmd.value;
-                world.character_params.apply_to(world.character);
-                break;
-            case gui::parameter_type::COYOTE_WINDOW:
-                world.character.coyote_window = cmd.value;
-                break;
-            case gui::parameter_type::JUMP_BUFFER_WINDOW:
-                world.character.jump_buffer_window = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_STIFFNESS:
-                world.character_visuals.animation.landing_spring.stiffness = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_DAMPING:
-                world.character_visuals.animation.landing_spring.damping = cmd.value;
-                break;
-            case gui::parameter_type::LANDING_IMPULSE_SCALE:
-                world.character_visuals.animation.landing_impulse_scale = cmd.value;
-                break;
-            }
-        }
+        apply_parameter_commands(param_commands);
 
         // Camera section
         auto camera_commands =
@@ -206,6 +172,44 @@ void app_runtime::ensure_static_meshes() {
     unit_sphere_4 = foundation::generate_sphere({4, 4, 1.0f});
 
     static_meshes_initialized = true;
+}
+
+void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_command>& commands) {
+    for (const auto& cmd : commands) {
+        switch (cmd.type) {
+        case gui::parameter_type::MAX_SPEED:
+            world.character_params.max_speed = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::ACCEL:
+            world.character_params.accel = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::JUMP_HEIGHT:
+            world.character_params.jump_height = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::GRAVITY:
+            world.character_params.gravity = cmd.value;
+            world.character_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::COYOTE_WINDOW:
+            world.character.coyote_window = cmd.value;
+            break;
+        case gui::parameter_type::JUMP_BUFFER_WINDOW:
+            world.character.jump_buffer_window = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_STIFFNESS:
+            world.character_visuals.animation.landing_spring.stiffness = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_DAMPING:
+            world.character_visuals.animation.landing_spring.damping = cmd.value;
+            break;
+        case gui::parameter_type::LANDING_IMPULSE_SCALE:
+            world.character_visuals.animation.landing_impulse_scale = cmd.value;
+            break;
+        }
+    }
 }
 
 void app_runtime::render_world() {

@@ -118,7 +118,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 Use Codex to validate the approach.
 
 ```bash
-bash scripts/bash/codex.sh "@TASKS/PLANS/REFINE_<name>.md @PRINCIPLES.md @CONVENTIONS.md [your validation question]"
+bash scripts/bash/codex.sh "Read [TASKS/PLANS/REFINE_<name>.md PRINCIPLES.md CONVENTIONS.md relevant files] [your validation question]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in Bash tool call.
