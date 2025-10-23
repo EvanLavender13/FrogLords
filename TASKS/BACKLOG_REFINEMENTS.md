@@ -23,14 +23,6 @@ None - All medium-priority violations resolved ✅
 
 ### Low Priority
 
-**Function Length - controller::update**
-- **Location:** `src/character/controller.cpp:109`
-- **Tool:** lizard
-- **Severity:** Low
-- **Issue:** Length 121 (threshold 100) - physics update loop
-- **Fix:** Extract sub-phases: ground detection, movement, collision response
-- **Impact:** Controller maintainability
-
 **Function Length - debug_viz::validation::run_startup_checks**
 - **Location:** `src/rendering/debug_validation.cpp:9`
 - **Tool:** lizard
