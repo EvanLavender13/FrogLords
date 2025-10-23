@@ -76,3 +76,31 @@ Called from: src/app/runtime.cpp:44
 **Tests:** Build verification - all passing
 **Result:** ✓ Violation removed - testing third-party library fundamentals deleted
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/rendering/debug_validation.cpp`: 160 → 0 (-160 lines, deleted)
+- `src/rendering/debug_validation.h`: 41 → 0 (-41 lines, deleted)
+- `src/app/runtime.cpp`: 248 → 244 (-4 lines)
+- `CMakeLists.txt`: 87 → 86 (-1 line)
+
+**Total:** -206 lines
+
+**Violations removed:**
+- Third-party library validation tests: 6 test suites, 16 assertions → 0
+- Startup validation function: 1 → 0
+<!-- END: MEASURE/METRICS -->
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Early development phase uncertainty about GLM library behavior led to validation code that tested library guarantees rather than application logic.
+
+**Prevention:** Trust battle-tested third-party libraries - validate application behavior and invariants only, not library fundamentals.
+
+**Pattern:** Validation code should assert contracts and invariants in application domain, never test established library mathematics.
+<!-- END: MEASURE/LEARNING -->
