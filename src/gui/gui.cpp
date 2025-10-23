@@ -101,13 +101,13 @@ bool tunable_param(float* value, const param_meta& meta) {
     return ImGui::SliderFloat(label, value, meta.min, meta.max);
 }
 
-void readonly_param(const char* label, float value, const param_meta& meta) {
-    // Format display with units
+void readonly_param(float value, const param_meta& meta) {
+    // Format display with units (use meta.name for label)
     char display[128];
     if (meta.units[0] != '\0') {
-        snprintf(display, sizeof(display), "%s: %.3f %s", label, value, meta.units);
+        snprintf(display, sizeof(display), "%s: %.3f %s", meta.name, value, meta.units);
     } else {
-        snprintf(display, sizeof(display), "%s: %.3f", label, value);
+        snprintf(display, sizeof(display), "%s: %.3f", meta.name, value);
     }
 
     // Grayed out text to indicate read-only

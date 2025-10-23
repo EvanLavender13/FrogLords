@@ -29,7 +29,7 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     ImGui::Spacing();
 
     // Current state (read-only)
-    ImGui::Text("Distance: %.2f m", cam_follow.distance);
+    gui::widget::readonly_param(cam_follow.distance, camera_follow::distance_meta);
     ImGui::Text("FOV: %.1f degrees", cam.get_fov());
 
     glm::vec3 pos = cam.get_position();
