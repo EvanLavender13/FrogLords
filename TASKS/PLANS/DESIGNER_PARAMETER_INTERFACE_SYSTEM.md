@@ -295,3 +295,4 @@ Does this implementation plan align with our principles? Are there any violation
 ## Iterations
 
 - [ITERATION_1.md](DESIGNER_PARAMETER_INTERFACE_ITERATION_1.md) - REVISE
+- [ITERATION_2.md](DESIGNER_PARAMETER_INTERFACE_ITERATION_2.md) - Ready for VALIDATE

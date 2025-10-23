@@ -49,10 +49,8 @@ std::vector<parameter_command> draw_character_panel(const character_panel_state&
         }
 
         // Derived parameter: jump velocity (calculated from jump_height and gravity)
-        static constexpr param_meta jump_velocity_meta = {
-            "Jump Velocity", "m/s", 0.0f, 10.0f, param_type::DERIVED
-        };
-        gui::widget::derived_param("Jump Velocity", character.jump_velocity, jump_velocity_meta,
+        gui::widget::derived_param("Jump Velocity", character.jump_velocity,
+                                    character::tuning_params::jump_velocity_meta,
                                     "sqrt(2*|g|*h)");
 
         // Real-time feedback: horizontal speed plot

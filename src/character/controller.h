@@ -145,11 +145,11 @@ struct controller {
 
     // Parameter metadata for GUI presentation
     static constexpr param_meta coyote_window_meta = {
-        "Coyote Window", "s", 0.0f, 0.5f, param_type::TUNABLE
+        "Coyote Window", "s", 0.0f, 0.5f
     };
 
     static constexpr param_meta jump_buffer_window_meta = {
-        "Jump Buffer Window", "s", 0.0f, 0.5f, param_type::TUNABLE
+        "Jump Buffer Window", "s", 0.0f, 0.5f
     };
 
     controller();

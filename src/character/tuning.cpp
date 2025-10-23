@@ -6,11 +6,16 @@
 namespace character {
 
 void tuning_params::apply_to(controller& c) const {
-    // Validate preconditions: parameters must be within valid ranges
-    FL_PRECONDITION(max_speed > 0.0f, "max_speed must be positive");
-    FL_PRECONDITION(accel > 0.0f, "accel must be positive");
-    FL_PRECONDITION(jump_height > 0.0f, "jump_height must be positive");
-    FL_PRECONDITION(gravity < 0.0f, "gravity must be negative (Y-up coordinate system)");
+    // Validate preconditions: parameters must be within metadata-defined ranges
+    // Single source of truth: metadata defines allowable domain
+    FL_PRECONDITION(max_speed >= max_speed_meta.min && max_speed <= max_speed_meta.max,
+                    "max_speed must be within metadata range");
+    FL_PRECONDITION(accel >= accel_meta.min && accel <= accel_meta.max,
+                    "accel must be within metadata range");
+    FL_PRECONDITION(jump_height >= jump_height_meta.min && jump_height <= jump_height_meta.max,
+                    "jump_height must be within metadata range");
+    FL_PRECONDITION(gravity >= gravity_meta.min && gravity <= gravity_meta.max,
+                    "gravity must be within metadata range");
     FL_ASSERT_FINITE_SCALAR(max_speed, "max_speed");
     FL_ASSERT_FINITE_SCALAR(accel, "accel");
     FL_ASSERT_FINITE_SCALAR(jump_height, "jump_height");

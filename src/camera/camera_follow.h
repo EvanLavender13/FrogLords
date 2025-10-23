@@ -26,19 +26,19 @@ struct camera_follow {
 
     // Parameter metadata for GUI presentation
     static constexpr param_meta distance_meta = {
-        "Distance", "m", 1.5f, 15.0f, param_type::TUNABLE
+        "Distance", "m", 1.5f, 15.0f
     };
 
     static constexpr param_meta height_offset_meta = {
-        "Height Offset", "m", 0.0f, 3.0f, param_type::TUNABLE
+        "Height Offset", "m", 0.0f, 3.0f
     };
 
     static constexpr param_meta min_distance_meta = {
-        "Min Distance", "m", 0.5f, 10.0f, param_type::TUNABLE
+        "Min Distance", "m", 0.5f, 10.0f
     };
 
     static constexpr param_meta max_distance_meta = {
-        "Max Distance", "m", 5.0f, 30.0f, param_type::TUNABLE
+        "Max Distance", "m", 5.0f, 30.0f
     };
 
     /// Update camera orientation (Maya-style orbit)
