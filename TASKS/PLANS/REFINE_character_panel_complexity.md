@@ -76,3 +76,40 @@ Main function iterates section helpers, each returns commands for their domain. 
 **Manual verification:** User confirmed identical behavior across all sections
 **Result:** ✓ Violation removed - CCN reduced from 20 to ~5, function length from 116 to 20 lines
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Lizard analysis (before):**
+- `draw_character_panel`: CCN 20, NLOC 92, length 131
+- Warnings: 1 (CCN > 15)
+
+**Lizard analysis (after):**
+- `draw_character_panel`: CCN 2, NLOC 15, length 21
+- `draw_character_tuning_section`: CCN 10, NLOC 42, length 56
+- `draw_landing_spring_section`: CCN 5, NLOC 20, length 27
+- `draw_orientation_section`: CCN 2, NLOC 9, length 13
+- `draw_locomotion_state_section`: CCN 5, NLOC 25, length 35
+- Warnings: 0
+
+**Reduction:**
+- Main function CCN: 20 → 2 (-90%)
+- Main function length: 131 → 21 lines (-84%)
+- NLOC: 92 → 15 (-84%)
+- Inline sections: 4 → 0 (extracted to 4 helpers, max CCN 10)
+- Violations: 1 → 0
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** GUI panels accumulate sections inline without extraction threshold, violating single responsibility.
+
+**Prevention:** Extract section helpers when panel function exceeds 50 lines or contains >2 collapsing headers. Use anonymous namespace for internal helpers.
+
+**Pattern:** Other panel files (`camera_panel.cpp`, future panels) may follow same pattern—check during next refinement cycle.
+<!-- END: MEASURE/LEARNING -->
