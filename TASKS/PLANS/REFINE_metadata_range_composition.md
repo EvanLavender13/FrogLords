@@ -165,3 +165,32 @@ Review this metadata range composition refinement plan. Does it correctly derive
 - Added epsilon guard for equality case: `if (min >= max) max = min + 0.01f`
 - Replaced inline construction with reusable static function calls
 <!-- END: REFINE/REVIEW -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Changes:**
+- `src/camera/camera_follow.h:28-35` - Replaced static constexpr distance_meta with make_distance_meta() helper function
+- `src/gui/camera_panel.cpp:32` - Updated readonly display to call make_distance_meta(min, max)
+- `src/gui/camera_panel.cpp:50` - Updated tunable slider to call make_distance_meta(min, max)
+
+**Files Modified:**
+- src/camera/camera_follow.h: +7 lines (helper function), -3 lines (static metadata)
+- src/gui/camera_panel.cpp: +2 lines (two function calls)
+
+**Tests:** Build passing, no unit tests affected
+
+**Manual Verification:**
+- Distance slider range updates dynamically when min/max change ✓
+- Equality case (min == max) handled with epsilon guard, no crash ✓
+- Readonly display uses same composed metadata as tunable slider ✓
+
+**Audit:** No other parameters require runtime-derived metadata ranges
+
+**Result:** ✓ Violation removed
+- Metadata primitives now composable (derive distance range from min/max at presentation)
+- Single Source of Truth restored ("Distance" label and "m" units centralized in helper)
+- Fundamental Composable Functions upheld (reusable make_distance_meta function)
+<!-- END: REFINE/COMPLETED -->
