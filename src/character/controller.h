@@ -171,4 +171,6 @@ struct controller {
     void update_landing_state(float pre_collision_vy);
     // Jump timing forgiveness (coyote time and jump buffering)
     void update_jump_timers(float dt);
+    // Locomotion state classification and phase calculation
+    void update_locomotion_state(float dt);
 };
