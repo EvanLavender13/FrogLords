@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-23 - Metadata Range Composition
+**Status:** 🔧 Refinement - Character Panel Complexity
+**Started:** 2025-10-23
+**Branch:** refine/character-panel-complexity
+**Path:** A
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Decompose gui::draw_character_panel into section helpers
+**Location:** @TASKS/PLANS/REFINE_character_panel_complexity.md
+**Principle:** Radical Simplicity
+**Approach:** Simplify
+**Next:** REFINE
