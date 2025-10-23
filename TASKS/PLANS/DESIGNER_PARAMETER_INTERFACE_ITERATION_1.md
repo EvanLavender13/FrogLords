@@ -2,7 +2,72 @@
 
 **Started:** 2025-10-22
 **Completed:** 2025-10-22
-**Status:** Ready for VALIDATE
+**Status:** REVISE
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-22
+
+**Principle Violations:**
+
+1. **Single Source of Truth:** Derived metadata (jump_velocity) lives in GUI layer (src/gui/character_panel.cpp:52) instead of with data. GUI and controller are two sources of truth that can diverge.
+
+2. **Single Source of Truth:** Slider ranges exist in metadata (src/character/tuning.h:36) while runtime validation lives elsewhere (src/character/tuning.cpp:9). Allowable domain is duplicated—metadata says gravity is [-20, -5] but code validates only `< 0`. These can drift.
+
+3. **Radical Simplicity:** param_meta.type field is populated everywhere but never read by widgets (src/gui/gui.cpp:83). Unused classification adds ceremony and invites inconsistent usage.
+
+**Strengths:**
+
+- Metadata accompanies runtime fields (src/character/tuning.h:36, src/camera/camera_follow.h:27)—strong Single Source of Truth when adhered to
+- tuning_params::apply_to() hardens math with assertions (src/character/tuning.cpp:9)—Solid Mathematical Foundations
+- Metadata-driven widgets provide uniform labels, units, widths (src/gui/gui.cpp:83)—Consistency across panels
+- Plot buffers bound history (src/gui/gui.cpp:134)—prevents accumulated state runaway
+
+**Assessment:**
+
+Iteration largely honors principles. Mathematical and UX goals satisfied, extensibility proven. Outstanding risks are localized and fixable:
+- Co-locate ALL metadata (including derived fields) with data
+- Eliminate redundant domain definitions (validation should use metadata ranges)
+- Remove or enforce meta.type field
+
+**On Metadata vs Data:**
+
+Metadata and runtime values represent different truths: immutable semantic boundaries vs mutable game state. Keeping them side-by-side (src/character/tuning.h:36) avoids duplication while separating concerns—Single Source of Truth is respected. Duplication only occurs when invariant logic is stored elsewhere (assertions vs GUI ranges). Fix: let one definition drive the other, don't collapse metadata into data.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:**
+
+Core design is sound and principles are mostly upheld. Pattern successfully proven across two systems with clear extensibility. However, three localized violations prevent full principle alignment:
+
+1. Derived metadata must live with data, not in GUI code
+2. Runtime validation must use metadata ranges as single source
+3. Unused param_meta.type field violates Radical Simplicity
+
+These are fixable without fundamental rework. The iteration validated the approach but revealed refinements needed for principle compliance.
+
+**Required changes:**
+
+1. Move derived parameter metadata (jump_velocity_meta) from character_panel.cpp to tuning.h alongside other metadata
+2. Refactor tuning.cpp assertions to validate using metadata ranges (min/max) instead of hardcoded values
+3. Remove param_meta.type field entirely—visual distinction comes from widget choice, not metadata flag
+
+**Learning:**
+
+- Metadata/data separation is correct—they represent different truths (semantic boundaries vs runtime state)
+- Domain definition duplication (metadata ranges vs validation constants) creates drift risk
+- Unused fields add ceremony—remove immediately or enforce consistently
+<!-- END: VALIDATE/DECISION -->
 
 ---
 
