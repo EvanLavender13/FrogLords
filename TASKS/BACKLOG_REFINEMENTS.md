@@ -23,14 +23,6 @@ None - All medium-priority violations resolved ✅
 
 ### Low Priority
 
-**Function Length - debug_viz::validation::run_startup_checks**
-- **Location:** `src/rendering/debug_validation.cpp:9`
-- **Tool:** lizard
-- **Severity:** Low
-- **Issue:** Length 150 (threshold 100) - startup validation checks
-- **Fix:** Extract validation categories into separate functions or accept for debug code
-- **Impact:** Debug code maintainability
-
 **Excessive Function Arguments**
 - **Location:** `src/gui/gui.cpp:108`
 - **Tool:** lizard

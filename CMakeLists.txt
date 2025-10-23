@@ -70,7 +70,6 @@ add_executable(FrogLords
     src/rendering/renderer.cpp
     src/rendering/debug_draw.cpp
     src/rendering/debug_visualization.cpp
-    src/rendering/debug_validation.cpp
     src/input/input.cpp
     src/gui/gui.cpp
     src/gui/character_panel.cpp
