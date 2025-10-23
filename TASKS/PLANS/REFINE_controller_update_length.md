@@ -71,3 +71,73 @@ Extract five sub-phases into private helper methods called sequentially from upd
 - Epsilon comparison on position/velocity/state after extraction
 - Verify debug visualization unchanged
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+### Step 1: Extract physics integration
+**Changes:** `src/character/controller.cpp:129-217` → Extract to `update_physics(dt)`
+**Files:** controller.cpp, controller.h
+**Details:** Includes gravity, drag, velocity integration, position update, acceleration reset at end
+**Tests:** All tests must pass
+**Validation:** Position/velocity identical before/after extraction
+
+### Step 2: Extract collision resolution
+**Changes:** `src/character/controller.cpp:218-240` → Extract to `update_collision(world, dt)` returning `float`
+**Files:** controller.cpp, controller.h
+**Details:** Returns `pre_collision_vertical_velocity` for landing detection
+**Tests:** All tests must pass
+**Validation:** Grounded state and debug info identical, pre-collision velocity captured
+
+### Step 3: Extract landing detection
+**Changes:** `src/character/controller.cpp:242-248` → Extract to `update_landing_state(float pre_collision_vy)`
+**Files:** controller.cpp, controller.h
+**Details:** Takes pre-collision vertical velocity from Step 2
+**Tests:** All tests must pass
+**Validation:** Landing events detected identically
+
+### Step 4: Extract jump timer updates
+**Changes:** `src/character/controller.cpp:250-256` → Extract to `update_jump_timers(dt)`
+**Files:** controller.cpp, controller.h
+**Tests:** All tests must pass
+**Validation:** Timer behavior identical
+
+### Step 5: Extract locomotion state update
+**Changes:** `src/character/controller.cpp:258-288` → Extract to `update_locomotion_state(dt)`
+**Files:** controller.cpp, controller.h
+**Tests:** All tests must pass
+**Validation:** Locomotion state and phase calculation identical
+
+## Rollback
+`git reset --hard HEAD` or `git revert HEAD~N` for last N commits
+<!-- END: REFINE/PLAN -->
+
+---
+
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-23
+
+**Question asked:**
+Validate this refactoring plan for extracting sub-phases from controller::update(). Does the extraction preserve mathematical correctness? Are the boundaries clean? Any concerns about state dependencies between phases?
+
+**Concerns evaluated:**
+- Mathematical correctness preservation across phase boundaries
+- Data flow between extracted phases
+- Hidden state dependencies
+
+**Feedback received:**
+- **Data flow issue (controller.cpp:223)**: `update_collision` must return `pre_collision_vertical_velocity` for `update_landing_state` to use. Original plan showed parameter but not return value.
+- **Acceleration reset (controller.cpp:291)**: Current code zeros `acceleration` at end to prevent gravity accumulation. Plan didn't specify where this reset lives after extraction.
+- **Validation**: No other hidden state couplings. Boundaries align with comment blocks. Math preserves correctness if phases run in same order.
+
+**Impact on implementation:**
+- Modified Step 1: Added explicit note that `update_physics` includes acceleration reset at end
+- Modified Step 2: Changed signature to return `float` (pre-collision vertical velocity)
+- Modified Step 3: Confirmed parameter matches Step 2 return value
+- No changes to Steps 4-5: Clean boundaries confirmed
+<!-- END: REFINE/REVIEW -->

@@ -130,6 +130,96 @@ void controller::update(const collision_world* world, float dt) {
     FL_PRECONDITION(dt > 0.0f, "dt must be positive for frame-rate independence");
     FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
 
+    update_physics(dt);
+
+    // --- Collision Resolution Phase ---
+    // Resolve collisions (pure physics - returns contact data)
+    // Derive wall threshold from max_slope_angle (single source of truth)
+    float wall_threshold = glm::cos(glm::radians(max_slope_angle));
+
+    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
+    // cppcheck-suppress variableScope
+    float pre_collision_vertical_velocity = velocity.y;
+    sphere_collision contact =
+        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
+
+    // Store collision debug info
+    collision_contact_debug.active = contact.hit;
+    collision_contact_debug.normal = contact.normal;
+    collision_contact_debug.penetration = contact.penetration;
+    collision_contact_debug.is_wall = contact.is_wall;
+
+    // Interpret contact to determine grounded state (controller logic)
+    // Use contacted_floor flag to handle simultaneous floor+wall contacts
+    is_grounded = false;
+    if (contact.contacted_floor) {
+        is_grounded = true;
+    }
+
+    // --- Landing Detection Phase ---
+    // Uses pre_collision_vertical_velocity captured before collision resolution
+    just_landed = !was_grounded && is_grounded;
+    if (just_landed) {
+        vertical_velocity_on_land = pre_collision_vertical_velocity;
+    }
+    was_grounded = is_grounded;
+
+    // Update jump timing forgiveness timers
+    if (is_grounded) {
+        coyote_timer = 0.0f; // Reset when grounded
+    } else {
+        coyote_timer += dt; // Accumulate time since leaving ground
+    }
+    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
+
+    // Update locomotion state (speed classification + phase calculation)
+    // Phase is an OUTPUT computed from movement, never drives physics
+    float speed = glm::length(math::project_to_horizontal(velocity));
+    FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
+    FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
+
+    // Classify speed into discrete locomotion states
+    if (speed < walk_threshold) {
+        locomotion.state = locomotion_speed_state::WALK;
+    } else if (speed < run_threshold) {
+        locomotion.state = locomotion_speed_state::RUN;
+    } else {
+        locomotion.state = locomotion_speed_state::SPRINT;
+    }
+
+    // Accumulate distance traveled (frame-rate independent)
+    // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
+    distance_traveled += speed * dt;
+    FL_POSTCONDITION(std::isfinite(distance_traveled), "distance_traveled must remain finite");
+
+    // Calculate phase (0-1 normalized position within cycle)
+    // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
+    // When state changes → cycle_length changes → phase recalculates from same distance
+    // This causes phase value to jump, but preserves physical correctness
+    // (the surveyor wheel re-scales, distance/rotation is preserved)
+    locomotion.cycle_length = get_cycle_length(locomotion.state);
+    FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
+    locomotion.phase =
+        std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
+    FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
+                     "phase must be in [0, 1) range");
+}
+
+float controller::get_cycle_length(locomotion_speed_state state) const {
+    switch (state) {
+    case locomotion_speed_state::WALK:
+        return walk_cycle_length;
+    case locomotion_speed_state::RUN:
+        return run_cycle_length;
+    case locomotion_speed_state::SPRINT:
+        return sprint_cycle_length;
+    }
+    // Should never reach here - all enum values handled
+    FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
+    return walk_cycle_length; // Unreachable, but satisfies compiler
+}
+
+void controller::update_physics(float dt) {
     // Frame-rate independent physics integration
     //
     // Horizontal velocity: Exponential drag model (exact solution)
@@ -215,92 +305,6 @@ void controller::update(const collision_world* world, float dt) {
     // Integrate position (accumulate - required for physics)
     position += velocity * dt;
 
-    // --- Collision Resolution Phase ---
-    // Resolve collisions (pure physics - returns contact data)
-    // Derive wall threshold from max_slope_angle (single source of truth)
-    float wall_threshold = glm::cos(glm::radians(max_slope_angle));
-
-    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
-    // cppcheck-suppress variableScope
-    float pre_collision_vertical_velocity = velocity.y;
-    sphere_collision contact =
-        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
-
-    // Store collision debug info
-    collision_contact_debug.active = contact.hit;
-    collision_contact_debug.normal = contact.normal;
-    collision_contact_debug.penetration = contact.penetration;
-    collision_contact_debug.is_wall = contact.is_wall;
-
-    // Interpret contact to determine grounded state (controller logic)
-    // Use contacted_floor flag to handle simultaneous floor+wall contacts
-    is_grounded = false;
-    if (contact.contacted_floor) {
-        is_grounded = true;
-    }
-
-    // --- Landing Detection Phase ---
-    // Uses pre_collision_vertical_velocity captured before collision resolution
-    just_landed = !was_grounded && is_grounded;
-    if (just_landed) {
-        vertical_velocity_on_land = pre_collision_vertical_velocity;
-    }
-    was_grounded = is_grounded;
-
-    // Update jump timing forgiveness timers
-    if (is_grounded) {
-        coyote_timer = 0.0f; // Reset when grounded
-    } else {
-        coyote_timer += dt; // Accumulate time since leaving ground
-    }
-    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
-
-    // Update locomotion state (speed classification + phase calculation)
-    // Phase is an OUTPUT computed from movement, never drives physics
-    float speed = glm::length(math::project_to_horizontal(velocity));
-    FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
-    FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
-
-    // Classify speed into discrete locomotion states
-    if (speed < walk_threshold) {
-        locomotion.state = locomotion_speed_state::WALK;
-    } else if (speed < run_threshold) {
-        locomotion.state = locomotion_speed_state::RUN;
-    } else {
-        locomotion.state = locomotion_speed_state::SPRINT;
-    }
-
-    // Accumulate distance traveled (frame-rate independent)
-    // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
-    distance_traveled += speed * dt;
-    FL_POSTCONDITION(std::isfinite(distance_traveled), "distance_traveled must remain finite");
-
-    // Calculate phase (0-1 normalized position within cycle)
-    // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
-    // When state changes → cycle_length changes → phase recalculates from same distance
-    // This causes phase value to jump, but preserves physical correctness
-    // (the surveyor wheel re-scales, distance/rotation is preserved)
-    locomotion.cycle_length = get_cycle_length(locomotion.state);
-    FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
-    locomotion.phase =
-        std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
-    FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
-                     "phase must be in [0, 1) range");
-
     // Reset acceleration for next frame
     acceleration = glm::vec3(0, 0, 0);
-}
-
-float controller::get_cycle_length(locomotion_speed_state state) const {
-    switch (state) {
-    case locomotion_speed_state::WALK:
-        return walk_cycle_length;
-    case locomotion_speed_state::RUN:
-        return run_cycle_length;
-    case locomotion_speed_state::SPRINT:
-        return sprint_cycle_length;
-    }
-    // Should never reach here - all enum values handled
-    FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
-    return walk_cycle_length; // Unreachable, but satisfies compiler
 }

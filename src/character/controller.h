@@ -162,4 +162,7 @@ struct controller {
     // Pure function: map state → cycle length (INTERNAL USE ONLY)
     // External consumers should use locomotion.cycle_length (the output struct)
     float get_cycle_length(locomotion_speed_state state) const;
+
+    // Physics integration: gravity, drag, velocity, position
+    void update_physics(float dt);
 };
