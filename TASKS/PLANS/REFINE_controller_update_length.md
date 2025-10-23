@@ -171,3 +171,46 @@ Validate this refactoring plan for extracting sub-phases from controller::update
 - Testing: Each phase now independently testable
 - Maintenance: Changes isolated to specific phase functions
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/character/controller.cpp`: 306 → 317 (+11 lines)
+- `src/character/controller.h`: 165 → 176 (+11 lines)
+
+**Total:** +22 lines (extraction adds structure, removes cognitive load)
+
+**Complexity (lizard):**
+
+Before:
+- `controller::update()`: 164 lines, CCN 13, 581 tokens
+
+After:
+- `controller::update()`: 10 lines, CCN 1, 66 tokens
+- `update_physics()`: 89 lines, CCN 6, 254 tokens
+- `update_collision()`: 24 lines, CCN 2, 104 tokens
+- `update_landing_state()`: 7 lines, CCN 3, 30 tokens
+- `update_jump_timers()`: 8 lines, CCN 2, 41 tokens
+- `update_locomotion_state()`: 32 lines, CCN 4, 169 tokens
+
+**Violations removed:**
+- Function length: 164 lines → 10 lines (-154 lines from monolith)
+- Cyclomatic complexity: CCN 13 → CCN 1 (-92% complexity in orchestrator)
+- Avg function CCN: 6.0 → 3.5 (-42% per function)
+- Avg function length: 27.8 → 15.5 (-44% per function)
+<!-- END: MEASURE/METRICS -->
+
+---
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Natural accumulation during iterative development - each phase added directly to update() without questioning function scope.
+
+**Prevention:** When adding behavior to existing function, first check if it represents a semantically distinct phase; if yes, extract immediately rather than inline.
+
+**Pattern:** This is specific to controller::update() - other functions in the codebase follow focused responsibility.
+<!-- END: MEASURE/LEARNING -->
