@@ -162,4 +162,15 @@ struct controller {
     // Pure function: map state → cycle length (INTERNAL USE ONLY)
     // External consumers should use locomotion.cycle_length (the output struct)
     float get_cycle_length(locomotion_speed_state state) const;
+
+    // Physics integration: gravity, drag, velocity, position
+    void update_physics(float dt);
+    // Collision resolution and grounding detection, returns pre-collision vertical velocity
+    float update_collision(const collision_world* world, float dt);
+    // Landing event detection and impact velocity tracking
+    void update_landing_state(float pre_collision_vy);
+    // Jump timing forgiveness (coyote time and jump buffering)
+    void update_jump_timers(float dt);
+    // Locomotion state classification and phase calculation
+    void update_locomotion_state(float dt);
 };
