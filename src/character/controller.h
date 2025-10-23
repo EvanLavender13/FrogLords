@@ -165,4 +165,6 @@ struct controller {
 
     // Physics integration: gravity, drag, velocity, position
     void update_physics(float dt);
+    // Collision resolution and grounding detection, returns pre-collision vertical velocity
+    float update_collision(const collision_world* world, float dt);
 };

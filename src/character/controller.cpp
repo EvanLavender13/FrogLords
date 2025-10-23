@@ -131,30 +131,7 @@ void controller::update(const collision_world* world, float dt) {
     FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
 
     update_physics(dt);
-
-    // --- Collision Resolution Phase ---
-    // Resolve collisions (pure physics - returns contact data)
-    // Derive wall threshold from max_slope_angle (single source of truth)
-    float wall_threshold = glm::cos(glm::radians(max_slope_angle));
-
-    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
-    // cppcheck-suppress variableScope
-    float pre_collision_vertical_velocity = velocity.y;
-    sphere_collision contact =
-        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
-
-    // Store collision debug info
-    collision_contact_debug.active = contact.hit;
-    collision_contact_debug.normal = contact.normal;
-    collision_contact_debug.penetration = contact.penetration;
-    collision_contact_debug.is_wall = contact.is_wall;
-
-    // Interpret contact to determine grounded state (controller logic)
-    // Use contacted_floor flag to handle simultaneous floor+wall contacts
-    is_grounded = false;
-    if (contact.contacted_floor) {
-        is_grounded = true;
-    }
+    float pre_collision_vertical_velocity = update_collision(world, dt);
 
     // --- Landing Detection Phase ---
     // Uses pre_collision_vertical_velocity captured before collision resolution
@@ -217,6 +194,31 @@ float controller::get_cycle_length(locomotion_speed_state state) const {
     // Should never reach here - all enum values handled
     FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
     return walk_cycle_length; // Unreachable, but satisfies compiler
+}
+
+float controller::update_collision(const collision_world* world, float dt) {
+    // Derive wall threshold from max_slope_angle (single source of truth)
+    float wall_threshold = glm::cos(glm::radians(max_slope_angle));
+
+    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
+    float pre_collision_vertical_velocity = velocity.y;
+    sphere_collision contact =
+        resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
+
+    // Store collision debug info
+    collision_contact_debug.active = contact.hit;
+    collision_contact_debug.normal = contact.normal;
+    collision_contact_debug.penetration = contact.penetration;
+    collision_contact_debug.is_wall = contact.is_wall;
+
+    // Interpret contact to determine grounded state (controller logic)
+    // Use contacted_floor flag to handle simultaneous floor+wall contacts
+    is_grounded = false;
+    if (contact.contacted_floor) {
+        is_grounded = true;
+    }
+
+    return pre_collision_vertical_velocity;
 }
 
 void controller::update_physics(float dt) {
