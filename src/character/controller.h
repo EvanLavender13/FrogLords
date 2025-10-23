@@ -167,4 +167,6 @@ struct controller {
     void update_physics(float dt);
     // Collision resolution and grounding detection, returns pre-collision vertical velocity
     float update_collision(const collision_world* world, float dt);
+    // Landing event detection and impact velocity tracking
+    void update_landing_state(float pre_collision_vy);
 };

@@ -132,14 +132,7 @@ void controller::update(const collision_world* world, float dt) {
 
     update_physics(dt);
     float pre_collision_vertical_velocity = update_collision(world, dt);
-
-    // --- Landing Detection Phase ---
-    // Uses pre_collision_vertical_velocity captured before collision resolution
-    just_landed = !was_grounded && is_grounded;
-    if (just_landed) {
-        vertical_velocity_on_land = pre_collision_vertical_velocity;
-    }
-    was_grounded = is_grounded;
+    update_landing_state(pre_collision_vertical_velocity);
 
     // Update jump timing forgiveness timers
     if (is_grounded) {
@@ -219,6 +212,14 @@ float controller::update_collision(const collision_world* world, float dt) {
     }
 
     return pre_collision_vertical_velocity;
+}
+
+void controller::update_landing_state(float pre_collision_vy) {
+    just_landed = !was_grounded && is_grounded;
+    if (just_landed) {
+        vertical_velocity_on_land = pre_collision_vy;
+    }
+    was_grounded = is_grounded;
 }
 
 void controller::update_physics(float dt) {
