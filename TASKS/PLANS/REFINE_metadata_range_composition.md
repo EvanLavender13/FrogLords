@@ -194,3 +194,31 @@ Review this metadata range composition refinement plan. Does it correctly derive
 - Single Source of Truth restored ("Distance" label and "m" units centralized in helper)
 - Fundamental Composable Functions upheld (reusable make_distance_meta function)
 <!-- END: REFINE/COMPLETED -->
+
+---
+
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/camera/camera_follow.h`: 77 → 77 (+7 helper function, -3 static metadata, net +4)
+- `src/gui/camera_panel.cpp`: 85 → 85 (2 call sites updated, no line change)
+
+**Total:** +4 lines (helper function adds complexity to enable composition)
+
+**Violations removed:**
+- Non-composable static metadata: 4 → 3 (-1 static constexpr param_meta)
+- Hard-coded metadata ranges: 2 → 0 (-2 call sites now compose dynamically)
+<!-- END: MEASURE/METRICS -->
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Static metadata defined at compile-time cannot reflect runtime parameter constraints
+
+**Prevention:** When parameter A's valid range depends on parameters B and C, derive A's metadata from B and C at presentation time, not definition time
+
+**Pattern:** Metadata-about-metadata - compose parameter metadata from other parameters' current values or constraints
+
+**Foundation:** Metadata composition pattern validated; ready for generalization if similar cases emerge
+<!-- END: MEASURE/LEARNING -->
