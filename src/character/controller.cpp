@@ -185,11 +185,19 @@ void controller::update(const collision_world* world, float dt) {
     velocity.z = horizontal_velocity.z;
 
     // Zero-velocity tolerance: exponential decay never fully stops
-    // When horizontal speed drops below perceptible threshold, snap to zero
-    // Prevents residual drift from numerical precision limits
+    // When horizontal speed drops below perceptible threshold AND no input applied,
+    // snap to zero to prevent residual drift from numerical precision
+    //
+    // CRITICAL: Only apply when no input present (Prime Directive)
+    // If input is active, velocity must accumulate even if below epsilon
+    // Otherwise low acceleration prevents movement from standstill
     constexpr float VELOCITY_EPSILON = 0.01f; // m/s (imperceptible at 60fps)
+    constexpr float ACCEL_EPSILON = 0.01f; // m/s² (negligible acceleration)
     float horizontal_speed = glm::length(horizontal_velocity);
-    if (horizontal_speed < VELOCITY_EPSILON) {
+    float accel_magnitude = glm::length(horizontal_accel);
+
+    // Only clamp when decelerating (no input), not when accelerating
+    if (horizontal_speed < VELOCITY_EPSILON && accel_magnitude < ACCEL_EPSILON) {
         velocity.x = 0.0f;
         velocity.z = 0.0f;
         horizontal_speed = 0.0f;
@@ -197,8 +205,6 @@ void controller::update(const collision_world* world, float dt) {
 
     // Validate frame-rate independent drag behavior
     // When no input applied, drag should decrease speed (or maintain zero)
-    float accel_magnitude = glm::length(horizontal_accel);
-    constexpr float ACCEL_EPSILON = 0.01f; // m/s² (negligible acceleration)
     if (accel_magnitude < ACCEL_EPSILON) {
         // No input: speed must decrease or stay at zero
         // Allow small epsilon for numerical precision (1% tolerance)

@@ -1,9 +1,11 @@
 #include "gui.h"
+#include "foundation/debug_assert.h"
 #include "sokol_gfx.h"
 #include "sokol_log.h"
 #include "imgui.h"
 #include "sokol_imgui.h"
 #include <cfloat>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
 #include <map>
@@ -73,7 +75,58 @@ void text(const char* fmt, ...) {
 }
 
 bool slider_float(const char* label, float* value, float min, float max) {
+    // Set fixed width for consistency with tunable_param
+    ImGui::SetNextItemWidth(250.0f);
     return ImGui::SliderFloat(label, value, min, max);
+}
+
+bool tunable_param(float* value, const param_meta& meta) {
+    // Validate metadata configuration
+    FL_PRECONDITION(meta.min < meta.max, "param_meta min must be less than max");
+    FL_PRECONDITION(std::isfinite(meta.min) && std::isfinite(meta.max),
+                    "param_meta min/max must be finite");
+
+    // Format label with units
+    char label[128];
+    if (meta.units[0] != '\0') {
+        snprintf(label, sizeof(label), "%s (%s)", meta.name, meta.units);
+    } else {
+        snprintf(label, sizeof(label), "%s", meta.name);
+    }
+
+    // Set fixed width to prevent panel resizing when values change digit count
+    ImGui::SetNextItemWidth(250.0f);
+
+    // Slider with metadata-defined range
+    return ImGui::SliderFloat(label, value, meta.min, meta.max);
+}
+
+void readonly_param(float value, const param_meta& meta) {
+    // Format display with units (use meta.name for label)
+    char display[128];
+    if (meta.units[0] != '\0') {
+        snprintf(display, sizeof(display), "%s: %.3f %s", meta.name, value, meta.units);
+    } else {
+        snprintf(display, sizeof(display), "%s: %.3f", meta.name, value);
+    }
+
+    // Grayed out text to indicate read-only
+    ImGui::TextDisabled("%s", display);
+}
+
+void derived_param(float value, const param_meta& meta, const char* formula) {
+    // Format display with value, units, and formula (use meta.name for label)
+    char display[256];
+    if (meta.units[0] != '\0') {
+        snprintf(display, sizeof(display), "%s: %.3f %s = %s", meta.name, value, meta.units, formula);
+    } else {
+        snprintf(display, sizeof(display), "%s: %.3f = %s", meta.name, value, formula);
+    }
+
+    // Grayed out italic text to indicate derived value
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
+    ImGui::TextWrapped("%s", display);
+    ImGui::PopStyleColor();
 }
 
 } // namespace widget

@@ -1,5 +1,6 @@
 #pragma once
 #include "sokol_app.h"
+#include "foundation/param_meta.h"
 #include <cfloat>
 
 // GUI System Framework using Dear ImGui with Sokol
@@ -45,6 +46,11 @@ void end();
 namespace widget {
 void text(const char* fmt, ...);
 bool slider_float(const char* label, float* value, float min, float max);
+
+// Metadata-driven parameter widgets
+bool tunable_param(float* value, const param_meta& meta);
+void readonly_param(float value, const param_meta& meta);
+void derived_param(float value, const param_meta& meta, const char* formula);
 } // namespace widget
 
 // Plot temporal data as histogram

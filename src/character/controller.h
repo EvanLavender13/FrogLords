@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
+#include "foundation/param_meta.h"
 
 struct collision_world;
 
@@ -141,6 +142,15 @@ struct controller {
     float walk_cycle_length = 2.0f;   // walk: 2m per cycle (two steps)
     float run_cycle_length = 3.0f;    // run: 3m per cycle
     float sprint_cycle_length = 4.0f; // sprint: 4m per cycle
+
+    // Parameter metadata for GUI presentation
+    static constexpr param_meta coyote_window_meta = {
+        "Coyote Window", "s", 0.0f, 0.5f
+    };
+
+    static constexpr param_meta jump_buffer_window_meta = {
+        "Jump Buffer Window", "s", 0.0f, 0.5f
+    };
 
     controller();
 
