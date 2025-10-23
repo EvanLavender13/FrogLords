@@ -141,3 +141,33 @@ Validate this refactoring plan for extracting sub-phases from controller::update
 - Modified Step 3: Confirmed parameter matches Step 2 return value
 - No changes to Steps 4-5: Clean boundaries confirmed
 <!-- END: REFINE/REVIEW -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Date:** 2025-10-23
+
+**Change:** Extracted five sub-phases from monolithic update() into focused helper methods
+
+**Files Modified:**
+- `src/character/controller.h`: Added 5 private method declarations
+- `src/character/controller.cpp`: Extracted 5 methods, simplified update() from 163 lines to 10 lines
+
+**Methods Extracted:**
+1. `update_physics(dt)` - Physics integration: gravity, drag, velocity, position
+2. `update_collision(world, dt)` - Collision resolution and grounding detection
+3. `update_landing_state(pre_collision_vy)` - Landing event detection
+4. `update_jump_timers(dt)` - Jump timing forgiveness (coyote time, buffering)
+5. `update_locomotion_state(dt)` - Locomotion state classification and phase
+
+**Tests:** All passing
+**Manual Verification:** All behavior identical - physics, collision, landing, jump timing, locomotion
+
+**Result:** ✓ Violation removed
+- Function length: 163 lines → 10 lines
+- Cognitive load: Reduced from 5 phases in one function to clear orchestration
+- Testing: Each phase now independently testable
+- Maintenance: Changes isolated to specific phase functions
+<!-- END: REFINE/COMPLETED -->
