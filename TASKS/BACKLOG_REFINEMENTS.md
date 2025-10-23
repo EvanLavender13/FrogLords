@@ -23,14 +23,6 @@ None - All medium-priority violations resolved ✅
 
 ### Low Priority
 
-**Function Complexity - gui::draw_character_panel**
-- **Location:** `src/gui/character_panel.cpp:9`
-- **Tool:** lizard
-- **Severity:** Low
-- **Issue:** CCN 20 (threshold 15), Length 116 (threshold 100) - ImGui panel drawing
-- **Fix:** Extract parameter sections into helper functions
-- **Impact:** GUI code maintainability
-
 **Function Length - controller::update**
 - **Location:** `src/character/controller.cpp:109`
 - **Tool:** lizard
