@@ -59,11 +59,24 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
 
     // Zoom limits
     ImGui::Text("Zoom Limits");
-    if (gui::widget::tunable_param(&min_distance, camera_follow::min_distance_meta)) {
+
+    bool min_changed = gui::widget::tunable_param(&min_distance, camera_follow::min_distance_meta);
+    bool max_changed = gui::widget::tunable_param(&max_distance, camera_follow::max_distance_meta);
+
+    // Validate min_distance <= max_distance invariant before submitting commands
+    bool invariant_valid = (min_distance <= max_distance);
+
+    if (min_changed && invariant_valid) {
         commands.push_back({camera_parameter_type::MIN_DISTANCE, min_distance});
     }
-    if (gui::widget::tunable_param(&max_distance, camera_follow::max_distance_meta)) {
+    if (max_changed && invariant_valid) {
         commands.push_back({camera_parameter_type::MAX_DISTANCE, max_distance});
+    }
+
+    // Warn user if invariant violated
+    if ((min_changed || max_changed) && !invariant_valid) {
+        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f),
+                          "Warning: Min Distance must be <= Max Distance");
     }
 
     return commands;

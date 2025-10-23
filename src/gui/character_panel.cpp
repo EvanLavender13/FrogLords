@@ -49,7 +49,7 @@ std::vector<parameter_command> draw_character_panel(const character_panel_state&
         }
 
         // Derived parameter: jump velocity (calculated from jump_height and gravity)
-        gui::widget::derived_param("Jump Velocity", character.jump_velocity,
+        gui::widget::derived_param(character.jump_velocity,
                                     character::tuning_params::jump_velocity_meta,
                                     "sqrt(2*|g|*h)");
 

@@ -114,13 +114,13 @@ void readonly_param(const char* label, float value, const param_meta& meta) {
     ImGui::TextDisabled("%s", display);
 }
 
-void derived_param(const char* label, float value, const param_meta& meta, const char* formula) {
-    // Format display with value, units, and formula
+void derived_param(float value, const param_meta& meta, const char* formula) {
+    // Format display with value, units, and formula (use meta.name for label)
     char display[256];
     if (meta.units[0] != '\0') {
-        snprintf(display, sizeof(display), "%s: %.3f %s = %s", label, value, meta.units, formula);
+        snprintf(display, sizeof(display), "%s: %.3f %s = %s", meta.name, value, meta.units, formula);
     } else {
-        snprintf(display, sizeof(display), "%s: %.3f = %s", label, value, formula);
+        snprintf(display, sizeof(display), "%s: %.3f = %s", meta.name, value, formula);
     }
 
     // Grayed out italic text to indicate derived value
