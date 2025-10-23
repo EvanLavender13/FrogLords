@@ -1,19 +1,23 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-23 - Startup Validation
+**Status:** 🏗️ System - Vehicle Movement
+**Started:** 2025-10-23
+**Branch:** system/vehicle-movement
+**Complexity:** Small (3 pts)
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**System:** Archive character systems and transform movement controller to circle-based vehicle physics
+**Location:** @TASKS/PLANS/vehicle_movement_SYSTEM.md
+**Layer:** 3 (Systems transformation)
+**Complexity:** Small (3 pts)
+**Next:** GRAYBOX
 
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Dependencies:**
+- Math Utilities (Layer 2)
+- Collision Primitives (Layer 2)
+- Input System (Layer 1)
+- Debug Visualization (Layer 1)
