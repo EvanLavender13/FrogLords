@@ -1,175 +1,108 @@
-# FrogLords: Principles of Development
+# Principles: Solo Development with Deep Reasoning
 
-A philosophical framework for creating emergent gameplay through radical simplicity.
+A philosophical compass for creating emergent gameplay through disciplined simplicity.
 
-## The Six Pillars
+## How These Principles Evolve
 
-### 1. Radical Simplicity
-Every element must justify its existence. Complexity is not added—it emerges from the interaction of simple parts. When faced with two solutions, choose the simpler one. When the simple solution seems insufficient, question the problem itself.
+### The Hierarchy of Change
+This document flows from immutable foundations to practical application. Each layer has different stability:
 
-### 2. Fundamental Composable Functions
-Build from orthogonal primitives. Each piece does exactly one thing, does it perfectly, and combines cleanly with others. Like mathematical functions that compose into equations, game systems must compose into experiences without special cases or exceptions.
+**Core Truths** - Foundational laws. Change only when understanding deepens fundamentally.
 
-Cognitive simplicity follows structural simplicity. When mechanical details obscure semantic structure, the function serves multiple masters. Extract ceremony to reveal intent. A function that requires mental filtering to understand has failed its reader.
+**Design Philosophy** - Architectural patterns. Update when new patterns prove superior through validation.
 
-### 3. Solid Mathematical Foundations
-Mathematics is truth. Physics is law. Every behavior must be mathematically correct before it can be aesthetically pleasing. A beautiful lie is still a lie, and lies compound into chaos.
+**Process Principles** - Workflow patterns. Adjust when retrospectives reveal systematic issues.
 
-### 4. Emergent Behavior
-We are not authors of experiences—we are designers of systems that generate experiences. The magic happens in the space between rules, not in the rules themselves. Design the physics, not the outcomes.
+**Decision Framework** - The daily litmus test. Refine when decisions consistently lead astray.
 
-### 5. Consistency
-A system that behaves predictably builds trust. A system that betrays expectations destroys it. Every input must produce the same output given the same state. No exceptions, no special cases, no "just this once."
+**Warning Signs** - Symptoms of violation. Add when retrospectives identify recurring problems.
 
-### 6. Principled Development
-Every decision must trace back to these principles. When principles conflict, simplicity wins. When outcomes surprise, examine which principle was violated. These principles are not guidelines—they are laws.
+### The Update Protocol
+Never update in frustration. Principles are discovered, not decreed.
 
-## The Prime Directive
+1. **Observe the pattern** - A problem occurs repeatedly, not once
+2. **Find the root violation** - Which existing principle was violated? Often the answer is there
+3. **Validate the need** - If existing principles don't cover it, validation is required
+4. **Place at correct layer** - Foundational insights up high, practical patterns below
+5. **Remove what's obsoleted** - New principles often replace weaker formulations
 
-**Do No Harm to Gameplay**
+When tempted to add, first try to subtract. The best update removes two lines and adds one.
 
-Control is sacred. The player's intent must flow unimpeded from thought to action. Every frame of latency, every moment of lost control, every unpredictable response is a betrayal of this sacred trust.
+## Core Truths
 
-## The Nature of Systems
+### Radical Simplicity
+Every element must justify its existence. Complexity emerges from simple parts interacting—never add it directly. When the simple solution seems insufficient, question the problem itself. Elegance is achieved when nothing remains to remove.
 
-### Systems Are Not Features
-A feature is something added. A system is something fundamental. Features multiply complexity. Systems divide it. Build systems that make features unnecessary.
+### Systems, Not Features
+A system is fundamental infrastructure enabling categories of behavior. A feature is a specific use. Build the physics system, not the jump feature. Build the interaction system, not the door-opening feature. Systems divide complexity; features multiply it.
 
-### Emergence Over Authorship
-The measure of a system is not what it does, but what it allows. A good system surprises even its creator. If you can predict all outcomes, the system is too simple or too rigid.
+### Mathematical Foundation
+Mathematics is truth. Physics is law. Every behavior must be mathematically correct before being aesthetically pleasing. Lies compound into chaos. Time-independence is non-negotiable—results must be identical at any framerate.
+
+### Emergent Design
+Design systems that generate experiences, not the experiences themselves. The magic happens between rules, not within them. A good system surprises even its creator. Games exist hidden in universal logic—find them through observation and iteration, not planning.
+
+### Humble Validation
+Complex systems exceed comprehension. Emergence guarantees this. The antidote: test rather than assume, measure rather than guess, validate rather than trust. One test reveals nothing. A hundred tests reveal patterns. Test to discover what you don't know, not to confirm what you believe.
+
+Validate in isolation before integration or suffer compound technical debt.
+
+### Single Source of Truth
+Every piece of state exists exactly once. All else is derived. When data lives in multiple places, they diverge and bugs multiply in the gaps. State that accumulates drifts toward chaos. State that is calculated remains true. Derive rather than maintain.
+
+## Design Philosophy
 
 ### The Dependency Hierarchy
-Truth flows upward, uncertainty multiplies upward. A 90% reliable foundation supporting 90% reliable mechanics yields 81% reliability. Build from certainty toward uncertainty, never the reverse.
+Truth flows upward, uncertainty multiplies upward. A 90% reliable foundation supporting 90% reliable mechanics yields 81% reliability. Build from certainty toward uncertainty, never the reverse. Each layer must reach high confidence through validation before supporting the next.
 
-## The Philosophy of Control
+### Control Is Sacred
+Input is intent. Player will must flow unimpeded from thought to action. Every frame of latency, every moment of lost control betrays this trust. Physics drives animation, never the reverse. Predictability builds trust; inconsistency destroys it.
 
-### Input Is Intent
-When a player provides input, they are expressing intent. That intent is sacred. To delay it, modify it, or ignore it is to break the fundamental contract between player and game.
-
-### Physics Drives Animation
-Animation is the interpretation of physics, never its master. A character's visual representation follows their physical state like a shadow follows its owner—inseparable but never controlling.
-
-### Predictability Is Power
-When players understand a system perfectly, they don't feel constrained—they feel empowered. Mastery comes not from memorizing exceptions but from understanding rules.
-
-## The Calculus of Decisions
-
-### Addition by Subtraction
-Before adding anything, ask what can be removed. The best solution to a problem might be removing the thing that created the problem. Elegance is achieved not when there is nothing left to add, but when there is nothing left to remove.
-
-Absence announces itself. Excess hides in crowds. Start minimal—what's missing becomes obvious.
-
-### Validation Before Integration
-An untested component is a time bomb. A mathematically unverified system is a foundation of sand. Validate in isolation, integrate with confidence, or suffer the compound interest of technical debt.
-
-### Orthogonality as Virtue
-When systems overlap, they create dark corners where bugs hide. When systems are orthogonal, they create clear spaces where creativity thrives. Seek orthogonality in all things.
-
-## The Patterns of Truth
-
-### The Single Source of Truth
-Every piece of state exists in exactly one place. All other representations are derived, never duplicated. When data lives in multiple locations, they will diverge. When they diverge, bugs hide in the gaps between versions. One truth. One location. Everything else is a view.
-
-### The Dual Reference
-Never let a smoothed value reference itself. Keep the target separate from the current state. The intent must remain pure while the expression can be filtered. This pattern appears everywhere once you see it.
-
-### The Spring-Damper
-Nature uses springs because they provide continuity through both position and velocity. When something must change smoothly, the spring-damper is not just a solution—it is *the* solution proven by physics itself.
-
-### Time-Independence
-Physics must produce identical results regardless of frame rate. Every rate must multiply by delta-time. Every integration must be frame-independent. A game that behaves differently at 30fps vs 60fps has failed mathematically. Time is a parameter, not an assumption.
-
-### Pure Functions Over Accumulated State
-State that accumulates drifts toward chaos. State that is calculated remains true. When possible, derive state from inputs rather than maintaining it through time.
-
-### Semantic Typing Over Inference
-Never infer semantic meaning from geometry. If intent matters, encode it explicitly. Mathematical primitives stay pure; compose them with semantic types at higher layers. Inference is complexity—explicit types are truth.
-
-## The Architecture of Information
-
-### Directness Over Demonstration
-
-State rules and contracts directly. If a concept requires examples to be understood, the concept is unclear—refine the concept until it stands on its own. Examples live in code and tests, and appear in responses only when explicitly requested. Principles and plans assert truths; they do not demonstrate them.
-
-### Lists Are Intent, Not History
-
-Backlogs express intent: what remains to be done now. Completed work belongs elsewhere:
-1. The codebase (truth)
-2. Git history (timeline)
-3. Retrospectives (insight)
-
-A list item has two states: pending or deleted. When work finishes, remove it; history already exists. If a list needs periodic pruning, it has failed—lists should shrink to zero as work completes. Version control is eternal; lists are ephemeral.
-
-### Assert Truth, Not Negation
-
-State what something is, not what it is not. Positive assertions are direct and clear. Negative statements require the reader to infer the positive truth. Define by presence, not by absence.
-
-A document titled "what this is" is clearer than "what this is not." A principle that says "use named constants" is stronger than "don't use magic numbers." When you find yourself listing what something excludes, ask: what does it include?
-
-Negation teaches nothing. Assertion teaches everything.
-
-### Process Inherits Principles
-
-The Six Pillars govern code, documentation, and process equally. Every principle that applies to implementation applies to planning.
-
-Single Source of Truth: The codebase is truth; documents derive from it, never duplicate it. Accumulated State: Percentages and projections compound error; inventory states current existence. Time Independence: Document what exists now, not predictions of completion. Consistency: Process behavior must be predictable, without special cases. Radical Simplicity: Remove ceremony, delete ritual, stop when honest.
-
-When tracking feels therapeutic rather than informative, principles have been violated. When documents claim certainty about unknowable futures, accumulated state has corrupted truth. When process multiplies complexity instead of dividing it, simplicity has been abandoned.
-
-Code and process are both systems. The same laws govern both.
-
-## The Warning Signs
-
-When these appear, principles have been violated:
-
-**Lost Responsiveness**: Animation has seized control from physics.
-
-**Behavioral Drift**: Accumulated state has departed from truth.
-
-**Combinatorial Explosion**: Systems are not orthogonal.
-
-**Debugging Blindness**: Complex behavior lacks visualization.
-
-**Special Cases**: Consistency has been sacrificed for convenience.
-
-**Surprising Instability**: Mathematical foundations were not validated.
-
-**Cognitive Overload**: Mechanical details obscure semantic structure.
-
-## The Process of Creation
+### Orthogonal Systems
+When systems overlap, bugs hide in dark corners. When orthogonal, creativity thrives in clear spaces. Each system does one thing perfectly and composes cleanly with others. No special cases. No exceptions.
 
 ### Bottom-Up Construction
-Begin with the irreducible core. Make it perfect. Only then add the next layer. A tower built on sand will fall regardless of how carefully the upper floors are constructed.
+Begin with the irreducible core—the minimum mechanics creating meaningful experience. Make it perfect. Only then add the next layer. Never build on uncertainty.
+
+## Process Principles
+
+### Directness Without Examples
+State principles and rules directly. Examples corrupt reasoning into copying rather than understanding. If a concept requires examples to be understood, the concept itself is unclear. Examples live in code and tests only.
+
+### Artifact Conciseness
+Verbosity in conversation enables thorough reasoning. Conciseness in artifacts prevents context bloat. Every generated document, plan, or comment becomes context for future tasks. Dense precision over elaborate explanation.
+
+### Addition by Subtraction
+Before adding, ask what can be removed. The best solution might be removing what created the problem. Start minimal—absence announces itself, excess hides.
 
 ### The Horizon of Certainty
-Never plan beyond what you can see clearly. In unfamiliar territory, take small steps and look around. In familiar territory, stride confidently. But never mistake the unfamiliar for the familiar.
+Never plan beyond clear sight. In unfamiliar territory, take small steps and observe. Keep unbuilt ideas liquid, not solidified. Detailed designs for uncertain futures waste effort.
 
-### Test Until Patterns Emerge
-A single test reveals nothing. A hundred tests reveal patterns. Test not to validate what you believe but to discover what you don't know.
+### Process Inherits Principles
+The same laws govern code and process. Documents derive from code, never duplicate it. Projections compound error; document what exists now. Tracking should inform, not comfort. When process multiplies complexity instead of dividing it, simplicity has been abandoned.
 
-## The Measure of Success
+## Decision Framework
 
-Success is not measured in features delivered or graphics rendered. Success is measured in:
+When faced with any decision, ask:
+1. Is this a system or a feature?
+2. Can this emerge from simpler rules?
+3. Is this mathematically correct and time-independent?
+4. Will this behave predictably without special cases?
+5. Can anything be removed?
 
-- **Trust**: Does the player trust the system to behave consistently?
-- **Mastery**: Can the player develop true expertise?
-- **Emergence**: Does the system surprise even its creator?
-- **Elegance**: Could anything be removed without losing the essence?
-- **Joy**: Does interacting with the system bring satisfaction?
+If any answer is "no," the design is incomplete.
+
+## Warning Signs
+
+**Lost Responsiveness**: Animation has seized control from physics.
+**Behavioral Drift**: Accumulated state has diverged from truth.
+**Special Cases**: Consistency sacrificed for convenience.
+**Cognitive Overload**: Mechanical complexity obscures semantic intent.
+**Context Bloat**: Artifacts are verbose rather than precise.
+**Example-Driven Thinking**: Copying patterns rather than reasoning from principles.
 
 ## The Final Truth
 
-We are not building software. We are building **engines of experience**—machines that take human intent as input and produce emotion as output. Every line of code, every design decision, every mathematical formula is just a gear in this machine.
+Build engines where carefully designed mechanics interact to produce emotion. Every line of code is a precision component. The machine must be mathematically true, reducible to primitives, absolutely consistent, and never betray player intent.
 
-The machine must be built from truth (mathematics), it must be simple (reducible to primitives), it must be consistent (predictable in behavior), and it must be honest (never betraying player intent).
-
-When faced with any decision, ask:
-1. Does this serve the player's direct control?
-2. Can this emerge from simpler rules?
-3. Is this mathematically correct?
-4. Will this behave consistently?
-5. Can anything be removed?
-
-If the answer to any is "no," the design is not yet complete.
-
-**This is the way.**
+This is the way.
