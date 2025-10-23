@@ -61,3 +61,18 @@ Main function iterates section helpers, each returns commands for their domain. 
 - Command aggregation remains in main function
 - Zero behavior change in output commands
 <!-- END: SELECT/FIX -->
+
+---
+
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Change:** Decomposed monolithic function into four section helpers in anonymous namespace
+**Files Modified:**
+- `src/gui/character_panel.cpp:9-167` - Extracted `draw_character_tuning_section()`, `draw_landing_spring_section()`, `draw_orientation_section()`, `draw_locomotion_state_section()`
+- Main function now 20 lines (was 130), delegates to helpers and aggregates commands
+
+**Tests:** All passing
+**Manual verification:** User confirmed identical behavior across all sections
+**Result:** ✓ Violation removed - CCN reduced from 20 to ~5, function length from 116 to 20 lines
+<!-- END: REFINE/COMPLETED -->
