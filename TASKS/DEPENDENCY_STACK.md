@@ -2,7 +2,7 @@
 
 **What exists. What it provides. What can be built.**
 
-**Last Updated:** 2025-10-21
+**Last Updated:** 2025-10-22
 
 ---
 
@@ -30,8 +30,9 @@ Software infrastructure required to run the application.
 - **Input System** - Keyboard/mouse event handling and state queries (`src/input/input.{h,cpp}`, `src/input/keycodes.h`)
 - **GUI Framework** - ImGui wrapper with lifecycle and plotting (`src/gui/gui.{h,cpp}`)
 - **GUI Commands** - Unidirectional flow command types (`src/gui/parameter_command.h`, `src/gui/camera_command.h`)
-- **Character Panel** - Tuning sliders and state display (`src/gui/character_panel.{h,cpp}`)
-- **Camera Panel** - Follow camera controls (`src/gui/camera_panel.{h,cpp}`)
+- **Designer Parameter Interface** - Metadata-driven widgets for tuning (tunable/readonly/derived params) (`src/gui/gui.{h,cpp}`, `src/foundation/param_meta.h`)
+- **Character Panel** - Tuning sliders and state display using metadata-driven widgets (`src/gui/character_panel.{h,cpp}`)
+- **Camera Panel** - Follow camera controls using metadata-driven widgets (`src/gui/camera_panel.{h,cpp}`)
 - **Rendering Camera** - View/projection matrices from eye/target/FOV (`src/camera/camera.{h,cpp}`)
 - **Wireframe Renderer** - Sokol pipeline for line meshes (`src/rendering/renderer.{h,cpp}`)
 - **Scene Container** - Mesh list for world rendering (`src/rendering/scene.{h,cpp}`)
@@ -61,12 +62,14 @@ Mathematical building blocks. Pure functions with no side effects.
 - **Collision Primitives** - Sphere/AABB types, collision world, surface types (`src/foundation/collision_primitives.h`)
 - **Collision Math** - Sphere-AABB tests, multi-pass resolution, wall-slide projection (`src/foundation/collision.{h,cpp}`)
 - **Car-Like Control Scheme** - Transforms WASD input to character-relative forward/back and turn rate (`src/character/controller.h`, `src/app/game_world.{h,cpp}`)
+- **Parameter Metadata** - Semantic annotations for tunable parameters (name, units, range, type) (`src/foundation/param_meta.h`)
 
 **Dependencies to build something new here:**
 - GLM available
 - CORE assertions optional for validation
 - No runtime/GUI/renderer coupling required
 - Car-like control scheme enables: Orientation-locked camera mode, drift movement mechanics
+- Parameter metadata enables: Generic tuning UIs, parameter validation, presets/serialization
 
 ---
 

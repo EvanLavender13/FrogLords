@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-21
+**Last Updated:** 2025-10-22
 
 ---
 
@@ -125,12 +125,6 @@
 - Framework evaluation (if needed)
 - Integration into dev workflow
 - Trigger: When test count reaches 3-5 files
-
-**Designer Parameter Facade**
-- Separate designer intent from implementation math
-- Tunable parameters (jump height) → derived values (jump velocity)
-- GUI shows adjustable params + read-only derived values
-- Generalizes to: movement feel, weapon timing, camera behavior, UI responsiveness
 
 **Runtime Validation & Instrumentation**
 - Measure actual vs intended behavior
