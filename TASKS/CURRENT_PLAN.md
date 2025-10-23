@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-22 - Designer Parameter Interface
+**Status:** 🔧 Refinement - Metadata Range Composition
+**Started:** 2025-10-23
+**Branch:** refine/metadata-range-composition
+**Path:** B
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
-
----
-
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Make metadata primitives composable by deriving distance range from min/max distance metadata
+**Location:** @TASKS/PLANS/REFINE_metadata_range_composition.md
+**Principle:** Fundamental Composable Functions, Single Source of Truth
+**Approach:** Simplify
+**Next:** REFINE
