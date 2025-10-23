@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Last Updated:** 2025-10-22 (retro additions)
+**Last Updated:** 2025-10-23
 
 ---
 
@@ -22,16 +22,6 @@ None - All medium-priority violations resolved ✅
 
 
 ### Low Priority
-
-**Metadata Range Composition**
-- **Location:** `src/camera/camera_follow.h:28,36,40`
-- **Principles:** Fundamental Composable Functions, Single Source of Truth
-- **Severity:** Low
-- **Type:** Metadata primitives don't compose - related metadata cannot inform each other
-- **Description:** Distance metadata defines static range [5,30] while min_distance and max_distance sliders can produce incompatible limits. Distance slider can never reach values that min/max permit.
-- **Fix:** Derive distance_meta.min/max from min_distance_meta/max_distance_meta values (metadata-about-metadata pattern)
-- **Impact:** Makes metadata primitives more composable, eliminates range divergence
-- **Source:** Designer parameter interface iteration 3 external review
 
 **Function Complexity - gui::draw_character_panel**
 - **Location:** `src/gui/character_panel.cpp:9`

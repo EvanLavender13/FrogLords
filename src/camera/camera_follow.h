@@ -25,9 +25,14 @@ struct camera_follow {
     float zoom_sensitivity = 0.5f;  // distance per scroll unit
 
     // Parameter metadata for GUI presentation
-    static constexpr param_meta distance_meta = {
-        "Distance", "m", 1.5f, 15.0f
-    };
+    static inline param_meta make_distance_meta(float min, float max) {
+        // GUI requires strict inequality, but runtime allows min == max
+        // Add epsilon to max if equal to prevent assertion
+        if (min >= max) {
+            max = min + 0.01f;
+        }
+        return {"Distance", "m", min, max};
+    }
 
     static constexpr param_meta height_offset_meta = {
         "Height Offset", "m", 0.0f, 3.0f

@@ -29,7 +29,7 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     ImGui::Spacing();
 
     // Current state (read-only)
-    gui::widget::readonly_param(cam_follow.distance, camera_follow::distance_meta);
+    gui::widget::readonly_param(cam_follow.distance, camera_follow::make_distance_meta(cam_follow.min_distance, cam_follow.max_distance));
     ImGui::Text("FOV: %.1f degrees", cam.get_fov());
 
     glm::vec3 pos = cam.get_position();
@@ -47,7 +47,7 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     float max_distance = cam_follow.max_distance;
 
     // Metadata-driven tunable parameters
-    if (gui::widget::tunable_param(&distance, camera_follow::distance_meta)) {
+    if (gui::widget::tunable_param(&distance, camera_follow::make_distance_meta(min_distance, max_distance))) {
         commands.push_back({camera_parameter_type::DISTANCE, distance});
     }
 
