@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-22
+**Last Updated:** 2025-10-22 (retro additions)
 
 ---
 
@@ -113,6 +113,22 @@
 ---
 
 ## Infrastructure & Tools
+
+**Generic Parameter Inspector**
+- Auto-generate UI from metadata for any struct with param_meta fields
+- Iterate struct metadata at runtime, create widgets dynamically
+- Enables zero-boilerplate debug panels for new systems
+- Pattern proof: designer_parameter_interface proved metadata-driven widgets work
+- Requires: Metadata-driven design pattern (exists), reflection or code-gen for iteration
+- Source: Designer parameter interface iteration 3 emergence analysis
+
+**Parameter Sweep Testing Framework**
+- Automated parameter space exploration using metadata-defined ranges
+- Generate test cases across valid parameter combinations
+- Detect edge cases, instabilities, unexpected emergent behaviors
+- Validate mathematical contracts across full parameter space
+- Requires: Metadata-driven design pattern (exists), test infrastructure
+- Source: Designer parameter interface iteration 3 emergence analysis
 
 **Drift Angle Visualization**
 - Circular arc on speed ring showing angle between heading and course
