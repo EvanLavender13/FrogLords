@@ -169,4 +169,6 @@ struct controller {
     float update_collision(const collision_world* world, float dt);
     // Landing event detection and impact velocity tracking
     void update_landing_state(float pre_collision_vy);
+    // Jump timing forgiveness (coyote time and jump buffering)
+    void update_jump_timers(float dt);
 };

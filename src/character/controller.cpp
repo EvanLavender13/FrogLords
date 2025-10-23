@@ -133,14 +133,7 @@ void controller::update(const collision_world* world, float dt) {
     update_physics(dt);
     float pre_collision_vertical_velocity = update_collision(world, dt);
     update_landing_state(pre_collision_vertical_velocity);
-
-    // Update jump timing forgiveness timers
-    if (is_grounded) {
-        coyote_timer = 0.0f; // Reset when grounded
-    } else {
-        coyote_timer += dt; // Accumulate time since leaving ground
-    }
-    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
+    update_jump_timers(dt);
 
     // Update locomotion state (speed classification + phase calculation)
     // Phase is an OUTPUT computed from movement, never drives physics
@@ -220,6 +213,15 @@ void controller::update_landing_state(float pre_collision_vy) {
         vertical_velocity_on_land = pre_collision_vy;
     }
     was_grounded = is_grounded;
+}
+
+void controller::update_jump_timers(float dt) {
+    if (is_grounded) {
+        coyote_timer = 0.0f; // Reset when grounded
+    } else {
+        coyote_timer += dt; // Accumulate time since leaving ground
+    }
+    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
 }
 
 void controller::update_physics(float dt) {
