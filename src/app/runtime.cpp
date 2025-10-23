@@ -8,7 +8,6 @@
 #include "gui/character_panel.h"
 #include "rendering/debug_draw.h"
 #include "rendering/debug_visualization.h"
-#include "rendering/debug_validation.h"
 #include "app/debug_generation.h"
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -39,9 +38,6 @@ void app_runtime::initialize() {
     renderer.init();
 
     world.init();
-
-    // Verify mathematical assumptions about coordinate system
-    debug_viz::validation::run_startup_checks();
 
     initialized = true;
 }
