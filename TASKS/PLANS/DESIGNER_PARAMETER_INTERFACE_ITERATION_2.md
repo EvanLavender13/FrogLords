@@ -3,7 +3,7 @@
 **Started:** 2025-10-22
 **Completed:** 2025-10-22
 **Previous:** [ITERATION_1.md](DESIGNER_PARAMETER_INTERFACE_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -119,5 +119,47 @@ Principle violations from iteration 1 must be eliminated. Contract items trace t
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex
+**Date:** 2025-10-22
+
+**Principle Violations:**
+- Single Source of Truth (minor): Derived widget label passed as explicit string (character_panel.cpp:52-54) can drift from jump_velocity_meta.name
+- Mathematical Foundations/Consistency (minor): Camera panel allows min_distance > max_distance, which violates camera_follow::zoom invariant (camera_panel.cpp:62-66, camera_follow.cpp:39-50)
+
+**Strengths:**
+- All iteration 1 violations successfully eliminated (metadata co-location, validation from metadata ranges, param_type removal)
+- Strong alignment with Radical Simplicity: param_meta carries only necessary fields, metadata-driven widgets minimize duplication
+- Excellent Fundamental Composable Functions: param_meta as foundation primitive enables cross-system reuse without dependencies
+- Solid Mathematical Foundations: preconditions tied to metadata ranges, jump velocity formula documented and asserted
+- Good Emergent Behavior: histogram provides real-time feedback on parameter interplay, unidirectional command flow enables safe experimentation
+- Strong Consistency: uniform slider formatting and visual treatment across panels, derived values consistently read-only
+
+**Assessment:** System holds up well against all six pillars. Required fixes from iteration 1 are complete. Two minor residual issues identified are fixable and do not represent fundamental violations.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** All required fixes from iteration 1 successfully eliminated principle violations. System demonstrates strong alignment with all six pillars. However, two minor but real principle violations remain that should be addressed before approval:
+
+1. Single Source of Truth: Label text duplicated between metadata and widget call
+2. Mathematical Foundations/Consistency: GUI permits invalid parameter relationships that violate runtime invariants
+
+Both violations are fixable without restructuring. Core system is sound and ready for final polish.
+
+**Required changes:**
+1. Refactor widget::derived_param to pull display label from param_meta.name instead of accepting explicit string parameter (eliminates label duplication at character_panel.cpp:52-54)
+2. Add camera panel validation to prevent min_distance > max_distance (enforce invariant in GUI before commands fire, preventing runtime assert at camera_follow.cpp:39-50)
+<!-- END: VALIDATE/DECISION -->
 
 ---
