@@ -55,13 +55,14 @@ void draw_vehicle_state_section(const controller& vehicle) {
 
     gui::widget::readonly_param(vehicle.heading_yaw, heading_yaw_meta);
 
-    // Steering multiplier derived on-demand
+    // Steering multiplier: derived from speed ratio and reduction factor
     float horizontal_speed = glm::length(glm::vec3(vehicle.velocity.x, 0.0f, vehicle.velocity.z));
     float steering_multiplier = vehicle.compute_steering_multiplier(horizontal_speed);
-    gui::widget::readonly_param(steering_multiplier, steering_multiplier_meta);
+    gui::widget::derived_param(steering_multiplier, steering_multiplier_meta, "1 - (v/v_max)·r");
 
+    // Effective turn rate: base rate scaled by steering multiplier
     float effective_turn_rate = vehicle.turn_rate * steering_multiplier;
-    gui::widget::readonly_param(effective_turn_rate, effective_turn_rate_meta);
+    gui::widget::derived_param(effective_turn_rate, effective_turn_rate_meta, "w_base · m");
 }
 
 } // namespace
