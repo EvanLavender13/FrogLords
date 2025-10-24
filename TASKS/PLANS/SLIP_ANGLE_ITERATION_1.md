@@ -1,7 +1,7 @@
 # Iteration 1: Slip Angle Calculator
 
 **Started:** 2025-10-24
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -55,4 +55,41 @@ Mathematical correctness and edge case handling for slip angle primitive.
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex
+**Date:** 2025-10-24
+
+**Principle Violations:**
+- **Mathematical Foundation**: Sign convention contradiction between contract and validation. Contract (line 15-16) states "90° right motion returns ≈+π/2 (positive = right slide)" but Validation (line 32) states "Turn right → negative slip angle". With forward=(0,0,1) and velocity=(1,0,0), cross(forward, UP) yields (-1,0,0), making atan2 return -π/2, contradicting the documented contract. Documentation in math_utils.h:83 claims "Positive: velocity points right of forward" but math_utils.h:103 states "right is -X direction" while math_utils.h:12 defines coordinate system as "X-right", creating conflicting frame-of-reference documentation.
+
+**Strengths:**
+- **Radical Simplicity**: Pure function with only essential operations, zero-velocity early-out
+- **Mathematical hygiene**: Preconditions guard unit-length and horizontal inputs, time-independent
+- **Single Source of Truth**: Controller derives from authoritative state without caching
+- **Primitives Guide**: Returns measurement only, interpretation left to higher layers
+- **Code structure**: Clean separation across three layers (primitive → system → GUI)
+
+**Assessment:** Structurally sound and principled implementation with critical sign convention error. Contract claims do not match validation results, violating Mathematical Foundation. All other principles upheld cleanly.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** Mathematical Foundation violation due to sign convention inconsistency. The implementation structure is principled and clean, but internal documentation contradicts itself. Core is sound, violation is fixable.
+
+**Required changes:**
+- Resolve sign convention: Either fix contract (lines 15-16) to match actual behavior (right=negative) OR fix code/comments to match contract (right=positive)
+- Reconcile coordinate system documentation in math_utils.h (lines 12, 83, 103)
+- Verify which convention is correct through actual playtest observation
+- Update all documentation to be internally consistent
+<!-- END: VALIDATE/DECISION -->
 
