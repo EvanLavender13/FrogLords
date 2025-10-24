@@ -49,6 +49,11 @@ void draw_vehicle_state_section(const controller& vehicle) {
     // Effective turn rate: base rate scaled by steering multiplier
     float effective_turn_rate = vehicle.turn_rate * steering_multiplier;
     gui::widget::derived_param(effective_turn_rate, effective_turn_rate_meta, "w_base · m");
+
+    // Slip angle: angle between velocity direction and heading direction
+    static constexpr param_meta slip_angle_meta = {"Slip Angle", "deg", -180.0f, 180.0f};
+    float slip_angle_deg = glm::degrees(vehicle.calculate_slip_angle());
+    gui::widget::derived_param(slip_angle_deg, slip_angle_meta, "atan2(v_lat, v_fwd)");
 }
 
 } // namespace

@@ -3,13 +3,14 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
 #include <cmath>
+#include "foundation/debug_assert.h"
 
 /// Mathematical utility functions for common vector operations
 namespace math {
 
 /// PHYSICAL: World up axis in project coordinate system
-/// Convention: Y-up, Z-forward, X-right (OpenGL/GLM standard)
-/// Alternative systems: Some engines use Z-up (Unreal) or Y-forward (Unity legacy)
+/// Convention: Y-up, Z-forward, -X-right (left-handed or right-handed with flipped X-axis)
+/// Alternative systems: Standard OpenGL uses +X-right; some engines use Z-up (Unreal)
 /// Components: (0, 1, 0) → X=0, Y=1 (up), Z=0
 /// Used throughout: Gravity direction, ground normal checks, vertical projections
 inline constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f); // dimensionless (unit vector)
@@ -70,6 +71,47 @@ inline glm::vec3 safe_normalize(const glm::vec3& v, const glm::vec3& fallback) {
         return v / len;
     }
     return fallback;
+}
+
+/// Calculate slip angle between velocity vector and forward direction vector.
+/// Slip angle is the angle between the direction of motion (velocity) and the
+/// direction the object is facing (forward). Used for drift detection and vehicle dynamics.
+///
+/// @param horizontal_velocity Velocity vector projected to horizontal plane (XZ)
+/// @param forward Unit vector indicating forward direction (horizontal)
+/// @return Signed angle in radians [-π, π]:
+///         - Positive: velocity points right of forward
+///         - Negative: velocity points left of forward
+///         - Zero: moving straight or stationary
+///         - ≈±π: moving backward relative to forward
+inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const glm::vec3& forward) {
+    // Validate preconditions in debug builds
+    FL_PRECONDITION(glm::abs(glm::length(forward) - 1.0f) < 0.01f,
+                    "forward must be unit length");
+    FL_PRECONDITION(glm::abs(horizontal_velocity.y) < 0.01f,
+                    "horizontal_velocity must be projected to XZ plane");
+    FL_PRECONDITION(glm::abs(forward.y) < 0.01f,
+                    "forward must be horizontal (Y component near zero)");
+
+    // Zero-velocity edge case: no slip when stationary
+    constexpr float VELOCITY_EPSILON = 0.0001f; // m/s (below perceptible threshold)
+    if (glm::length(horizontal_velocity) < VELOCITY_EPSILON) {
+        return 0.0f;
+    }
+
+    // Compute right vector perpendicular to forward (in horizontal plane)
+    // cross(forward, UP) yields -X when forward is +Z (matches -X-right coordinate system)
+    glm::vec3 right = glm::normalize(glm::cross(forward, UP));
+
+    // Project velocity onto local coordinate frame
+    float forward_speed = glm::dot(horizontal_velocity, forward);
+    float lateral_speed = glm::dot(horizontal_velocity, right);
+
+    // Calculate slip angle via atan2
+    // atan2(y, x) returns angle from +X axis, where:
+    //   - lateral_speed is the "Y" component (perpendicular)
+    //   - forward_speed is the "X" component (parallel)
+    return std::atan2(lateral_speed, forward_speed);
 }
 
 } // namespace math

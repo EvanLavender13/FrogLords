@@ -1,30 +1,19 @@
 # Current Plan
 
-**Status:** ✅ Completed Parameter Cleanup
-**Branch:** system/circle-turning (merged cleanup only)
-**Result:** Circle-based turning DEFERRED - incompatible with physics-first architecture
+**Status:** ✅ System Complete
+**Last Completed:** 2025-10-24 - Slip Angle Calculator
 
 ---
 
-## Previous Work Summary
+## Ready for Next Task
 
-**Attempted:** Circle-based turning (direct position calculation)
-**Problem:** Fundamentally incompatible with force → acceleration → velocity → position pipeline
-**Resolution:**
-- Removed unused parameters (wheelbase, grip_coefficient, max_steering_angle)
-- Documented physics-first approach in PhysicsFirst_Research.md
-- Updated BACKLOG_SYSTEMS.md to remove incompatible tasks
+**Choose next action:**
+- `/SYSTEM/SELECT` - Pick next system to build
+- `/REFINE/SELECT` - Pick violation to fix
 
 ---
 
-## Recommended Next Work
-
-**System:** Dynamic FOV System
-**Location:** New system to create
-**Layer:** 4 (Systems)
-**Complexity:** Small
-**Why:** Zero physics impact, massive feel improvement, no dependencies
-
-**Alternative:** Slip Angle Calculator
-**Layer:** 2 (Primitives)
-**Why:** Pure math primitive, enables drift detection, measurements only
+**See:**
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `BACKLOG_REFINEMENTS.md` - Violations backlog
+- `DEPENDENCY_STACK.md` - Current capabilities

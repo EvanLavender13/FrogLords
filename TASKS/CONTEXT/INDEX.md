@@ -24,3 +24,6 @@ Selection hints (from backlogs/stack)
 - Tools/Validation → hygiene, architecture, simulation
 - Refinements from static analyzers → hygiene, validation
 
+Future context files
+- VEHICLE_DYNAMICS_TERMINOLOGY.md — Slip angle, drift direction, steering vs slide direction; precise definitions for vehicle physics terms where intuition can mislead. Created after slip angle validation revealed "turn left" vs "slide left" confusion.
+
