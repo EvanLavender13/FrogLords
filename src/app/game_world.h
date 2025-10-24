@@ -2,7 +2,7 @@
 
 #include "camera/camera.h"
 #include "camera/camera_follow.h"
-#include "character/controller.h"
+#include "vehicle/controller.h"
 #include "character/character_reactive_systems.h"
 #include "character/tuning.h"
 #include "rendering/scene.h"

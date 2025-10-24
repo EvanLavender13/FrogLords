@@ -1,5 +1,5 @@
 #include "character/character_reactive_systems.h"
-#include "character/controller.h"
+#include "vehicle/controller.h"
 #include "foundation/math_utils.h"
 
 void character_reactive_systems::update(const controller& ctrl, float dt) {

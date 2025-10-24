@@ -155,19 +155,9 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             world.character_params.accel = cmd.value;
             world.character_params.apply_to(world.character);
             break;
-        case gui::parameter_type::JUMP_HEIGHT:
-            world.character_params.jump_height = cmd.value;
+        case gui::parameter_type::WEIGHT:
+            world.character_params.weight = cmd.value;
             world.character_params.apply_to(world.character);
-            break;
-        case gui::parameter_type::GRAVITY:
-            world.character_params.gravity = cmd.value;
-            world.character_params.apply_to(world.character);
-            break;
-        case gui::parameter_type::COYOTE_WINDOW:
-            world.character.coyote_window = cmd.value;
-            break;
-        case gui::parameter_type::JUMP_BUFFER_WINDOW:
-            world.character.jump_buffer_window = cmd.value;
             break;
         case gui::parameter_type::LANDING_STIFFNESS:
             world.character_visuals.animation.landing_spring.stiffness = cmd.value;

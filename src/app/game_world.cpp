@@ -55,8 +55,6 @@ void game_world::update(float dt) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
 
-    input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
-
     // Validate normalized input direction
     float input_length = glm::length(input_params.move_direction);
     FL_POSTCONDITION(input_length == 0.0f || glm::epsilonEqual(input_length, 1.0f, 0.001f),

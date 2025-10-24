@@ -44,6 +44,11 @@ controller::controller()
     FL_PRECONDITION(soft_threshold < medium_threshold,
                     "soft_threshold must be less than medium_threshold to define distinct states");
 
+    // Validate steering_reduction_factor bounds (ensures monotonic steering decrease)
+    FL_PRECONDITION(steering_reduction_factor >= 0.0f && steering_reduction_factor <= 1.0f,
+                    "steering_reduction_factor must be in [0, 1]");
+    FL_ASSERT_FINITE_SCALAR(steering_reduction_factor, "steering_reduction_factor");
+
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;

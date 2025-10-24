@@ -19,10 +19,7 @@ namespace gui {
 enum class parameter_type {
     MAX_SPEED,
     ACCEL,
-    JUMP_HEIGHT,
-    GRAVITY,
-    COYOTE_WINDOW,
-    JUMP_BUFFER_WINDOW,
+    WEIGHT,
     LANDING_STIFFNESS,
     LANDING_DAMPING,
     LANDING_IMPULSE_SCALE,

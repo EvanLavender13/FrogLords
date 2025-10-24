@@ -40,37 +40,53 @@
 
 ## Code Anti-Patterns
 
----
+## Pattern: Derive, Don't Accumulate
+- **Detection:** State accumulating over time (`+=`, timeline building, frame counters) instead of being derived; frame-rate dependent behavior
+- **Root cause:** Easier to accumulate than derive; missing single source of truth; using time as proxy for distance/events
+- **Fix:** Identify canonical state, derive dependent values; use frame-independent measures (distance, events, phase)
+- **Prevention:** Ask "what is the single source of truth?" before accumulating; test at different frame rates
+- **Examples:** Surveyor wheel distance_traveled, velocity trail timestamps/time sampling, frame-dependent dt accumulation
 
-## Pattern: Special Cases for Entities
-- **Detection:** Search for `if (entity == ...)` or entity-type checks
-- **Root cause:** Design trying to handle exceptions instead of general rules
-- **Fix:** Make behavior uniform, remove special-case logic
-- **Prevention:** Code review flag entity-specific branches
+## Pattern: Use Primitives
+- **Detection:** Custom smoothing (`std::exp`, manual lerp with time); normalization without epsilon check; reinventing foundation utilities
+- **Root cause:** Unaware of primitives or thinking custom is simpler; unchecked division
+- **Fix:** Use `spring_damper` for smoothing, `safe_normalize` for normalization, existing primitives for standard operations
+- **Prevention:** Check foundation layer before implementing; never divide by magnitude without epsilon check
+- **Examples:** Custom exponential smoothing vs spring_damper, manual `vec/length` vs safe_normalize
 
-## Pattern: Custom Smoothing Instead of Primitives
-- **Detection:** Search for `std::exp`, custom `lerp` with time, manual smoothing
-- **Root cause:** Unaware of spring-damper or thinking custom is "simpler"
-- **Fix:** Replace with `spring_damper` primitive
-- **Prevention:** Default to spring-damper for all smoothing needs
+## Pattern: Single Source for Configuration
+- **Detection:** Unexplained numeric constants; parameters defined multiple times; mismatched dimensions; split control logic
+- **Root cause:** Taking shortcuts during initial implementation; lack of documentation discipline
+- **Fix:** Centralize in tuning/config system, derive dependent values; document with derivation, units, and classification
+- **Prevention:** Configuration lives in dedicated structures; require comment on every constant; grep for duplication
+- **Examples:** Spring stiffness in constructors, ground geometry visual vs collision, magic numbers, camera control direction split
+
+## Pattern: No Special Cases
+- **Detection:** `if (entity == ...)` checks; mode-specific if/else blocks; type-based branching
+- **Root cause:** Design trying to handle exceptions instead of general rules; modes not designed as composable components
+- **Fix:** Make behavior uniform; refactor to orthogonal systems with base + mode-specific components
+- **Prevention:** Code review flag entity-specific branches; design modes as composable pieces
+- **Examples:** Entity-type checks, mode branching with separate state variables
+
+## Pattern: Input Integrity
+- **Detection:** Input values modified before reaching target system; event handlers overwriting accumulated input
+- **Root cause:** Convenience of modifying at source; single-frame assumptions when multiple events can occur
+- **Fix:** Pass raw input to systems, let systems apply parameters; accumulate input events or process immediately
+- **Prevention:** Input is intent - treat as immutable; never overwrite, only accumulate or process
+- **Examples:** Scaling input before system receives it, overwriting mouse delta instead of accumulating
+
+## Pattern: Dead State
+- **Detection:** Struct members never read or flags never mutated
+- **Root cause:** Adding state "just in case" or forgetting to wire up UI/consumers
+- **Fix:** Delete unused state immediately
+- **Prevention:** Before adding state, identify specific consumer; grep for reads/writes after implementation
+- **Examples:** contact_debug_info unused fields, debug_text::font_size, show_velocity_trail flag
 
 ## Pattern: Principle Without Exception Documentation
 - **Detection:** Absolute principle statements that have legitimate exceptions
 - **Root cause:** Principles defined without documenting edge cases
 - **Fix:** Add exception clauses to principles at definition time
 - **Prevention:** When defining principles, ask "are there legitimate exceptions?"
-
-## Pattern: Magic Numbers
-- **Detection:** Unexplained numeric constants
-- **Root cause:** Lack of documentation discipline
-- **Fix:** Document with derivation, units, and classification tag
-- **Prevention:** Require comment on every constant declaration
-
-## Pattern: Division by Zero
-- **Detection:** Normalization without epsilon check, `length = sqrt(x); result = vec / length`
-- **Root cause:** Unchecked division when vector magnitude could be zero
-- **Fix:** Always use `safe_normalize` for vector normalization—never divide by magnitude without epsilon check
-- **Prevention:** Use math primitives (safe_normalize) instead of manual division
 
 ## Pattern: Convenient Coupling
 - **Detection:** Struct handles multiple unrelated concerns; "just add a member" changes
@@ -84,29 +100,18 @@
 - **Fix:** Use persistent buffers, dynamic updates, proper resource management
 - **Prevention:** Review resource lifecycle in rendering code
 
-## Pattern: Mode-Specific Branching
-- **Detection:** If/else blocks for different modes using separate state variables
-- **Root cause:** Modes not designed as composable components
-- **Fix:** Refactor to orthogonal systems, base + mode-specific components
-- **Prevention:** Design modes as composable pieces, not special cases
-
-## Pattern: Input Modification Before System Processing
-- **Detection:** Input values scaled, filtered, or modified before reaching target system
-- **Root cause:** Convenience of modifying input at source instead of proper system parameters
-- **Fix:** Pass raw input to systems, let systems apply their own parameters
-- **Prevention:** Input is intent - never modify before it reaches the system that needs it
-
 ## Pattern: Arbitrary Fallback Constants
 - **Detection:** Functions returning arbitrary constants when unable to compute correct value
 - **Root cause:** Avoiding degenerate case handling with default constant
 - **Fix:** Compute correct answer from geometry or use safe primitives with meaningful fallback
 - **Prevention:** Never return arbitrary constants - derive from mathematics or assert if invalid
 
-## Pattern: Input Loss Through Overwriting
-- **Detection:** Event handlers overwriting accumulated state instead of accumulating
-- **Root cause:** Single-frame assumptions when multiple events can occur per frame
-- **Fix:** Accumulate input events or process immediately
-- **Prevention:** All input must accumulate or be processed immediately - never overwrite
+## Pattern: Missing Validation at Foundation
+- **Detection:** Foundation primitives accepting inputs without validation (delta_time, vectors, etc.)
+- **Root cause:** Assuming callers will always provide valid inputs
+- **Fix:** Add precondition assertions at primitive boundaries
+- **Prevention:** All foundation functions validate contracts with debug assertions
+- **Examples:** spring_damper::update missing delta_time validation
 
 ---
 
