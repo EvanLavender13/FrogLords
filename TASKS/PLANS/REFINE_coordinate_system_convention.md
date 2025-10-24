@@ -72,14 +72,154 @@ Search all `cross(` calls and directional calculations. Verify slip angle sign c
 
 ---
 
-## Implementation Steps
+---
 
-1. Update `yaw_to_right()` formula
-2. Update cross products in slip angle and camera
-3. Test vehicle steering both directions
-4. Review and potentially remove `turn_input` negation
-5. Update documentation
-6. Verify all debug visualizations
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-24
+
+**Question asked:**
+Review coordinate system convention switch plan. Validate: 1) Are all cross products correctly identified and swapped? 2) Will the turn_input negation removal preserve behavior? 3) Are there any other coordinate-dependent calculations we're missing? 4) Is the mathematical reasoning sound?
+
+**Concerns evaluated:**
+- Cross-product correctness and completeness
+- Turn input sign convention preservation
+- Missing coordinate-dependent calculations
+- Mathematical soundness
+
+**Feedback received:**
+- High priority: Debug visualization in `src/app/debug_generation.cpp:268` renders turn limit arrows using `yaw + max_turn_angle` which will be on wrong side after flip
+- Medium priority: Comment in `src/vehicle/controller.cpp:84` still documents old "positive yaw = CCW" and removed negation
+- Medium priority: Field documentation in `src/vehicle/controller.h:84` for `turn_rate` still shows old negative sign
+- Assessment: Cross products correctly identified, turn input logic sound, math reasoning correct, slip angle signs remain consistent
+
+**Impact on implementation:**
+- Added Step 8 to fix debug visualization turn cone signs
+- Added Step 9 to update controller.cpp comment about yaw convention
+- Added Step 10 to update controller.h field documentation for turn_rate
+- Execution order adjusted to do code changes before documentation
+<!-- END: REFINE/REVIEW -->
+
+### Step 1: Update yaw_to_right() formula
+**Changes:** `src/foundation/math_utils.h:32-34`
+- From: `return glm::vec3(-std::cos(yaw), 0.0f, std::sin(yaw));`
+- To: `return glm::vec3(std::cos(yaw), 0.0f, -std::sin(yaw));`
+**Tests:** Manual - vehicle should turn correctly (tested in Step 3)
+**Validation:** Tests pass, coordinate system becomes standard
+
+### Step 2: Update cross product in calculate_slip_angle()
+**Changes:** `src/foundation/math_utils.h:104`
+- From: `glm::vec3 right = glm::normalize(glm::cross(forward, UP));`
+- To: `glm::vec3 right = glm::normalize(glm::cross(UP, forward));`
+**Tests:** Manual - slip angle signs should remain physically correct
+**Validation:** Tests pass, slip angle behavior unchanged
+
+### Step 3: Update cross product in camera::get_right()
+**Changes:** `src/camera/camera.cpp:35`
+- From: `glm::vec3 right = glm::cross(forward, math::UP);`
+- To: `glm::vec3 right = glm::cross(math::UP, forward);`
+**Tests:** Manual - camera right vector should point correctly
+**Validation:** Tests pass, camera behavior unchanged
+
+### Step 4: Review and remove turn_input negation
+**Changes:** `src/vehicle/controller.cpp:99`
+- From: `heading_yaw += -input_params.turn_input * turn_rate * steering_multiplier * dt;`
+- To: `heading_yaw += input_params.turn_input * turn_rate * steering_multiplier * dt;`
+**Tests:** Manual - vehicle turning left/right should behave identically to before
+**Validation:** Input convention matches coordinate system (right input → clockwise yaw)
+
+### Step 5: Update CONVENTIONS.md
+**Changes:** `CONVENTIONS.md:28` and `CONVENTIONS.md:35-36`
+- Line 28 From: `Right: **-X**`
+- Line 28 To: `Right: **+X**`
+- Line 30 From: `This is left-handed (or right-handed with flipped X-axis). Differs from standard OpenGL (+X right).`
+- Line 30 To: `This is right-handed and matches standard OpenGL convention (+X right, +Y up, +Z forward).`
+- Line 35 From: `cross(forward, UP)` produces the right vector (-X direction)
+- Line 35 To: `cross(UP, forward)` produces the right vector (+X direction)
+- Line 36 From: `cross(UP, forward)` produces the left vector (+X direction)
+- Line 36 To: `cross(forward, UP)` produces the left vector (-X direction)
+**Tests:** N/A - documentation only
+**Validation:** Documentation matches implementation
+
+### Step 6: Update math_utils.h comments
+**Changes:** `src/foundation/math_utils.h:12` and `src/foundation/math_utils.h:30-31`
+- Line 12 From: `Convention: Y-up, Z-forward, -X-right (left-handed or right-handed with flipped X-axis)`
+- Line 12 To: `Convention: Y-up, Z-forward, +X-right (right-handed, standard OpenGL)`
+- Line 13 From: `Alternative systems: Standard OpenGL uses +X-right; some engines use Z-up (Unreal)`
+- Line 13 To: `Alternative systems: Some engines use Z-up (Unreal, right-handed) or left-handed variants`
+- Line 30-31 From: `Convert yaw angle to right direction vector (negative X in world space).`
+- Line 30-31 To: `Convert yaw angle to right direction vector (positive X in world space).`
+- Line 103 From: `cross(forward, UP) yields -X when forward is +Z (matches -X-right coordinate system)`
+- Line 103 To: `cross(UP, forward) yields +X when forward is +Z (matches +X-right coordinate system)`
+**Tests:** N/A - documentation only
+**Validation:** Comments match implementation
+
+### Step 7: Fix debug visualization turn cone signs
+**Changes:** `src/app/debug_generation.cpp:268` and `src/app/debug_generation.cpp:277`
+- Line 268 From: `glm::vec3 left_limit = math::yaw_to_forward(yaw + max_turn_angle);`
+- Line 268 To: `glm::vec3 left_limit = math::yaw_to_forward(yaw - max_turn_angle);`
+- Line 277 From: `glm::vec3 right_limit = math::yaw_to_forward(yaw - max_turn_angle);`
+- Line 277 To: `glm::vec3 right_limit = math::yaw_to_forward(yaw + max_turn_angle);`
+**Tests:** Manual - turn cone arrows should point to correct left/right directions
+**Validation:** Debug visualization matches new coordinate system
+
+### Step 8: Update controller.cpp yaw convention comment
+**Changes:** `src/vehicle/controller.cpp:84-87`
+- From: Multi-line comment explaining "positive yaw = CCW" and negation rationale
+- To: "Coordinate system: Y-up right-handed, positive yaw = CW rotation from above (right turn)"
+- And: "Input convention: positive = right turn, negative = left turn"
+- And: "Turn convention matches input directly: positive input → positive yaw (CW)"
+**Tests:** N/A - documentation only
+**Validation:** Comment matches new implementation
+
+### Step 9: Update controller.h turn_rate field documentation
+**Changes:** `src/vehicle/controller.h:84`
+- From: `Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt`
+- To: `Integrated in: controller::apply_input() - heading_yaw += input.x * turn_rate * dt`
+**Tests:** N/A - documentation only
+**Validation:** Field documentation matches implementation
+
+### Step 10: Update CONVENTIONS.md
+**Changes:** `CONVENTIONS.md:28` and `CONVENTIONS.md:35-36`
+- Line 28 From: `Right: **-X**`
+- Line 28 To: `Right: **+X**`
+- Line 30 From: `This is left-handed (or right-handed with flipped X-axis). Differs from standard OpenGL (+X right).`
+- Line 30 To: `This is right-handed and matches standard OpenGL convention (+X right, +Y up, +Z forward).`
+- Line 35 From: `cross(forward, UP)` produces the right vector (-X direction)
+- Line 35 To: `cross(UP, forward)` produces the right vector (+X direction)
+- Line 36 From: `cross(UP, forward)` produces the left vector (+X direction)
+- Line 36 To: `cross(forward, UP)` produces the left vector (-X direction)
+**Tests:** N/A - documentation only
+**Validation:** Documentation matches implementation
+
+### Step 11: Update math_utils.h comments
+**Changes:** `src/foundation/math_utils.h:12` and `src/foundation/math_utils.h:30-31`
+- Line 12 From: `Convention: Y-up, Z-forward, -X-right (left-handed or right-handed with flipped X-axis)`
+- Line 12 To: `Convention: Y-up, Z-forward, +X-right (right-handed, standard OpenGL)`
+- Line 13 From: `Alternative systems: Standard OpenGL uses +X-right; some engines use Z-up (Unreal)`
+- Line 13 To: `Alternative systems: Some engines use Z-up (Unreal, right-handed) or left-handed variants`
+- Line 30-31 From: `Convert yaw angle to right direction vector (negative X in world space).`
+- Line 30-31 To: `Convert yaw angle to right direction vector (positive X in world space).`
+- Line 103 From: `cross(forward, UP) yields -X when forward is +Z (matches -X-right coordinate system)`
+- Line 103 To: `cross(UP, forward) yields +X when forward is +Z (matches +X-right coordinate system)`
+**Tests:** N/A - documentation only
+**Validation:** Comments match implementation
+
+### Step 12: Update VEHICLE_DYNAMICS_TERMINOLOGY.md
+**Changes:** `TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md:61`
+- From: `This codebase: -X right, +Y up, +Z forward (see CONVENTIONS.md)`
+- To: `This codebase: +X right, +Y up, +Z forward (see CONVENTIONS.md)`
+**Tests:** N/A - documentation only
+**Validation:** Documentation matches implementation
+
+## Rollback
+`git reset --hard HEAD` before any commits to revert all changes, or `git revert <commit-hash>` for specific commits after they're made.
+<!-- END: REFINE/PLAN -->
 
 ---
 
