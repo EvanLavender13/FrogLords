@@ -1,26 +1,30 @@
 # Current Plan
 
-**Status:** 🏗️ System - Circle-Based Turning
-**Started:** 2025-10-24
-**Branch:** system/circle-turning
-**Complexity:** Small
-**Phase:** SELECT → GRAYBOX
+**Status:** ✅ Completed Parameter Cleanup
+**Branch:** system/circle-turning (merged cleanup only)
+**Result:** Circle-based turning DEFERRED - incompatible with physics-first architecture
 
 ---
 
-## Current Work
+## Previous Work Summary
 
-**System:** Circle-based turning primitive - calculate position along circular arc from speed and steering angle
-**Location:** @TASKS/PLANS/CIRCLE_TURNING_SYSTEM.md
-**Layer:** 2 (Primitives)
+**Attempted:** Circle-based turning (direct position calculation)
+**Problem:** Fundamentally incompatible with force → acceleration → velocity → position pipeline
+**Resolution:**
+- Removed unused parameters (wheelbase, grip_coefficient, max_steering_angle)
+- Documented physics-first approach in PhysicsFirst_Research.md
+- Updated BACKLOG_SYSTEMS.md to remove incompatible tasks
+
+---
+
+## Recommended Next Work
+
+**System:** Dynamic FOV System
+**Location:** New system to create
+**Layer:** 4 (Systems)
 **Complexity:** Small
-**Next:** GRAYBOX
+**Why:** Zero physics impact, massive feel improvement, no dependencies
 
-**Dependencies:**
-- GLM math library (Layer 1)
-- Math utilities (Layer 2)
-
-**Enables:**
-- Arcade Drift System
-- Rail-Based Cornering
-- Enhanced speed-dependent steering
+**Alternative:** Slip Angle Calculator
+**Layer:** 2 (Primitives)
+**Why:** Pure math primitive, enables drift detection, measurements only

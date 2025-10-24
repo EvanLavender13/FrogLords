@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-24
+**Last Updated:** 2025-01-24
 
 ---
 
@@ -16,8 +16,8 @@
 - Traction state classification (grip/drift/airborne)
 
 **Remaining:**
-- Circle-based turning physics (bicycle model)
-- Drift detection via lateral acceleration
+- Physics-based drift system (friction modification)
+- Drift detection via slip angle and lateral G-forces
 - Remove legacy character-specific code
 - Vehicle dynamics visuals (body roll, pitch)
 
@@ -25,17 +25,18 @@
 
 ## Layer 2 - Primitives
 
-**Circle-Based Turning**
-- Calculate position along circular arc from speed and steering angle
-- Check if required lateral acceleration exceeds grip threshold
-- Foundation for predictable arcade handling
-- Enables: Speed-dependent steering, drift initiation, rail-based cornering
+**Slip Angle Calculator**
+- Angle between velocity vector and vehicle heading
+- Pure mathematical calculation: `slip_angle = atan2(lateral_velocity, forward_velocity)`
+- Foundation for drift detection and tire force modeling
+- Returns data only - systems decide how to apply
 - Requires: None (pure mathematical primitive)
 
-**Slip Angle Calculation**
-- Angle between velocity vector and vehicle heading
-- Foundation for drift detection and tire force modeling
-- Simplified arcade version (no Pacejka curves)
+**Lateral G-Force Calculator**
+- Centripetal acceleration from velocity and angular velocity
+- Formula: `lateral_g = (speed * angular_velocity) / 9.8`
+- Determines when vehicle exceeds grip threshold
+- Pure measurement of existing physics state
 - Requires: None (pure mathematical primitive)
 
 ---
@@ -48,30 +49,33 @@
 - Vehicle model tilts based on lateral acceleration (visual lean in corners)
 - Forward/backward pitch during acceleration/braking
 - Visual weight transfer without complex physics
-- Requires: Vehicle movement system
-
-**Layer 4 - Requires Circle-Based Turning:**
-
-**Arcade Drift System**
-- Brake-to-drift activation (handbrake + steering at speed)
-- State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
-- Maintained speed during drift (arcade style, not realistic)
-- Visual and physics separation (car slides but maintains momentum)
-- Requires: Circle-based turning, slip angle calculation
+- Applied to model transform only, no physics body modification
+- Requires: Lateral G-Force Calculator
 
 **Boost/Nitrous System**
-- Accumulates charge through drifting or pickups
-- Three-tier system (mini/super/ultra like Mario Kart research)
-- Speed multiplier with visual effects
-- Integration with drift system for charge-while-boosting
-- Requires: Drift system for charge mechanics
+- Accumulates charge through gameplay (pickups, successful maneuvers)
+- Three-tier system (mini/super/ultra)
+- Acceleration multiplier: `acceleration *= boost_multiplier` (1.5x-2.5x)
+- Works entirely through existing physics pipeline
+- Visual effects and FOV boost during activation
+- Requires: None (modifies existing acceleration)
 
-**Rail-Based Cornering**
-- Ridge Racer style - car locks to ideal corner arc
-- Player makes minor adjustments while system handles curve
-- Activates in designated corner zones or at high drift angles
-- Hybrid with free movement for best of both
-- Requires: Circle-based turning
+**Enhanced Speed-Dependent Steering**
+- Improve existing steering reduction formula
+- Add exponential curves for more natural feel
+- Separate low-speed and high-speed response profiles
+- Smooth transitions between speed ranges
+- Requires: None (enhancement of existing system)
+
+**Layer 4 - Requires Slip Angle Calculator:**
+
+**Physics-Based Drift System**
+- Brake-to-drift activation (handbrake + steering at speed)
+- State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
+- Friction modification during drift: rear 30%, front 70% of normal
+- Acceleration boost to maintain speed during slide
+- NO position manipulation - physics integration handles movement
+- Requires: Slip Angle Calculator, Lateral G-Force Calculator
 
 ---
 
@@ -80,15 +84,22 @@
 **Dynamic FOV System**
 - FOV increases with speed (base 75° → max 110°)
 - Additional g-force multipliers for acceleration
-- Formula: FOV = baseMin + (speed/maxSpeed) * (baseMax - baseMin)
-- Critical for speed sensation per research
+- Formula: `FOV = base + (speed/maxSpeed) * range + lateral_g * g_multiplier`
+- Most impactful technique for speed sensation
+- Zero physics modification, pure visual enhancement
 - Requires: None (camera parameter modification)
 
 **Camera Shake on Boost**
 - Rotation-based shake (less aggressive than translation)
-- Speed-scaled magnitude
-- Activates above speed threshold or during boost
+- Speed-scaled magnitude: `shake_mag = base + (speed/maxSpeed) * max_shake`
+- Activates above 80% max speed or during boost
 - Requires: None (camera transform modification)
+
+**Lower Camera Positioning**
+- Dynamically lower camera at high speeds
+- More "road pixels" moving = faster perception
+- Smooth interpolation to avoid jarring transitions
+- Requires: None (camera position modification)
 
 ---
 
@@ -129,31 +140,33 @@
 
 **Speed Lines System**
 - Post-processing radial lines emanating from screen center
-- Intensity scales with speed
-- Activate during boost or above speed threshold
+- Intensity scales with speed: `intensity = clamp(speed/maxSpeed, 0, 1)`
+- Activate during boost or above 80% max speed
 - UV-based shader with polar coordinate conversion
+- Near-camera reference points critical for speed perception
 - Requires: Post-processing pipeline
 
-**Motion Blur**
-- Camera motion blur (velocity-based sampling)
-- Radial blur for boost moments
-- Depth-based optimization (lower res render target)
-- Controversial per research but smooths 30 FPS
-- Requires: Previous frame transform buffer
-
 **Particle Trail System**
-- Tire smoke during drifts
+- Tire smoke during drifts (triggered by drift state)
 - Dust clouds on dirt surfaces
 - Sparks from wall collisions
 - Speed-based intensity scaling
+- Spawn near camera for maximum speed perception
 - Requires: Particle system foundation
 
 **Skid Marks**
 - Persistent tire marks during slides
+- Triggered by slip angle exceeding threshold
 - Fade over time or distance limit
 - Different patterns for brake vs drift
 - Surface-dependent (black on asphalt, grooves on dirt)
 - Requires: Deferred decal system or mesh generation
+
+**Motion Blur** (Optional)
+- Radial blur specifically for boost moments
+- Lower resolution render target for performance
+- Use sparingly - speed lines more effective
+- Requires: Previous frame transform buffer
 
 ---
 
@@ -175,10 +188,11 @@
 - Requires: Metadata-driven design pattern (exists), test infrastructure
 - Source: Designer parameter interface iteration 3 emergence analysis
 
-**Drift Angle Visualization**
-- Circular arc on speed ring showing angle between heading and course
-- Visualizes difference between orientation (where character faces) and velocity direction
-- Enhances understanding of momentum and drift behavior during turning
+**Slip Angle Visualization**
+- Arc on speed ring showing angle between heading and velocity
+- Visualizes difference between where vehicle points vs where it's going
+- Pure measurement of existing physics state
+- Enhances understanding of drift behavior
 - Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
 
 **Vehicle Telemetry System**

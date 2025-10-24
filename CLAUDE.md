@@ -6,6 +6,17 @@
 
 The principles are not suggestions—they are law. Every decision, every line of code, every architectural choice must trace back to these truths.
 
+## Physics-First Architecture
+
+**Critical:** This is a physics-first application with force → acceleration → velocity → position integration.
+
+- **Never bypass physics integration** with direct position setting
+- **All movement through forces** - no teleporting, no position calculation
+- **Time-independent** - identical results at any framerate
+- **Research must adapt to our architecture** - not the other way around
+
+See @NOTES/CarMechanics/PhysicsFirst_Research.md for compatible arcade techniques.
+
 ## Apply Principles to EVERYTHING
 
 **You are not exempt from the principles.**
