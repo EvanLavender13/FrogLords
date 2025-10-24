@@ -21,6 +21,24 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 
 ## Process
 
+### 0. Understand the Implementation
+
+**Read the artifacts:**
+
+```
+- PLANS/<name>_ITERATION_<N>.md
+- PLANS/<name>_SYSTEM.md
+```
+
+**Identify:**
+- What was actually built
+- Which files were modified
+- Whether prerequisites are met
+
+**Do not proceed until you understand what exists.**
+
+---
+
 ### 1. External Review
 
 **Independent principle evaluation.**
