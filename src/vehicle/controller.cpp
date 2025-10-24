@@ -96,7 +96,7 @@ void controller::apply_input(const controller_input_params& input_params,
     float horizontal_speed = glm::length(horizontal_velocity);
     float steering_multiplier = compute_steering_multiplier(horizontal_speed);
 
-    heading_yaw += -input_params.turn_input * turn_rate * steering_multiplier * dt;
+    heading_yaw += input_params.turn_input * turn_rate * steering_multiplier * dt;
     heading_yaw = math::wrap_angle_radians(heading_yaw);
 
     FL_POSTCONDITION(std::isfinite(heading_yaw),
