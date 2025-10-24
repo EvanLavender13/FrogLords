@@ -29,6 +29,14 @@ Prevention is cheaper than detection.
 
 ---
 
+## Context Selection
+
+Review @TASKS/CONTEXT/INDEX.md to identify relevant architectural patterns for this task.
+
+Use tags to find applicable context cards before defining the contract.
+
+---
+
 ## Process
 
 ### 1. Create or Resume Iteration Document
