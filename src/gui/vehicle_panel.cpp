@@ -16,9 +16,6 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning
     // Local copies for slider interaction (GUI needs mutable values)
     float turn_rate = params.turn_rate;
     float steering_reduction_factor = params.steering_reduction_factor;
-    float wheelbase = params.wheelbase;
-    float max_steering_angle = params.max_steering_angle;
-    float grip_coefficient = params.grip_coefficient;
 
     // Metadata-driven tunable parameters
     if (gui::widget::tunable_param(&turn_rate, vehicle::tuning_params::turn_rate_meta)) {
@@ -27,17 +24,6 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning
     if (gui::widget::tunable_param(&steering_reduction_factor,
                                     vehicle::tuning_params::steering_reduction_factor_meta)) {
         commands.push_back({parameter_type::STEERING_REDUCTION_FACTOR, steering_reduction_factor});
-    }
-    if (gui::widget::tunable_param(&wheelbase, vehicle::tuning_params::wheelbase_meta)) {
-        commands.push_back({parameter_type::WHEELBASE, wheelbase});
-    }
-    if (gui::widget::tunable_param(&max_steering_angle,
-                                    vehicle::tuning_params::max_steering_angle_meta)) {
-        commands.push_back({parameter_type::MAX_STEERING_ANGLE, max_steering_angle});
-    }
-    if (gui::widget::tunable_param(&grip_coefficient,
-                                    vehicle::tuning_params::grip_coefficient_meta)) {
-        commands.push_back({parameter_type::GRIP_COEFFICIENT, grip_coefficient});
     }
 
     return commands;

@@ -84,21 +84,6 @@ struct controller {
     // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
     float turn_rate = 3.0f; // radians/second
 
-    // VEHICLE: Wheelbase - distance between front and rear axles
-    // Used for circle-based turning physics (arcade racing model)
-    // Typical car values: 2.3-2.8m (compact to sedan)
-    float wheelbase = 2.5f; // meters
-
-    // VEHICLE: Maximum steering angle at front wheels
-    // Used with speed-dependent steering limits for arcade handling
-    // Typical car values: 30-45° (road cars), reduced at high speeds
-    float max_steering_angle = 25.0f; // degrees
-
-    // VEHICLE: Lateral grip coefficient for drift threshold
-    // Multiplier for g-force calculation (1.0 = 1g lateral acceleration)
-    // Higher values = tighter turns before drifting
-    float grip_coefficient = 1.2f; // dimensionless
-
     // TUNED: Steering reduction factor for speed-dependent steering limits
     // Controls how much steering authority decreases at high speeds
     // Formula: multiplier = 1.0 - (speed/max_speed) * reduction_factor

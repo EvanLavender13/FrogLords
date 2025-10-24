@@ -183,18 +183,6 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             world.vehicle_params.steering_reduction_factor = cmd.value;
             world.vehicle_params.apply_to(world.character);
             break;
-        case gui::parameter_type::WHEELBASE:
-            world.vehicle_params.wheelbase = cmd.value;
-            world.vehicle_params.apply_to(world.character);
-            break;
-        case gui::parameter_type::MAX_STEERING_ANGLE:
-            world.vehicle_params.max_steering_angle = cmd.value;
-            world.vehicle_params.apply_to(world.character);
-            break;
-        case gui::parameter_type::GRIP_COEFFICIENT:
-            world.vehicle_params.grip_coefficient = cmd.value;
-            world.vehicle_params.apply_to(world.character);
-            break;
         }
     }
 }
