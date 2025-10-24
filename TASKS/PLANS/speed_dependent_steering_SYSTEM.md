@@ -227,4 +227,4 @@ Review the implementation plan in speed_dependent_steering_SYSTEM.md. Does this 
 
 ## Iterations
 
-- [speed_dependent_steering_ITERATION_1.md](speed_dependent_steering_ITERATION_1.md) - Ready for VALIDATE
+- [speed_dependent_steering_ITERATION_1.md](speed_dependent_steering_ITERATION_1.md) - REVISE

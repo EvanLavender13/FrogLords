@@ -1,7 +1,7 @@
 # Iteration 1: Speed-Dependent Steering
 
 **Started:** 2025-10-23
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -103,5 +103,39 @@
 - Vehicle tuning system architecture (metadata, apply_to pattern)
 - Vehicle GUI panel (separate from character_panel)
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex
+**Date:** 2025-10-23
+
+**Principle Violations:**
+- **Mathematical Foundation**: `compute_steering_multiplier` assumes `steering_reduction_factor ∈ [0,1]` but lacks precondition enforcement. Misconfigured values (>1 or <0) break the monotonic guarantee listed as "proven" in iteration contract. Violation only caught after deriving invalid multiplier via postcondition (controller.cpp:52-66). Contract incomplete.
+
+**Strengths:**
+- **Single Source of Truth**: Steering authority properly derived; helper reused by both simulation and debug with no cached multiplier (controller.cpp:84-88, character_panel.cpp:105-113)
+- **Radical Simplicity / Orthogonal Systems**: Heading integration gained only scalar multiplier, no extra state or branching (controller.cpp:69-106, controller.h:133-136)
+- **Emergent Design**: Framed as reusable infrastructure for future vehicle behaviors rather than bespoke tweak (system plan)
+
+**Assessment:** Quality strong overall. Behavior derived cleanly, instrumentation pulls from same logic, system fits within existing control flow without coupling. Mathematical gap remains: need explicit precondition asserting steering_reduction_factor range and finiteness to uphold stated proofs.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:** Core implementation upholds principles (Single Source of Truth, Radical Simplicity, Emergent Design) but has fixable mathematical gap. Missing precondition on steering_reduction_factor allows contract violation. Violation is minor and easily correctable without architectural change.
+
+**Required changes:**
+- Add precondition in constructor: assert steering_reduction_factor ∈ [0,1] and finite
+- Ensures mathematical contract is enforced at initialization, not deferred to postcondition
+- Completes the stated proof that formula produces monotonic decrease
+<!-- END: VALIDATE/DECISION -->
 
 ---
