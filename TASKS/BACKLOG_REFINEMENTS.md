@@ -22,6 +22,23 @@ None - All critical violations resolved ✅
 - **Fix:** Simplify - Move all vehicle parameters to vehicle::tuning_params, remove vehicle sections from character_panel, consolidate in vehicle_panel
 - **Source:** Retrospective (character→vehicle pivot)
 
+**Coordinate System Convention Switch**
+- **Location:** `src/foundation/math_utils.h`, `src/camera/camera.cpp`, `src/foundation/procedural_mesh.cpp`, `src/foundation/math_utils.h:104`
+- **Principle:** Mathematical Foundation, Systems Not Features
+- **Severity:** High
+- **Description:** Project uses non-standard -X right convention (right = negative X). Industry standard and intuitive convention is +X right. Current system likely emerged organically, causes confusion in reviews, complicates integration with external math/physics code.
+- **Fix:** Standardize - Switch to +X right convention throughout codebase
+- **Changes Required:**
+  1. `math_utils.h:yaw_to_right()` - Change from `(-cos(yaw), 0, sin(yaw))` to `(cos(yaw), 0, -sin(yaw))`
+  2. Cross products (4 locations) - Reverse from `cross(forward, UP)` to `cross(UP, forward)` for right vector
+  3. Slip angle calculation - Update cross product to maintain correct physics
+  4. Vehicle controller negation at line 99 - Review if still needed after convention change
+  5. Debug visualizations - Verify arrows/cones still point correctly
+  6. Documentation - Update CONVENTIONS.md, math_utils.h comments, VEHICLE_DYNAMICS_TERMINOLOGY.md
+- **Validation:** Test vehicle turning both directions, verify slip angle signs, check all debug visualizations
+- **Impact:** Do now while codebase is small. Will become exponentially harder as more gameplay code depends on coordinate system.
+- **Source:** Retrospective discussion (confusion from non-standard convention)
+
 **Missing Spring Damper Validation**
 - **Location:** `src/foundation/spring_damper.cpp:5`
 - **Principle:** Humble Validation
