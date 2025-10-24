@@ -222,3 +222,9 @@ Review the implementation plan in speed_dependent_steering_SYSTEM.md. Does this 
 - Consider: circle-based position calculation (step 2.9) to address velocity/heading mismatch
 - Consider: drift detection (step 2.10) building on lateral acceleration foundation
 <!-- END: GRAYBOX/RESULTS -->
+
+---
+
+## Iterations
+
+- [speed_dependent_steering_ITERATION_1.md](speed_dependent_steering_ITERATION_1.md) - Ready for VALIDATE
