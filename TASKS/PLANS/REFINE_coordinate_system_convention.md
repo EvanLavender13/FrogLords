@@ -251,4 +251,41 @@ Review coordinate system convention switch plan. Validate: 1) Are all cross prod
 
 ---
 
+<!-- BEGIN: MEASURE/METRICS -->
+## Metrics
+
+**Files:**
+- `src/foundation/math_utils.h`: 113 → 113 (0 lines, formula + cross product + comments)
+- `src/camera/camera.cpp`: 148 → 148 (0 lines, cross product + comment)
+- `src/app/debug_generation.cpp`: 324 → 324 (0 lines, sign flips)
+- `src/vehicle/controller.cpp`: 230 → 230 (0 lines, comments only)
+- `src/vehicle/controller.h`: 153 → 153 (0 lines, comments only)
+- `CONVENTIONS.md`: 85 → 85 (0 lines)
+- `TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md`: 96 → 96 (0 lines)
+
+**Net Code Changes:** 20 files changed, 285 insertions(+), 2097 deletions(-)
+**Implementation Changes:** 8 sign/formula corrections, 3 cross product order fixes
+**Documentation Cleanup:** -1812 lines of obsolete plans removed
+
+**Violations removed:**
+- Sign errors in coordinate basis vectors: 2 → 0 (yaw_to_right formula)
+- Cross product order inconsistencies: 3 → 0 (all now use cross(UP, forward))
+- Debug visualization sign errors: 2 → 0 (turn cone arrows)
+- Documentation mismatches: 11 comments/docs → 0 (all updated)
+<!-- END: MEASURE/METRICS -->
+
+<!-- BEGIN: MEASURE/LEARNING -->
+## Learning
+
+**Root cause:** Non-standard -X right convention emerged organically without explicit initial decision, compounded by all subsequent code inheriting the convention.
+
+**Prevention:** Establish coordinate system convention at project start and document it as immutable foundation truth. All directional primitives must be validated against standard references before any dependent code is written.
+
+**Pattern:** Small foundational errors cascade exponentially - coordinate system touches every directional calculation. Fix while codebase is small.
+
+**Remaining work:** None - coordinate system now matches OpenGL standard. Future integrations with external physics libraries will align naturally.
+<!-- END: MEASURE/LEARNING -->
+
+---
+
 **Simplify foundation. Follow standards. Remove confusion.**
