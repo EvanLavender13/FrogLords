@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-24
 **Previous:** [speed_dependent_steering_ITERATION_1.md](speed_dependent_steering_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** APPROVED
 
 ---
 
@@ -106,5 +106,57 @@
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tool:** Codex
+**Date:** 2025-10-24
+
+**Principle Violations:**
+- **Radical Simplicity / Horizon of Certainty**: Iteration wires GUI sliders, metadata, and command plumbing for `wheelbase`, `max_steering_angle`, and `grip_coefficient` even though no runtime code reads these values yet. Command emission in vehicle_panel.cpp:31, dispatch in runtime.cpp:187, copies in tuning.cpp:16. With no consumer system, this is premature complexity for hypothetical future work, violating "build the irreducible core first."
+
+**Strengths:**
+- `compute_steering_multiplier` enforces mathematical contract (clamped ratio, bounded output) and is reused by both simulation and instrumentation, honoring Single Source of Truth (vehicle/controller.cpp:57, gui/vehicle_panel.cpp:60)
+- Constructor preconditions guard reduction factor domain, completing monotonic proof from prior iteration (vehicle/controller.cpp:47)
+- Heading integration remains time-independent and physics-driven: velocity-derived speed feeds multiplier, integration scaled by dt with strong assertions (vehicle/controller.cpp:88)
+
+**Assessment:** Core steering interpolation is mathematically sound and physics-first. Work behaves like a system (inputs flow through controller physics; GUI surfaces tuning). Primary concern is premature GUI/tuning scaffolding for unused parameters. Can be trimmed or deferred; aside from that, iteration aligns well with principles.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:** Core speed-dependent steering system is mathematically sound and principle-aligned. Mathematical correctness proven, time-independence maintained, Single Source of Truth upheld. Identified "premature" infrastructure for wheelbase/max_steering_angle/grip_coefficient is for immediate next backlog task—within horizon of certainty. Minor organizational choice to include soon-to-be-used parameters does not violate Radical Simplicity when consumer systems are imminent.
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- Speed-dependent steering naturally creates arcade-style handling: responsive maneuvering at low speeds, stable high-speed cornering without manual intervention
+- Metadata-driven architecture emerged as reusable pattern applicable to all tuning systems (character, vehicle, future systems)
+- Derived parameter display with mathematical formulas provides immediate insight into system behavior without code inspection
+
+**Enables (future):**
+- Bicycle model physics using wheelbase parameter
+- Slip angle and tire grip simulation using max_steering_angle and grip_coefficient
+- Complex vehicle handling systems built on simple, composable physics parameters
+- Unified tuning architecture across all game systems
+
+**Learned:**
+- Building GUI infrastructure slightly ahead of consumer systems acceptable when horizon is clear (immediate next task)
+- Formula display pattern (derived_param widget) valuable for exposing mathematical relationships during tuning
+- Separation between tuning_params (configuration) and controller (runtime physics) cleanly divides concerns
+- Single Source of Truth for steering multiplier (compute_steering_multiplier) naturally emerged from need to display and simulate same value
+<!-- END: VALIDATE/EMERGENCE -->
 
 ---
