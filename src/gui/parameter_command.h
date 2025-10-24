@@ -23,6 +23,11 @@ enum class parameter_type {
     LANDING_STIFFNESS,
     LANDING_DAMPING,
     LANDING_IMPULSE_SCALE,
+    TURN_RATE,
+    STEERING_REDUCTION_FACTOR,
+    WHEELBASE,
+    MAX_STEERING_ANGLE,
+    GRIP_COEFFICIENT,
 };
 
 struct parameter_command {

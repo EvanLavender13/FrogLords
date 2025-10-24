@@ -33,21 +33,22 @@
 - [x] Mathematical contract complete: monotonic decrease with enforced parameter bounds
 
 **Vehicle Tuning Architecture:**
-- [ ] vehicle::tuning_params struct created with all vehicle parameters
-- [ ] param_meta defined for each tunable parameter
-- [ ] apply_to() method validates and copies to controller
-- [ ] Parameters moved from controller to tuning system: turn_rate, wheelbase, max_steering_angle, grip_coefficient, steering_reduction_factor
+- [x] vehicle::tuning_params struct created with all vehicle parameters (vehicle/tuning.h)
+- [x] param_meta defined for each tunable parameter (vehicle/tuning.h:47-63)
+- [x] apply_to() method validates and copies to controller (vehicle/tuning.cpp:8-41)
+- [x] Parameters moved from controller to tuning system: turn_rate, wheelbase, max_steering_angle, grip_coefficient, steering_reduction_factor
 
 **Vehicle GUI Panel:**
-- [ ] vehicle_panel_state struct created
-- [ ] draw_vehicle_panel() function implemented
-- [ ] parameter_type enum extended with vehicle parameter types
-- [ ] Panel integrated into runtime
+- [x] vehicle_panel_state struct created (gui/vehicle_panel.h:10-12)
+- [x] draw_vehicle_panel() function implemented (gui/vehicle_panel.cpp:68-84)
+- [x] parameter_type enum extended with vehicle parameter types (gui/parameter_command.h:26-30)
+- [x] Panel integrated into runtime (app/runtime.cpp:111-116, runtime.h:9,34)
 
 **Integration:**
-- [ ] vehicle_params added to game_world
-- [ ] apply_vehicle_commands() or extended apply_parameter_commands() handles vehicle parameter changes
-- [ ] Build successful with no assertion failures
+- [x] vehicle_params added to game_world (app/game_world.h:26)
+- [x] apply_parameter_commands() extended to handle vehicle parameter changes (app/runtime.cpp:178-197)
+- [x] vehicle_params.apply_to() called in game_world::init() (app/game_world.cpp:16)
+- [x] Build successful with no assertion failures
 - [ ] Manual test: vehicle parameters tunable via GUI, changes reflected in gameplay
 <!-- END: ITERATE/CONTRACT -->
 

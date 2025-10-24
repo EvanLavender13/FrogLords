@@ -108,6 +108,13 @@ void app_runtime::frame() {
         // Apply parameter commands (unidirectional flow: GUI → commands → game state)
         apply_parameter_commands(param_commands);
 
+        // Vehicle section
+        auto vehicle_commands = gui::draw_vehicle_panel(
+            vehicle_panel_state, world.character, world.vehicle_params);
+
+        // Apply vehicle parameter commands (unidirectional flow: GUI → commands → game state)
+        apply_parameter_commands(vehicle_commands);
+
         // Camera section
         auto camera_commands =
             gui::draw_camera_panel(camera_panel_state, world.cam, world.cam_follow);
@@ -167,6 +174,26 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             break;
         case gui::parameter_type::LANDING_IMPULSE_SCALE:
             world.character_visuals.animation.landing_impulse_scale = cmd.value;
+            break;
+        case gui::parameter_type::TURN_RATE:
+            world.vehicle_params.turn_rate = cmd.value;
+            world.vehicle_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::STEERING_REDUCTION_FACTOR:
+            world.vehicle_params.steering_reduction_factor = cmd.value;
+            world.vehicle_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::WHEELBASE:
+            world.vehicle_params.wheelbase = cmd.value;
+            world.vehicle_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::MAX_STEERING_ANGLE:
+            world.vehicle_params.max_steering_angle = cmd.value;
+            world.vehicle_params.apply_to(world.character);
+            break;
+        case gui::parameter_type::GRIP_COEFFICIENT:
+            world.vehicle_params.grip_coefficient = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         }
     }
