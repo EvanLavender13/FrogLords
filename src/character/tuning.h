@@ -1,6 +1,6 @@
 #pragma once
 
-#include "character/controller.h"
+#include "vehicle/controller.h"
 #include "foundation/param_meta.h"
 
 namespace character {
@@ -16,17 +16,11 @@ struct tuning_params {
     // Used in: apply_to to copy to controller.accel
     float accel = 5.0f; // m/s²
 
-    // TUNED: Target vertical jump height (world-space distance)
-    // With BUMPER_RADIUS=0.5m: Character can reach platforms at Y = 0.5 + 1.3 = 1.8m
-    // Used in: apply_to to calculate jump_velocity via v = √(2·|g|·h)
-    // Reverse calculated: Current jump_velocity (5.0 m/s) implies h ≈ 1.276m (2% difference)
-    float jump_height = 1.3f; // meters
-
-    // TUNED: Gravitational acceleration (source of truth)
-    // Standard value: -9.8 m/s² (Earth's gravity at sea level)
-    // Sign convention: Negative because Y-up coordinate system (gravity pulls down)
-    // Used in: apply_to to copy to controller.gravity and calculate jump_velocity
-    float gravity = -9.8f; // m/s²
+    // TUNED: Vehicle weight force (source of truth)
+    // Acts as constant downward force keeping vehicle on track
+    // Sign convention: Negative because Y-up coordinate system (weight pulls down)
+    // Used in: apply_to to copy to controller.weight
+    float weight = -9.8f; // m/s² (acceleration, will convert to force with mass later)
 
     // NOTE: Friction removed - drag now derived from accel/max_speed
     // Drag coefficient k = accel / max_speed guarantees equilibrium at max_speed
@@ -41,17 +35,8 @@ struct tuning_params {
         "Acceleration", "m/s²", 1.0f, 50.0f
     };
 
-    static constexpr param_meta jump_height_meta = {
-        "Jump Height", "m", 0.5f, 3.0f
-    };
-
-    static constexpr param_meta gravity_meta = {
-        "Gravity", "m/s²", -20.0f, -5.0f
-    };
-
-    // Derived parameter metadata (calculated from tuning params, not directly tunable)
-    static constexpr param_meta jump_velocity_meta = {
-        "Jump Velocity", "m/s", 0.0f, 15.0f
+    static constexpr param_meta weight_meta = {
+        "Weight", "m/s²", -20.0f, -5.0f
     };
 
     void apply_to(controller& c) const;

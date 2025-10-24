@@ -18,10 +18,7 @@ std::vector<parameter_command> draw_character_tuning_section(const controller& c
     // Local copies for slider interaction (GUI needs mutable values)
     float max_speed = params.max_speed;
     float accel = params.accel;
-    float jump_height = params.jump_height;
-    float gravity = params.gravity;
-    float coyote_window = character.coyote_window;
-    float jump_buffer_window = character.jump_buffer_window;
+    float weight = params.weight;
 
     // Metadata-driven tunable parameters
     if (gui::widget::tunable_param(&max_speed, character::tuning_params::max_speed_meta)) {
@@ -30,37 +27,13 @@ std::vector<parameter_command> draw_character_tuning_section(const controller& c
     if (gui::widget::tunable_param(&accel, character::tuning_params::accel_meta)) {
         commands.push_back({parameter_type::ACCEL, accel});
     }
-    if (gui::widget::tunable_param(&jump_height, character::tuning_params::jump_height_meta)) {
-        commands.push_back({parameter_type::JUMP_HEIGHT, jump_height});
+    if (gui::widget::tunable_param(&weight, character::tuning_params::weight_meta)) {
+        commands.push_back({parameter_type::WEIGHT, weight});
     }
-    if (gui::widget::tunable_param(&gravity, character::tuning_params::gravity_meta)) {
-        commands.push_back({parameter_type::GRAVITY, gravity});
-    }
-
-    // Metadata-driven tunable parameters (timing forgiveness)
-    if (gui::widget::tunable_param(&coyote_window, controller::coyote_window_meta)) {
-        commands.push_back({parameter_type::COYOTE_WINDOW, coyote_window});
-    }
-    if (gui::widget::tunable_param(&jump_buffer_window, controller::jump_buffer_window_meta)) {
-        commands.push_back({parameter_type::JUMP_BUFFER_WINDOW, jump_buffer_window});
-    }
-
-    // Derived parameter: jump velocity (calculated from jump_height and gravity)
-    gui::widget::derived_param(character.jump_velocity,
-                                character::tuning_params::jump_velocity_meta,
-                                "sqrt(2*|g|*h)");
 
     // Real-time feedback: horizontal speed plot
     float horizontal_speed = glm::length(glm::vec3(character.velocity.x, 0.0f, character.velocity.z));
     gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f, params.max_speed * 1.2f);
-
-    // Debug displays for jump timing forgiveness
-    gui::widget::text("Coyote Timer: %.3f s", character.coyote_timer);
-    gui::widget::text("Jump Buffer Timer: %.3f s", character.jump_buffer_timer);
-    gui::widget::text(
-        "Can Jump (Coyote): %s",
-        (character.is_grounded || character.coyote_timer < character.coyote_window) ? "YES"
-                                                                                    : "NO");
 
     return commands;
 }
@@ -111,36 +84,33 @@ void draw_locomotion_state_section(const controller& character) {
     if (!ImGui::CollapsingHeader("Locomotion State"))
         return;
 
-    // State name
-    const char* state_name;
-    switch (character.locomotion.state) {
-    case controller::locomotion_speed_state::WALK:
-        state_name = "WALK";
+    // Traction level name
+    const char* traction_name;
+    switch (character.traction.level) {
+    case controller::traction_level::SOFT:
+        traction_name = "SOFT";
         break;
-    case controller::locomotion_speed_state::RUN:
-        state_name = "RUN";
+    case controller::traction_level::MEDIUM:
+        traction_name = "MEDIUM";
         break;
-    case controller::locomotion_speed_state::SPRINT:
-        state_name = "SPRINT";
+    case controller::traction_level::HARD:
+        traction_name = "HARD";
         break;
     default:
-        state_name = "UNKNOWN";
+        traction_name = "UNKNOWN";
         break;
     }
-    gui::widget::text("State: %s", state_name);
+    gui::widget::text("Traction: %s", traction_name);
 
     // Horizontal speed
     float speed = glm::length(glm::vec3(character.velocity.x, 0.0f, character.velocity.z));
     gui::widget::text("Speed: %.2f m/s", speed);
 
-    // Phase (0-1)
-    gui::widget::text("Phase: %.3f", character.locomotion.phase);
-
-    // Cycle length (from locomotion_state output)
-    gui::widget::text("Cycle Length: %.2f m", character.locomotion.cycle_length);
-
-    // Distance traveled (internal state on controller)
-    gui::widget::text("Distance Traveled: %.2f m", character.distance_traveled);
+    // Speed-dependent steering multiplier
+    float steering_multiplier = character.compute_steering_multiplier(speed);
+    float effective_turn_rate = character.turn_rate * steering_multiplier;
+    gui::widget::text("Steering Multiplier: %.2f", steering_multiplier);
+    gui::widget::text("Effective Turn Rate: %.2f rad/s", effective_turn_rate);
 }
 
 } // anonymous namespace

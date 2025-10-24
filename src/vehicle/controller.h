@@ -14,7 +14,6 @@ struct controller {
     struct controller_input_params {
         glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
         float turn_input;         // Turn input for heading integration [-1,1]
-        bool jump_pressed;        // True on frame of jump press
     };
 
     // Collision volumes
@@ -38,9 +37,6 @@ struct controller {
         glm::vec3 normal{0.0f};
         float penetration = 0.0f;
         float vertical_penetration = 0.0f;
-
-        // Wall sliding debug info
-        bool is_wall = false;
     };
 
     contact_debug_info collision_contact_debug;
@@ -55,10 +51,6 @@ struct controller {
     bool just_landed = false; // Set when landing occurs, cleared after animation reads it
     float vertical_velocity_on_land = 0.0f;
 
-    // Jump timing forgiveness
-    float coyote_timer = 0.0f;      // Time since leaving ground (for coyote time)
-    float jump_buffer_timer = 0.0f; // Time since jump input pressed (for buffered jump)
-
     // Tunable parameters
     // TUNED: Horizontal acceleration (direct from tuning system)
     // Controls responsiveness - higher = snappier movement feel
@@ -72,41 +64,19 @@ struct controller {
     // Used in: clamp_horizontal_speed, update_reactive_systems
     float max_speed = 8.0f; // m/s
 
-    // PHYSICAL: Earth's gravitational acceleration at sea level
-    // Standard value in game physics for familiar jump feel
-    // Sign convention: Negative because Y-up coordinate system (gravity pulls down)
-    // Used in: velocity integration, jump calculations
-    float gravity = -9.8f; // m/s²
+    // PHYSICAL: Vehicle weight force (downward)
+    // Acts as constant downward force keeping vehicle on track
+    // Sign convention: Negative because Y-up coordinate system (weight pulls down)
+    // Used in: velocity integration for vertical physics
+    float weight = -9.8f; // m/s² (acceleration, will convert to force with mass later)
 
     // TUNED: Maximum walkable slope angle threshold (SINGLE SOURCE OF TRUTH)
     // Surfaces steeper than this are walls, not ground
     // Industry standard: 30-50° (Quake/Half-Life: ~45°)
     // Used in: controller::move - derived as wall_threshold = cos(radians(max_slope_angle))
-    //          Passed to collision system for surface classification (is_wall)
+    //          Passed to collision system for surface classification
     // Note: This is the authoritative value - collision system derives threshold from this
     float max_slope_angle = 45.0f; // degrees
-
-    // CALCULATED: Vertical velocity required to reach target jump height
-    // Using kinematic equation: v = √(2·|g|·h)
-    // With h=1.3m, g=-9.8m/s²: v = √(2·9.8·1.3) ≈ 5.048 m/s
-    // Current value 5.0 m/s is 1% lower (acceptable tuning adjustment)
-    // Modified by tuning system: jump_velocity = √(2·|gravity|·jump_height)
-    // Used in: apply_input (lines 41, 72) when jump triggered
-    float jump_velocity = 5.0f; // m/s
-
-    // TUNED: Coyote time - jump grace period after leaving ground
-    // Industry standard: 100-200ms (Celeste: 140ms, Super Meat Boy: 160ms)
-    // Allows jump input slightly after leaving ledge (forgiving platforming)
-    // Player can jump if (is_grounded || coyote_timer < coyote_window)
-    // Used in: apply_input (line 69) for jump eligibility check
-    float coyote_window = 0.15f; // seconds (150ms)
-
-    // TUNED: Jump buffer time - pre-input grace period before landing
-    // Industry standard: 100-200ms (matches coyote_window timing)
-    // Allows jump input slightly before landing (forgiving platforming)
-    // Buffered jump executes on next grounded frame (line 40)
-    // Used in: apply_input (lines 40, 77) for buffered jump handling
-    float jump_buffer_window = 0.15f; // seconds (150ms)
 
     // TUNED: Turn rate for car-like control heading
     // Controls rotational speed when using heading-based movement
@@ -114,43 +84,45 @@ struct controller {
     // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
     float turn_rate = 3.0f; // radians/second
 
-    // Locomotion state (speed tiers + phase for cyclic motion)
-    enum class locomotion_speed_state { WALK, RUN, SPRINT };
+    // VEHICLE: Wheelbase - distance between front and rear axles
+    // Used for circle-based turning physics (arcade racing model)
+    // Typical car values: 2.3-2.8m (compact to sedan)
+    float wheelbase = 2.5f; // meters
 
-    struct locomotion_state {
-        locomotion_speed_state state;
-        float phase;        // 0-1 normalized position within cycle
-        float cycle_length; // Current cycle length for this state (meters)
+    // VEHICLE: Maximum steering angle at front wheels
+    // Used with speed-dependent steering limits for arcade handling
+    // Typical car values: 30-45° (road cars), reduced at high speeds
+    float max_steering_angle = 25.0f; // degrees
+
+    // VEHICLE: Lateral grip coefficient for drift threshold
+    // Multiplier for g-force calculation (1.0 = 1g lateral acceleration)
+    // Higher values = tighter turns before drifting
+    float grip_coefficient = 1.2f; // dimensionless
+
+    // TUNED: Steering reduction factor for speed-dependent steering limits
+    // Controls how much steering authority decreases at high speeds
+    // Formula: multiplier = 1.0 - (speed/max_speed) * reduction_factor
+    // At max_speed with reduction_factor=0.7: 30% steering authority remains
+    // Used in: compute_steering_multiplier() to scale turn_rate
+    float steering_reduction_factor = 0.7f; // dimensionless [0,1]
+
+    // Traction state (grip level based on speed)
+    enum class traction_level { SOFT, MEDIUM, HARD };
+
+    struct traction_state {
+        traction_level level;
     };
 
-    locomotion_state locomotion;
-
-    // Internal state (not exposed in locomotion_state output)
-    float distance_traveled = 0.0f; // Accumulated horizontal distance (meters)
+    traction_state traction;
 
     // Car-like control heading (physics state)
     // Updated from turn input (A/D keys), used when composition layer
     // selects heading-based movement basis (instead of camera basis)
     float heading_yaw = 0.0f; // radians
 
-    // Speed thresholds for state classification (m/s)
-    float walk_threshold = 3.0f; // walk < 3 m/s
-    float run_threshold = 6.0f;  // run: 3-6 m/s, sprint ≥ 6 m/s
-
-    // Cycle lengths per state (meters)
-    // Faster gaits = longer strides
-    float walk_cycle_length = 2.0f;   // walk: 2m per cycle (two steps)
-    float run_cycle_length = 3.0f;    // run: 3m per cycle
-    float sprint_cycle_length = 4.0f; // sprint: 4m per cycle
-
-    // Parameter metadata for GUI presentation
-    static constexpr param_meta coyote_window_meta = {
-        "Coyote Window", "s", 0.0f, 0.5f
-    };
-
-    static constexpr param_meta jump_buffer_window_meta = {
-        "Jump Buffer Window", "s", 0.0f, 0.5f
-    };
+    // Speed thresholds for traction classification (m/s)
+    float soft_threshold = 3.0f;   // soft < 3 m/s (low speed, high grip)
+    float medium_threshold = 6.0f; // medium: 3-6 m/s, hard ≥ 6 m/s (high speed)
 
     controller();
 
@@ -158,19 +130,18 @@ struct controller {
                      const camera_input_params& cam_params, float dt);
     void update(const collision_world* world, float dt);
 
-  private:
-    // Pure function: map state → cycle length (INTERNAL USE ONLY)
-    // External consumers should use locomotion.cycle_length (the output struct)
-    float get_cycle_length(locomotion_speed_state state) const;
+    // Compute speed-dependent steering multiplier [0, 1]
+    // Returns 1.0 at zero speed (full steering), decreases with speed
+    // Clamped to prevent negative values when speed exceeds max_speed
+    float compute_steering_multiplier(float horizontal_speed) const;
 
-    // Physics integration: gravity, drag, velocity, position
+  private:
+    // Physics integration: weight, drag, velocity, position
     void update_physics(float dt);
     // Collision resolution and grounding detection, returns pre-collision vertical velocity
     float update_collision(const collision_world* world, float dt);
     // Landing event detection and impact velocity tracking
     void update_landing_state(float pre_collision_vy);
-    // Jump timing forgiveness (coyote time and jump buffering)
-    void update_jump_timers(float dt);
-    // Locomotion state classification and phase calculation
-    void update_locomotion_state(float dt);
+    // Traction state classification based on speed
+    void update_traction_state(float dt);
 };

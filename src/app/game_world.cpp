@@ -13,6 +13,7 @@
 void game_world::init() {
     character = controller();
     character_params.apply_to(character);
+    vehicle_params.apply_to(character);
     cam = camera();
     cam_follow = camera_follow(); // Use default values
     scn = scene();
@@ -54,8 +55,6 @@ void game_world::update(float dt) {
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
-
-    input_params.jump_pressed = input::is_key_pressed(SAPP_KEYCODE_SPACE);
 
     // Validate normalized input direction
     float input_length = glm::length(input_params.move_direction);

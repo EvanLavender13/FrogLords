@@ -2,113 +2,158 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-22 (retro additions)
+**Last Updated:** 2025-10-24
+
+---
+
+## 🔄 MIGRATION: Character → Vehicle Systems
+
+**Completed:**
+- Vehicle controller operational (`src/vehicle/controller.{h,cpp}`)
+- Speed-dependent steering system (APPROVED)
+- Vehicle tuning system with metadata (`src/vehicle/tuning.{h,cpp}`)
+- Vehicle GUI panel (`src/gui/vehicle_panel.{h,cpp}`)
+- Traction state classification (grip/drift/airborne)
+
+**Remaining:**
+- Circle-based turning physics (bicycle model)
+- Drift detection via lateral acceleration
+- Remove legacy character-specific code
+- Vehicle dynamics visuals (body roll, pitch)
 
 ---
 
 ## Layer 2 - Primitives
 
-**Quaternion Swing-Twist Decomposition**
-- Decompose rotation into swing (directional pointing) + twist (axial roll)
-- Anatomical joint limits (swing cone + twist range)
-- Prevents "candy-wrapper" bone twisting effect
-- Drives twist helper bones for mesh deformation
+**Circle-Based Turning**
+- Calculate position along circular arc from speed and steering angle
+- Check if required lateral acceleration exceeds grip threshold
+- Foundation for predictable arcade handling
+- Enables: Speed-dependent steering, drift initiation, rail-based cornering
 - Requires: None (pure mathematical primitive)
 
-**Quaternion Interpolation (Slerp)**
-- Spherical linear interpolation for smooth rotation between keyframes
-- Constant angular velocity interpolation
-- Shortest-path rotation handling
+**Slip Angle Calculation**
+- Angle between velocity vector and vehicle heading
+- Foundation for drift detection and tire force modeling
+- Simplified arcade version (no Pacejka curves)
 - Requires: None (pure mathematical primitive)
 
 ---
 
-## Movement & Character
+## Movement & Physics
 
-**Layer 4 - Buildable Now (No Dependencies):**
+**Layer 4 - Buildable Now:**
 
-**Acceleration Tilt**
-- Character model tilts in direction of acceleration
-- Visual feedback for movement dynamics
-- Procedural rotation applied to character mesh
-- Requires: None (works with current physics system)
+**Vehicle Tilt System**
+- Vehicle model tilts based on lateral acceleration (visual lean in corners)
+- Forward/backward pitch during acceleration/braking
+- Visual weight transfer without complex physics
+- Requires: Vehicle movement system
 
-**Layer 4 - Blocked (Requires Friction Refactor #17):**
+**Layer 4 - Requires Circle-Based Turning:**
 
-**Dash Mechanic** - @TASKS/PLANS/DASH_SYSTEM.md (DEFERRED)
-- Burst movement in input direction
-- Cooldown/resource management
-- Maintains responsiveness (no control loss)
-- Status: Rejected iteration 2 - requires frame-rate independent friction foundation
+**Arcade Drift System**
+- Brake-to-drift activation (handbrake + steering at speed)
+- State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
+- Maintained speed during drift (arcade style, not realistic)
+- Visual and physics separation (car slides but maintains momentum)
+- Requires: Circle-based turning, slip angle calculation
 
-**Surveyor Wheel Locomotion**
-- Distance-based keyframe triggering (pass pose + reach pose)
-- Eliminates foot sliding at any speed
-- Blends stride lengths for walk/run transitions
-- Complements: Walk/run speed states (complete)
-- Requires: Skeletal animation system
+**Boost/Nitrous System**
+- Accumulates charge through drifting or pickups
+- Three-tier system (mini/super/ultra like Mario Kart research)
+- Speed multiplier with visual effects
+- Integration with drift system for charge-while-boosting
+- Requires: Drift system for charge mechanics
 
-**Drift Movement Mechanics**
-- Low acceleration creates racing-game drift (velocity lags orientation)
-- Environmental modifiers (ice, mud, oil slicks)
-- Character abilities or movement modes (drift boost, slide)
-- Emerges naturally from physics/animation independence
-- Discovery: REFINE_FRICTION testing revealed drift at ~2s time-to-max-speed
-- Source: Retrospective pattern analysis (RETRO_2025-10-20)
+**Rail-Based Cornering**
+- Ridge Racer style - car locks to ideal corner arc
+- Player makes minor adjustments while system handles curve
+- Activates in designated corner zones or at high drift angles
+- Hybrid with free movement for best of both
+- Requires: Circle-based turning
 
 ---
 
 ## Camera
 
-(No pending systems)
+**Dynamic FOV System**
+- FOV increases with speed (base 75° → max 110°)
+- Additional g-force multipliers for acceleration
+- Formula: FOV = baseMin + (speed/maxSpeed) * (baseMax - baseMin)
+- Critical for speed sensation per research
+- Requires: None (camera parameter modification)
+
+**Camera Shake on Boost**
+- Rotation-based shake (less aggressive than translation)
+- Speed-scaled magnitude
+- Activates above speed threshold or during boost
+- Requires: None (camera transform modification)
 
 ---
 
-## Animation
+## Racing Systems
 
-**Layer 4 - Foundation (Unlocks All Below):**
+**Layer 4 - Foundation:**
 
-**Skeletal Animation System**
-- Bone hierarchy and transforms
-- Procedural pose generation
-- Integration with physics-driven character
-- Debug visualization for skeleton
-- Requires: Quaternion swing-twist decomposition, quaternion interpolation
+**Lap/Checkpoint System**
+- Track progress through ordered checkpoints
+- Lap completion detection
+- Wrong-way detection and warnings
+- Position tracking for multi-vehicle races
+- Requires: Collision detection with trigger volumes
 
-**Layer 4 - Requires Skeletal Animation:**
+**Layer 4 - Requires Checkpoint System:**
 
-**Joint Constraint System**
-- Swing-twist decomposition for anatomical limits
-- Swing cone + twist range per joint
-- Prevents unrealistic bone twisting ("candy-wrapper" effect)
-- Drives twist helper bones for mesh deformation
-- Requires: Skeletal animation system, quaternion swing-twist decomposition
+**Time Trial Mode**
+- Ghost recording and playback
+- Best lap storage
+- Sector timing
+- Deterministic physics requirement (fixed timestep validation)
+- Requires: Lap/checkpoint system
 
-**IK Systems**
-- Inverse kinematics solver (two-bone, simple trigonometry)
-- Foot placement on terrain
-- Hand reaching to targets
-- Look-at targets (head/torso turn independently)
-- Requires: Skeletal animation system
+**Racing Line Visualization**
+- Ideal path through corners
+- Color-coded by recommended speed
+- Dynamic adjustment based on current speed
+- Assists for learning tracks
+- Requires: Track data, checkpoint system
 
-**Secondary Physics System**
-- Bone "softness" parameter for procedural motion
-- Wobble/sway from primary character movement
-- Natural blending between physical states
-- Requires: Skeletal animation system
+---
 
-**Active Ragdoll System**
-- Pose matching (ragdoll attempts to hold last pose)
-- Animation matching (ragdoll tries to enact animation under forces)
-- Contextual reactions (flail when airborne, curl near surfaces, brace for impact)
-- Emergent life-like behavior from physics
-- Requires: Skeletal animation system
+---
 
-**Delayed Ragdoll Transitions**
-- Timer delay before ragdoll activation on death
-- "Acted" death sequences within physics
-- Emergent gameplay moments (dying enemy still threatens)
-- Requires: Active ragdoll system
+## Visual Effects
+
+**Layer 5 - Polish:**
+
+**Speed Lines System**
+- Post-processing radial lines emanating from screen center
+- Intensity scales with speed
+- Activate during boost or above speed threshold
+- UV-based shader with polar coordinate conversion
+- Requires: Post-processing pipeline
+
+**Motion Blur**
+- Camera motion blur (velocity-based sampling)
+- Radial blur for boost moments
+- Depth-based optimization (lower res render target)
+- Controversial per research but smooths 30 FPS
+- Requires: Previous frame transform buffer
+
+**Particle Trail System**
+- Tire smoke during drifts
+- Dust clouds on dirt surfaces
+- Sparks from wall collisions
+- Speed-based intensity scaling
+- Requires: Particle system foundation
+
+**Skid Marks**
+- Persistent tire marks during slides
+- Fade over time or distance limit
+- Different patterns for brake vs drift
+- Surface-dependent (black on asphalt, grooves on dirt)
+- Requires: Deferred decal system or mesh generation
 
 ---
 
@@ -136,38 +181,37 @@
 - Enhances understanding of momentum and drift behavior during turning
 - Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
 
+**Vehicle Telemetry System**
+- Record speed, acceleration, steering, drift angle over time
+- CSV export for analysis
+- Real-time graphs in debug UI
+- Lap comparison overlays
+- Requires: Debug UI system (exists)
+
+**Track Editor**
+- Define track boundaries and racing line
+- Place checkpoints and triggers
+- Set surface properties (grip levels)
+- Spline-based corner definition
+- Requires: Level editor foundation
+
 **Test Infrastructure**
 - Test runner script and discovery
 - Framework evaluation (if needed)
 - Integration into dev workflow
 - Trigger: When test count reaches 3-5 files
 
-**Runtime Validation & Instrumentation**
-- Measure actual vs intended behavior
-- Trajectory visualization
-- Automated validation tests
-- World-scale reference measurements
-- Validates contract: Designer Intent → Math → Implementation → Measured Reality
-
-**Level Editor**
-- Replace hard-coded game world with editable environment
-- Simple text file format for level data
-- Save/load level state to/from disk
-- Object placement and world composition
-- Requires: Game world system (existing)
-
 ---
 
 ## Future (Keep Liquid)
 
-**Layer 5 - Polish:**
-- Visual hierarchy system (UI/HUD polish)
-- Input assistance framework (feel refinement)
-- Audio system
-- UI/HUD expansion
-- Visual effects
-- Terrain/world generation
-- Combat mechanics
+**Layer 5 - Advanced Racing:**
+- AI opponents with rubber-band difficulty
+- Multiplayer/split-screen support
+- Weather effects on handling
+- Vehicle customization/tuning
+- Championship/career progression
+- Track variety (circuits, point-to-point, drift zones)
 
 **Don't detail until dependencies clear.**
 

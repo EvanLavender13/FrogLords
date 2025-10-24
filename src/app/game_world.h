@@ -2,7 +2,8 @@
 
 #include "camera/camera.h"
 #include "camera/camera_follow.h"
-#include "character/controller.h"
+#include "vehicle/controller.h"
+#include "vehicle/tuning.h"
 #include "character/character_reactive_systems.h"
 #include "character/tuning.h"
 #include "rendering/scene.h"
@@ -22,6 +23,7 @@ struct game_world {
     controller character;
     character_reactive_systems character_visuals;
     character::tuning_params character_params;
+    vehicle::tuning_params vehicle_params;
     velocity_trail_state trail_state;
 
     control_scheme current_control_scheme = control_scheme::FREE_STRAFE;

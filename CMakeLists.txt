@@ -57,7 +57,8 @@ add_executable(FrogLords
     src/app/debug_generation.cpp
     src/camera/camera.cpp
     src/camera/camera_follow.cpp
-    src/character/controller.cpp
+    src/vehicle/controller.cpp
+    src/vehicle/tuning.cpp
     src/character/character_reactive_systems.cpp
     src/character/orientation.cpp
     src/character/animation.cpp
@@ -74,6 +75,7 @@ add_executable(FrogLords
     src/gui/gui.cpp
     src/gui/character_panel.cpp
     src/gui/camera_panel.cpp
+    src/gui/vehicle_panel.cpp
     ${WIREFRAME_SHADER_OUTPUT}
     ${IMGUI_SOURCES}
 )

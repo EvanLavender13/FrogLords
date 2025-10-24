@@ -1,4 +1,4 @@
-#include "character/controller.h"
+#include "vehicle/controller.h"
 #include "foundation/collision.h"
 #include "foundation/math_utils.h"
 #include "foundation/debug_assert.h"
@@ -39,29 +39,42 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f)
-    , locomotion{locomotion_speed_state::WALK, 0.0f, walk_cycle_length} {
+    , traction{traction_level::SOFT} {
     // Validate threshold ordering (prevents state collapse)
-    FL_PRECONDITION(walk_threshold < run_threshold,
-                    "walk_threshold must be less than run_threshold to define distinct states");
+    FL_PRECONDITION(soft_threshold < medium_threshold,
+                    "soft_threshold must be less than medium_threshold to define distinct states");
+
+    // Validate steering_reduction_factor bounds (ensures monotonic steering decrease)
+    FL_PRECONDITION(steering_reduction_factor >= 0.0f && steering_reduction_factor <= 1.0f,
+                    "steering_reduction_factor must be in [0, 1]");
+    FL_ASSERT_FINITE_SCALAR(steering_reduction_factor, "steering_reduction_factor");
 
     // Initialize single collision sphere
     collision_sphere.center = position;
     collision_sphere.radius = BUMPER_RADIUS;
 }
 
+float controller::compute_steering_multiplier(float horizontal_speed) const {
+    FL_PRECONDITION(horizontal_speed >= 0.0f, "speed must be non-negative");
+    FL_PRECONDITION(std::isfinite(horizontal_speed), "speed must be finite");
+    FL_PRECONDITION(max_speed > 0.0f, "max_speed must be positive");
+
+    // Compute speed ratio and clamp to [0, 1] to handle overspeed
+    float speed_ratio = horizontal_speed / max_speed;
+    speed_ratio = glm::clamp(speed_ratio, 0.0f, 1.0f);
+
+    // Calculate steering multiplier: full authority at zero speed, reduced at high speed
+    float multiplier = 1.0f - (speed_ratio * steering_reduction_factor);
+
+    FL_POSTCONDITION(multiplier >= 0.0f && multiplier <= 1.0f,
+                     "steering multiplier must be in [0, 1]");
+    return multiplier;
+}
+
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
-    // Execute buffered jump on next grounded frame (jump buffer forgiveness)
-    // PRINCIPLE TRADE-OFF: See "PRINCIPLE TRADE-OFF: Coyote time and jump buffering" below for full
-    // rationale
-    if (is_grounded && jump_buffer_timer > 0.0f) {
-        velocity.y = jump_velocity;
-        coyote_timer = coyote_window; // Exhaust coyote window
-        jump_buffer_timer = 0.0f;     // Clear buffer
-    }
-
-    // Integrate heading from turn input (physics primitive - always runs)
-    // Time-independent heading integration: heading_yaw += turn_input * turn_rate * dt
+    // Integrate heading from turn input with speed-dependent steering limits
+    // Time-independent heading integration: heading_yaw += turn_input * turn_rate * steering_multiplier * dt
     // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
     // Input convention: negative = left turn, positive = right turn
     // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
@@ -72,7 +85,12 @@ void controller::apply_input(const controller_input_params& input_params,
     FL_PRECONDITION(std::isfinite(input_params.turn_input), "turn_input must be finite");
     FL_PRECONDITION(std::isfinite(heading_yaw), "heading_yaw must be finite before integration");
 
-    heading_yaw += -input_params.turn_input * turn_rate * dt;
+    // Calculate speed-dependent steering multiplier
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+    float horizontal_speed = glm::length(horizontal_velocity);
+    float steering_multiplier = compute_steering_multiplier(horizontal_speed);
+
+    heading_yaw += -input_params.turn_input * turn_rate * steering_multiplier * dt;
     heading_yaw = math::wrap_angle_radians(heading_yaw);
 
     FL_POSTCONDITION(std::isfinite(heading_yaw),
@@ -90,40 +108,6 @@ void controller::apply_input(const controller_input_params& input_params,
 
     // Direct acceleration (instant response, no ground/air distinction)
     acceleration = input_direction * accel;
-
-    // PRINCIPLE TRADE-OFF: Coyote time and jump buffering
-    //
-    // These mechanics intentionally violate the Consistency principle (jumping only when grounded)
-    // in service of the Prime Directive (Do No Harm to Gameplay - preserve player intent).
-    //
-    // Coyote time: Allows jumping for brief period after leaving ground edge.
-    //   - Forgives near-miss timing when player presses jump just after walking off ledge
-    //   - Player intent: "I wanted to jump at the edge" > strict physics: "must be grounded"
-    //
-    // Jump buffering: Remembers jump input pressed shortly before landing.
-    //   - Forgives near-miss timing when player presses jump just before hitting ground
-    //   - Executes jump on next grounded frame instead of discarding input
-    //
-    // Principle hierarchy: Prime Directive (player control) > Consistency (behavioral rules).
-    // These forgiveness mechanics preserve player intent, which is the higher truth.
-    //
-    // Design reference: Super Mario Bros (1985) - "press jump button a few frames early
-    // and Mario will automatically jump the moment he touches down"
-    // (NOTES/DesigningGames/DG_Interface.md)
-    //
-    // See PRINCIPLES.md - Prime Directive: "Do No Harm to Gameplay"
-    //
-    bool jump_input = input_params.jump_pressed;
-    bool can_jump = is_grounded || (coyote_timer < coyote_window);
-
-    if (jump_input && can_jump) {
-        velocity.y = jump_velocity;
-        coyote_timer = coyote_window; // Exhaust coyote window
-        jump_buffer_timer = 0.0f;     // Clear any buffered input
-    } else if (jump_input && !can_jump) {
-        // Store buffered input for next valid grounded frame
-        jump_buffer_timer = jump_buffer_window;
-    }
 }
 
 void controller::update(const collision_world* world, float dt) {
@@ -133,22 +117,7 @@ void controller::update(const collision_world* world, float dt) {
     update_physics(dt);
     float pre_collision_vertical_velocity = update_collision(world, dt);
     update_landing_state(pre_collision_vertical_velocity);
-    update_jump_timers(dt);
-    update_locomotion_state(dt);
-}
-
-float controller::get_cycle_length(locomotion_speed_state state) const {
-    switch (state) {
-    case locomotion_speed_state::WALK:
-        return walk_cycle_length;
-    case locomotion_speed_state::RUN:
-        return run_cycle_length;
-    case locomotion_speed_state::SPRINT:
-        return sprint_cycle_length;
-    }
-    // Should never reach here - all enum values handled
-    FL_ASSERT(false, "invalid locomotion_speed_state in get_cycle_length");
-    return walk_cycle_length; // Unreachable, but satisfies compiler
+    update_traction_state(dt);
 }
 
 float controller::update_collision(const collision_world* world, float dt) {
@@ -164,7 +133,6 @@ float controller::update_collision(const collision_world* world, float dt) {
     collision_contact_debug.active = contact.hit;
     collision_contact_debug.normal = contact.normal;
     collision_contact_debug.penetration = contact.penetration;
-    collision_contact_debug.is_wall = contact.is_wall;
 
     // Interpret contact to determine grounded state (controller logic)
     // Use contacted_floor flag to handle simultaneous floor+wall contacts
@@ -184,46 +152,19 @@ void controller::update_landing_state(float pre_collision_vy) {
     was_grounded = is_grounded;
 }
 
-void controller::update_jump_timers(float dt) {
-    if (is_grounded) {
-        coyote_timer = 0.0f; // Reset when grounded
-    } else {
-        coyote_timer += dt; // Accumulate time since leaving ground
-    }
-    jump_buffer_timer = std::max(0.0f, jump_buffer_timer - dt); // Decay toward zero
-}
-
-void controller::update_locomotion_state(float dt) {
-    // Phase is an OUTPUT computed from movement, never drives physics
+void controller::update_traction_state(float dt) {
     float speed = glm::length(math::project_to_horizontal(velocity));
     FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
     FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
 
-    // Classify speed into discrete locomotion states
-    if (speed < walk_threshold) {
-        locomotion.state = locomotion_speed_state::WALK;
-    } else if (speed < run_threshold) {
-        locomotion.state = locomotion_speed_state::RUN;
+    // Classify speed into discrete traction levels
+    if (speed < soft_threshold) {
+        traction.level = traction_level::SOFT;
+    } else if (speed < medium_threshold) {
+        traction.level = traction_level::MEDIUM;
     } else {
-        locomotion.state = locomotion_speed_state::SPRINT;
+        traction.level = traction_level::HARD;
     }
-
-    // Accumulate distance traveled (frame-rate independent)
-    // NOTE: distance_traveled is internal state, NOT part of locomotion_state output
-    distance_traveled += speed * dt;
-    FL_POSTCONDITION(std::isfinite(distance_traveled), "distance_traveled must remain finite");
-
-    // Calculate phase (0-1 normalized position within cycle)
-    // IMPORTANT: Phase is derived from distance_traveled, which is the source of truth
-    // When state changes → cycle_length changes → phase recalculates from same distance
-    // This causes phase value to jump, but preserves physical correctness
-    // (the surveyor wheel re-scales, distance/rotation is preserved)
-    locomotion.cycle_length = get_cycle_length(locomotion.state);
-    FL_PRECONDITION(locomotion.cycle_length > 0.0f, "cycle_length must be positive");
-    locomotion.phase =
-        std::fmod(distance_traveled, locomotion.cycle_length) / locomotion.cycle_length;
-    FL_POSTCONDITION(locomotion.phase >= 0.0f && locomotion.phase < 1.0f,
-                     "phase must be in [0, 1) range");
 }
 
 void controller::update_physics(float dt) {
@@ -239,13 +180,13 @@ void controller::update_physics(float dt) {
     //   - Allows overspeed: dash mechanics can exceed max_speed, decay back naturally
     //   - Exponential convergence: smooth approach to equilibrium
     //
-    // Vertical velocity: Standard Euler integration (gravity only)
-    //   No drag on vertical component - jump/fall physics unchanged
+    // Vertical velocity: Standard Euler integration (weight only)
+    //   No drag on vertical component - constant downward force
     //
     // See PRINCIPLES.md: Time-Independence, Solid Mathematical Foundations
 
-    // Apply gravity to vertical acceleration
-    acceleration.y += gravity;
+    // Apply weight to vertical acceleration (downward force)
+    acceleration.y += weight;
 
     // Calculate drag coefficient from equilibrium constraint
     // Derivation: At equilibrium dv/dt = 0, so a - k*v_eq = 0

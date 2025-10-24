@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Use Gemini and Codex to examine the codebase against the six principles. Synthesize their findings into actionable violations in `TASKS/BACKLOG_REFINEMENTS.md`.
+Use Gemini and Codex to examine the codebase against principles and conventions. Synthesize their findings into actionable violations in `TASKS/BACKLOG_REFINEMENTS.md`.
 
 **Not manual scanning. Distributed analysis.**
 
@@ -32,12 +32,12 @@ Use both tools with principles and conventions as context. Craft your audit prom
 
 **Gemini (massive context):**
 ```bash
-bash scripts/bash/gemini.sh "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
+bash scripts/bash/gemini.sh "Read [PRINCIPLES.md CONVENTIONS.md TASKS/DEPENDENCY_STACK.md] src/ [your audit prompt]"
 ```
 
 **Codex (independent opinion):**
 ```bash
-bash scripts/bash/codex.sh "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit prompt]"
+bash scripts/bash/codex.sh "Read [PRINCIPLES.md CONVENTIONS.md TASKS/DEPENDENCY_STACK.md] src/ [your audit prompt]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in Bash tool call.
@@ -46,10 +46,10 @@ bash scripts/bash/codex.sh "@PRINCIPLES.md @CONVENTIONS.md @src/ [your audit pro
 
 **Note**: Codex can resume with `bash scripts/bash/codex.sh --resume "[follow-up question]"`.
 
-**Your audit prompt should:**
-- Specify what you're looking for (violations, patterns, specific principles)
-- Define the output format you want
-- Be tailored to current codebase state
+**Craft audit prompts that:**
+- Target specific areas of concern or perform comprehensive sweeps
+- Request structured output for easy synthesis
+- Adapt to current codebase state and recent work
 
 ---
 

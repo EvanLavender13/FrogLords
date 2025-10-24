@@ -2,7 +2,7 @@
 
 **What exists. What it provides. What can be built.**
 
-**Last Updated:** 2025-10-22
+**Last Updated:** 2025-10-24
 
 ---
 
@@ -31,7 +31,7 @@ Software infrastructure required to run the application.
 - **GUI Framework** - ImGui wrapper with lifecycle and plotting (`src/gui/gui.{h,cpp}`)
 - **GUI Commands** - Unidirectional flow command types (`src/gui/parameter_command.h`, `src/gui/camera_command.h`)
 - **Designer Parameter Interface** - Metadata-driven widgets for tuning (tunable/readonly/derived params) (`src/gui/gui.{h,cpp}`, `src/foundation/param_meta.h`)
-- **Character Panel** - Tuning sliders and state display using metadata-driven widgets (`src/gui/character_panel.{h,cpp}`)
+- **Vehicle Panel** - Tuning sliders and state display using metadata-driven widgets (`src/gui/vehicle_panel.{h,cpp}`)
 - **Camera Panel** - Follow camera controls using metadata-driven widgets (`src/gui/camera_panel.{h,cpp}`)
 - **Rendering Camera** - View/projection matrices from eye/target/FOV (`src/camera/camera.{h,cpp}`)
 - **Wireframe Renderer** - Sokol pipeline for line meshes (`src/rendering/renderer.{h,cpp}`)
@@ -61,7 +61,7 @@ Mathematical building blocks. Pure functions with no side effects.
 - **Procedural Mesh** - Generates sphere/box/grid/arrow/circle/spring wireframes (`src/foundation/procedural_mesh.{h,cpp}`)
 - **Collision Primitives** - Sphere/AABB types, collision world, surface types (`src/foundation/collision_primitives.h`)
 - **Collision Math** - Sphere-AABB tests, multi-pass resolution, wall-slide projection (`src/foundation/collision.{h,cpp}`)
-- **Car-Like Control Scheme** - Transforms WASD input to character-relative forward/back and turn rate (`src/character/controller.h`, `src/app/game_world.{h,cpp}`)
+- **Car-Like Control Scheme** - Transforms WASD input to vehicle-relative forward/back and turn rate (`src/vehicle/controller.h`, `src/app/game_world.{h,cpp}`)
 - **Parameter Metadata** - Semantic annotations for tunable parameters (name, units, range, type) (`src/foundation/param_meta.h`)
 
 **Dependencies to build something new here:**
@@ -81,11 +81,12 @@ High-level gameplay and interaction systems. Compose primitives into behavior.
 
 - **Camera Follow System** - Orbit/zoom constraints, computes eye/target from lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
   - Uses: Layer 2 math utilities, Layer 1 assertions
-- **Character Movement System** - Input→acceleration, drag, gravity, jump buffering, collision resolution, locomotion state (`src/character/controller.{h,cpp}`)
+- **Vehicle Movement System** - Input→acceleration, drag, weight, heading integration, collision resolution, traction state (`src/vehicle/controller.{h,cpp}`)
   - Uses: Layer 2 collision + math, Layer 1 assertions
-- **Character Reactive Visuals** - Orientation yaw spring + landing spring for render transform (`src/character/character_reactive_systems.{h,cpp}`)
-  - Uses: Layer 2 springs + math
-- **Character Tuning** - Applies max speed/accel/gravity/jump parameters to controller (`src/character/tuning.{h,cpp}`)
+- **Speed-Dependent Steering** - Reduces steering authority at high speeds for stable cornering (`src/vehicle/controller.{h,cpp}`)
+  - Uses: Vehicle movement system, heading integration
+- **Vehicle Tuning** - Metadata-driven parameter system for vehicle physics (`src/vehicle/tuning.{h,cpp}`)
+  - Uses: Layer 2 parameter metadata
 - **Game World** - Composes all systems, handles update loop, input polling, velocity trail (`src/app/game_world.{h,cpp}`)
   - Uses: Layer 1 input/scene/debug, Layer 2 math + collision
 
@@ -102,21 +103,18 @@ Variations within systems. Different modes, states, or behaviors.
 
 **Provides:**
 
-- **Locomotion Tiers** - Walk/run/sprint speed classification with per-tier cycle lengths (`src/character/controller.h`)
-  - Extends: Character Movement System
-- **Wall Slide Behavior** - Projects velocity along wall surfaces on contact (`src/foundation/collision.cpp`)
-  - Extends: Character Movement System
+- **Traction State Classification** - Grip/drift/airborne state based on speed thresholds (`src/vehicle/controller.h`)
+  - Extends: Vehicle Movement System
 - **Follow Orbit Mode** - Maya-style orbit + zoom with clamped lat/lon/distance (`src/camera/camera_follow.{h,cpp}`)
   - Extends: Camera Follow System
-- **Orientation-Locked Camera** - Camera locks behind character facing direction (`src/camera/camera_follow.{h,cpp}`, `src/gui/camera_panel.{h,cpp}`)
+- **Orientation-Locked Camera** - Camera locks behind vehicle facing direction (`src/camera/camera_follow.{h,cpp}`, `src/gui/camera_panel.{h,cpp}`)
   - Extends: Camera Follow System
-  - Enables: Velocity-locked camera, look-ahead camera, WoW-style right-click rotation
+  - Enables: Velocity-locked camera, look-ahead camera, dynamic chase modes
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
 - Layer 2 primitives as needed
 - No direct renderer coupling
-- Orientation-locked camera enables: WoW-style camera (right-click drag rotates character), more sophisticated lock modes (look-ahead, path prediction)
 
 ---
 
@@ -126,13 +124,9 @@ Feel, aesthetics, and refinement.
 
 **Provides:**
 
-- **Landing Spring Crouch** - Vertical offset spring on landing scaled by impact velocity (`src/character/animation.{h,cpp}`)
-  - Uses: Layer 2 spring-damper
-- **Yaw Smoothing** - Critically damped yaw spring for stable facing while moving (`src/character/orientation.{h,cpp}`)
-  - Uses: Layer 2 spring-damper + math
 - **Velocity Trail Visual** - Time-sampled position trail for motion feedback (`src/rendering/velocity_trail.h`)
   - Uses: Layer 1 debug viz
-- **Debug Visual Polish** - Speed gradient ring, tuned arrows, surveyor wheel, color-coded collision boxes (`src/app/debug_generation.cpp`)
+- **Debug Visual Polish** - Speed gradient ring, orientation arrows, steering cone, color-coded collision visualization (`src/app/debug_generation.cpp`)
   - Uses: Layer 1 debug viz + Layer 2 procedural meshes
 
 **Dependencies to build something new here:**
