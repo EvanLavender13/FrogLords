@@ -223,4 +223,32 @@ Review coordinate system convention switch plan. Validate: 1) Are all cross prod
 
 ---
 
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Changes:**
+- Updated `yaw_to_right()` formula: `(cos(yaw), 0, -sin(yaw))` for +X right
+- Updated cross products: `cross(UP, forward)` for right vector
+- Fixed debug visualization turn cone signs
+- Updated all documentation to reflect +X right convention
+- **Kept turn_input negation** (empirical testing confirmed requirement)
+
+**Files Modified:**
+- `src/foundation/math_utils.h` - yaw_to_right() formula, calculate_slip_angle() cross product, comments
+- `src/camera/camera.cpp` - get_right() cross product
+- `src/app/debug_generation.cpp` - turn cone arrow calculations
+- `src/vehicle/controller.cpp` - comments (negation preserved)
+- `src/vehicle/controller.h` - turn_rate documentation
+- `CONVENTIONS.md` - coordinate system description
+- `TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md` - world-space coordinates
+
+**Tests:** All passing - manual verification confirmed correct turning behavior
+
+**Result:** ✓ Violation removed - now using industry-standard +X right convention
+
+**Learning:** Positive yaw = CCW rotation in our coordinate system (empirically verified). The turn_input negation maps intuitive input (right = positive) to mathematical yaw convention (right = decreasing yaw). Second opinion validation caught missing debug visualization issue but incorrectly suggested removing negation - empirical testing was critical.
+<!-- END: REFINE/COMPLETED -->
+
+---
+
 **Simplify foundation. Follow standards. Remove confusion.**
