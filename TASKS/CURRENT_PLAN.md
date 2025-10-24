@@ -1,19 +1,26 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-24 - Speed-Dependent Steering
+**Status:** 🏗️ System - Circle-Based Turning
+**Started:** 2025-10-24
+**Branch:** system/circle-turning
+**Complexity:** Small
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
+**System:** Circle-based turning primitive - calculate position along circular arc from speed and steering angle
+**Location:** @TASKS/PLANS/CIRCLE_TURNING_SYSTEM.md
+**Layer:** 2 (Primitives)
+**Complexity:** Small
+**Next:** GRAYBOX
 
----
+**Dependencies:**
+- GLM math library (Layer 1)
+- Math utilities (Layer 2)
 
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Enables:**
+- Arcade Drift System
+- Rail-Based Cornering
+- Enhanced speed-dependent steering
