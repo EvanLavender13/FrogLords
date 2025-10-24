@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-01-24
+**Last Updated:** 2025-10-24
 
 ---
 
@@ -24,13 +24,6 @@
 ---
 
 ## Layer 2 - Primitives
-
-**Slip Angle Calculator**
-- Angle between velocity vector and vehicle heading
-- Pure mathematical calculation: `slip_angle = atan2(lateral_velocity, forward_velocity)`
-- Foundation for drift detection and tire force modeling
-- Returns data only - systems decide how to apply
-- Requires: None (pure mathematical primitive)
 
 **Lateral G-Force Calculator**
 - Centripetal acceleration from velocity and angular velocity
@@ -67,15 +60,15 @@
 - Smooth transitions between speed ranges
 - Requires: None (enhancement of existing system)
 
-**Layer 4 - Requires Slip Angle Calculator:**
+**Layer 4 - Buildable Now (Slip Angle Calculator Complete):**
 
-**Physics-Based Drift System**
+**Physics-Based Drift System** ← NOW BUILDABLE
 - Brake-to-drift activation (handbrake + steering at speed)
 - State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
 - Friction modification during drift: rear 30%, front 70% of normal
 - Acceleration boost to maintain speed during slide
 - NO position manipulation - physics integration handles movement
-- Requires: Slip Angle Calculator, Lateral G-Force Calculator
+- Requires: Slip Angle Calculator (complete), Lateral G-Force Calculator
 
 ---
 
@@ -188,12 +181,13 @@
 - Requires: Metadata-driven design pattern (exists), test infrastructure
 - Source: Designer parameter interface iteration 3 emergence analysis
 
-**Slip Angle Visualization**
+**Slip Angle Visualization** ← NOW BUILDABLE
 - Arc on speed ring showing angle between heading and velocity
 - Visualizes difference between where vehicle points vs where it's going
 - Pure measurement of existing physics state
 - Enhances understanding of drift behavior
 - Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
+- Requires: Slip Angle Calculator (complete)
 
 **Vehicle Telemetry System**
 - Record speed, acceleration, steering, drift angle over time

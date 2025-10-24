@@ -56,6 +56,7 @@ Mathematical building blocks. Pure functions with no side effects.
 **Provides:**
 
 - **Math Utilities** - World UP, horizontal projection, safe normalize, angle operations (`src/foundation/math_utils.h`)
+- **Slip Angle Calculator** - Angle between velocity vector and forward direction (`src/foundation/math_utils.h`)
 - **Spring-Damper** - 1D time-step integration with critical damping (`src/foundation/spring_damper.{h,cpp}`)
 - **Easing** - Cubic smoothstep, smooth mixes, cubic Hermite (`src/foundation/easing.{h,cpp}`)
 - **Procedural Mesh** - Generates sphere/box/grid/arrow/circle/spring wireframes (`src/foundation/procedural_mesh.{h,cpp}`)
@@ -70,6 +71,7 @@ Mathematical building blocks. Pure functions with no side effects.
 - No runtime/GUI/renderer coupling required
 - Car-like control scheme enables: Orientation-locked camera mode, drift movement mechanics
 - Parameter metadata enables: Generic tuning UIs, parameter validation, presets/serialization
+- Slip angle calculator enables: Physics-based drift system, drift detection, tire force modeling, slip angle visualization
 
 ---
 
