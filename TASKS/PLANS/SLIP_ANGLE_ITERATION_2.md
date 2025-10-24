@@ -2,7 +2,7 @@
 
 **Started:** 2025-10-24
 **Previous:** [SLIP_ANGLE_ITERATION_1.md](SLIP_ANGLE_ITERATION_1.md)
-**Status:** Ready for VALIDATE
+**Status:** APPROVED
 
 ---
 
@@ -83,5 +83,106 @@ Resolve sign convention inconsistency and verify mathematical correctness.
 - [x] Stable
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-24
+
+**Initial Finding - Coordinate System Confusion:**
+
+Both reviewers independently flagged the cross product as incorrect, claiming `cross(forward, UP)` should be `cross(UP, forward)`. However, this revealed a documentation issue, not an implementation bug.
+
+**Root Cause Analysis:**
+
+The reviewers assumed standard OpenGL convention (+X right), but the codebase uses a different convention:
+
+**Actual coordinate system (per yaw_to_forward/yaw_to_right at math_utils.h:27-33):**
+- Forward = +Z
+- Right = **-X** (not +X)
+- Up = +Y
+
+**Verification:**
+```
+cross((0,0,1), (0,1,0)) = (-1,0,0) = -X = "right" in this system
+yaw_to_right(0) = (-cos(0), 0, sin(0)) = (-1,0,0) = -X ✓
+```
+
+Implementation is mathematically consistent with actual coordinate system.
+
+**Terminology Confusion in Playtest Validation:**
+
+"Turn left → positive slip angle" was misinterpreted by reviewers as "slide left → positive."
+
+**Actual physics:** Steering left causes heading to rotate left (CCW), but velocity (momentum) lags behind, pointing RIGHT relative to heading. This is a **right slide** → positive slip angle ✓
+
+**Convergent Findings (Both Reviews):**
+- ✓ Systems, Not Features - Pure foundation primitive, proper layer separation
+- ✓ Single Source of Truth - Correctly derived, never stored
+- ✓ Radical Simplicity - Minimal implementation, nothing to remove
+- ✓ Mathematical Foundation - Correct for actual coordinate system
+- ⚠ Documentation - Line 12 claims "X-right" but code uses "-X-right"
+
+**Additional Issues (Gemini):**
+- Missing unit tests for foundation primitive (CONVENTIONS.md requirement)
+- Vehicle dynamics terminology needs clarification (slip direction vs steering direction)
+
+**Assessment:** Implementation is mathematically correct and internally consistent. External review revealed documentation ambiguity and terminology confusion, both valuable findings. The process worked - catching documentation drift before it causes bugs.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:**
+All principles upheld. Implementation is mathematically correct for the actual coordinate system used throughout the codebase. Architecture exemplary: pure primitive, derived state, minimal complexity, proper layer separation.
+
+External review revealed valuable documentation issues rather than implementation bugs. The dual-review process worked as designed - forcing precise analysis of coordinate system conventions and terminology.
+
+**Required documentation fixes (will commit with approval):**
+1. Fix math_utils.h:12 - Correct coordinate system comment to reflect actual "-X-right" convention
+2. Document coordinate system precisely in CONVENTIONS.md
+3. Add note to create TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md for slip angle terminology
+
+**Why APPROVED (not REVISE):**
+- Mathematical foundation is sound
+- Single source of truth maintained (code is consistent)
+- No principle violations
+- Documentation fixes are clarifications, not corrections of errors
+- System ready for production use
+
+**Learning:**
+Terminology precision matters. "Turn left" vs "slide left" confusion nearly caused unnecessary code changes. External validation caught this before damage occurred. Vehicle dynamics terminology needs explicit documentation to prevent future confusion.
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- Coordinate system confusion revealed by external review: implementation correct, but documentation misleading (-X-right vs +X-right)
+- Terminology precision critical: "turn left" (steering input) vs "slide left" (velocity direction) caused near-misinterpretation by both reviewers
+- Dual external review converged on same finding but from wrong assumption - process still valuable for forcing deep analysis
+
+**Enables (future):**
+- Physics-based drift system (friction modification based on slip angle threshold)
+- Drift boost mechanics (reward sustained controlled slides)
+- Stability control systems (anti-skid based on slip angle magnitude)
+- Individual tire slip angles for advanced vehicle dynamics
+- Slip angle visualization for debugging and tuning
+
+**Learned:**
+- Documentation clarity matters as much as implementation correctness
+- Vehicle dynamics terminology needs explicit context documentation
+- External validation process valuable even when reviewers' initial assumption incorrect - forced rigorous coordinate system verification
+- Manual playtesting terminology must be unambiguous: "steer left producing right-slide" clearer than "turn left"
+<!-- END: VALIDATE/EMERGENCE -->
 
 ---

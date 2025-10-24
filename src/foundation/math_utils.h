@@ -9,8 +9,8 @@
 namespace math {
 
 /// PHYSICAL: World up axis in project coordinate system
-/// Convention: Y-up, Z-forward, X-right (OpenGL/GLM standard)
-/// Alternative systems: Some engines use Z-up (Unreal) or Y-forward (Unity legacy)
+/// Convention: Y-up, Z-forward, -X-right (left-handed or right-handed with flipped X-axis)
+/// Alternative systems: Standard OpenGL uses +X-right; some engines use Z-up (Unreal)
 /// Components: (0, 1, 0) → X=0, Y=1 (up), Z=0
 /// Used throughout: Gravity direction, ground normal checks, vertical projections
 inline constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f); // dimensionless (unit vector)
@@ -100,7 +100,7 @@ inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const gl
     }
 
     // Compute right vector perpendicular to forward (in horizontal plane)
-    // cross(forward, UP) yields +X when forward is +Z (matches X-right coordinate system)
+    // cross(forward, UP) yields -X when forward is +Z (matches -X-right coordinate system)
     glm::vec3 right = glm::normalize(glm::cross(forward, UP));
 
     // Project velocity onto local coordinate frame

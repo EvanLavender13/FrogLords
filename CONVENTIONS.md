@@ -20,6 +20,23 @@ Standards that enforce principles.
 
 ---
 
+## Coordinate System
+
+**World Space:**
+- Up: +Y
+- Forward: +Z
+- Right: **-X**
+
+This is left-handed (or right-handed with flipped X-axis). Differs from standard OpenGL (+X right).
+
+**Authority:** `math::yaw_to_forward()` and `math::yaw_to_right()` in `foundation/math_utils.h` define the coordinate system through their implementation. Code is truth.
+
+**Cross Products:**
+- `cross(forward, UP)` produces the right vector (-X direction)
+- `cross(UP, forward)` produces the left vector (+X direction)
+
+---
+
 ## Testing
 
 ### Unit Tests: Stable Layer 1 Primitives
