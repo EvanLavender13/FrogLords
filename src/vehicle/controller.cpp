@@ -71,6 +71,12 @@ float controller::compute_steering_multiplier(float horizontal_speed) const {
     return multiplier;
 }
 
+float controller::calculate_slip_angle() const {
+    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
+    glm::vec3 forward = math::yaw_to_forward(heading_yaw);
+    return math::calculate_slip_angle(horizontal_velocity, forward);
+}
+
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits

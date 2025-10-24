@@ -120,6 +120,13 @@ struct controller {
     // Clamped to prevent negative values when speed exceeds max_speed
     float compute_steering_multiplier(float horizontal_speed) const;
 
+    // Calculate slip angle between velocity direction and heading direction
+    // Returns signed angle in radians [-π, π]:
+    //   Positive: velocity points right of heading
+    //   Negative: velocity points left of heading
+    //   Zero: moving straight or stationary
+    float calculate_slip_angle() const;
+
   private:
     // Physics integration: weight, drag, velocity, position
     void update_physics(float dt);
