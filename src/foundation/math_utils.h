@@ -100,8 +100,8 @@ inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const gl
     }
 
     // Compute right vector perpendicular to forward (in horizontal plane)
-    // Using right-hand rule: right = UP × forward
-    glm::vec3 right = glm::normalize(glm::cross(UP, forward));
+    // Project convention: right is -X direction (cross product order reversed)
+    glm::vec3 right = glm::normalize(glm::cross(forward, UP));
 
     // Project velocity onto local coordinate frame
     float forward_speed = glm::dot(horizontal_velocity, forward);
