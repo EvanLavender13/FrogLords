@@ -31,8 +31,8 @@ glm::vec3 camera::get_forward_horizontal() const {
 glm::vec3 camera::get_right() const {
     glm::vec3 forward = get_forward_horizontal();
 
-    // Compute cross product (forward × UP)
-    glm::vec3 right = glm::cross(forward, math::UP);
+    // Compute cross product (UP × forward)
+    glm::vec3 right = glm::cross(math::UP, forward);
 
     // Guard: Normalize cross product
     // Fallback: If forward parallel to UP (degenerate), use standard X axis

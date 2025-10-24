@@ -27,10 +27,10 @@ inline glm::vec3 yaw_to_forward(float yaw) {
     return glm::vec3(std::sin(yaw), 0.0f, std::cos(yaw));
 }
 
-/// Convert yaw angle to right direction vector (negative X in world space).
+/// Convert yaw angle to right direction vector (positive X in world space).
 /// Uses project's Y-up, Z-forward coordinate system convention.
 inline glm::vec3 yaw_to_right(float yaw) {
-    return glm::vec3(-std::cos(yaw), 0.0f, std::sin(yaw));
+    return glm::vec3(std::cos(yaw), 0.0f, -std::sin(yaw));
 }
 
 /// Wrap angle in radians to the range [-π, π].
@@ -100,8 +100,8 @@ inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const gl
     }
 
     // Compute right vector perpendicular to forward (in horizontal plane)
-    // cross(forward, UP) yields -X when forward is +Z (matches -X-right coordinate system)
-    glm::vec3 right = glm::normalize(glm::cross(forward, UP));
+    // cross(UP, forward) yields +X when forward is +Z (matches +X-right coordinate system)
+    glm::vec3 right = glm::normalize(glm::cross(UP, forward));
 
     // Project velocity onto local coordinate frame
     float forward_speed = glm::dot(horizontal_velocity, forward);
