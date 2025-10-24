@@ -41,29 +41,40 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 
 ### 1. External Review
 
-**Independent principle evaluation.**
+**Dual independent principle evaluation (Codex + Gemini).**
+
+Launch both reviews in parallel:
 
 ```bash
-bash scripts/bash/codex.sh "Read [TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md relevant files] [your validation question]"
+bash scripts/bash/codex.sh "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [relevant files] [your validation question]"
+
+bash scripts/bash/gemini.sh "@TASKS/PLANS/<name>_ITERATION_<N>.md @TASKS/PLANS/<name>_SYSTEM.md @PRINCIPLES.md @CONVENTIONS.md [relevant files] [your validation question]"
 ```
 
-**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
+**IMPORTANT:** Use `run_in_background: true` in both Bash tool calls.
 
-**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
+**WAIT for user confirmation that both reviews are complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
 
 **Continue conversation if needed:**
 ```bash
 bash scripts/bash/codex.sh --resume "[follow-up question]"
 ```
 
-**After user confirms completion,** retrieve results and document review in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+**After user confirms completion,** retrieve results from both tools and document review in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
 
 ```markdown
 <!-- BEGIN: VALIDATE/REVIEW -->
 ## External Review
 
-**Tool:** Codex | Gemini
+**Tools:** Codex + Gemini (dual review)
 **Date:** YYYY-MM-DD
+
+**Convergent Findings:**
+- [Where both reviewers agreed]
+
+**Divergent Findings:**
+- Codex: [unique findings]
+- Gemini: [unique findings]
 
 **Principle Violations:**
 - [Principle]: [violation description with evidence]
@@ -71,7 +82,7 @@ bash scripts/bash/codex.sh --resume "[follow-up question]"
 **Strengths:**
 - [What aligns well with principles]
 
-**Assessment:** [Overall quality evaluation]
+**Assessment:** [Overall quality evaluation, note convergence/divergence]
 <!-- END: VALIDATE/REVIEW -->
 ```
 
