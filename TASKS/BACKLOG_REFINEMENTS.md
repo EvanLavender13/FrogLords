@@ -2,7 +2,7 @@
 
 **Current violations. Priority order. Patterns to watch.**
 
-**Last Updated:** 2025-10-23 (Post-Audit)
+**Last Updated:** 2025-10-24 (Post-Retrospective)
 
 ---
 
@@ -13,6 +13,14 @@
 None - All critical violations resolved ✅
 
 ### High Priority
+
+**Vehicle Parameter Consolidation**
+- **Location:** `src/character/tuning.h`, `src/vehicle/tuning.h`, `src/gui/character_panel.cpp`
+- **Principle:** Single Source of Truth, Systems Not Features
+- **Severity:** High
+- **Description:** Vehicle parameters split across character and vehicle namespaces after incomplete pivot. `max_speed`, `accel`, `weight` in character::tuning_params but are vehicle physics parameters. Creates confusion and violates single source of truth for vehicle configuration.
+- **Fix:** Simplify - Move all vehicle parameters to vehicle::tuning_params, remove vehicle sections from character_panel, consolidate in vehicle_panel
+- **Source:** Retrospective (character→vehicle pivot)
 
 **Missing Spring Damper Validation**
 - **Location:** `src/foundation/spring_damper.cpp:5`
