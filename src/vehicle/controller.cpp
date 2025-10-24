@@ -81,10 +81,9 @@ void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits
     // Time-independent heading integration: heading_yaw += turn_input * turn_rate * steering_multiplier * dt
-    // Coordinate system: Y-up right-handed, positive yaw = CCW rotation from above
-    // Input convention: negative = left turn, positive = right turn
-    // Turn convention: left turn = +yaw (CCW), right turn = -yaw (CW)
-    // Therefore: negate turn_input to map left → +yaw, right → -yaw
+    // Coordinate system: Y-up right-handed (+X right), positive yaw = CW rotation from above (right turn)
+    // Input convention: positive = right turn, negative = left turn
+    // Turn convention matches input directly: positive input → positive yaw (CW)
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt),
                     "dt must be positive and finite for time-independent integration");
     FL_PRECONDITION(std::isfinite(turn_rate), "turn_rate must be finite");
