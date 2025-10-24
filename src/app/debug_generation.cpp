@@ -265,7 +265,7 @@ void generate_car_control_primitives(debug::debug_primitive_list& list, const co
             float max_turn_angle = character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
 
             // Left turn limit (CCW from heading)
-            glm::vec3 left_limit = math::yaw_to_forward(yaw + max_turn_angle);
+            glm::vec3 left_limit = math::yaw_to_forward(yaw - max_turn_angle);
             list.arrows.push_back(debug::debug_arrow{
                 .start = character.position,
                 .end = character.position + left_limit * current_speed * 0.8f,
@@ -274,7 +274,7 @@ void generate_car_control_primitives(debug::debug_primitive_list& list, const co
             });
 
             // Right turn limit (CW from heading)
-            glm::vec3 right_limit = math::yaw_to_forward(yaw - max_turn_angle);
+            glm::vec3 right_limit = math::yaw_to_forward(yaw + max_turn_angle);
             list.arrows.push_back(debug::debug_arrow{
                 .start = character.position,
                 .end = character.position + right_limit * current_speed * 0.8f,
