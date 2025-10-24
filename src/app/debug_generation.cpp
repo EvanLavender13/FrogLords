@@ -113,17 +113,17 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
 
     foundation::wireframe_mesh body_mesh = foundation::generate_box({0.4f, 0.8f, 0.3f});
 
-    // Color-code character body by locomotion state
+    // Color-code character body by traction state
     glm::vec4 body_color;
-    switch (character.locomotion.state) {
-    case controller::locomotion_speed_state::WALK:
-        body_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
+    switch (character.traction.level) {
+    case controller::traction_level::SOFT:
+        body_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = soft grip
         break;
-    case controller::locomotion_speed_state::RUN:
-        body_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
+    case controller::traction_level::MEDIUM:
+        body_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = medium grip
         break;
-    case controller::locomotion_speed_state::SPRINT:
-        body_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
+    case controller::traction_level::HARD:
+        body_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = hard/drifting
         break;
     }
 
@@ -139,74 +139,7 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
     }
 }
 
-void generate_locomotion_surveyor_wheel(debug::debug_primitive_list& list,
-                                        const controller& character,
-                                        const character_reactive_systems& visuals) {
-    // Surveyor wheel visualization (David Rosen GDC technique)
-    // Shows phase (rotation) and cycle length (size) for distance-based cyclic motion
-    // Wheel is vertical like a bicycle wheel, axis perpendicular to movement direction
-
-    glm::vec3 wheel_center = character.position; // Centered on character
-
-    // Wheel radius scales with cycle length (from locomotion_state output)
-    float cycle_length = character.locomotion.cycle_length;
-    float wheel_radius = cycle_length * 0.25f;
-
-    // Wheel rotation based on distance traveled (not phase) for visual continuity
-    // Phase recalculates on state change, but distance is continuous
-    // rotation_angle = distance / radius (standard wheel physics)
-    // Negate for correct forward roll direction
-    float rotation_angle = -(character.distance_traveled / wheel_radius);
-
-    // Get character facing direction from orientation system
-    float yaw = visuals.orientation.get_yaw();
-    glm::vec3 forward_dir = math::yaw_to_forward(yaw);
-
-    // Draw circle (vertical, in forward-up plane like a bicycle wheel)
-    constexpr int CIRCLE_SEGMENTS = 24;
-    glm::vec4 circle_color = {1.0f, 1.0f, 1.0f, 0.8f}; // White
-
-    for (int i = 0; i < CIRCLE_SEGMENTS; ++i) {
-        float angle0 = (static_cast<float>(i) / CIRCLE_SEGMENTS) * 2.0f * glm::pi<float>();
-        float angle1 = (static_cast<float>(i + 1) / CIRCLE_SEGMENTS) * 2.0f * glm::pi<float>();
-
-        // Circle in forward-up plane (rotates around right_dir axis)
-        glm::vec3 p0 = wheel_center + forward_dir * std::cos(angle0) * wheel_radius +
-                       math::UP * std::sin(angle0) * wheel_radius;
-        glm::vec3 p1 = wheel_center + forward_dir * std::cos(angle1) * wheel_radius +
-                       math::UP * std::sin(angle1) * wheel_radius;
-
-        list.lines.push_back(debug::debug_line{p0, p1, circle_color});
-    }
-
-    // Draw "+" cross rotated by phase (rolling around right_dir axis)
-    glm::vec4 cross_color;
-    switch (character.locomotion.state) {
-    case controller::locomotion_speed_state::WALK:
-        cross_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = walk
-        break;
-    case controller::locomotion_speed_state::RUN:
-        cross_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = run
-        break;
-    case controller::locomotion_speed_state::SPRINT:
-        cross_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = sprint
-        break;
-    }
-
-    // First spoke (rotated by phase around right_dir axis, in forward-up plane)
-    glm::vec3 spoke1_dir =
-        forward_dir * std::cos(rotation_angle) + math::UP * std::sin(rotation_angle);
-    glm::vec3 s1_0 = wheel_center + spoke1_dir * wheel_radius;
-    glm::vec3 s1_1 = wheel_center - spoke1_dir * wheel_radius;
-    list.lines.push_back(debug::debug_line{s1_0, s1_1, cross_color});
-
-    // Perpendicular spoke (90° offset)
-    glm::vec3 spoke2_dir = forward_dir * std::cos(rotation_angle + glm::pi<float>() / 2.0f) +
-                           math::UP * std::sin(rotation_angle + glm::pi<float>() / 2.0f);
-    glm::vec3 s2_0 = wheel_center + spoke2_dir * wheel_radius;
-    glm::vec3 s2_1 = wheel_center - spoke2_dir * wheel_radius;
-    list.lines.push_back(debug::debug_line{s2_0, s2_1, cross_color});
-}
+// Removed: generate_locomotion_surveyor_wheel (used locomotion-specific fields)
 
 void generate_collision_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
@@ -259,12 +192,12 @@ void generate_collision_state_primitives(debug::debug_primitive_list& list,
 
         // Draw collision normal (color-coded by surface type)
         glm::vec4 normal_color;
-        if (debug.is_wall) {
-            normal_color = {1, 0, 0, 1}; // Red = Wall
-        } else if (debug.normal.y > 0.5f) {
+        if (debug.normal.y > 0.5f) {
             normal_color = {0, 1, 0, 1}; // Green = Floor
-        } else {
+        } else if (debug.normal.y < -0.5f) {
             normal_color = {0, 0, 1, 1}; // Blue = Ceiling
+        } else {
+            normal_color = {1, 0, 0, 1}; // Red = Wall/Slope
         }
 
         list.arrows.push_back(debug::debug_arrow{
@@ -324,6 +257,30 @@ void generate_car_control_primitives(debug::debug_primitive_list& list, const co
                 .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
                 .head_size = 0.2f,
             });
+
+            // VISUAL VALIDATION: Steering authority cone
+            // Shows maximum possible turn angle at current speed
+            // Cone width shrinks at high speeds, making steering reduction obvious
+            float steering_multiplier = character.compute_steering_multiplier(current_speed);
+            float max_turn_angle = character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
+
+            // Left turn limit (CCW from heading)
+            glm::vec3 left_limit = math::yaw_to_forward(yaw + max_turn_angle);
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + left_limit * current_speed * 0.8f,
+                .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
+                .head_size = 0.15f,
+            });
+
+            // Right turn limit (CW from heading)
+            glm::vec3 right_limit = math::yaw_to_forward(yaw - max_turn_angle);
+            list.arrows.push_back(debug::debug_arrow{
+                .start = character.position,
+                .end = character.position + right_limit * current_speed * 0.8f,
+                .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
+                .head_size = 0.15f,
+            });
         }
     }
 }
@@ -339,7 +296,7 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_character_state_primitives(list, world.character, world.character_visuals);
     generate_physics_springs_primitives(list, world.character, world.character_visuals);
     generate_character_body_primitives(list, world.character, world.character_visuals);
-    generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals);
+    // generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals); // Removed: uses locomotion-specific fields
     generate_car_control_primitives(list, world.character, world.current_control_scheme);
 
     if (panel_state.show_velocity_trail) {
