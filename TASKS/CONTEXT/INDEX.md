@@ -4,7 +4,7 @@ Purpose: Fast, token‑efficient mapping of context cards to tasks.
 
 Tag vocabulary
 - Layers: foundation, primitives, systems, variation, polish
-- Domains: physics, math, architecture, dataflow, hygiene, simulation, tuning, state
+- Domains: physics, math, architecture, dataflow, hygiene, simulation, tuning, state, vehicle, terminology
 
 Cards
 - `TASKS/CONTEXT/ACCUMULATED_STATE.md` — Derive instead of accumulate; unconditional updates; epsilon validation. Tags: foundation, architecture, math, state
@@ -15,15 +15,14 @@ Cards
 - `TASKS/CONTEXT/PHYSICS_FIRST_TUNING.md` — Expose real physical parameters; use standard formulas; tune feel from physics. Tags: systems, variation, physics, tuning
 - `TASKS/CONTEXT/STATIC_ANALYSIS.md` — Verify semantics first; suppress false positives with explanation; verify consumers exist. Tags: hygiene, tools, validation
 - `TASKS/CONTEXT/UNIDIRECTIONAL_FLOW.md` — One source; one direction; delete sync cycles; expose views. Tags: systems, architecture, dataflow
+- `TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md` — Steering vs slide direction; slip angle signs; drift/slide/slip distinctions. Tags: physics, vehicle, terminology
 
 Selection hints (from backlogs/stack)
 - Movement/Character tasks → primitives, physics, tuning
+- Vehicle tasks → physics, vehicle, terminology
 - Camera tasks → physics, dataflow, architecture
 - Animation/IK/ragdoll → primitives boundary, systems, tuning
 - Parameter/GUI systems → architecture, tuning, dataflow
 - Tools/Validation → hygiene, architecture, simulation
 - Refinements from static analyzers → hygiene, validation
-
-Future context files
-- VEHICLE_DYNAMICS_TERMINOLOGY.md — Slip angle, drift direction, steering vs slide direction; precise definitions for vehicle physics terms where intuition can mislead. Created after slip angle validation revealed "turn left" vs "slide left" confusion.
 
