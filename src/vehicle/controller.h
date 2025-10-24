@@ -81,7 +81,7 @@ struct controller {
     // TUNED: Turn rate for car-like control heading
     // Controls rotational speed when using heading-based movement
     // Higher values = faster turning (arcade feel)
-    // Integrated in: controller::apply_input() - heading_yaw += input.x * turn_rate * dt
+    // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
     float turn_rate = 3.0f; // radians/second
 
     // TUNED: Steering reduction factor for speed-dependent steering limits

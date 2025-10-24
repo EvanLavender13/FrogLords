@@ -80,10 +80,10 @@ float controller::calculate_slip_angle() const {
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits
-    // Time-independent heading integration: heading_yaw += turn_input * turn_rate * steering_multiplier * dt
-    // Coordinate system: Y-up right-handed (+X right), positive yaw = CW rotation from above (right turn)
+    // Time-independent heading integration: heading_yaw += -turn_input * turn_rate * steering_multiplier * dt
+    // Coordinate system: Y-up right-handed (+X right), positive yaw = CCW rotation from above
     // Input convention: positive = right turn, negative = left turn
-    // Turn convention matches input directly: positive input → positive yaw (CW)
+    // Yaw convention: positive = CCW rotation, so negate input to map right → -yaw (CW)
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt),
                     "dt must be positive and finite for time-independent integration");
     FL_PRECONDITION(std::isfinite(turn_rate), "turn_rate must be finite");
@@ -95,7 +95,7 @@ void controller::apply_input(const controller_input_params& input_params,
     float horizontal_speed = glm::length(horizontal_velocity);
     float steering_multiplier = compute_steering_multiplier(horizontal_speed);
 
-    heading_yaw += input_params.turn_input * turn_rate * steering_multiplier * dt;
+    heading_yaw += -input_params.turn_input * turn_rate * steering_multiplier * dt;
     heading_yaw = math::wrap_angle_radians(heading_yaw);
 
     FL_POSTCONDITION(std::isfinite(heading_yaw),
