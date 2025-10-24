@@ -25,15 +25,15 @@ Standards that enforce principles.
 **World Space:**
 - Up: +Y
 - Forward: +Z
-- Right: **-X**
+- Right: **+X**
 
-This is left-handed (or right-handed with flipped X-axis). Differs from standard OpenGL (+X right).
+This is right-handed and matches standard OpenGL convention (+X right, +Y up, +Z forward).
 
 **Authority:** `math::yaw_to_forward()` and `math::yaw_to_right()` in `foundation/math_utils.h` define the coordinate system through their implementation. Code is truth.
 
 **Cross Products:**
-- `cross(forward, UP)` produces the right vector (-X direction)
-- `cross(UP, forward)` produces the left vector (+X direction)
+- `cross(UP, forward)` produces the right vector (+X direction)
+- `cross(forward, UP)` produces the left vector (-X direction)
 
 ---
 

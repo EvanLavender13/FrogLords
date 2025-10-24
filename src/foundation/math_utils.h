@@ -9,8 +9,8 @@
 namespace math {
 
 /// PHYSICAL: World up axis in project coordinate system
-/// Convention: Y-up, Z-forward, -X-right (left-handed or right-handed with flipped X-axis)
-/// Alternative systems: Standard OpenGL uses +X-right; some engines use Z-up (Unreal)
+/// Convention: Y-up, Z-forward, +X-right (right-handed, standard OpenGL)
+/// Alternative systems: Some engines use Z-up (Unreal, right-handed) or left-handed variants
 /// Components: (0, 1, 0) → X=0, Y=1 (up), Z=0
 /// Used throughout: Gravity direction, ground normal checks, vertical projections
 inline constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f); // dimensionless (unit vector)
