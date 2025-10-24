@@ -47,11 +47,35 @@ Open `BACKLOG_SYSTEMS.md`. Find systems at ready layer.
 
 ---
 
-### 3. Gather References
+### 3. Gather Internal References
+
+**Search the codebase first.**
+
+Before asking the user for external context, understand what already exists:
+
+**Search NOTES/:**
+- Research documents related to this system
+- Architectural decisions already made
+- Known constraints or approaches
+
+**Search src/:**
+- Existing implementations this integrates with
+- Established patterns to follow
+- Lower-layer primitives available
+
+**Document findings:**
+- Relevant source files and line numbers
+- Existing research notes
+- Integration points
+- Architectural conflicts (defer if fundamental)
+
+---
+
+### 4. Gather External References
 
 **FULL STOP: Ask the user what they actually want.**
 
-Before classifying complexity or creating the plan, collect context that informs the implementation:
+Collect external context that informs the implementation:
 
 **Prompt the user:**
 - Technical documentation? (APIs, papers, articles, specs)
@@ -60,13 +84,13 @@ Before classifying complexity or creating the plan, collect context that informs
 - Research findings? (what you've already investigated)
 - Constraints or requirements? (specific behavior expectations)
 
-**Document everything provided.** This section informs complexity classification and graybox implementation.
+**Document everything provided.** Combined with internal references, this informs complexity classification and graybox implementation.
 
 ---
 
-### 4. Classify Complexity
+### 5. Classify Complexity
 
-**References inform this assessment. A well-documented reference may simplify. An unknown may complicate.**
+**Internal and external references inform this assessment. A well-documented reference may simplify. An unknown may complicate.**
 
 **Small (1-3 pts):** Single primitive, clear math, minimal integration
 - Examples: New camera mode, simple collision shape, basic particle effect
@@ -79,7 +103,7 @@ Before classifying complexity or creating the plan, collect context that informs
 
 ---
 
-### 5. Create Plan
+### 6. Create Plan
 
 Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
@@ -100,8 +124,26 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ---
 
-<!-- BEGIN: SELECT/REFERENCES -->
-## References
+<!-- BEGIN: SELECT/INTERNAL_REFERENCES -->
+## Internal References
+
+**Research notes:**
+- [NOTES/ files related to this system]
+
+**Source files:**
+- [src/ files this integrates with, with line numbers]
+
+**Existing patterns:**
+- [Established approaches to follow]
+
+**Integration points:**
+- [Where this connects to existing systems]
+<!-- END: SELECT/INTERNAL_REFERENCES -->
+
+---
+
+<!-- BEGIN: SELECT/EXTERNAL_REFERENCES -->
+## External References
 
 **Technical documentation:**
 - [APIs, papers, articles, specs]
@@ -118,7 +160,7 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 **Constraints/Requirements:**
 - [Specific behavior expectations]
-<!-- END: SELECT/REFERENCES -->
+<!-- END: SELECT/EXTERNAL_REFERENCES -->
 
 ---
 
@@ -187,7 +229,7 @@ Create `TASKS/PLANS/<name>_SYSTEM.md`:
 
 ---
 
-### 6. Update Current Plan
+### 7. Update Current Plan
 
 Update `TASKS/CURRENT_PLAN.md`:
 
@@ -219,7 +261,7 @@ Update `TASKS/CURRENT_PLAN.md`:
 
 ---
 
-### 7. Create Branch
+### 8. Create Branch
 
 ```bash
 git checkout -b system/<name>
@@ -239,8 +281,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ## Outputs
 
 - [ ] System selected
-- [ ] References gathered from user
-- [ ] Complexity classified (informed by references)
+- [ ] Internal references gathered (NOTES/, src/)
+- [ ] External references gathered from user
+- [ ] Complexity classified (informed by both)
 - [ ] `PLANS/<name>_SYSTEM.md` created
 - [ ] `CURRENT_PLAN.md` updated
 - [ ] Branch created

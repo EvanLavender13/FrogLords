@@ -1,30 +1,27 @@
 # Current Plan
 
-**Status:** ✅ Completed Parameter Cleanup
-**Branch:** system/circle-turning (merged cleanup only)
-**Result:** Circle-based turning DEFERRED - incompatible with physics-first architecture
-
----
-
-## Previous Work Summary
-
-**Attempted:** Circle-based turning (direct position calculation)
-**Problem:** Fundamentally incompatible with force → acceleration → velocity → position pipeline
-**Resolution:**
-- Removed unused parameters (wheelbase, grip_coefficient, max_steering_angle)
-- Documented physics-first approach in PhysicsFirst_Research.md
-- Updated BACKLOG_SYSTEMS.md to remove incompatible tasks
-
----
-
-## Recommended Next Work
-
-**System:** Dynamic FOV System
-**Location:** New system to create
-**Layer:** 4 (Systems)
+**Status:** 🏗️ System - Slip Angle Calculator
+**Started:** 2025-10-24
+**Branch:** system/slip-angle
 **Complexity:** Small
-**Why:** Zero physics impact, massive feel improvement, no dependencies
+**Phase:** SELECT → GRAYBOX
 
-**Alternative:** Slip Angle Calculator
+---
+
+## Current Work
+
+**System:** Pure mathematical primitive measuring angle between velocity vector and forward direction
+**Location:** @TASKS/PLANS/SLIP_ANGLE_SYSTEM.md
 **Layer:** 2 (Primitives)
-**Why:** Pure math primitive, enables drift detection, measurements only
+**Complexity:** Small
+**Next:** GRAYBOX
+
+**Dependencies:**
+- GLM (exists)
+- math::project_to_horizontal (Layer 2, exists)
+
+**Enables:**
+- Physics-Based Drift System (Layer 4)
+- Drift Detection (Layer 4)
+- Slip Angle Visualization (Layer 5)
+- Individual Tire Simulation (future)
