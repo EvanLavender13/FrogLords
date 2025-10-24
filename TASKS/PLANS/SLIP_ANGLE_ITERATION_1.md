@@ -26,10 +26,12 @@ Mathematical correctness and edge case handling for slip angle primitive.
 <!-- BEGIN: ITERATE/VALIDATION -->
 ## Validation
 
-**Issue found:** Sign convention inverted
-- **Root cause:** Cross product order `cross(UP, forward)` produced left vector (+X), but project convention is right = -X
-- **Fix:** Changed to `cross(forward, UP)` to match coordinate system (math_utils.h:104)
-- **Verified:** Turn left → positive slip angle, turn right → negative slip angle
+**Issue found:** Sign convention documentation error
+- **Root cause:** Comment on math_utils.h:103 incorrectly stated "right is -X direction"
+- **Reality:** cross(forward, UP) yields +X when forward is +Z (correct per coordinate system)
+- **Verified:** Turn left → car slides right → positive slip angle (correct)
+- **Verified:** Turn right → car slides left → negative slip angle (correct)
+- **Note:** Controller negation on line 99 is correct (maps input convention to coordinate system)
 
 **All contract items validated:**
 - Zero velocity, straight motion, extreme angles all work correctly
