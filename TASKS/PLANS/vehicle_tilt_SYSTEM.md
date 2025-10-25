@@ -308,4 +308,4 @@ Codex suggested "derive forward/right from yaw OR use explicit glm::vec3". Initi
 ## Iterations
 
 - [ITERATION_1.md](vehicle_tilt_ITERATION_1.md) - REVISE
-- [ITERATION_2.md](vehicle_tilt_ITERATION_2.md) - Ready for VALIDATE
+- [ITERATION_2.md](vehicle_tilt_ITERATION_2.md) - APPROVED
