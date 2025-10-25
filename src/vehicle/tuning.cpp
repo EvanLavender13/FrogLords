@@ -56,9 +56,9 @@ void tuning_params::apply_to(controller& c, vehicle_visual_systems& visuals) con
     // Copy visual system parameters
     visuals.lean_multiplier = lean_multiplier;
     visuals.pitch_multiplier = pitch_multiplier;
-    visuals.tilt_stiffness = tilt_stiffness;
 
     // Update tilt spring parameters (stiffness changed, recalculate damping)
+    // Single source of truth: springs own their stiffness values
     visuals.lean_spring.stiffness = tilt_stiffness;
     visuals.lean_spring.damping = critical_damping(tilt_stiffness);
     visuals.pitch_spring.stiffness = tilt_stiffness;

@@ -5,11 +5,14 @@
 
 vehicle_visual_systems::vehicle_visual_systems() {
     // Initialize springs with critical damping for smooth, non-overshooting response
-    lean_spring.stiffness = tilt_stiffness;
-    lean_spring.damping = critical_damping(tilt_stiffness);
+    // Default stiffness: 150 N/m (mid-range for tilt response, tunable at runtime)
+    constexpr float default_tilt_stiffness = 150.0f;
 
-    pitch_spring.stiffness = tilt_stiffness;
-    pitch_spring.damping = critical_damping(tilt_stiffness);
+    lean_spring.stiffness = default_tilt_stiffness;
+    lean_spring.damping = critical_damping(default_tilt_stiffness);
+
+    pitch_spring.stiffness = default_tilt_stiffness;
+    pitch_spring.damping = critical_damping(default_tilt_stiffness);
 }
 
 void vehicle_visual_systems::update(const controller& ctrl, float dt) {
@@ -18,8 +21,10 @@ void vehicle_visual_systems::update(const controller& ctrl, float dt) {
                     "lean_multiplier must be in valid range [0, 1] rad/g");
     FL_PRECONDITION(pitch_multiplier >= 0.0f && pitch_multiplier <= 0.2f,
                     "pitch_multiplier must be in valid range [0, 0.2] rad/(m/s²)");
-    FL_PRECONDITION(tilt_stiffness >= 10.0f && tilt_stiffness <= 500.0f,
-                    "tilt_stiffness must be in valid range [10, 500] N/m");
+    FL_PRECONDITION(lean_spring.stiffness >= 10.0f && lean_spring.stiffness <= 500.0f,
+                    "lean_spring stiffness must be in valid range [10, 500] N/m");
+    FL_PRECONDITION(pitch_spring.stiffness >= 10.0f && pitch_spring.stiffness <= 500.0f,
+                    "pitch_spring stiffness must be in valid range [10, 500] N/m");
 
     // Update orientation from actual velocity (not input direction or heading)
     orientation.update(ctrl.velocity, dt);

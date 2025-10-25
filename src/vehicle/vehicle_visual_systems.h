@@ -34,9 +34,6 @@ struct vehicle_visual_systems {
     float lean_multiplier = 0.3f;   // radians per g (arcade lean in corners, not physical)
     float pitch_multiplier = 0.05f; // radians per m/s² (arcade pitch during accel, not physical)
 
-    // Spring tuning (physical parameter: proper spring constant in N/m)
-    float tilt_stiffness = 150.0f;  // Spring stiffness for tilt response
-
     vehicle_visual_systems();
 
     /**
@@ -61,4 +58,7 @@ struct vehicle_visual_systems {
     float get_lean_angle() const { return lean_spring.get_position(); }
     float get_pitch_angle() const { return pitch_spring.get_position(); }
     float get_orientation_yaw() const { return orientation.get_yaw(); }
+
+    // Spring parameter getters (single source of truth: springs own their parameters)
+    float get_tilt_stiffness() const { return lean_spring.stiffness; }
 };
