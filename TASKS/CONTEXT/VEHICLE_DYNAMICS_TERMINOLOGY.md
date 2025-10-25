@@ -58,7 +58,7 @@ Purpose: Precise definitions for vehicle physics terms where intuition can misle
 
 **World-space:** Global coordinate system
 - Fixed axes regardless of vehicle orientation
-- This codebase: -X right, +Y up, +Z forward (see CONVENTIONS.md)
+- This codebase: +X right, +Y up, +Z forward (see CONVENTIONS.md)
 - Used for: position, velocity integration
 
 ## Common Misunderstandings

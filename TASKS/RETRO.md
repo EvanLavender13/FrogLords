@@ -210,7 +210,7 @@ Remove the "Recommended Next Action" section if present:
 
 **Commit:**
 ```bash
-git add TASKS/RETROS/ TASKS/CURRENT_PLAN.md
+git add TASKS/RETROS/ TASKS/CURRENT_PLAN.md TASKS/PLANS/
 git commit -m "retro: <brief summary of patterns found>
 
 <N> plans analyzed, <X> patterns extracted
