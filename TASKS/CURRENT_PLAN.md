@@ -1,19 +1,27 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-24 - Lateral G-Force Calculator
+**Status:** 🏗️ System - Vehicle Tilt
+**Started:** 2025-10-24
+**Branch:** system/vehicle-tilt
+**Complexity:** Small
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
+**System:** Visual weight transfer through model tilting based on lateral acceleration and pitch
+**Location:** @TASKS/PLANS/vehicle_tilt_SYSTEM.md
+**Layer:** 4 (Variation)
+**Complexity:** Small
+**Next:** GRAYBOX
 
----
+**Dependencies:**
+- Lateral G-Force Calculator (Layer 2)
+- Vehicle Movement System (Layer 3)
 
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Key Requirements:**
+- Change debug box from tall (character) to long (vehicle) proportions
+- New vehicle visual system (separate from legacy character code)
+- Lean in corners based on lateral g-force
+- Pitch during acceleration/braking
