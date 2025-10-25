@@ -181,3 +181,40 @@ Both Codex and Gemini incorrectly expected "positive angular_velocity = right tu
 **Manual verification:** Sign convention matches actual gameplay behavior
 <!-- END: VALIDATE/DECISION -->
 
+---
+
+<!-- BEGIN: VALIDATE/TESTS -->
+## Foundation Tests
+
+**Decision:** No unit tests written
+
+**Reasoning:** Primitive is too simple to warrant tests. Unlike spring-damper (trajectory behavior over time requiring multi-step validation), this is instantaneous arithmetic: `(v * ω) / 9.8`. No emergent behavior, no integration, no complex properties. Debug assertions validate contracts; formula is standard physics.
+
+**Reference:** Spring-damper tests validate settling time, overshoot, critical damping convergence - properties that emerge from time-integration. Lateral g-force has no such properties.
+<!-- END: VALIDATE/TESTS -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- Quadratic scaling bug in visualization revealed during review (reviewers found it, not manual testing)
+- Sign convention confusion exposed fundamental conceptual gap: heading-relative vs world-absolute rotation semantics
+- External reviewers converged on shared conceptual error, demonstrating validation process limitations
+
+**Enables (future):**
+- Vehicle tilt system: visual lean proportional to cornering intensity
+- Dynamic FOV: camera field-of-view responds to lateral g-force
+- Drift detection: slip + g-force thresholds trigger drift state
+- Physics-based handling feel: visual/audio feedback from real physics measurement
+
+**Learned:**
+- Simple primitives can have subtle documentation requirements (sign conventions need concrete examples)
+- External validation converges on reviewer assumptions, not just code correctness
+- Heading-relative semantics deserve explicit CONVENTIONS.md documentation
+- Linear scaling violations (quadratic bug) hard to detect in limited manual testing ranges
+- Unit test criterion: Write tests for time-integration primitives with trajectory behavior, not instantaneous arithmetic
+- Rotation convention suspicion: Both external reviewers confused by yaw sign convention despite gameplay correctness - warrants separate deep audit with web research to verify against industry standards (ROS REP-103, game engine conventions)
+<!-- END: VALIDATE/EMERGENCE -->
+
