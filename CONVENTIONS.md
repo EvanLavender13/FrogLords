@@ -35,6 +35,13 @@ This is right-handed and matches standard OpenGL convention (+X right, +Y up, +Z
 - `cross(UP, forward)` produces the right vector (+X direction)
 - `cross(forward, UP)` produces the left vector (-X direction)
 
+**Rotation Convention:**
+- Heading integration: `heading_yaw += -turn_input * turn_rate * dt`
+- Positive turn_input (D key) decreases heading_yaw → right turn
+- Negative turn_input (A key) increases heading_yaw → left turn
+- Angular velocity derived per-frame: `angular_velocity = angle_difference(heading_yaw, previous_heading_yaw) / dt`
+- Sign: negative angular_velocity = right turn, positive = left turn
+
 ---
 
 ## Testing
