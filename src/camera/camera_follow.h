@@ -10,8 +10,8 @@ struct camera_follow {
     // State
     camera_mode mode = camera_mode::FREE_ORBIT;
     float distance = 5.0f;
-    float latitude = 15.0f; // degrees
-    float longitude = 0.0f; // degrees
+    float latitude = 15.0f;  // degrees
+    float longitude = 180.0f; // degrees (behind target, aligned with +Z forward)
     float height_offset = 1.5f;
 
     // Limits
