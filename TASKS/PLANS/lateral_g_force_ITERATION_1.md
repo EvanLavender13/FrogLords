@@ -59,6 +59,12 @@ None
 - Speed-dependent steering (steering_reduction_factor) couples speed and angular velocity
 - Mathematical formula proves linearity in both variables
 
+**Process Violation:**
+- Skipped Context Selection step before defining contract
+- Should have reviewed ACCUMULATED_STATE, PRIMITIVES_GUIDE, PHYSICS_INTEGRATION_PATTERNS, VEHICLE_DYNAMICS_TERMINOLOGY
+- Patterns were followed anyway (derived state, primitives boundary, dt scaling, sign conventions)
+- Lesson: Don't skip process steps even when confident - context review catches unknown unknowns
+
 **Status:**
 ✅ VERIFIED: All contract properties validated (6 via assertions, 2 via testing/math)
 <!-- END: ITERATE/PLAYTEST -->
