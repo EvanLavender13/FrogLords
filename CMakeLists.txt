@@ -73,7 +73,6 @@ add_executable(FrogLords
     src/rendering/debug_visualization.cpp
     src/input/input.cpp
     src/gui/gui.cpp
-    src/gui/character_panel.cpp
     src/gui/camera_panel.cpp
     src/gui/vehicle_panel.cpp
     ${WIREFRAME_SHADER_OUTPUT}

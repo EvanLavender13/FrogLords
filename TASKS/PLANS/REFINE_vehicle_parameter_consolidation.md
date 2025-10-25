@@ -64,11 +64,124 @@ Unify vehicle physics parameters under vehicle::tuning_params
 
 ---
 
+<!-- BEGIN: REFINE/REVIEW -->
+## Second Opinion Review
+
+**Tool:** Codex CLI
+**Date:** 2025-10-24
+
+**Question asked:**
+Validate the 7-step refinement plan for consolidating vehicle parameters. Check: 1) Does the plan correctly move all vehicle physics params (max_speed, accel, weight) from character to vehicle namespace? 2) Are the steps in the right order to avoid breaking the build at each commit? 3) Are there any missing dependencies or call sites that need updating? 4) Does this align with Single Source of Truth principle? 5) Are there any risks or concerns with this approach?
+
+**Concerns evaluated:**
+- Step ordering and build breakage at intermediate commits
+- Completeness of dependency identification
+- Loss of horizontal speed visualization widget
+- Empty character::tuning_params struct after move
+
+**Feedback received:**
+- Q1: ✓ Parameter move correctly identified
+- Q2: ⚠️ **Critical**: Step 2 breaks build - deletions happen before consumers updated
+- Q3: ✓ All call sites identified (game_world, runtime, character_panel, vehicle_panel)
+- Q4: ✓ Aligns with Single Source of Truth
+- Q5: Risks: horizontal speed viz lost, empty character::tuning_params should be deleted
+
+**Impact on implementation:**
+- Reordered steps: ADD vehicle params → UPDATE consumers → DELETE character params
+- Step 2: Preserve horizontal speed plot in vehicle_panel
+- Step 6: Delete entire character::tuning_params system (files + all references)
+- New ordering ensures every commit keeps build working
+<!-- END: REFINE/REVIEW -->
+
+---
+
+<!-- BEGIN: REFINE/PLAN -->
+## Refinement Plan
+
+### Step 1: Add vehicle parameters to vehicle::tuning_params
+**Changes:**
+- `src/vehicle/tuning.h:8-35` - Add max_speed, accel, weight parameters with metadata
+- `src/vehicle/tuning.cpp:8-25` - Update apply_to() to apply all vehicle params including max_speed, accel, weight
+
+**Files Modified:**
+- `src/vehicle/tuning.h`
+- `src/vehicle/tuning.cpp`
+
+**Tests:** Build succeeds
+**Validation:** New parameters have metadata and validation, both sources exist temporarily
+
+### Step 2: Add vehicle tuning widgets to vehicle_panel
+**Changes:**
+- `src/gui/vehicle_panel.cpp:10-30` - Add max_speed, accel, weight sliders with horizontal speed visualization
+- Preserve horizontal speed plot from character_panel (line 35-36)
+
+**Files Modified:**
+- `src/gui/vehicle_panel.cpp`
+
+**Tests:** Build succeeds
+**Validation:** Vehicle panel has all vehicle parameters including speed visualization
+
+### Step 3: Update runtime to use vehicle_params for vehicle parameters
+**Changes:**
+- `src/app/runtime.cpp:157-168` - Change MAX_SPEED, ACCEL, WEIGHT to use world.vehicle_params instead of world.character_params
+
+**Files Modified:**
+- `src/app/runtime.cpp`
+
+**Tests:** Build succeeds, both sources work
+**Validation:** Runtime applies from correct namespace
+
+### Step 4: Update game_world initialization to use only vehicle_params
+**Changes:**
+- `src/app/game_world.cpp:13-21` - Remove character_params.apply_to() call, keep only vehicle_params.apply_to()
+
+**Files Modified:**
+- `src/app/game_world.cpp`
+
+**Tests:** Build succeeds
+**Validation:** Single source active at runtime
+
+### Step 5: Remove vehicle parameters from character_panel
+**Changes:**
+- `src/gui/character_panel.cpp:11-39` - Delete draw_character_tuning_section() entirely
+
+**Files Modified:**
+- `src/gui/character_panel.cpp`
+
+**Tests:** Build succeeds (tuning section removed but panel still draws)
+**Validation:** Character panel no longer shows vehicle parameters
+
+### Step 6: Delete character::tuning_params entirely
+**Changes:**
+- Delete `src/character/tuning.h` - Empty struct, no longer needed
+- Delete `src/character/tuning.cpp` - No implementation needed
+- `src/gui/character_panel.h` - Remove character::tuning_params parameter from draw_character_panel signature
+- `src/gui/character_panel.cpp:118-138` - Remove params parameter from function
+- `src/app/runtime.cpp:105-106` - Remove world.character_params from draw_character_panel call
+- `src/app/game_world.h` - Remove character_params member and tuning.h include
+
+**Files Modified:**
+- `src/character/tuning.h` (deleted)
+- `src/character/tuning.cpp` (deleted)
+- `src/gui/character_panel.h`
+- `src/gui/character_panel.cpp`
+- `src/app/runtime.cpp`
+- `src/app/game_world.h`
+
+**Tests:** Build succeeds, all tests pass
+**Validation:** No character::tuning_params references remain anywhere
+
+## Rollback
+Each step is independently committed. Rollback: `git reset --hard HEAD~N` where N is number of steps to undo.
+<!-- END: REFINE/PLAN -->
+
+---
+
 ## Validation
 
 **Success Criteria:**
 - All vehicle physics params in `vehicle::tuning_params` only
-- `character::tuning_params` contains only character-specific state
+- `character::tuning_params` contains only character-specific state (deleted if empty)
 - Single vehicle_panel for all vehicle tuning
 - Runtime applies vehicle params from vehicle namespace
 - Build succeeds, vehicle control unchanged

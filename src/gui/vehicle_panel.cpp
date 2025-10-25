@@ -50,6 +50,24 @@ void draw_vehicle_state_section(const controller& vehicle) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
 
+    // Traction level
+    const char* traction_name;
+    switch (vehicle.traction.level) {
+    case controller::traction_level::SOFT:
+        traction_name = "SOFT";
+        break;
+    case controller::traction_level::MEDIUM:
+        traction_name = "MEDIUM";
+        break;
+    case controller::traction_level::HARD:
+        traction_name = "HARD";
+        break;
+    default:
+        traction_name = "UNKNOWN";
+        break;
+    }
+    gui::widget::text("Traction: %s", traction_name);
+
     // Read-only vehicle state display (metadata-driven)
     static constexpr param_meta heading_yaw_meta = {"Heading Yaw", "rad", -3.15f, 3.15f};
     static constexpr param_meta steering_multiplier_meta = {"Steering Multiplier", "", 0.0f, 1.0f};

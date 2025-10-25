@@ -12,7 +12,7 @@
 // - Game loop executes changes (explicit application)
 //
 // Future: Consider registry pattern if parameter count grows significantly.
-// Current: 8 parameters, centralized dispatch acceptable for this scale.
+// Current: 5 parameters, centralized dispatch acceptable for this scale.
 
 namespace gui {
 
@@ -20,9 +20,6 @@ enum class parameter_type {
     MAX_SPEED,
     ACCEL,
     WEIGHT,
-    LANDING_STIFFNESS,
-    LANDING_DAMPING,
-    LANDING_IMPULSE_SCALE,
     TURN_RATE,
     STEERING_REDUCTION_FACTOR,
 };
