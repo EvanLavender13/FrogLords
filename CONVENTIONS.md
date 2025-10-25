@@ -35,12 +35,18 @@ This is right-handed and matches standard OpenGL convention (+X right, +Y up, +Z
 - `cross(UP, forward)` produces the right vector (+X direction)
 - `cross(forward, UP)` produces the left vector (-X direction)
 
-**Rotation Convention:**
-- Heading integration: `heading_yaw += -turn_input * turn_rate * dt`
-- Positive turn_input (D key) decreases heading_yaw → right turn
-- Negative turn_input (A key) increases heading_yaw → left turn
-- Angular velocity derived per-frame: `angular_velocity = angle_difference(heading_yaw, previous_heading_yaw) / dt`
-- Sign: negative angular_velocity = right turn, positive = left turn
+**Rotation Convention (Heading-Relative):**
+
+Rotations are heading-relative (turn left/right from current facing), not world-absolute (move toward ±X).
+
+- World space uses standard right-handed Y-up: positive yaw increase rotates forward vector toward +X
+- Input negation inverts rotation: `heading_yaw += -turn_input * turn_rate * dt`
+- D key (turn right): positive input → heading_yaw decreases → clockwise rotation from player perspective
+- A key (turn left): negative input → heading_yaw increases → counterclockwise rotation from player perspective
+- Angular velocity sign: negative = clockwise/right turn, positive = counterclockwise/left turn
+- Derivation: `angular_velocity = angle_difference(heading_yaw, previous_heading_yaw) / dt`
+
+**Critical:** "Right turn" means clockwise from current heading, NOT movement toward world +X. A vehicle facing -Z turning right rotates toward -X (still clockwise, still "right turn").
 
 ---
 
