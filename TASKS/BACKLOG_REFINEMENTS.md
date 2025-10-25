@@ -10,25 +10,7 @@
 
 ### Critical Priority
 
-**Camera-Vehicle Coordinate System 180° Mismatch**
-- **Location:** `src/camera/camera_follow.cpp:16-18`, `src/foundation/math_utils.h:27`, `CONVENTIONS.md:38-49`
-- **Principle:** Consistency, Mathematical Foundation
-- **Severity:** CRITICAL
-- **Description:** Fundamental coordinate system inconsistency. Camera longitude=0° positions camera at +Z looking toward -Z (toward origin). Vehicle yaw=0 from `yaw_to_forward()` produces facing direction +Z. Result: camera and vehicle face opposite directions by 180°. User sees vehicle FRONT instead of BACK at startup. Forward input in car mode moves vehicle AWAY from camera (toward +Z), appearing as backward movement. This breaks intuitive control - camera conventions and heading conventions are inverted.
-- **Impact:**
-  - Destroys spatial reasoning. User cannot predict vehicle response to input. "Forward" becomes "backward" depending on control mode.
-  - Camera shows front of vehicle instead of back, violating third-person camera conventions
-  - Confusing initial state makes debugging rotation/movement issues harder
-  - Likely contributes to recurring coordinate system bugs caught in reviews
-- **Root Cause:** Spherical coordinate convention (`longitude=0` → +Z position) conflicts with heading convention (`yaw=0` → +Z facing). No single authority for "what is forward."
-- **Fix Options:**
-  1. Change camera default longitude to 180° (positioned at -Z, looking toward +Z) - vehicle back visible, forward input moves toward camera
-  2. Change `yaw_to_forward(0)` to return -Z direction - breaks existing code, wide-reaching
-  3. Invert vehicle heading_yaw initialization to π radians - asymmetric, confusing
-- **Recommended:** Option 1 (camera default) - least invasive, aligns with third-person camera conventions
-- **Note:** Input negation (`heading_yaw += -turn_input`) is correct per standard right-handed convention and unrelated to this bug
-- **Source:** User observation during vehicle tilt playtest
-- **Discovered:** 2025-10-25
+None - All critical violations resolved ✅
 
 ### High Priority
 
