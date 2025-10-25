@@ -249,3 +249,9 @@ Centripetal acceleration points toward the center of the circular path (into the
 **Next:**
 - ITERATE phase - system ready for higher-layer consumers (drift detection, camera FOV, vehicle tilt)
 <!-- END: GRAYBOX/RESULTS -->
+
+---
+
+## Iterations
+
+- [ITERATION_1.md](lateral_g_force_ITERATION_1.md) - In Progress
