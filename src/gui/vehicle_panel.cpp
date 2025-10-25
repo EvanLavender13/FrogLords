@@ -7,17 +7,30 @@ namespace gui {
 
 namespace {
 
-std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning_params& params) {
+std::vector<parameter_command> draw_vehicle_tuning_section(const controller& vehicle,
+                                                           const vehicle::tuning_params& params) {
     std::vector<parameter_command> commands;
 
     if (!ImGui::CollapsingHeader("Vehicle Tuning", ImGuiTreeNodeFlags_DefaultOpen))
         return commands;
 
     // Local copies for slider interaction (GUI needs mutable values)
+    float max_speed = params.max_speed;
+    float accel = params.accel;
+    float weight = params.weight;
     float turn_rate = params.turn_rate;
     float steering_reduction_factor = params.steering_reduction_factor;
 
     // Metadata-driven tunable parameters
+    if (gui::widget::tunable_param(&max_speed, vehicle::tuning_params::max_speed_meta)) {
+        commands.push_back({parameter_type::MAX_SPEED, max_speed});
+    }
+    if (gui::widget::tunable_param(&accel, vehicle::tuning_params::accel_meta)) {
+        commands.push_back({parameter_type::ACCEL, accel});
+    }
+    if (gui::widget::tunable_param(&weight, vehicle::tuning_params::weight_meta)) {
+        commands.push_back({parameter_type::WEIGHT, weight});
+    }
     if (gui::widget::tunable_param(&turn_rate, vehicle::tuning_params::turn_rate_meta)) {
         commands.push_back({parameter_type::TURN_RATE, turn_rate});
     }
@@ -25,6 +38,10 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning
                                     vehicle::tuning_params::steering_reduction_factor_meta)) {
         commands.push_back({parameter_type::STEERING_REDUCTION_FACTOR, steering_reduction_factor});
     }
+
+    // Real-time feedback: horizontal speed plot
+    float horizontal_speed = glm::length(glm::vec3(vehicle.velocity.x, 0.0f, vehicle.velocity.z));
+    gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f, params.max_speed * 1.2f);
 
     return commands;
 }
@@ -67,7 +84,7 @@ std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& sta
         return commands;
 
     // Vehicle tuning section (returns commands)
-    auto tuning_commands = draw_vehicle_tuning_section(params);
+    auto tuning_commands = draw_vehicle_tuning_section(vehicle, params);
     commands.insert(commands.end(), tuning_commands.begin(), tuning_commands.end());
 
     // Vehicle state section (read-only)
