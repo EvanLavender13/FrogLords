@@ -7,17 +7,30 @@ namespace gui {
 
 namespace {
 
-std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning_params& params) {
+std::vector<parameter_command> draw_vehicle_tuning_section(const controller& vehicle,
+                                                           const vehicle::tuning_params& params) {
     std::vector<parameter_command> commands;
 
     if (!ImGui::CollapsingHeader("Vehicle Tuning", ImGuiTreeNodeFlags_DefaultOpen))
         return commands;
 
     // Local copies for slider interaction (GUI needs mutable values)
+    float max_speed = params.max_speed;
+    float accel = params.accel;
+    float weight = params.weight;
     float turn_rate = params.turn_rate;
     float steering_reduction_factor = params.steering_reduction_factor;
 
     // Metadata-driven tunable parameters
+    if (gui::widget::tunable_param(&max_speed, vehicle::tuning_params::max_speed_meta)) {
+        commands.push_back({parameter_type::MAX_SPEED, max_speed});
+    }
+    if (gui::widget::tunable_param(&accel, vehicle::tuning_params::accel_meta)) {
+        commands.push_back({parameter_type::ACCEL, accel});
+    }
+    if (gui::widget::tunable_param(&weight, vehicle::tuning_params::weight_meta)) {
+        commands.push_back({parameter_type::WEIGHT, weight});
+    }
     if (gui::widget::tunable_param(&turn_rate, vehicle::tuning_params::turn_rate_meta)) {
         commands.push_back({parameter_type::TURN_RATE, turn_rate});
     }
@@ -26,12 +39,34 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const vehicle::tuning
         commands.push_back({parameter_type::STEERING_REDUCTION_FACTOR, steering_reduction_factor});
     }
 
+    // Real-time feedback: horizontal speed plot
+    float horizontal_speed = glm::length(glm::vec3(vehicle.velocity.x, 0.0f, vehicle.velocity.z));
+    gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f, params.max_speed * 1.2f);
+
     return commands;
 }
 
 void draw_vehicle_state_section(const controller& vehicle) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
+
+    // Traction level
+    const char* traction_name;
+    switch (vehicle.traction.level) {
+    case controller::traction_level::SOFT:
+        traction_name = "SOFT";
+        break;
+    case controller::traction_level::MEDIUM:
+        traction_name = "MEDIUM";
+        break;
+    case controller::traction_level::HARD:
+        traction_name = "HARD";
+        break;
+    default:
+        traction_name = "UNKNOWN";
+        break;
+    }
+    gui::widget::text("Traction: %s", traction_name);
 
     // Read-only vehicle state display (metadata-driven)
     static constexpr param_meta heading_yaw_meta = {"Heading Yaw", "rad", -3.15f, 3.15f};
@@ -67,7 +102,7 @@ std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& sta
         return commands;
 
     // Vehicle tuning section (returns commands)
-    auto tuning_commands = draw_vehicle_tuning_section(params);
+    auto tuning_commands = draw_vehicle_tuning_section(vehicle, params);
     commands.insert(commands.end(), tuning_commands.begin(), tuning_commands.end());
 
     // Vehicle state section (read-only)

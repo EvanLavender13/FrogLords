@@ -2,7 +2,6 @@
 #include "foundation/math_utils.h"
 #include "foundation/debug_assert.h"
 
-#include "gui/character_panel.h"
 #include "rendering/velocity_trail.h"
 #include "input/input.h"
 #include "input/keycodes.h"
@@ -12,7 +11,6 @@
 
 void game_world::init() {
     character = controller();
-    character_params.apply_to(character);
     vehicle_params.apply_to(character);
     cam = camera();
     cam_follow = camera_follow(); // Use default values

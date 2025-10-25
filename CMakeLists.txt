@@ -62,7 +62,6 @@ add_executable(FrogLords
     src/character/character_reactive_systems.cpp
     src/character/orientation.cpp
     src/character/animation.cpp
-    src/character/tuning.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp
     src/foundation/spring_damper.cpp
@@ -73,7 +72,6 @@ add_executable(FrogLords
     src/rendering/debug_visualization.cpp
     src/input/input.cpp
     src/gui/gui.cpp
-    src/gui/character_panel.cpp
     src/gui/camera_panel.cpp
     src/gui/vehicle_panel.cpp
     ${WIREFRAME_SHADER_OUTPUT}

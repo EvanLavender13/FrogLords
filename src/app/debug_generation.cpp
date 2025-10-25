@@ -1,6 +1,5 @@
 #include "app/debug_generation.h"
 #include "app/game_world.h"
-#include "gui/character_panel.h"
 #include "rendering/debug_primitives.h"
 #include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
@@ -289,8 +288,7 @@ void generate_car_control_primitives(debug::debug_primitive_list& list, const co
 
 namespace app {
 
-void generate_debug_primitives(debug::debug_primitive_list& list, const game_world& world,
-                               const gui::character_panel_state& panel_state) {
+void generate_debug_primitives(debug::debug_primitive_list& list, const game_world& world) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
     generate_character_state_primitives(list, world.character, world.character_visuals);
@@ -298,10 +296,7 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_character_body_primitives(list, world.character, world.character_visuals);
     // generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals); // Removed: uses locomotion-specific fields
     generate_car_control_primitives(list, world.character, world.current_control_scheme);
-
-    if (panel_state.show_velocity_trail) {
-        generate_velocity_trail_primitives(list, world.trail_state);
-    }
+    generate_velocity_trail_primitives(list, world.trail_state);
 }
 
 } // namespace app

@@ -4,7 +4,6 @@
 #include "app/game_world.h"
 #include "rendering/renderer.h"
 #include "foundation/procedural_mesh.h"
-#include "gui/character_panel.h"
 #include "gui/camera_panel.h"
 #include "gui/vehicle_panel.h"
 #include <glm/glm.hpp>
@@ -29,7 +28,6 @@ struct app_runtime {
 
     game_world world;
     wireframe_renderer renderer{};
-    gui::character_panel_state panel_state{};
     gui::camera_panel_state camera_panel_state{};
     gui::vehicle_panel_state vehicle_panel_state{};
 

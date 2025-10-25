@@ -5,7 +5,6 @@
 #include "sokol_log.h"
 #include "input/input.h"
 #include "gui/gui.h"
-#include "gui/character_panel.h"
 #include "rendering/debug_draw.h"
 #include "rendering/debug_visualization.h"
 #include "app/debug_generation.h"
@@ -101,13 +100,6 @@ void app_runtime::frame() {
     ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
-        // Character tuning sections
-        auto param_commands = gui::draw_character_panel(
-            panel_state, world.character, world.character_visuals, world.character_params);
-
-        // Apply parameter commands (unidirectional flow: GUI → commands → game state)
-        apply_parameter_commands(param_commands);
-
         // Vehicle section
         auto vehicle_commands = gui::draw_vehicle_panel(
             vehicle_panel_state, world.character, world.vehicle_params);
@@ -155,25 +147,16 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
     for (const auto& cmd : commands) {
         switch (cmd.type) {
         case gui::parameter_type::MAX_SPEED:
-            world.character_params.max_speed = cmd.value;
-            world.character_params.apply_to(world.character);
+            world.vehicle_params.max_speed = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::ACCEL:
-            world.character_params.accel = cmd.value;
-            world.character_params.apply_to(world.character);
+            world.vehicle_params.accel = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::WEIGHT:
-            world.character_params.weight = cmd.value;
-            world.character_params.apply_to(world.character);
-            break;
-        case gui::parameter_type::LANDING_STIFFNESS:
-            world.character_visuals.animation.landing_spring.stiffness = cmd.value;
-            break;
-        case gui::parameter_type::LANDING_DAMPING:
-            world.character_visuals.animation.landing_spring.damping = cmd.value;
-            break;
-        case gui::parameter_type::LANDING_IMPULSE_SCALE:
-            world.character_visuals.animation.landing_impulse_scale = cmd.value;
+            world.vehicle_params.weight = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::TURN_RATE:
             world.vehicle_params.turn_rate = cmd.value;
@@ -236,7 +219,7 @@ void app_runtime::render_world() {
                                       unit_sphere_8, unit_sphere_6, unit_sphere_4};
 
         // Generate all debug primitives from the current world state.
-        app::generate_debug_primitives(world.debug_list, world, panel_state);
+        app::generate_debug_primitives(world.debug_list, world);
 
         // Pass the populated list to the dumb renderer.
         debug::draw_primitives(debug_ctx, world.debug_list);
