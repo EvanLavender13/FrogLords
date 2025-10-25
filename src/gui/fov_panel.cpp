@@ -20,6 +20,7 @@ std::vector<fov_command> draw_fov_panel(const fov_panel_state& state,
     float base_fov = fov_system.base_fov;
     float max_fov_range = fov_system.max_fov_range;
     float g_multiplier = fov_system.g_multiplier;
+    float spring_stiffness = fov_system.fov_spring.stiffness;
 
     // Metadata-driven tunable parameters
     if (gui::widget::tunable_param(&base_fov, dynamic_fov_system::base_fov_meta)) {
@@ -32,6 +33,10 @@ std::vector<fov_command> draw_fov_panel(const fov_panel_state& state,
 
     if (gui::widget::tunable_param(&g_multiplier, dynamic_fov_system::g_multiplier_meta)) {
         commands.push_back({fov_parameter_type::G_MULTIPLIER, g_multiplier});
+    }
+
+    if (gui::widget::tunable_param(&spring_stiffness, dynamic_fov_system::spring_stiffness_meta)) {
+        commands.push_back({fov_parameter_type::SPRING_STIFFNESS, spring_stiffness});
     }
 
     return commands;

@@ -10,7 +10,7 @@ struct fov_panel_state {
     bool show = true;
 };
 
-enum class fov_parameter_type { BASE_FOV, MAX_FOV_RANGE, G_MULTIPLIER };
+enum class fov_parameter_type { BASE_FOV, MAX_FOV_RANGE, G_MULTIPLIER, SPRING_STIFFNESS };
 
 struct fov_command {
     fov_parameter_type type;

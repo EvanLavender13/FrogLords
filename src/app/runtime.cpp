@@ -234,6 +234,9 @@ void app_runtime::apply_fov_commands(const std::vector<gui::fov_command>& comman
         case gui::fov_parameter_type::G_MULTIPLIER:
             world.dynamic_fov.g_multiplier = cmd.value;
             break;
+        case gui::fov_parameter_type::SPRING_STIFFNESS:
+            world.dynamic_fov.fov_spring.stiffness = cmd.value;
+            break;
         }
     }
 }

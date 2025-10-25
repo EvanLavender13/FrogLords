@@ -295,3 +295,9 @@ Review the implementation plan against principles and patterns. Validate archite
 - Validate edge cases: stationary, max speed straight, tight turns
 
 <!-- END: GRAYBOX/RESULTS -->
+
+---
+
+## Iterations
+
+- [ITERATION_1.md](dynamic_fov_ITERATION_1.md) - In Progress

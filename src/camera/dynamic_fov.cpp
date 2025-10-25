@@ -6,7 +6,23 @@
 #include <algorithm>
 #include <cmath>
 
-void dynamic_fov_system::update(const controller& ctrl, camera& cam) {
+dynamic_fov_system::dynamic_fov_system() {
+    // Initialize spring with moderate stiffness for smooth FOV transitions
+    // Mid-range value balances responsiveness and smoothness
+    constexpr float default_fov_stiffness = 150.0f;
+
+    fov_spring.position = base_fov; // Start at base FOV
+    fov_spring.stiffness = default_fov_stiffness;
+    fov_spring.damping = critical_damping(default_fov_stiffness);
+}
+
+void dynamic_fov_system::update(const controller& ctrl, camera& cam, float dt) {
+    // Precondition: delta_time must be positive
+    FL_PRECONDITION(dt > 0.0f, "Delta time must be positive for spring integration");
+
+    // Update spring damping to maintain critical damping (no overshoot)
+    fov_spring.damping = critical_damping(fov_spring.stiffness);
+
     // Calculate current speed (magnitude of velocity)
     float speed = glm::length(ctrl.velocity);
 
@@ -28,14 +44,23 @@ void dynamic_fov_system::update(const controller& ctrl, camera& cam) {
     // Combine contributions
     float target_fov = base_fov + speed_contribution + g_contribution;
 
-    // Clamp to valid range before writing
+    // Clamp target to valid range before spring integration
     float max_allowed_fov = base_fov + max_fov_range;
-    float clamped_fov = std::clamp(target_fov, base_fov, max_allowed_fov);
+    float clamped_target_fov = std::clamp(target_fov, base_fov, max_allowed_fov);
 
-    // Postcondition: FOV always within valid range
-    FL_POSTCONDITION(clamped_fov >= base_fov && clamped_fov <= max_allowed_fov,
+    // Integrate spring toward clamped target
+    spring_step step{.target = clamped_target_fov, .delta_time = dt};
+    fov_spring.update(step);
+
+    // Get smoothed FOV from spring position
+    float smoothed_fov = fov_spring.get_position();
+
+    // Clamp after spring integration to enforce hard bounds
+    smoothed_fov = std::clamp(smoothed_fov, base_fov, max_allowed_fov);
+
+    FL_POSTCONDITION(smoothed_fov >= base_fov && smoothed_fov <= max_allowed_fov,
                      "FOV must be within [base_fov, base_fov + max_fov_range]");
 
     // Write to camera
-    cam.set_fov(clamped_fov);
+    cam.set_fov(smoothed_fov);
 }

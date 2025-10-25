@@ -90,7 +90,7 @@ void game_world::update(float dt) {
     vehicle_visuals.update(character, dt);
 
     // Update dynamic FOV system after physics
-    dynamic_fov.update(character, cam);
+    dynamic_fov.update(character, cam, dt);
 
     // Sample velocity trail
     trail_state.time_since_last_sample += dt;
