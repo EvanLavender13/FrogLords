@@ -118,12 +118,17 @@ Variations within systems. Different modes, states, or behaviors.
   - Uses: Layer 2 lateral g-force calculator, spring-damper, orientation system
   - Extends: Vehicle Movement System (visual layer)
   - Enables: Enhanced drift visual feedback, suspension animation foundation
+- **Dynamic FOV System** - Speed-reactive camera FOV with spring-damped transitions (`src/camera/dynamic_fov.{h,cpp}`, `src/gui/fov_panel.{h,cpp}`)
+  - Uses: Layer 2 lateral g-force calculator, spring-damper
+  - Extends: Rendering Camera (modulates FOV parameter)
+  - Enables: Camera shake on boost, dynamic camera positioning, motion blur intensity, perceptual feedback systems
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
 - Layer 2 primitives as needed
 - No direct renderer coupling
 - Vehicle tilt provides: Visual weight transfer pattern for drift system, foundation for per-wheel suspension
+- Dynamic FOV provides: Pattern for speed-reactive camera behaviors, perceptual enhancement foundation
 
 ---
 

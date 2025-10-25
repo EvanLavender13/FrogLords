@@ -86,25 +86,17 @@
 
 ## Camera
 
-**Dynamic FOV System** ← NOW BUILDABLE
-- FOV increases with speed (base 75° → max 110°)
-- Additional g-force multipliers for acceleration
-- Formula: `FOV = base + (speed/maxSpeed) * range + lateral_g * g_multiplier`
-- Most impactful technique for speed sensation
-- Zero physics modification, pure visual enhancement
-- Requires: Lateral G-Force Calculator (complete)
-
-**Camera Shake on Boost**
+**Camera Shake on Boost** ← NOW BUILDABLE (dynamic FOV pattern established)
 - Rotation-based shake (less aggressive than translation)
 - Speed-scaled magnitude: `shake_mag = base + (speed/maxSpeed) * max_shake`
 - Activates above 80% max speed or during boost
-- Requires: None (camera transform modification)
+- Requires: Dynamic FOV System (pattern complete)
 
-**Lower Camera Positioning**
+**Lower Camera Positioning** ← NOW BUILDABLE (dynamic FOV pattern established)
 - Dynamically lower camera at high speeds
 - More "road pixels" moving = faster perception
 - Smooth interpolation to avoid jarring transitions
-- Requires: None (camera position modification)
+- Requires: Dynamic FOV System (pattern complete)
 
 ---
 
