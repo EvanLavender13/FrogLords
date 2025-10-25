@@ -101,3 +101,81 @@ None
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
 
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-24
+
+**Convergent Findings:**
+
+Both reviewers identified violations based on documented sign convention vs implementation:
+
+1. **Documentation Sign Mismatch** - math_utils.h and debug_generation.cpp document "positive angular_velocity = right turn", but coordinate system uses left-handed yaw (math_utils.h:33 `yaw_to_right = (cos, 0, -sin)` not standard `(cos, 0, sin)`). Positive yaw rotates leftward, making positive angular_velocity = left turn. Documentation contradicts coordinate system reality.
+
+2. **Visualization Quadratic Scaling** - debug_generation.cpp:88,92,96 multiplies direction by magnitude twice (`arrow_dir = right_dir * g_force` then `* arrow_length` where `arrow_length = abs(g_force) * SCALE`), making arrow length proportional to g² instead of g. Violates linearity contract.
+
+**Root Cause Analysis:**
+
+`yaw_to_right(yaw) = (cos(yaw), 0, -sin(yaw))` defines LEFT-HANDED yaw rotation (standard right-handed is `(cos, 0, sin)`). In this coordinate system:
+- Positive yaw change = leftward rotation (counterclockwise from above)
+- controller.cpp:107 negates turn input to make positive input turn RIGHT
+- Therefore positive angular_velocity (from positive heading_delta) = LEFT turn
+- Documentation claiming "positive = right turn" is backwards
+
+**Divergent Findings:**
+
+None. Complete convergence on violations.
+
+**Principle Violations:**
+
+- **Mathematical Foundation**: Documentation states incorrect sign convention for left-handed coordinate system. Quadratic scaling violates proportionality.
+- **Radical Simplicity**: Convoluted debug arrow logic obscures intent and introduces bugs.
+
+**Strengths:**
+
+- Derive Don't Accumulate: Angular velocity correctly derived per-frame
+- Single Source of Truth: Calculation uses authoritative physics state
+- Code Consistency: New functions match existing patterns
+- Time-Independence: dt scaling correct, wrap-around handling correct
+- Implementation Logic: controller.cpp:107 negation is CORRECT for left-handed yaw
+
+**Assessment:**
+
+Implementation is mathematically correct for the left-handed coordinate system. Violations are documentation/visualization only:
+1. Update documentation to state "positive angular_velocity = left turn" (matches coordinate system reality)
+2. Simplify arrow to `position + right_dir * (g_force * SCALE)` for linear scaling
+
+Manual testing appeared correct because implementation IS correct - only documentation was wrong.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:**
+
+Core implementation is mathematically sound - derives state correctly, integrates properly, handles edge cases. Violations are surface-level: incorrect documentation and suboptimal visualization code. Both fixable without touching validated primitives or integration logic.
+
+**Required changes:**
+
+1. **Fix documentation** - Update math_utils.h and debug_generation.cpp comments to state "negative angular_velocity = right turn" (matches actual derivation from negated turn input)
+2. **Fix visualization** - Simplify debug arrow to `position + right_dir * (g_force * SCALE)` eliminating quadratic scaling bug
+
+**Changes applied:**
+
+1. ✓ math_utils.h:121 - Updated @param to "(negative = right turn, positive = left turn)"
+2. ✓ math_utils.h:123-124 - Updated @return sign convention
+3. ✓ math_utils.h:139 - Updated inline comment sign example
+4. ✓ debug_generation.cpp:85-86 - Corrected sign convention comments
+5. ✓ debug_generation.cpp:89-95 - Simplified to single linear multiplication `right_dir * (g_force * SCALE)`
+
+**Build:** ✓ Successful
+**Status:** Violations corrected, ready for next iteration
+<!-- END: VALIDATE/DECISION -->
+
