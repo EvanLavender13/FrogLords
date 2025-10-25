@@ -73,7 +73,7 @@ struct tuning_params {
     static constexpr param_meta tilt_stiffness_meta = {"Tilt Stiffness", "N/m", 10.0f, 500.0f};
 
     static constexpr param_meta orientation_stiffness_meta = {"Orientation Stiffness", "N/m", 5.0f,
-                                                               100.0f};
+                                                               500.0f};
 
     void apply_to(controller& c, vehicle_visual_systems& visuals) const;
 };
