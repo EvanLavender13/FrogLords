@@ -26,8 +26,11 @@ void vehicle_visual_systems::update(const controller& ctrl, float dt) {
     FL_PRECONDITION(pitch_spring.stiffness >= 10.0f && pitch_spring.stiffness <= 500.0f,
                     "pitch_spring stiffness must be in valid range [10, 500] N/m");
 
-    // Update orientation from actual velocity (not input direction or heading)
-    orientation.update(ctrl.velocity, dt);
+    // Update orientation from intended velocity (input direction × max speed)
+    // Using input_direction ensures orientation responds immediately to player intent,
+    // creating drift-like behavior where the vehicle can face different from travel direction
+    glm::vec3 intended_velocity = ctrl.input_direction * ctrl.max_speed;
+    orientation.update(intended_velocity, dt);
 
     // Calculate target lean from lateral g-force (lean into turns)
     float lateral_g = ctrl.calculate_lateral_g_force();
