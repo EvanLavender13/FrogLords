@@ -1,7 +1,8 @@
 # Iteration 1: Dynamic FOV
 
 **Started:** 2025-10-25
-**Status:** In Progress
+**Completed:** 2025-10-25
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -18,12 +19,12 @@ Mathematical properties and edge cases that must be proven for production stabil
 - [x] Formula produces deterministic output (same inputs → same output) (pure calculation, no randomness)
 
 ### Edge Cases
-- [ ] Stationary vehicle (speed = 0): FOV equals base_fov
-- [ ] Max speed straight line: FOV equals base_fov + max_fov_range (no g contribution)
-- [ ] Tight turn at low speed: FOV equals base_fov + g_contribution (clamped)
-- [ ] Combined max speed + max g-force: FOV clamped to ceiling (base + range)
-- [ ] Negative speed (reverse): absolute value used or clamped to zero
-- [ ] Zero max_speed parameter: epsilon guard prevents division by zero
+- [x] Stationary vehicle (speed = 0): FOV equals base_fov ✓ VERIFIED
+- [x] Max speed straight line: FOV equals base_fov + max_fov_range (no g contribution) ✓ VERIFIED
+- [x] Tight turn at low speed: FOV equals base_fov + g_contribution (clamped) ✓ VERIFIED
+- [x] Combined max speed + max g-force: FOV clamped to ceiling (base + range) ✓ VERIFIED
+- [x] Negative speed (reverse): magnitude used, FOV increases with reverse speed ✓ VERIFIED
+- [x] Zero max_speed parameter: GUI prevents (min=1.0), epsilon guard defends (dynamic_fov.cpp:43) ✓ VERIFIED
 
 ### Parameter Validation
 - [x] base_fov constrained to [60, 90] degrees (precondition via base_fov_meta)
@@ -80,3 +81,61 @@ Study existing usage before implementing. Patterns exist for a reason.
 <!-- END: ITERATE/LEARNING -->
 
 ---
+
+<!-- BEGIN: ITERATE/PLAYTEST -->
+### Playtest 1
+
+**Date:** 2025-10-25
+**Tester:** User
+
+**Contract Items Verified:**
+- [x] Spring smoothing eliminates snapping (smooth transitions observed)
+- [x] All edge cases pass (6/6 scenarios validated)
+- [x] Parameter sliders work within metadata ranges
+- [x] FOV stays within bounds at all times
+
+**Violations:**
+None
+
+**Emergent:**
+- Spring smoothing feels natural immediately with default stiffness=150
+- Combined speed + g-force creates satisfying "corner rush" sensation
+- Effect is immediately noticeable and enhances speed perception
+
+**Status:**
+✅ ALL CONTRACT ITEMS VERIFIED - Ready for completion
+<!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Properties validated:**
+- Mathematical correctness: All calculations bounded and deterministic
+- Edge case handling: 6/6 scenarios verified (stationary, max speed, corners, combined, reverse, zero-guard)
+- Parameter validation: Metadata-driven ranges enforced via preconditions
+- System integration: Correct update order, single write per frame, no state accumulation
+- Spring smoothing: Eliminates snapping, smooth transitions, tunable responsiveness
+
+**Edges handled:**
+- Division by zero (epsilon guard for max_speed)
+- Speed overflow (clamped to [0,1] before scaling)
+- G-force unbounded (target clamped before spring integration)
+- Spring drift (hard clamp after integration)
+- Parameter bounds (preconditions validate against metadata)
+
+**Assertions added:**
+- 6 preconditions (dt, 4 parameter ranges, metadata-driven)
+- 1 postcondition (FOV within valid range)
+
+**Playtests:** 1 (all items verified, no violations)
+
+**Status:**
+- [x] Contract proven
+- [x] Stable through testing
+- [x] Ready for VALIDATE
+<!-- END: ITERATE/COMPLETE -->
+
