@@ -6,6 +6,7 @@
 #include "foundation/procedural_mesh.h"
 #include "gui/camera_panel.h"
 #include "gui/vehicle_panel.h"
+#include "gui/fov_panel.h"
 #include <glm/glm.hpp>
 
 struct sapp_event;
@@ -21,6 +22,7 @@ struct app_runtime {
     void render_world();
     void apply_parameter_commands(const std::vector<gui::parameter_command>& commands);
     void apply_camera_commands(const std::vector<gui::camera_command>& commands);
+    void apply_fov_commands(const std::vector<gui::fov_command>& commands);
 
     bool initialized = false;
 
@@ -30,6 +32,7 @@ struct app_runtime {
     wireframe_renderer renderer{};
     gui::camera_panel_state camera_panel_state{};
     gui::vehicle_panel_state vehicle_panel_state{};
+    gui::fov_panel_state fov_panel_state{};
 
     float wireframe_color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 

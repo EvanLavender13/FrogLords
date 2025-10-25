@@ -20,8 +20,8 @@ struct vehicle_visual_systems {
     orientation_system orientation;
 
     // Spring-damped visual state (derived from physics, not affecting physics)
-    spring_damper lean_spring;   // radians (roll around forward axis)
-    spring_damper pitch_spring;  // radians (pitch around right axis)
+    spring_damper lean_spring;  // radians (roll around forward axis)
+    spring_damper pitch_spring; // radians (pitch around right axis)
 
     // History for acceleration derivation
     glm::vec3 previous_velocity{0.0f};

@@ -25,37 +25,78 @@
 - Smooth transitions between speed ranges
 - Requires: None (enhancement of existing system)
 
-**Physics-Based Drift System** ← NOW BUILDABLE
-- Brake-to-drift activation (handbrake + steering at speed)
-- State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
-- Friction modification during drift: rear 30%, front 70% of normal
-- Acceleration boost to maintain speed during slide
-- NO position manipulation - physics integration handles movement
-- Requires: Slip Angle Calculator (complete), Lateral G-Force Calculator (complete)
+**Brake Input Extension** ← NOW BUILDABLE
+- Add brake/handbrake input to controller_input_params
+- Map to Space key or controller trigger
+- Binary input: pressed/not pressed
+- Pass through input system to controller
+- Foundation for drift initiation
+- Requires: None (input system extension)
+
+**Drift Detection Primitive** ← AFTER BRAKE INPUT
+- Calculate drift intensity from slip angle (continuous 0-1 value)
+- Threshold detection: 5-8° initiation, maintain up to 23° (0.4 rad)
+- Speed gating: require speed > soft_threshold (3 m/s)
+- Brake boost: multiply intensity when brake held
+- Pure calculation, no state modification
+- Returns: drift_intensity float for other systems to consume
+- Requires: Slip Angle Calculator (complete), Brake Input Extension
+
+**Continuous Friction Scaling** ← AFTER DRIFT DETECTION
+- Smoothly interpolate friction based on drift_intensity
+- No discrete states, continuous modification
+- Formula: `friction = lerp(1.0, drift_friction, drift_intensity)`
+- Rear wheels: 0.3x at full drift, Front wheels: 0.7x at full drift
+- Applied in physics update, affects acceleration calculation
+- Requires: Drift Detection Primitive
+
+**Drift Speed Maintenance** ← AFTER FRICTION SCALING
+- Boost acceleration during drift to maintain forward momentum
+- Scale factor: `accel_multiplier = 1.0 + (drift_intensity * 0.5)`
+- Works through exponential drag model (k = accel/max_speed)
+- Physics solver naturally maintains equilibrium speed
+- No velocity hacks, pure force modification
+- Requires: Continuous Friction Scaling
+
+**Drift Visual Feedback** ← AFTER FRICTION SCALING
+- Enhance existing vehicle_visual_systems for drift
+- Additional lean during drift (beyond g-force lean)
+- Counter-steer visualization (wheels point opposite to drift)
+- Integrates with existing spring-damped tilt system
+- Pure visual, no physics modification
+- Requires: Continuous Friction Scaling
+
+**Centripetal Drift Assist** (Optional Enhancement)
+- Apply subtle outward force during high-speed turns
+- Magnitude: function of angular_velocity and speed
+- Enhances arcade feel without breaking physics
+- Formula: `outward_force = -lateral_dir * (angular_vel * speed * assist_factor)`
+- Requires: Drift Speed Maintenance
+
+**Drift Tuning Parameters**
+- Expose all drift thresholds and multipliers via metadata
+- Slip angle thresholds (initiation/maintain angles)
+- Friction reduction factors (rear/front separately)
+- Speed maintenance multiplier
+- Brake boost factor
+- Integrates with existing vehicle_panel GUI
+- Requires: Any drift system to tune
 
 ---
 
 ## Camera
 
-**Dynamic FOV System** ← NOW BUILDABLE
-- FOV increases with speed (base 75° → max 110°)
-- Additional g-force multipliers for acceleration
-- Formula: `FOV = base + (speed/maxSpeed) * range + lateral_g * g_multiplier`
-- Most impactful technique for speed sensation
-- Zero physics modification, pure visual enhancement
-- Requires: Lateral G-Force Calculator (complete)
-
-**Camera Shake on Boost**
+**Camera Shake on Boost** ← NOW BUILDABLE (dynamic FOV pattern established)
 - Rotation-based shake (less aggressive than translation)
 - Speed-scaled magnitude: `shake_mag = base + (speed/maxSpeed) * max_shake`
 - Activates above 80% max speed or during boost
-- Requires: None (camera transform modification)
+- Requires: Dynamic FOV System (pattern complete)
 
-**Lower Camera Positioning**
+**Lower Camera Positioning** ← NOW BUILDABLE (dynamic FOV pattern established)
 - Dynamically lower camera at high speeds
 - More "road pixels" moving = faster perception
 - Smooth interpolation to avoid jarring transitions
-- Requires: None (camera position modification)
+- Requires: Dynamic FOV System (pattern complete)
 
 ---
 

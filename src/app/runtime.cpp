@@ -101,8 +101,8 @@ void app_runtime::frame() {
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Vehicle section
-        auto vehicle_commands = gui::draw_vehicle_panel(vehicle_panel_state, world.character,
-                                                         world.vehicle_params, world.vehicle_visuals);
+        auto vehicle_commands = gui::draw_vehicle_panel(
+            vehicle_panel_state, world.character, world.vehicle_params, world.vehicle_visuals);
 
         // Apply vehicle parameter commands (unidirectional flow: GUI → commands → game state)
         apply_parameter_commands(vehicle_commands);
@@ -113,6 +113,12 @@ void app_runtime::frame() {
 
         // Apply camera commands (unidirectional flow: GUI → commands → game state)
         apply_camera_commands(camera_commands);
+
+        // FOV section
+        auto fov_commands = gui::draw_fov_panel(fov_panel_state, world.dynamic_fov);
+
+        // Apply FOV commands (unidirectional flow: GUI → commands → game state)
+        apply_fov_commands(fov_commands);
 
         // FPS display at bottom
         ImGui::Spacing();
@@ -211,6 +217,25 @@ void app_runtime::apply_camera_commands(const std::vector<gui::camera_command>& 
             break;
         case gui::camera_parameter_type::MODE:
             world.cam_follow.mode = cmd.mode;
+            break;
+        }
+    }
+}
+
+void app_runtime::apply_fov_commands(const std::vector<gui::fov_command>& commands) {
+    for (const auto& cmd : commands) {
+        switch (cmd.type) {
+        case gui::fov_parameter_type::BASE_FOV:
+            world.dynamic_fov.base_fov = cmd.value;
+            break;
+        case gui::fov_parameter_type::MAX_FOV_RANGE:
+            world.dynamic_fov.max_fov_range = cmd.value;
+            break;
+        case gui::fov_parameter_type::G_MULTIPLIER:
+            world.dynamic_fov.g_multiplier = cmd.value;
+            break;
+        case gui::fov_parameter_type::SPRING_STIFFNESS:
+            world.dynamic_fov.fov_spring.stiffness = cmd.value;
             break;
         }
     }

@@ -68,12 +68,12 @@ struct tuning_params {
     static constexpr param_meta lean_multiplier_meta = {"Lean Multiplier", "rad/g", 0.0f, 1.0f};
 
     static constexpr param_meta pitch_multiplier_meta = {"Pitch Multiplier", "rad/(m/s²)", 0.0f,
-                                                          0.2f};
+                                                         0.2f};
 
     static constexpr param_meta tilt_stiffness_meta = {"Tilt Stiffness", "N/m", 10.0f, 500.0f};
 
     static constexpr param_meta orientation_stiffness_meta = {"Orientation Stiffness", "N/m", 5.0f,
-                                                               500.0f};
+                                                              500.0f};
 
     void apply_to(controller& c, vehicle_visual_systems& visuals) const;
 };
