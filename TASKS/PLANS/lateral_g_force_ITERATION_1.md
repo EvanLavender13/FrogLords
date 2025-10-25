@@ -1,7 +1,7 @@
 # Iteration 1: Lateral G-Force Calculator
 
 **Started:** 2025-10-24
-**Status:** In Progress
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -27,10 +27,71 @@ Mathematical correctness and edge case handling for lateral g-force calculation 
 - [x] **No Accumulated State**: Angular velocity derived per-frame from heading delta, not accumulated
   - Validated: controller.h:108-111 - angular_velocity marked as DERIVED STATE
   - controller.cpp:104, 118-119 - computed fresh each frame from heading change
-- [ ] **Proportionality**: G-force scales linearly with speed at constant turn rate
-  - Requires manual testing: hold turn input constant, vary acceleration
-- [ ] **Proportionality**: G-force scales linearly with turn rate at constant speed
-  - Requires manual testing: vary turn input, observe g-force arrow length
+- [x] **Proportionality**: G-force scales linearly with speed at constant turn rate
+  - Validated: Manual testing - hold D key, accelerate with W, magenta arrow grows with speed
+  - Formula: `g = (speed * ω) / 9.8` - linear in speed ✓
+- [x] **Proportionality**: G-force scales linearly with turn rate at constant speed
+  - Validated: Math formula `g = (speed * ω) / 9.8` - linear in angular_velocity
+  - Note: Cannot test independently with binary input (turn rate = turn_rate * steering_multiplier)
+  - Speed-dependent steering causes ω to vary with speed, making independent testing impossible
+  - Correctness proven by formula, not manual observation
 <!-- END: ITERATE/CONTRACT -->
 
 ---
+
+<!-- BEGIN: ITERATE/PLAYTEST -->
+### Playtest 1
+
+**Date:** 2025-10-24
+**Tester:** User
+
+**Test Results:**
+- ✓ Zero when straight: No magenta arrow when moving without turning
+- ✓ Sign convention: Right turns (D) produce rightward arrow, left turns (A) produce leftward arrow
+- ✓ Proportional to speed: Arrow grows as speed increases during constant turn (hold D, accelerate W)
+- ✓ Wrap-around: No spikes or jumps during extended circular driving
+
+**Violations:**
+None
+
+**Emergent:**
+- Test design error identified: Cannot independently test turn rate proportionality with binary input
+- Speed-dependent steering (steering_reduction_factor) couples speed and angular velocity
+- Mathematical formula proves linearity in both variables
+
+**Status:**
+✅ VERIFIED: All contract properties validated (6 via assertions, 2 via testing/math)
+<!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Properties:**
+- Time-independence: Angular velocity derivation validated via dt scaling and finite checks
+- Edge cases: Zero-speed epsilon threshold, wrap-around safety via angle_difference_radians()
+- Sign convention: Centripetal acceleration direction matches coordinate system
+- Proportionality: Linear scaling with speed (manual test) and angular velocity (mathematical proof)
+
+**Edges:**
+- Zero speed: Returns 0.0 below 0.0001 m/s threshold
+- Wrap boundaries: ±π transitions handled by angle_difference_radians() (no ±2π spikes)
+- Finite inputs: All preconditions validate finite values in debug builds
+
+**Assertions:**
+- 3 preconditions in math::calculate_lateral_g_force() (speed ≥ 0, finite speed, finite angular_velocity)
+- 5 preconditions in controller::apply_input() (finite dt, turn_rate, input, heading)
+- 2 postconditions for angular_velocity (finite, valid range)
+- 1 precondition in constructor (steering_reduction_factor bounds)
+
+**Playtests:** 1 (all properties verified)
+
+**Status:**
+- [x] Contract proven
+- [x] Stable
+- [x] Ready for VALIDATE
+<!-- END: ITERATE/COMPLETE -->
+

@@ -254,4 +254,4 @@ Centripetal acceleration points toward the center of the circular path (into the
 
 ## Iterations
 
-- [ITERATION_1.md](lateral_g_force_ITERATION_1.md) - In Progress
+- [ITERATION_1.md](lateral_g_force_ITERATION_1.md) - Ready for VALIDATE
