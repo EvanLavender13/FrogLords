@@ -40,15 +40,11 @@ void tuning_params::apply_to(controller& c, vehicle_visual_systems& visuals) con
     FL_PRECONDITION(orientation_stiffness >= orientation_stiffness_meta.min &&
                         orientation_stiffness <= orientation_stiffness_meta.max,
                     "orientation_stiffness must be within metadata range");
-    FL_PRECONDITION(orientation_min_speed >= orientation_min_speed_meta.min &&
-                        orientation_min_speed <= orientation_min_speed_meta.max,
-                    "orientation_min_speed must be within metadata range");
 
     FL_ASSERT_FINITE_SCALAR(lean_multiplier, "lean_multiplier");
     FL_ASSERT_FINITE_SCALAR(pitch_multiplier, "pitch_multiplier");
     FL_ASSERT_FINITE_SCALAR(tilt_stiffness, "tilt_stiffness");
     FL_ASSERT_FINITE_SCALAR(orientation_stiffness, "orientation_stiffness");
-    FL_ASSERT_FINITE_SCALAR(orientation_min_speed, "orientation_min_speed");
 
     // Copy controller parameters directly (no derivation)
     c.max_speed = max_speed;
@@ -71,7 +67,6 @@ void tuning_params::apply_to(controller& c, vehicle_visual_systems& visuals) con
     // Update orientation spring parameters
     visuals.orientation.yaw_spring.stiffness = orientation_stiffness;
     visuals.orientation.yaw_spring.damping = critical_damping(orientation_stiffness);
-    visuals.orientation.min_speed = orientation_min_speed;
 }
 
 } // namespace vehicle

@@ -101,8 +101,8 @@ void app_runtime::frame() {
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Vehicle section
-        auto vehicle_commands =
-            gui::draw_vehicle_panel(vehicle_panel_state, world.character, world.vehicle_params);
+        auto vehicle_commands = gui::draw_vehicle_panel(vehicle_panel_state, world.character,
+                                                         world.vehicle_params, world.vehicle_visuals);
 
         // Apply vehicle parameter commands (unidirectional flow: GUI → commands → game state)
         apply_parameter_commands(vehicle_commands);
@@ -164,6 +164,22 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             break;
         case gui::parameter_type::STEERING_REDUCTION_FACTOR:
             world.vehicle_params.steering_reduction_factor = cmd.value;
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            break;
+        case gui::parameter_type::LEAN_MULTIPLIER:
+            world.vehicle_params.lean_multiplier = cmd.value;
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            break;
+        case gui::parameter_type::PITCH_MULTIPLIER:
+            world.vehicle_params.pitch_multiplier = cmd.value;
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            break;
+        case gui::parameter_type::TILT_STIFFNESS:
+            world.vehicle_params.tilt_stiffness = cmd.value;
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            break;
+        case gui::parameter_type::ORIENTATION_STIFFNESS:
+            world.vehicle_params.orientation_stiffness = cmd.value;
             world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         }
