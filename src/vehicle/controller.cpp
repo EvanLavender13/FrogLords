@@ -38,8 +38,7 @@ void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
 controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
-    , acceleration(0.0f)
-    , traction{traction_level::SOFT} {
+    , acceleration(0.0f) {
     // Validate threshold ordering (prevents state collapse)
     FL_PRECONDITION(soft_threshold < medium_threshold,
                     "soft_threshold must be less than medium_threshold to define distinct states");
@@ -85,10 +84,10 @@ float controller::calculate_lateral_g_force() const {
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits
-    // Time-independent heading integration: heading_yaw += -turn_input * turn_rate * steering_multiplier * dt
-    // Coordinate system: Y-up right-handed (+X right), positive yaw = CCW rotation from above
-    // Input convention: positive = right turn, negative = left turn
-    // Yaw convention: positive = CCW rotation, so negate input to map right → -yaw (CW)
+    // Time-independent heading integration: heading_yaw += -turn_input * turn_rate *
+    // steering_multiplier * dt Coordinate system: Y-up right-handed (+X right), positive yaw = CCW
+    // rotation from above Input convention: positive = right turn, negative = left turn Yaw
+    // convention: positive = CCW rotation, so negate input to map right → -yaw (CW)
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt),
                     "dt must be positive and finite for time-independent integration");
     FL_PRECONDITION(std::isfinite(turn_rate), "turn_rate must be finite");
@@ -118,8 +117,7 @@ void controller::apply_input(const controller_input_params& input_params,
     float heading_delta = math::angle_difference_radians(heading_yaw, previous_heading_yaw);
     angular_velocity = heading_delta / dt;
 
-    FL_POSTCONDITION(std::isfinite(angular_velocity),
-                     "angular_velocity must be finite");
+    FL_POSTCONDITION(std::isfinite(angular_velocity), "angular_velocity must be finite");
 
     // Convert 2D input to 3D acceleration (basis-relative)
     // Basis provided by composition layer: camera vectors or heading vectors
@@ -138,17 +136,13 @@ void controller::update(const collision_world* world, float dt) {
     FL_PRECONDITION(std::isfinite(dt), "dt must be finite");
 
     update_physics(dt);
-    float pre_collision_vertical_velocity = update_collision(world, dt);
-    update_landing_state(pre_collision_vertical_velocity);
-    update_traction_state(dt);
+    update_collision(world, dt);
 }
 
-float controller::update_collision(const collision_world* world, float dt) {
+void controller::update_collision(const collision_world* world, float dt) {
     // Derive wall threshold from max_slope_angle (single source of truth)
     float wall_threshold = glm::cos(glm::radians(max_slope_angle));
 
-    // Capture vertical velocity BEFORE collision modifies it (needed for landing impact)
-    float pre_collision_vertical_velocity = velocity.y;
     sphere_collision contact =
         resolve_collisions(collision_sphere, *world, position, velocity, wall_threshold);
 
@@ -162,31 +156,6 @@ float controller::update_collision(const collision_world* world, float dt) {
     is_grounded = false;
     if (contact.contacted_floor) {
         is_grounded = true;
-    }
-
-    return pre_collision_vertical_velocity;
-}
-
-void controller::update_landing_state(float pre_collision_vy) {
-    just_landed = !was_grounded && is_grounded;
-    if (just_landed) {
-        vertical_velocity_on_land = pre_collision_vy;
-    }
-    was_grounded = is_grounded;
-}
-
-void controller::update_traction_state(float dt) {
-    float speed = glm::length(math::project_to_horizontal(velocity));
-    FL_POSTCONDITION(speed >= 0.0f, "speed must be non-negative (magnitude property)");
-    FL_POSTCONDITION(std::isfinite(speed), "speed must be finite");
-
-    // Classify speed into discrete traction levels
-    if (speed < soft_threshold) {
-        traction.level = traction_level::SOFT;
-    } else if (speed < medium_threshold) {
-        traction.level = traction_level::MEDIUM;
-    } else {
-        traction.level = traction_level::HARD;
     }
 }
 
@@ -253,7 +222,7 @@ void controller::update_physics(float dt) {
     // If input is active, velocity must accumulate even if below epsilon
     // Otherwise low acceleration prevents movement from standstill
     constexpr float VELOCITY_EPSILON = 0.01f; // m/s (imperceptible at 60fps)
-    constexpr float ACCEL_EPSILON = 0.01f; // m/s² (negligible acceleration)
+    constexpr float ACCEL_EPSILON = 0.01f;    // m/s² (negligible acceleration)
     float horizontal_speed = glm::length(horizontal_velocity);
     float accel_magnitude = glm::length(horizontal_accel);
 

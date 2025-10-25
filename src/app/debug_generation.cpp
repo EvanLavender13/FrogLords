@@ -23,7 +23,7 @@ void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wi
 
 void generate_character_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
-                                         const character_reactive_systems& visuals) {
+                                         const vehicle_visual_systems& visuals) {
     // Collision sphere
     list.spheres.push_back(debug::debug_sphere{
         .center = character.collision_sphere.center,
@@ -126,36 +126,35 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
                                         const character_reactive_systems& visuals) {
 
     // Get the full world transform from the reactive systems, which includes tilt and offset
-
     glm::mat4 transform = visuals.get_visual_transform(character);
 
     // Generate the character body box in local space
-
     foundation::wireframe_mesh body_mesh = foundation::generate_box({0.4f, 0.8f, 0.3f});
 
-    // Color-code character body by traction state
-    glm::vec4 body_color;
-    switch (character.traction.level) {
-    case controller::traction_level::SOFT:
-        body_color = {0.2f, 1.0f, 0.2f, 1.0f}; // Green = soft grip
-        break;
-    case controller::traction_level::MEDIUM:
-        body_color = {1.0f, 1.0f, 0.2f, 1.0f}; // Yellow = medium grip
-        break;
-    case controller::traction_level::HARD:
-        body_color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red = hard/drifting
-        break;
+    // Manually transform the vertices and add them as debug lines
+    for (const auto& edge : body_mesh.edges) {
+        glm::vec3 v0 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v0], 1.0f));
+        glm::vec3 v1 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v1], 1.0f));
+        list.lines.push_back(debug::debug_line{v0, v1, {0.2f, 1.0f, 0.2f, 1.0f}});
     }
+}
+
+void generate_vehicle_body_primitives(debug::debug_primitive_list& list,
+                                       const controller& character,
+                                       const vehicle_visual_systems& visuals) {
+
+    // Get the full world transform from the vehicle visual systems, which includes tilt
+    glm::mat4 transform = visuals.get_visual_transform(character);
+
+    // Generate the vehicle body box in local space (long vehicle proportions)
+    // X=width, Y=height, Z=length (forward is +Z)
+    foundation::wireframe_mesh body_mesh = foundation::generate_box({0.6f, 0.4f, 1.2f});
 
     // Manually transform the vertices and add them as debug lines
-
     for (const auto& edge : body_mesh.edges) {
-
         glm::vec3 v0 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v0], 1.0f));
-
         glm::vec3 v1 = glm::vec3(transform * glm::vec4(body_mesh.vertices[edge.v1], 1.0f));
-
-        list.lines.push_back(debug::debug_line{v0, v1, body_color});
+        list.lines.push_back(debug::debug_line{v0, v1, {0.2f, 1.0f, 0.2f, 1.0f}});
     }
 }
 
@@ -282,7 +281,8 @@ void generate_car_control_primitives(debug::debug_primitive_list& list, const co
             // Shows maximum possible turn angle at current speed
             // Cone width shrinks at high speeds, making steering reduction obvious
             float steering_multiplier = character.compute_steering_multiplier(current_speed);
-            float max_turn_angle = character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
+            float max_turn_angle =
+                character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
 
             // Left turn limit (CCW from heading)
             glm::vec3 left_limit = math::yaw_to_forward(yaw - max_turn_angle);
@@ -312,10 +312,8 @@ namespace app {
 void generate_debug_primitives(debug::debug_primitive_list& list, const game_world& world) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
-    generate_character_state_primitives(list, world.character, world.character_visuals);
-    generate_physics_springs_primitives(list, world.character, world.character_visuals);
-    generate_character_body_primitives(list, world.character, world.character_visuals);
-    // generate_locomotion_surveyor_wheel(list, world.character, world.character_visuals); // Removed: uses locomotion-specific fields
+    generate_character_state_primitives(list, world.character, world.vehicle_visuals);
+    generate_vehicle_body_primitives(list, world.character, world.vehicle_visuals);
     generate_car_control_primitives(list, world.character, world.current_control_scheme);
     generate_velocity_trail_primitives(list, world.trail_state);
 }

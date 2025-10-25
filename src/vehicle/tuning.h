@@ -41,25 +41,16 @@ struct tuning_params {
     // See controller::update for exponential drag model implementation
 
     // Parameter metadata for GUI presentation
-    static constexpr param_meta max_speed_meta = {
-        "Max Speed", "m/s", 1.0f, 15.0f
-    };
+    static constexpr param_meta max_speed_meta = {"Max Speed", "m/s", 1.0f, 15.0f};
 
-    static constexpr param_meta accel_meta = {
-        "Acceleration", "m/s²", 1.0f, 50.0f
-    };
+    static constexpr param_meta accel_meta = {"Acceleration", "m/s²", 1.0f, 50.0f};
 
-    static constexpr param_meta weight_meta = {
-        "Weight", "m/s²", -20.0f, -5.0f
-    };
+    static constexpr param_meta weight_meta = {"Weight", "m/s²", -20.0f, -5.0f};
 
-    static constexpr param_meta turn_rate_meta = {
-        "Turn Rate", "rad/s", 1.0f, 10.0f
-    };
+    static constexpr param_meta turn_rate_meta = {"Turn Rate", "rad/s", 1.0f, 10.0f};
 
-    static constexpr param_meta steering_reduction_factor_meta = {
-        "Steering Reduction", "", 0.0f, 1.0f
-    };
+    static constexpr param_meta steering_reduction_factor_meta = {"Steering Reduction", "", 0.0f,
+                                                                  1.0f};
 
     void apply_to(controller& c) const;
 };

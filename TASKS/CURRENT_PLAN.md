@@ -4,7 +4,7 @@
 **Started:** 2025-10-24
 **Branch:** system/vehicle-tilt
 **Complexity:** Small
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/vehicle_tilt_SYSTEM.md
 **Layer:** 4 (Variation)
 **Complexity:** Small
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - Lateral G-Force Calculator (Layer 2)

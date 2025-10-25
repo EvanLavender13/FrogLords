@@ -12,7 +12,7 @@ struct vehicle_panel_state {
 };
 
 std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& state,
-                                                   const controller& vehicle,
-                                                   const vehicle::tuning_params& params);
+                                                  const controller& vehicle,
+                                                  const vehicle::tuning_params& params);
 
 } // namespace gui

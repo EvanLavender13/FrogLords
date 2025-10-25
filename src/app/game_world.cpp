@@ -82,7 +82,7 @@ void game_world::update(float dt) {
     character.update(&world_geometry, dt);
 
     // Update reactive visual systems after physics
-    character_visuals.update(character, dt);
+    vehicle_visuals.update(character, dt);
 
     // Sample velocity trail
     trail_state.time_since_last_sample += dt;
@@ -113,7 +113,7 @@ void game_world::update(float dt) {
     glm::vec3 eye_position;
     if (cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION) {
         // Compute forward direction from orientation system
-        float yaw = character_visuals.orientation.get_yaw();
+        float yaw = vehicle_visuals.orientation.get_yaw();
         glm::vec3 forward_dir = math::yaw_to_forward(yaw);
 
         eye_position = camera_follow::compute_locked_eye_position(
@@ -168,8 +168,10 @@ void setup_test_level(game_world& world) {
     for (int i = 0; i < PLATFORM_COUNT; ++i) {
         float height = PLATFORM_BASE_HEIGHT + static_cast<float>(i) * PLATFORM_HEIGHT_INCREMENT;
         collision_box platform;
-        platform.bounds.center = glm::vec3(0.0f, height, PLATFORM_Z_START - static_cast<float>(i) * PLATFORM_Z_SPACING);
-        platform.bounds.half_extents = glm::vec3(PLATFORM_HALF_WIDTH, PLATFORM_HALF_THICKNESS, PLATFORM_HALF_WIDTH);
+        platform.bounds.center =
+            glm::vec3(0.0f, height, PLATFORM_Z_START - static_cast<float>(i) * PLATFORM_Z_SPACING);
+        platform.bounds.half_extents =
+            glm::vec3(PLATFORM_HALF_WIDTH, PLATFORM_HALF_THICKNESS, PLATFORM_HALF_WIDTH);
         platform.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(platform);
     }
@@ -207,7 +209,8 @@ void setup_test_level(game_world& world) {
     for (int i = 0; i < STEP_COUNT; ++i) {
         float height = STEP_HEIGHT_INCREMENT * static_cast<float>(i + 1);
         collision_box step;
-        step.bounds.center = glm::vec3(STEP_X_START + static_cast<float>(i) * STEP_X_SPACING, height * 0.5f, -8.0f);
+        step.bounds.center =
+            glm::vec3(STEP_X_START + static_cast<float>(i) * STEP_X_SPACING, height * 0.5f, -8.0f);
         step.bounds.half_extents = glm::vec3(STEP_HALF_EXTENT, height * 0.5f, STEP_HALF_EXTENT);
         step.type = collision_surface_type::FLOOR;
         world.world_geometry.boxes.push_back(step);

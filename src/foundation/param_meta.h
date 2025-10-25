@@ -11,8 +11,8 @@
 //   - gui::widget::derived_param() for calculated values with formulas
 
 struct param_meta {
-    const char* name = "";    // Display label
-    const char* units = "";   // Physical units (m/s, m/s², meters, radians, etc.)
-    float min = 0.0f;         // Minimum value (for sliders)
-    float max = 1.0f;         // Maximum value (for sliders)
+    const char* name = "";  // Display label
+    const char* units = ""; // Physical units (m/s, m/s², meters, radians, etc.)
+    float min = 0.0f;       // Minimum value (for sliders)
+    float max = 1.0f;       // Maximum value (for sliders)
 };

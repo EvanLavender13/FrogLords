@@ -86,8 +86,7 @@ inline glm::vec3 safe_normalize(const glm::vec3& v, const glm::vec3& fallback) {
 ///         - ≈±π: moving backward relative to forward
 inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const glm::vec3& forward) {
     // Validate preconditions in debug builds
-    FL_PRECONDITION(glm::abs(glm::length(forward) - 1.0f) < 0.01f,
-                    "forward must be unit length");
+    FL_PRECONDITION(glm::abs(glm::length(forward) - 1.0f) < 0.01f, "forward must be unit length");
     FL_PRECONDITION(glm::abs(horizontal_velocity.y) < 0.01f,
                     "horizontal_velocity must be projected to XZ plane");
     FL_PRECONDITION(glm::abs(forward.y) < 0.01f,
@@ -118,7 +117,8 @@ inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const gl
 /// Returns centripetal acceleration as a multiple of Earth gravity (9.8 m/s²).
 ///
 /// @param speed Horizontal speed in m/s (magnitude, always non-negative)
-/// @param angular_velocity Rotational velocity in rad/s (negative = right turn, positive = left turn)
+/// @param angular_velocity Rotational velocity in rad/s (negative = right turn, positive = left
+/// turn)
 /// @return Lateral g-force multiplier (dimensionless):
 ///         - Negative: centripetal acceleration points right (right turn)
 ///         - Positive: centripetal acceleration points left (left turn)

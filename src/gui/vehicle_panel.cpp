@@ -35,13 +35,14 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
         commands.push_back({parameter_type::TURN_RATE, turn_rate});
     }
     if (gui::widget::tunable_param(&steering_reduction_factor,
-                                    vehicle::tuning_params::steering_reduction_factor_meta)) {
+                                   vehicle::tuning_params::steering_reduction_factor_meta)) {
         commands.push_back({parameter_type::STEERING_REDUCTION_FACTOR, steering_reduction_factor});
     }
 
     // Real-time feedback: horizontal speed plot
     float horizontal_speed = glm::length(glm::vec3(vehicle.velocity.x, 0.0f, vehicle.velocity.z));
-    gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f, params.max_speed * 1.2f);
+    gui::plot_histogram("Horizontal Speed (m/s)", horizontal_speed, 5.0f, 0.0f,
+                        params.max_speed * 1.2f);
 
     return commands;
 }
@@ -50,29 +51,11 @@ void draw_vehicle_state_section(const controller& vehicle) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
 
-    // Traction level
-    const char* traction_name;
-    switch (vehicle.traction.level) {
-    case controller::traction_level::SOFT:
-        traction_name = "SOFT";
-        break;
-    case controller::traction_level::MEDIUM:
-        traction_name = "MEDIUM";
-        break;
-    case controller::traction_level::HARD:
-        traction_name = "HARD";
-        break;
-    default:
-        traction_name = "UNKNOWN";
-        break;
-    }
-    gui::widget::text("Traction: %s", traction_name);
-
     // Read-only vehicle state display (metadata-driven)
     static constexpr param_meta heading_yaw_meta = {"Heading Yaw", "rad", -3.15f, 3.15f};
     static constexpr param_meta steering_multiplier_meta = {"Steering Multiplier", "", 0.0f, 1.0f};
-    static constexpr param_meta effective_turn_rate_meta = {
-        "Effective Turn Rate", "rad/s", 0.0f, 10.0f};
+    static constexpr param_meta effective_turn_rate_meta = {"Effective Turn Rate", "rad/s", 0.0f,
+                                                            10.0f};
 
     gui::widget::readonly_param(vehicle.heading_yaw, heading_yaw_meta);
 
@@ -94,8 +77,8 @@ void draw_vehicle_state_section(const controller& vehicle) {
 } // namespace
 
 std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& state,
-                                                   const controller& vehicle,
-                                                   const vehicle::tuning_params& params) {
+                                                  const controller& vehicle,
+                                                  const vehicle::tuning_params& params) {
     std::vector<parameter_command> commands;
 
     if (!state.show)

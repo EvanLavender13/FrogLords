@@ -22,14 +22,17 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
         commands.push_back({camera_parameter_type::MODE, 0.0f, camera_mode::FREE_ORBIT});
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Lock to Orientation", cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION)) {
+    if (ImGui::RadioButton("Lock to Orientation",
+                           cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION)) {
         commands.push_back({camera_parameter_type::MODE, 0.0f, camera_mode::LOCK_TO_ORIENTATION});
     }
 
     ImGui::Spacing();
 
     // Current state (read-only)
-    gui::widget::readonly_param(cam_follow.distance, camera_follow::make_distance_meta(cam_follow.min_distance, cam_follow.max_distance));
+    gui::widget::readonly_param(
+        cam_follow.distance,
+        camera_follow::make_distance_meta(cam_follow.min_distance, cam_follow.max_distance));
     ImGui::Text("FOV: %.1f degrees", cam.get_fov());
 
     glm::vec3 pos = cam.get_position();
@@ -47,7 +50,8 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     float max_distance = cam_follow.max_distance;
 
     // Metadata-driven tunable parameters
-    if (gui::widget::tunable_param(&distance, camera_follow::make_distance_meta(min_distance, max_distance))) {
+    if (gui::widget::tunable_param(&distance,
+                                   camera_follow::make_distance_meta(min_distance, max_distance))) {
         commands.push_back({camera_parameter_type::DISTANCE, distance});
     }
 
@@ -76,7 +80,7 @@ std::vector<camera_command> draw_camera_panel(const camera_panel_state& state, c
     // Warn user if invariant violated
     if ((min_changed || max_changed) && !invariant_valid) {
         ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f),
-                          "Warning: Min Distance must be <= Max Distance");
+                           "Warning: Min Distance must be <= Max Distance");
     }
 
     return commands;

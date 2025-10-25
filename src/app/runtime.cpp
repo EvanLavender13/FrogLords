@@ -101,8 +101,8 @@ void app_runtime::frame() {
 
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Vehicle section
-        auto vehicle_commands = gui::draw_vehicle_panel(
-            vehicle_panel_state, world.character, world.vehicle_params);
+        auto vehicle_commands =
+            gui::draw_vehicle_panel(vehicle_panel_state, world.character, world.vehicle_params);
 
         // Apply vehicle parameter commands (unidirectional flow: GUI → commands → game state)
         apply_parameter_commands(vehicle_commands);
@@ -175,8 +175,8 @@ void app_runtime::apply_camera_commands(const std::vector<gui::camera_command>& 
     for (const auto& cmd : commands) {
         switch (cmd.type) {
         case gui::camera_parameter_type::DISTANCE:
-            world.cam_follow.distance = std::clamp(cmd.value, world.cam_follow.min_distance,
-                                                   world.cam_follow.max_distance);
+            world.cam_follow.distance =
+                std::clamp(cmd.value, world.cam_follow.min_distance, world.cam_follow.max_distance);
             break;
         case gui::camera_parameter_type::HEIGHT_OFFSET:
             world.cam_follow.height_offset = cmd.value;

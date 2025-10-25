@@ -118,7 +118,8 @@ void derived_param(float value, const param_meta& meta, const char* formula) {
     // Format display with value, units, and formula (use meta.name for label)
     char display[256];
     if (meta.units[0] != '\0') {
-        snprintf(display, sizeof(display), "%s: %.3f %s = %s", meta.name, value, meta.units, formula);
+        snprintf(display, sizeof(display), "%s: %.3f %s = %s", meta.name, value, meta.units,
+                 formula);
     } else {
         snprintf(display, sizeof(display), "%s: %.3f = %s", meta.name, value, formula);
     }

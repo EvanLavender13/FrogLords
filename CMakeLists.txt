@@ -59,11 +59,12 @@ add_executable(FrogLords
     src/camera/camera_follow.cpp
     src/vehicle/controller.cpp
     src/vehicle/tuning.cpp
+    src/vehicle/vehicle_visual_systems.cpp
     src/character/character_reactive_systems.cpp
-    src/character/orientation.cpp
     src/character/animation.cpp
     src/foundation/easing.cpp
     src/foundation/collision.cpp
+    src/foundation/orientation.cpp
     src/foundation/spring_damper.cpp
     src/foundation/procedural_mesh.cpp
     src/rendering/scene.cpp
