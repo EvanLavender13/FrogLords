@@ -54,30 +54,38 @@ Mathematical properties and edge cases that must be proven for production stabil
 <!-- BEGIN: ITERATE/LEARNING -->
 ## Learning
 
-**Pattern discovered during implementation:**
+**Why this achieved single-iteration success:**
 
-Before using a foundation primitive, review existing usage patterns in the codebase.
+1. **External review of plan before coding** (Codex caught 5 design flaws before implementation)
+2. **Pattern study before implementing** (reviewed vehicle_visual_systems spring usage, copied exactly)
+3. **Used existing architecture patterns:**
+   - Extract physical state (speed, lateral_g from controller)
+   - Process into visual effect (FOV calculation)
+   - Reactive system pattern (standalone, reads physics, writes presentation)
+   - Metadata pattern (single source of truth for parameters)
+   - Command pattern (GUI → runtime → system state)
+   - Spring smoothing (critical_damping, stiffness tunable)
 
-**Context:**
-When adding `spring_damper` smoothing to dynamic_fov, initial implementation attempted to expose frequency/damping_ratio parameters and convert them to stiffness/damping via angular frequency formulas. This added unnecessary complexity.
+4. **Defense-in-depth validation from start:**
+   - Preconditions (dt, 4 parameter ranges via metadata)
+   - Guards (epsilon for division, saturation for overflow)
+   - Dual clamping (target before spring, output after spring)
+   - Postcondition (FOV range guaranteed)
 
-**Pattern in codebase:**
-- `vehicle_visual_systems.cpp:6-16` - Exposes `stiffness` directly, uses `critical_damping()` helper
-- Constructor sets stiffness to tunable default, calculates damping via `critical_damping(stiffness)`
-- No frequency/ratio conversions, no per-frame math
+5. **Contract before code** (26 testable items defined, 26/26 verified in single playtest)
 
-**Corrected approach:**
-- Expose `spring.stiffness` as tunable parameter (like vehicle tilt system)
-- Call `critical_damping()` to calculate damping (maintains no-overshoot behavior)
-- User tunes stiffness directly (10-500 range matches existing patterns)
+**Formula for success:**
+```
+Physical state extraction + Visual effect processing + Existing patterns
+= System just works
+```
 
-**Why this matters:**
-- Consistency: Same primitive, same usage pattern
-- Simplicity: No conversion math, no derived parameters
-- Predictability: Stiffness behaves the same across all systems
-
-**Principle:**
-Study existing usage before implementing. Patterns exist for a reason.
+**Replicable pattern:**
+- Review plans externally (catch design flaws early)
+- Study existing primitive usage (consistency over invention)
+- Use established architecture (reactive system, metadata, commands, spring)
+- Front-load validation (defense-in-depth from start)
+- Define testable contract (systematic verification)
 <!-- END: ITERATE/LEARNING -->
 
 ---
