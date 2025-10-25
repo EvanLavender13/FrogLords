@@ -1,7 +1,7 @@
 # Iteration 1: Vehicle Tilt Foundation
 
 **Started:** 2025-10-25
-**Status:** In Progress
+**Status:** Ready for VALIDATE
 
 ---
 
@@ -11,22 +11,22 @@
 Validate mathematical correctness and parameter physicality. Ensure visual tilt system follows physics-first tuning principles.
 
 ### Mathematical Correctness
-- [ ] Lean angle proportional to lateral g-force produces visually correct cornering behavior at all speeds
-- [ ] Pitch angle from longitudinal acceleration shows weight transfer during speed changes
-- [ ] Transform composition (translate → yaw → roll → pitch) produces expected visual without gimbal issues
-- [ ] Local-space rotation axes prevent spurious tilt when driving straight
+- [x] Lean angle proportional to lateral g-force produces visually correct cornering behavior at all speeds
+- [x] Pitch angle from longitudinal acceleration shows weight transfer during speed changes
+- [x] Transform composition (translate → yaw → roll → pitch) produces expected visual without gimbal issues
+- [x] Local-space rotation axes prevent spurious tilt when driving straight
 
 ### Parameter Validation (Physics-First Tuning)
-- [ ] Lean multiplier (radians/g) has physical justification and valid range
-- [ ] Pitch multiplier (radians/(m/s²)) has physical justification and valid range
-- [ ] Tilt stiffness (N/m) follows spring constant conventions and produces stable damping
-- [ ] All parameters explainable to physicist per PHYSICS_FIRST_TUNING.md
+- [x] Lean multiplier (radians/g) has physical justification and valid range
+- [x] Pitch multiplier (radians/(m/s²)) has physical justification and valid range
+- [x] Tilt stiffness (N/m) follows spring constant conventions and produces stable damping
+- [x] All parameters explainable to physicist per PHYSICS_FIRST_TUNING.md
 
 ### Edge Cases
-- [ ] Zero velocity (stationary): no orientation change, no spurious rotation
-- [ ] High-speed straight: no roll from numerical drift or accumulated error
-- [ ] Sharp corners: lean magnitude bounded and stable (no overshoot with critical damping)
-- [ ] Rapid direction changes: spring damping prevents jitter
+- [x] Zero velocity (stationary): no orientation change, no spurious rotation
+- [x] High-speed straight: no roll from numerical drift or accumulated error
+- [x] Sharp corners: lean magnitude bounded and stable (no overshoot with critical damping)
+- [x] Rapid direction changes: spring damping prevents jitter
 
 ### System Integration
 - [x] Visual system reads controller state without modifying physics
@@ -91,3 +91,79 @@ Documented physics-first trade-off in system plan. Explained spring damping rema
 <!-- END: ITERATE/VALIDATION -->
 
 ---
+
+<!-- BEGIN: ITERATE/PLAYTEST -->
+### Playtest 1
+
+**Date:** 2025-10-25
+**Tester:** EvanUhhh
+
+**Initial test - pitch inversion bug found:**
+- ❌ Pitch direction inverted (accelerating pitched nose DOWN instead of UP)
+- ✅ Lean direction correct (leans AWAY from turn center due to inertia)
+
+**Root cause:** Missing negation in pitch calculation. Positive forward_accel should produce negative pitch (nose up).
+
+**Fix:** vehicle_visual_systems.cpp:48 - Added negation: `target_pitch = -forward_accel * pitch_multiplier`
+
+**Commit:** 182c5d9 (initial validation), then pitch fix
+
+### Playtest 2
+
+**Date:** 2025-10-25
+**Tester:** EvanUhhh
+
+**All behaviors verified:**
+
+✅ **Lean direction:**
+- Turn left → leans RIGHT (away from turn, physically correct)
+- Turn right → leans LEFT (away from turn, physically correct)
+
+✅ **Pitch direction:**
+- Accelerating forward → nose pitches UP (weight to rear)
+- Decelerating → nose pitches DOWN (weight to front)
+
+✅ **Edge cases:**
+- Stationary: no rotation/tilt ✓
+- High-speed straight: stays upright, no drift ✓
+- Sharp corners: smooth lean, no overshoot ✓
+- Rapid direction changes: no jitter ✓
+
+**Emergent behavior discovered:**
+Collision with walls creates dramatic tilt response from sudden velocity change, then smoothly recovers via critical damping. System handles extreme inputs without special cases - validates:
+- Time-independent acceleration derivation
+- Spring stability under extreme targets
+- No accumulated state errors
+
+**Insight:** This emergent collision response could inform future reactive collision systems (damage tilt, impact reactions). System boundary proven correct - handles cases not explicitly designed for.
+
+✅ VERIFIED: All contract items proven through playtest
+<!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Contract:** ✓ PROVEN
+
+**Properties validated:**
+- Mathematical correctness: Transform composition, local-space rotations, time-independent acceleration
+- Physics-first parameters: Arcade multipliers documented with trade-off, spring constants physical
+- Edge case stability: Stationary, high-speed, sharp turns, rapid changes all stable
+- Emergent robustness: Collision impacts handled gracefully without special cases
+
+**Assertions added:** 11 (3 preconditions, 6 intermediate, 2 postconditions)
+
+**Playtests:** 2 (1 bug found and fixed, 1 full validation)
+
+**Bug fixed:** Pitch direction inverted - added negation in acceleration-to-pitch conversion
+
+**Emergent insight:** Collision-induced tilt validates system robustness. Spring damping handles extreme inputs without special cases. Potential foundation for future reactive collision systems.
+
+**Status:**
+- [x] Contract proven
+- [x] Stable through edge cases
+- [x] Ready for VALIDATE
+<!-- END: ITERATE/COMPLETE -->
+
