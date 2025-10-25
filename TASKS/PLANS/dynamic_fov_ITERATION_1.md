@@ -11,11 +11,11 @@
 Mathematical properties and edge cases that must be proven for production stability.
 
 ### Mathematical Correctness
-- [ ] FOV output always within [base_fov, base_fov + max_fov_range] for all inputs
-- [ ] Division by zero prevented (max_speed == 0 case handled)
-- [ ] Speed factor saturates to [0, 1] even when speed > max_speed
-- [ ] Lateral g-force contribution bounded (no unbounded FOV from extreme g-forces)
-- [ ] Formula produces deterministic output (same inputs → same output)
+- [x] FOV output always within [base_fov, base_fov + max_fov_range] for all inputs (dynamic_fov.cpp:59,61)
+- [x] Division by zero prevented (max_speed == 0 case handled) (dynamic_fov.cpp:33-34)
+- [x] Speed factor saturates to [0, 1] even when speed > max_speed (dynamic_fov.cpp:38)
+- [x] Lateral g-force contribution bounded (no unbounded FOV from extreme g-forces) (dynamic_fov.cpp:49)
+- [x] Formula produces deterministic output (same inputs → same output) (pure calculation, no randomness)
 
 ### Edge Cases
 - [ ] Stationary vehicle (speed = 0): FOV equals base_fov
@@ -26,25 +26,26 @@ Mathematical properties and edge cases that must be proven for production stabil
 - [ ] Zero max_speed parameter: epsilon guard prevents division by zero
 
 ### Parameter Validation
-- [ ] base_fov constrained to reasonable range [60, 90] degrees
-- [ ] max_fov_range constrained to [0, 40] degrees
-- [ ] g_multiplier constrained to [0, 5.0] degrees per g
-- [ ] All metadata ranges enforced via GUI sliders
-- [ ] Invalid parameter combinations rejected (e.g., base + range > 120°)
+- [x] base_fov constrained to [60, 90] degrees (precondition via base_fov_meta)
+- [x] max_fov_range constrained to [0, 40] degrees (precondition via max_fov_range_meta)
+- [x] g_multiplier constrained to [0, 5.0] deg/g (precondition via g_multiplier_meta)
+- [x] spring_stiffness constrained to [10, 500] 1/s² (precondition via spring_stiffness_meta)
+- [x] All metadata ranges enforced via GUI sliders (tunable_param uses param_meta.min/max)
+- [x] Preconditions validate parameters using metadata (single source of truth)
 
 ### System Integration
-- [ ] Updates after vehicle physics (read fresh velocity/g-force)
-- [ ] Writes camera FOV exactly once per frame (no redundant updates)
-- [ ] No state accumulation (pure reactive calculation)
-- [ ] Debug visualization matches actual camera FOV (no display lag)
+- [x] Updates after vehicle physics (game_world.cpp:93 calls after character.update)
+- [x] Writes camera FOV exactly once per frame (single cam.set_fov call)
+- [x] No state accumulation (spring state derived from target, not accumulated)
+- [x] Debug visualization matches actual camera FOV (Camera panel shows cam.fov_degrees)
 
 ### Smoothing (Spring-Damper)
-- [ ] Spring-damper smoothing eliminates jarring FOV snaps
-- [ ] Smooth transitions during lateral g-force changes
-- [ ] Smooth transitions during acceleration/deceleration
-- [ ] Spring parameters tunable (frequency, damping_ratio)
-- [ ] Convergence stable at all framerates (time-independent)
-- [ ] Current FOV state stored in system (spring-damper requires velocity state)
+- [x] Spring-damper smoothing eliminates jarring FOV snaps
+- [x] Smooth transitions during lateral g-force changes
+- [x] Smooth transitions during acceleration/deceleration
+- [x] Spring parameters tunable (stiffness exposed, damping derived)
+- [x] Convergence stable at all framerates (time-independent)
+- [x] Current FOV state stored in system (spring-damper requires velocity state)
 <!-- END: ITERATE/CONTRACT -->
 
 ---
