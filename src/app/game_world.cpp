@@ -12,7 +12,6 @@
 
 void game_world::init() {
     character = controller();
-    character_params.apply_to(character);
     vehicle_params.apply_to(character);
     cam = camera();
     cam_follow = camera_follow(); // Use default values
