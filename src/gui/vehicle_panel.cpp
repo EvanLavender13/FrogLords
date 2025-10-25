@@ -48,7 +48,8 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     float pitch_multiplier = params.pitch_multiplier;
     float tilt_stiffness = params.tilt_stiffness;
 
-    if (gui::widget::tunable_param(&lean_multiplier, vehicle::tuning_params::lean_multiplier_meta)) {
+    if (gui::widget::tunable_param(&lean_multiplier,
+                                   vehicle::tuning_params::lean_multiplier_meta)) {
         commands.push_back({parameter_type::LEAN_MULTIPLIER, lean_multiplier});
     }
     if (gui::widget::tunable_param(&pitch_multiplier,

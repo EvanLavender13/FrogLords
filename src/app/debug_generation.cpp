@@ -140,8 +140,8 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
 }
 
 void generate_vehicle_body_primitives(debug::debug_primitive_list& list,
-                                       const controller& character,
-                                       const vehicle_visual_systems& visuals) {
+                                      const controller& character,
+                                      const vehicle_visual_systems& visuals) {
 
     // Get the full world transform from the vehicle visual systems, which includes tilt
     glm::mat4 transform = visuals.get_visual_transform(character);

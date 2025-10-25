@@ -49,7 +49,8 @@ void vehicle_visual_systems::update(const controller& ctrl, float dt) {
     FL_ASSERT(std::isfinite(forward_accel), "forward_accel must be finite");
 
     // Calculate target pitch from forward acceleration (pitch back when accelerating)
-    // Negate because positive forward_accel should pitch nose UP (negative rotation around right axis)
+    // Negate because positive forward_accel should pitch nose UP (negative rotation around right
+    // axis)
     float target_pitch = -forward_accel * pitch_multiplier;
     FL_ASSERT(std::isfinite(target_pitch), "target_pitch must be finite");
 

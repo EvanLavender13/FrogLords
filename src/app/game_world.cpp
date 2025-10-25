@@ -13,7 +13,12 @@ void game_world::init() {
     character = controller();
     vehicle_params.apply_to(character, vehicle_visuals);
     cam = camera();
-    cam_follow = camera_follow(); // Use default values
+    cam_follow = camera_follow();       // Use default values
+    dynamic_fov = dynamic_fov_system(); // Use default values
+
+    // Initialize camera FOV from dynamic_fov (dynamic_fov is single source of truth)
+    cam.set_fov(dynamic_fov.base_fov);
+
     scn = scene();
     setup_test_level(*this);
 }
@@ -83,6 +88,9 @@ void game_world::update(float dt) {
 
     // Update reactive visual systems after physics
     vehicle_visuals.update(character, dt);
+
+    // Update dynamic FOV system after physics
+    dynamic_fov.update(character, cam);
 
     // Sample velocity trail
     trail_state.time_since_last_sample += dt;

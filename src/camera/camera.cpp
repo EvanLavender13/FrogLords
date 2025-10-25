@@ -49,3 +49,10 @@ float camera::get_yaw() const {
     glm::vec3 forward = get_forward_horizontal();
     return atan2f(forward.x, forward.z);
 }
+
+void camera::set_fov(float fov) {
+    FL_PRECONDITION(fov > 0.0f, "FOV must be positive");
+    FL_PRECONDITION(std::isfinite(fov), "FOV must be finite");
+
+    fov_degrees = fov;
+}

@@ -2,6 +2,7 @@
 
 #include "camera/camera.h"
 #include "camera/camera_follow.h"
+#include "camera/dynamic_fov.h"
 #include "vehicle/controller.h"
 #include "vehicle/tuning.h"
 #include "vehicle/vehicle_visual_systems.h"
@@ -18,6 +19,7 @@ enum class control_scheme { FREE_STRAFE, CAR_LIKE };
 struct game_world {
     camera cam;
     camera_follow cam_follow;
+    dynamic_fov_system dynamic_fov;
     scene scn;
     collision_world world_geometry;
     controller character;

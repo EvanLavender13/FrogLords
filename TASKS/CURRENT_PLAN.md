@@ -4,7 +4,7 @@
 **Started:** 2025-10-25
 **Branch:** system/dynamic-fov
 **Complexity:** Small
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/dynamic_fov_SYSTEM.md
 **Layer:** 4 (VARIATION)
 **Complexity:** Small
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - Lateral G-Force Calculator (Layer 2, complete)

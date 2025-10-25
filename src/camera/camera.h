@@ -33,6 +33,10 @@ class camera {
     /// Get current field of view in degrees
     float get_fov() const { return fov_degrees; }
 
+    /// Set field of view in degrees
+    /// @param fov Field of view in degrees (must be positive and finite)
+    void set_fov(float fov);
+
     /// Get camera forward direction projected to horizontal plane
     glm::vec3 get_forward_horizontal() const;
 
