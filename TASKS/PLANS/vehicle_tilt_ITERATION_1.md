@@ -1,7 +1,7 @@
 # Iteration 1: Vehicle Tilt Foundation
 
 **Started:** 2025-10-25
-**Status:** Ready for VALIDATE
+**Status:** REVISE
 
 ---
 
@@ -166,4 +166,102 @@ Collision with walls creates dramatic tilt response from sudden velocity change,
 - [x] Stable through edge cases
 - [x] Ready for VALIDATE
 <!-- END: ITERATE/COMPLETE -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-25
+
+**Convergent Findings:**
+
+**Strengths (both reviewers agreed):**
+- Radical Simplicity: Clean, justified complexity - spring damping added only after instant response felt jarring
+- Systems Not Features: Explicitly designed as extensible infrastructure for weight transfer visualization
+- Single Source of Truth: Unidirectional data flow maintained, visual layer owns visual-only state
+- Emergent Design: Collision-induced tilt recovery emerged without special cases, validates robustness
+- Bottom-Up Construction: Built on validated lower-level systems (lateral g-force calculator)
+
+**Divergent Findings:**
+
+**Codex identified violations:**
+
+1. **Mathematical Foundation - Time-independence claim disputed:**
+   - Semi-implicit Euler integration is dt-dependent by nature
+   - Different dt values produce different trajectories (numerical method property)
+   - Iteration doc claims "time-independent" (line 53, 135) but this is only true for input derivation (acceleration), not spring integration
+   - Evidence: spring_damper.cpp:10-12 uses dt multiplication, standard semi-implicit Euler
+
+2. **Single Source of Truth - Stiffness duplication:**
+   - `tilt_stiffness` stored in vehicle_visual_systems.h:38 as member
+   - Also embedded in spring_damper objects (lean_spring.stiffness, pitch_spring.stiffness)
+   - Constructor copies value once (vehicle_visual_systems.cpp:8-12)
+   - Runtime tuning of `tilt_stiffness` member doesn't update spring objects
+   - Precondition validates member, but springs may have diverged
+   - Evidence: No setter enforcing sync, assertion checks wrong value
+
+3. **Bottom-Up Construction - Foundation uncertainty:**
+   - System plan acknowledged spring damping was uncertain (vehicle_tilt_SYSTEM.md:102)
+   - Iteration shipped spring smoothing without resolving timestep dependency
+   - New layer rests on unsettled foundation regarding time-independence semantics
+
+**Gemini found no violations:**
+- Assessed time-independence as correctly implemented (acceleration derived with dt, springs updated with dt)
+- Did not identify stiffness duplication concern
+- Considered foundation solid based on documented validation
+
+**Assessment:**
+
+The reviews diverge on interpretation of "time-independence":
+- **Codex interprets strictly:** Identical inputs at different dt should produce identical trajectories (simulation-level frame-independence impossible with semi-implicit Euler)
+- **Gemini interprets practically:** Behavior is framerate-independent (scales with dt, consistent feel across framerates)
+
+The **project's definition** (PRINCIPLES.md:15, PHYSICS_INTEGRATION_PATTERNS.md:18-21):
+> "Time-independent - identical results at any framerate"
+> "Behavior must be consistent across frame rates"
+
+This suggests practical frame-rate independence (consistent behavior/feel), not strict numerical convergence. PHYSICS_INTEGRATION_PATTERNS.md explicitly endorses semi-implicit Euler as default and acknowledges "all numerical methods drift" but error remains bounded in damped systems.
+
+**Stiffness duplication is a legitimate concern** - Single Source of Truth violated if runtime tuning doesn't propagate to springs.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:**
+
+The system demonstrates strong principle alignment in architecture (unidirectional flow, emergent design, justified complexity). However, one clear violation exists that can be fixed without fundamental redesign:
+
+**Single Source of Truth violation (stiffness duplication):**
+- `tilt_stiffness` exists as both a member variable and embedded in spring objects
+- Runtime tuning of the member doesn't propagate to springs
+- Precondition assertions validate the wrong value
+- Fix: Remove redundant member, expose spring stiffness directly or add setter
+
+**Time-independence debate (NOT a violation):**
+- Codex's strict interpretation conflicts with project's documented physics integration philosophy
+- PHYSICS_INTEGRATION_PATTERNS.md explicitly endorses semi-implicit Euler as default
+- Document acknowledges "all numerical methods drift" but error remains bounded in damped systems
+- Project definition means "framerate-independent feel" not "bit-exact numerical convergence"
+- The current implementation IS time-independent by project standards
+
+**Why REVISE not APPROVED:**
+The stiffness duplication creates potential for silent parameter divergence. It's a straightforward fix that enforces Single Source of Truth without architectural changes.
+
+**Why REVISE not REJECT:**
+Core system is sound. The violation is localized to parameter management, not fundamental design. Mathematical foundation is correct, emergence is validated, architecture is clean.
+
+**Required changes:**
+1. Eliminate `tilt_stiffness` member variable from vehicle_visual_systems.h
+2. Expose spring stiffness directly via getters: `lean_spring.stiffness` and `pitch_spring.stiffness`
+3. OR add setter: `void set_tilt_stiffness(float k)` that updates both springs and their damping
+4. Update assertions to validate actual spring stiffness values
+5. Update any tuning/GUI code to access springs directly or use setter
+<!-- END: VALIDATE/DECISION -->
 
