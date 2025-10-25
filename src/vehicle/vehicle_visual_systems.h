@@ -27,10 +27,14 @@ struct vehicle_visual_systems {
     glm::vec3 previous_velocity{0.0f};
 
     // Tunable parameters
-    float lean_multiplier = 0.3f;   // radians per g (how much to lean in corners)
-    float pitch_multiplier = 0.05f; // radians per m/s² (how much to pitch during accel)
+    // NOTE: These are conversion factors for visual-only arcade feedback, not physical properties.
+    // Trade-off: Visual weight transfer for gameplay feel vs physical realism.
+    // Real vehicles don't tilt bodies proportional to g-force (suspension compresses instead).
+    // These parameters control exaggerated tilt for enhanced motion readability.
+    float lean_multiplier = 0.3f;   // radians per g (arcade lean in corners, not physical)
+    float pitch_multiplier = 0.05f; // radians per m/s² (arcade pitch during accel, not physical)
 
-    // Spring tuning
+    // Spring tuning (physical parameter: proper spring constant in N/m)
     float tilt_stiffness = 150.0f;  // Spring stiffness for tilt response
 
     vehicle_visual_systems();

@@ -76,6 +76,16 @@ Visual model rotation based on lateral g-force (lean in corners) and longitudina
 
 **Why a system, not a feature:**
 Enables category of behavior: weight transfer visualization extends to suspension animation, damage model tilting, terrain-based lean. Generic "derive visual rotation from acceleration" pattern.
+
+**Architectural validation:**
+Current implementation uses arcade conversion factors (multipliers) for immediate gameplay feedback. Future enhancements can coexist or replace:
+- Realistic per-wheel suspension simulation (spring compression at contact points)
+- Damage-based body tilt (persistent lean from collision damage)
+- Terrain-reactive body roll (crossing slopes, bumps)
+All remain visual-only, all derive from physics state, none affect collision or movement.
+
+**Physics-first trade-off:**
+Arcade tilt multipliers are non-physical conversion factors chosen for visual feedback over realism. Real vehicles don't rotate bodies proportional to g-forces (suspension compresses vertically instead). Trade-off documented per PHYSICS_FIRST_TUNING.md: gameplay demands exaggerated visual weight transfer for motion readability. Spring damping remains physically accurate even though the mechanism being damped is non-physical.
 <!-- END: SELECT/CORE -->
 
 ---
@@ -292,3 +302,9 @@ Codex suggested "derive forward/right from yaw OR use explicit glm::vec3". Initi
 - [x] Zero physics modification (collision sphere unchanged)
 - [x] Visual feedback enhances motion readability
 <!-- END: SELECT/SUCCESS -->
+
+---
+
+## Iterations
+
+- [ITERATION_1.md](vehicle_tilt_ITERATION_1.md) - In Progress

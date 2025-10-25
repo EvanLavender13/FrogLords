@@ -14,24 +14,38 @@ vehicle_visual_systems::vehicle_visual_systems() {
 
 void vehicle_visual_systems::update(const controller& ctrl, float dt) {
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt), "dt must be positive and finite");
+    FL_PRECONDITION(lean_multiplier >= 0.0f && lean_multiplier <= 1.0f,
+                    "lean_multiplier must be in valid range [0, 1] rad/g");
+    FL_PRECONDITION(pitch_multiplier >= 0.0f && pitch_multiplier <= 0.2f,
+                    "pitch_multiplier must be in valid range [0, 0.2] rad/(m/s²)");
+    FL_PRECONDITION(tilt_stiffness >= 10.0f && tilt_stiffness <= 500.0f,
+                    "tilt_stiffness must be in valid range [10, 500] N/m");
 
     // Update orientation from actual velocity (not input direction or heading)
     orientation.update(ctrl.velocity, dt);
 
     // Calculate target lean from lateral g-force (lean into turns)
     float lateral_g = ctrl.calculate_lateral_g_force();
+    FL_ASSERT(std::isfinite(lateral_g), "lateral_g must be finite");
+
     float target_lean = lateral_g * lean_multiplier;
+    FL_ASSERT(std::isfinite(target_lean), "target_lean must be finite");
 
     // Derive longitudinal acceleration from velocity change
     glm::vec3 acceleration = (ctrl.velocity - previous_velocity) / dt;
+    FL_ASSERT(std::isfinite(acceleration.x) && std::isfinite(acceleration.y) &&
+                  std::isfinite(acceleration.z),
+              "acceleration must be finite");
 
     // Project acceleration onto orientation direction for forward/back component
     float yaw = orientation.get_yaw();
     glm::vec3 forward = math::yaw_to_forward(yaw);
     float forward_accel = glm::dot(acceleration, forward);
+    FL_ASSERT(std::isfinite(forward_accel), "forward_accel must be finite");
 
     // Calculate target pitch from forward acceleration (pitch back when accelerating)
     float target_pitch = forward_accel * pitch_multiplier;
+    FL_ASSERT(std::isfinite(target_pitch), "target_pitch must be finite");
 
     // Spring-damp toward targets for smooth transitions
     lean_spring.update({.target = target_lean, .delta_time = dt});
