@@ -47,9 +47,6 @@ struct controller {
 
     // Ground state
     bool is_grounded = false;
-    bool was_grounded = false;
-    bool just_landed = false; // Set when landing occurs, cleared after animation reads it
-    float vertical_velocity_on_land = 0.0f;
 
     // Tunable parameters
     // TUNED: Horizontal acceleration (direct from tuning system)
@@ -90,15 +87,6 @@ struct controller {
     // At max_speed with reduction_factor=0.7: 30% steering authority remains
     // Used in: compute_steering_multiplier() to scale turn_rate
     float steering_reduction_factor = 0.7f; // dimensionless [0,1]
-
-    // Traction state (grip level based on speed)
-    enum class traction_level { SOFT, MEDIUM, HARD };
-
-    struct traction_state {
-        traction_level level;
-    };
-
-    traction_state traction;
 
     // Car-like control heading (physics state)
     // Updated from turn input (A/D keys), used when composition layer
@@ -145,10 +133,6 @@ struct controller {
   private:
     // Physics integration: weight, drag, velocity, position
     void update_physics(float dt);
-    // Collision resolution and grounding detection, returns pre-collision vertical velocity
-    float update_collision(const collision_world* world, float dt);
-    // Landing event detection and impact velocity tracking
-    void update_landing_state(float pre_collision_vy);
-    // Traction state classification based on speed
-    void update_traction_state(float dt);
+    // Collision resolution and grounding detection
+    void update_collision(const collision_world* world, float dt);
 };

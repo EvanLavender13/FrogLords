@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "character/animation.h"
-#include "character/orientation.h"
+#include "foundation/orientation.h"
 
 // Forward declaration
 struct controller;

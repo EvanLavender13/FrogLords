@@ -22,8 +22,8 @@ enum class camera_parameter_type {
 
 struct camera_command {
     camera_parameter_type type;
-    float value;       // Used for numeric parameters
-    camera_mode mode;  // Used for MODE parameter
+    float value;      // Used for numeric parameters
+    camera_mode mode; // Used for MODE parameter
 };
 
 } // namespace gui

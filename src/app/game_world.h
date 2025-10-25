@@ -4,6 +4,7 @@
 #include "camera/camera_follow.h"
 #include "vehicle/controller.h"
 #include "vehicle/tuning.h"
+#include "vehicle/vehicle_visual_systems.h"
 #include "character/character_reactive_systems.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
@@ -20,7 +21,7 @@ struct game_world {
     scene scn;
     collision_world world_geometry;
     controller character;
-    character_reactive_systems character_visuals;
+    vehicle_visual_systems vehicle_visuals;
     vehicle::tuning_params vehicle_params;
     velocity_trail_state trail_state;
 

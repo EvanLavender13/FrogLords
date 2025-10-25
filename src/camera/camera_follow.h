@@ -10,8 +10,8 @@ struct camera_follow {
     // State
     camera_mode mode = camera_mode::FREE_ORBIT;
     float distance = 5.0f;
-    float latitude = 15.0f; // degrees
-    float longitude = 0.0f; // degrees
+    float latitude = 15.0f;  // degrees
+    float longitude = 180.0f; // degrees (behind target, aligned with +Z forward)
     float height_offset = 1.5f;
 
     // Limits
@@ -34,17 +34,11 @@ struct camera_follow {
         return {"Distance", "m", min, max};
     }
 
-    static constexpr param_meta height_offset_meta = {
-        "Height Offset", "m", 0.0f, 3.0f
-    };
+    static constexpr param_meta height_offset_meta = {"Height Offset", "m", 0.0f, 3.0f};
 
-    static constexpr param_meta min_distance_meta = {
-        "Min Distance", "m", 0.5f, 10.0f
-    };
+    static constexpr param_meta min_distance_meta = {"Min Distance", "m", 0.5f, 10.0f};
 
-    static constexpr param_meta max_distance_meta = {
-        "Max Distance", "m", 5.0f, 30.0f
-    };
+    static constexpr param_meta max_distance_meta = {"Max Distance", "m", 5.0f, 30.0f};
 
     /// Update camera orientation (Maya-style orbit)
     /// @param delta_x Horizontal rotation delta (pixels)

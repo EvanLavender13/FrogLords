@@ -22,6 +22,12 @@ enum class parameter_type {
     WEIGHT,
     TURN_RATE,
     STEERING_REDUCTION_FACTOR,
+    // Visual tilt parameters
+    LEAN_MULTIPLIER,
+    PITCH_MULTIPLIER,
+    TILT_STIFFNESS,
+    // Orientation parameters
+    ORIENTATION_STIFFNESS,
 };
 
 struct parameter_command {
