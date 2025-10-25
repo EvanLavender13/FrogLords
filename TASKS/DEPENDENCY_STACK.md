@@ -2,7 +2,7 @@
 
 **What exists. What it provides. What can be built.**
 
-**Last Updated:** 2025-10-24
+**Last Updated:** 2025-10-25
 
 ---
 
@@ -114,11 +114,16 @@ Variations within systems. Different modes, states, or behaviors.
 - **Orientation-Locked Camera** - Camera locks behind vehicle facing direction (`src/camera/camera_follow.{h,cpp}`, `src/gui/camera_panel.{h,cpp}`)
   - Extends: Camera Follow System
   - Enables: Velocity-locked camera, look-ahead camera, dynamic chase modes
+- **Vehicle Tilt System** - Visual weight transfer through spring-damped lean/pitch based on lateral g-force and acceleration (`src/vehicle/vehicle_visual_systems.{h,cpp}`)
+  - Uses: Layer 2 lateral g-force calculator, spring-damper, orientation system
+  - Extends: Vehicle Movement System (visual layer)
+  - Enables: Enhanced drift visual feedback, suspension animation foundation
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
 - Layer 2 primitives as needed
 - No direct renderer coupling
+- Vehicle tilt provides: Visual weight transfer pattern for drift system, foundation for per-wheel suspension
 
 ---
 

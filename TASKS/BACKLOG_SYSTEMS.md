@@ -2,20 +2,13 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-24
+**Last Updated:** 2025-10-25
 
 ---
 
 ## Movement & Physics
 
 **Layer 4 - Buildable Now:**
-
-**Vehicle Tilt System** ← NOW BUILDABLE
-- Vehicle model tilts based on lateral acceleration (visual lean in corners)
-- Forward/backward pitch during acceleration/braking
-- Visual weight transfer without complex physics
-- Applied to model transform only, no physics body modification
-- Requires: Lateral G-Force Calculator (complete)
 
 **Boost/Nitrous System**
 - Accumulates charge through gameplay (pickups, successful maneuvers)
