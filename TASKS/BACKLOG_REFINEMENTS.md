@@ -22,14 +22,6 @@ None - All critical violations resolved ✅
 - **Fix:** Document - Add precondition assertion
 - **Source:** Gemini
 
-**Surveyor Wheel Accumulated State**
-- **Location:** `src/app/debug_generation.cpp:159`
-- **Principle:** Mathematical Foundation, Single Source of Truth
-- **Severity:** High
-- **Description:** Rotation angle uses `distance_traveled / wheel_radius`. When locomotion state changes, `wheel_radius` (derived from `cycle_length`) changes but `distance_traveled` continues accumulating, causing visual jump. Should derive from `locomotion.phase` instead.
-- **Fix:** Simplify - Calculate rotation from phase: `rotation_angle = -phase * 2π`
-- **Source:** Gemini
-
 ### Medium Priority
 
 **Ground Geometry Duplication**
@@ -38,14 +30,6 @@ None - All critical violations resolved ✅
 - **Severity:** Medium
 - **Description:** Visual floor is 40x40 (`generate_grid_floor(40.0f, 40)`) while collision ground is 200x200 (half_extents 100x100). Player can walk beyond visible world.
 - **Fix:** Simplify - Derive both from single constant or generate collision from visual dimensions
-- **Source:** Gemini
-
-**Spring Configuration Duplication**
-- **Location:** `src/character/animation.cpp:14`, `src/character/orientation.cpp:10`
-- **Principle:** Single Source of Truth
-- **Severity:** Medium
-- **Description:** Landing spring stiffness (400.0f) and yaw spring stiffness (25.0f) hardcoded in constructors. Critical feel parameters buried and not exposed in tuning system.
-- **Fix:** Simplify - Add to `character::tuning_params`, derive damping using `critical_damping` function
 - **Source:** Gemini
 
 **Velocity Trail Time-Dependent Sampling**
@@ -66,14 +50,6 @@ None - All critical violations resolved ✅
 
 
 ### Low Priority
-
-**Redundant Tuning Parameter Application**
-- **Location:** `src/app/runtime.cpp:165-180`
-- **Principle:** Single Source of Truth, Radical Simplicity
-- **Severity:** Low
-- **Description:** `world.character_params.apply_to(world.character)` called inside loop for every parameter change, recalculating all derived data each time.
-- **Fix:** Simplify - Apply all parameter changes first, make single `apply_to` call after loop
-- **Source:** Gemini
 
 **Split Camera Control Direction Logic**
 - **Location:** `src/app/runtime.cpp:65`
@@ -99,28 +75,12 @@ None - All critical violations resolved ✅
 - **Fix:** Document - Acceptable at current scale, add TODO for future input binding system
 - **Source:** Gemini
 
-**Unused contact_debug_info Fields**
-- **Location:** `src/character/controller.h:35-40`, `src/character/controller.cpp:166`
-- **Principle:** Radical Simplicity, Single Source of Truth
-- **Severity:** Low
-- **Description:** Fields `from_box`, `penetration`, `vertical_penetration` defined but never read. Only `penetration` written (line 166). Dead state duplicating collision data.
-- **Fix:** Delete - Remove unused fields
-- **Source:** Codex
-
 **Unused debug_text::font_size**
 - **Location:** `src/rendering/debug_primitives.h:40`
 - **Principle:** Radical Simplicity
 - **Severity:** Low
 - **Description:** `font_size` member never consulted when drawing text. Dead state in every debug text record.
 - **Fix:** Delete - Remove member or wire through if sizing needed
-- **Source:** Codex
-
-**Unmutated show_velocity_trail Flag**
-- **Location:** `src/gui/character_panel.h:14`, `src/app/debug_generation.cpp:345`
-- **Principle:** Radical Simplicity
-- **Severity:** Low
-- **Description:** `show_velocity_trail` flag never mutated (no UI hook), always true. Guard at line 345 is effectively hardcoded true.
-- **Fix:** Delete - Remove flag or add missing toggle widget
 - **Source:** Codex
 
 **Excessive Function Arguments**

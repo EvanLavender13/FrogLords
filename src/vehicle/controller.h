@@ -105,6 +105,14 @@ struct controller {
     // selects heading-based movement basis (instead of camera basis)
     float heading_yaw = 0.0f; // radians
 
+    // Angular velocity (derived per-frame from heading change)
+    // DERIVED STATE: Calculated from heading_yaw delta, not accumulated
+    // Used for lateral g-force calculation and drift detection
+    float angular_velocity = 0.0f; // radians/second
+
+    // Previous heading for angular velocity derivation
+    float previous_heading_yaw = 0.0f; // radians
+
     // Speed thresholds for traction classification (m/s)
     float soft_threshold = 3.0f;   // soft < 3 m/s (low speed, high grip)
     float medium_threshold = 6.0f; // medium: 3-6 m/s, hard ≥ 6 m/s (high speed)
@@ -126,6 +134,13 @@ struct controller {
     //   Negative: velocity points left of heading
     //   Zero: moving straight or stationary
     float calculate_slip_angle() const;
+
+    // Calculate lateral g-force from current speed and angular velocity
+    // Returns dimensionless g-force multiplier:
+    //   Positive: centripetal acceleration points right (right turn)
+    //   Negative: centripetal acceleration points left (left turn)
+    //   Zero: moving straight or stationary
+    float calculate_lateral_g_force() const;
 
   private:
     // Physics integration: weight, drag, velocity, position

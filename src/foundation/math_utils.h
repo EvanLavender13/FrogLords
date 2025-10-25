@@ -114,4 +114,34 @@ inline float calculate_slip_angle(const glm::vec3& horizontal_velocity, const gl
     return std::atan2(lateral_speed, forward_speed);
 }
 
+/// Calculate lateral g-force from speed and angular velocity.
+/// Returns centripetal acceleration as a multiple of Earth gravity (9.8 m/s²).
+///
+/// @param speed Horizontal speed in m/s (magnitude, always non-negative)
+/// @param angular_velocity Rotational velocity in rad/s (positive = right turn)
+/// @return Lateral g-force multiplier (dimensionless):
+///         - Positive: centripetal acceleration points right (right turn)
+///         - Negative: centripetal acceleration points left (left turn)
+///         - Zero: moving straight or stationary
+inline float calculate_lateral_g_force(float speed, float angular_velocity) {
+    FL_PRECONDITION(speed >= 0.0f, "speed must be non-negative (magnitude)");
+    FL_PRECONDITION(std::isfinite(speed), "speed must be finite");
+    FL_PRECONDITION(std::isfinite(angular_velocity), "angular_velocity must be finite");
+
+    // Zero-velocity edge case: no centripetal force when stationary
+    constexpr float SPEED_EPSILON = 0.0001f; // m/s (below perceptible threshold)
+    if (speed < SPEED_EPSILON) {
+        return 0.0f;
+    }
+
+    // Centripetal acceleration: a = v * ω
+    // Derivation: For circular motion, a = v²/r and ω = v/r, therefore a = v*ω
+    // Sign: positive ω (right turn) × positive v = positive a (rightward, toward center)
+    float lateral_accel = speed * angular_velocity; // m/s²
+
+    // Convert to g-force (dimensionless multiplier of Earth gravity)
+    constexpr float GRAVITY = 9.8f; // m/s²
+    return lateral_accel / GRAVITY;
+}
+
 } // namespace math

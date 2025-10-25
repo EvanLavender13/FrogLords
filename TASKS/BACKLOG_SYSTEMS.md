@@ -6,23 +6,6 @@
 
 ---
 
-## 🔄 MIGRATION: Character → Vehicle Systems
-
-**Completed:**
-- Vehicle controller operational (`src/vehicle/controller.{h,cpp}`)
-- Speed-dependent steering system (APPROVED)
-- Vehicle tuning system with metadata (`src/vehicle/tuning.{h,cpp}`)
-- Vehicle GUI panel (`src/gui/vehicle_panel.{h,cpp}`)
-- Traction state classification (grip/drift/airborne)
-
-**Remaining:**
-- Physics-based drift system (friction modification)
-- Drift detection via slip angle and lateral G-forces
-- Remove legacy character-specific code
-- Vehicle dynamics visuals (body roll, pitch)
-
----
-
 ## Layer 2 - Primitives
 
 **Lateral G-Force Calculator**

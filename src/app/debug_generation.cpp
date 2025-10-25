@@ -76,6 +76,28 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
             foundation::generate_circle(character.position, {current_speed});
         mesh_to_debug_lines(list, speed_ring, color);
     }
+
+    // Lateral g-force indicator (centripetal acceleration)
+    float g_force = character.calculate_lateral_g_force();
+    constexpr float G_FORCE_THRESHOLD = 0.05f; // Show arrow above 0.05g
+    if (std::abs(g_force) > G_FORCE_THRESHOLD) {
+        // Arrow direction: perpendicular to heading (right vector)
+        // Positive g-force = right turn = arrow points right (toward center)
+        // Negative g-force = left turn = arrow points left (toward center)
+        glm::vec3 right_dir = math::yaw_to_right(character.heading_yaw);
+        glm::vec3 arrow_dir = right_dir * g_force;
+
+        // Scale arrow length for visibility (3.0 meters per g)
+        constexpr float SCALE = 3.0f;
+        float arrow_length = std::abs(g_force) * SCALE;
+
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + arrow_dir * arrow_length,
+            .color = {1.0f, 0.0f, 1.0f, 1.0f}, // Magenta = lateral g-force
+            .head_size = 0.15f,
+        });
+    }
 }
 
 void generate_physics_springs_primitives(debug::debug_primitive_list& list,
