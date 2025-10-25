@@ -1,17 +1,19 @@
 # Current Plan
 
-**Status:** 🔧 Refinement - Vehicle Parameter Consolidation
-**Started:** 2025-10-24
-**Branch:** refine/vehicle-parameter-consolidation
-**Path:** B (standard)
-**Phase:** SELECT → REFINE
+**Status:** ✅ Ready for Next Task
+**Last Completed:** 2025-10-24 - Vehicle Parameter Consolidation
 
 ---
 
-## Current Work
+## Ready for Next Task
 
-**Refinement:** Unify vehicle physics parameters under vehicle::tuning_params
-**Location:** @TASKS/PLANS/REFINE_vehicle_parameter_consolidation.md
-**Principle:** Single Source of Truth, Systems Not Features
-**Approach:** Simplify
-**Next:** REFINE
+**Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
+- `/SYSTEM/SELECT` - Pick next system to build
+
+---
+
+**See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
+- `BACKLOG_SYSTEMS.md` - Systems to build
+- `DEPENDENCY_STACK.md` - Current capabilities

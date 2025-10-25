@@ -177,6 +177,84 @@ Each step is independently committed. Rollback: `git reset --hard HEAD~N` where 
 
 ---
 
+<!-- BEGIN: REFINE/COMPLETED -->
+## Completed
+
+**Date:** 2025-10-24
+
+### Changes Made
+
+**Step 1:** Added max_speed, accel, weight to vehicle::tuning_params with metadata and validation
+**Step 2:** Added vehicle tuning widgets to vehicle_panel with horizontal speed visualization
+**Step 3:** Updated runtime parameter commands to use vehicle_params
+**Step 4:** Removed character_params.apply_to() from game_world init
+**Step 5:** Deleted character_panel entirely (moved traction to vehicle_panel, removed velocity trail toggle)
+**Step 6:** Deleted character::tuning_params files and all references
+
+### Files Modified
+- `src/vehicle/tuning.h` - Added max_speed, accel, weight parameters
+- `src/vehicle/tuning.cpp` - Updated apply_to() with all vehicle params
+- `src/gui/vehicle_panel.cpp` - Added vehicle param sliders + traction display
+- `src/app/runtime.cpp` - Updated parameter commands, removed character_panel
+- `src/app/runtime.h` - Removed character_panel include and state
+- `src/app/game_world.h` - Removed character_params member
+- `src/app/game_world.cpp` - Removed character tuning include
+- `src/app/debug_generation.h` - Removed panel_state parameter
+- `src/app/debug_generation.cpp` - Velocity trail always shown
+- `src/gui/parameter_command.h` - Removed landing spring params (8→5 params)
+- `CMakeLists.txt` - Removed character_panel.cpp and character/tuning.cpp
+
+### Files Deleted
+- `src/gui/character_panel.h`
+- `src/gui/character_panel.cpp`
+- `src/character/tuning.h`
+- `src/character/tuning.cpp`
+
+### Metrics
+
+**Files deleted:**
+- `src/character/tuning.h`: 45 lines
+- `src/character/tuning.cpp`: 26 lines
+- `src/gui/character_panel.h`: 22 lines
+- `src/gui/character_panel.cpp`: 140 lines
+
+**Files modified:**
+- `src/vehicle/tuning.h`: 35 → 67 (+32 lines)
+- `src/vehicle/tuning.cpp`: +12 lines
+- `src/gui/vehicle_panel.cpp`: +39 lines
+- Other files: +123 lines (plan documentation, minor updates)
+
+**Total:** -80 lines (206 insertions, 286 deletions)
+
+**Violations removed:**
+- Duplicated vehicle parameters: 3 parameters (max_speed, accel, weight) removed from character namespace
+- Split GUI presentation: 1 vehicle tuning function consolidated from character_panel to vehicle_panel
+- Scattered truth: 4 files deleted, single source established
+
+### Tests
+- ✓ Build succeeds at every commit
+- ✓ Vehicle movement responds to parameter changes
+- ✓ Horizontal speed visualization works
+- ✓ Traction displays in Vehicle State
+- ✓ Velocity trail always renders
+- ✓ No character panel widgets remain
+
+### Result
+✓ **Violation removed**
+✓ **Single Source of Truth restored**: All vehicle physics parameters unified in vehicle::tuning_params
+✓ **Principle upheld**: Systems Not Features - vehicle parameters live in vehicle namespace
+
+### Learning
+
+**Root cause:** Incomplete system pivot left vehicle parameters in character namespace after vehicle system was introduced.
+
+**Prevention:** When creating new system namespace (vehicle::), immediately audit related namespaces (character::) and move all semantically-aligned state. Delete empty structs immediately.
+
+**Pattern:** Namespace-based organization can create feature splits if not aligned with system boundaries. Vehicle physics belongs in vehicle::, regardless of historical location.
+<!-- END: REFINE/COMPLETED -->
+
+---
+
 ## Validation
 
 **Success Criteria:**
