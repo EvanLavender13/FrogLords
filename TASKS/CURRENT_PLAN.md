@@ -1,19 +1,21 @@
 # Current Plan
 
-**Status:** ✅ Ready for Next Task
-**Last Completed:** 2025-10-24 - Vehicle Parameter Consolidation
+**Status:** 🏗️ System - Lateral G-Force Calculator
+**Started:** 2025-10-24
+**Branch:** system/lateral-g-force
+**Complexity:** Small
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
+**System:** Pure math primitive for measuring centripetal acceleration in vehicle dynamics
+**Location:** @TASKS/PLANS/lateral_g_force_SYSTEM.md
+**Layer:** 2
+**Complexity:** Small
+**Next:** GRAYBOX
 
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Dependencies:**
+- Vehicle angular velocity tracking (need to add)
+- Math utilities (Layer 2)
