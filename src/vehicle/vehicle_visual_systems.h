@@ -52,4 +52,9 @@ struct vehicle_visual_systems {
      * @return Transform matrix for rendering vehicle
      */
     glm::mat4 get_visual_transform(const controller& ctrl) const;
+
+    // Derived value getters for debugging/visualization
+    float get_lean_angle() const { return lean_spring.get_position(); }
+    float get_pitch_angle() const { return pitch_spring.get_position(); }
+    float get_orientation_yaw() const { return orientation.get_yaw(); }
 };

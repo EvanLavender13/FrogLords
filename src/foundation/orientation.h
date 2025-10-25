@@ -4,6 +4,7 @@
 
 struct orientation_system {
     spring_damper yaw_spring;
+    float min_speed = 0.01f; // m/s - minimum speed to update orientation
 
     orientation_system();
 

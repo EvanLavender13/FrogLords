@@ -3,6 +3,9 @@
 #include "vehicle/controller.h"
 #include "foundation/param_meta.h"
 
+// Forward declarations
+struct vehicle_visual_systems;
+
 namespace vehicle {
 
 struct tuning_params {
@@ -40,6 +43,17 @@ struct tuning_params {
     // Drag coefficient k = accel / max_speed guarantees equilibrium at max_speed
     // See controller::update for exponential drag model implementation
 
+    // TUNED: Visual tilt parameters (lean and pitch)
+    // Controls how much the vehicle visual model tilts in response to forces
+    float lean_multiplier = 0.3f;   // radians per g (lateral tilt in corners)
+    float pitch_multiplier = 0.05f; // radians per m/s² (pitch during accel/brake)
+    float tilt_stiffness = 150.0f;  // Spring stiffness for tilt response
+
+    // TUNED: Orientation system parameters
+    // Controls how smoothly the vehicle rotates to face velocity direction
+    float orientation_stiffness = 25.0f;        // Spring stiffness for yaw rotation
+    float orientation_min_speed = 0.01f;        // m/s - minimum speed to update orientation
+
     // Parameter metadata for GUI presentation
     static constexpr param_meta max_speed_meta = {"Max Speed", "m/s", 1.0f, 15.0f};
 
@@ -52,7 +66,20 @@ struct tuning_params {
     static constexpr param_meta steering_reduction_factor_meta = {"Steering Reduction", "", 0.0f,
                                                                   1.0f};
 
-    void apply_to(controller& c) const;
+    static constexpr param_meta lean_multiplier_meta = {"Lean Multiplier", "rad/g", 0.0f, 1.0f};
+
+    static constexpr param_meta pitch_multiplier_meta = {"Pitch Multiplier", "rad/(m/s²)", 0.0f,
+                                                          0.2f};
+
+    static constexpr param_meta tilt_stiffness_meta = {"Tilt Stiffness", "N/m", 10.0f, 500.0f};
+
+    static constexpr param_meta orientation_stiffness_meta = {"Orientation Stiffness", "N/m", 5.0f,
+                                                               100.0f};
+
+    static constexpr param_meta orientation_min_speed_meta = {"Orientation Min Speed", "m/s", 0.0f,
+                                                               0.5f};
+
+    void apply_to(controller& c, vehicle_visual_systems& visuals) const;
 };
 
 } // namespace vehicle

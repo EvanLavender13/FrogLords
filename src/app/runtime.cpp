@@ -148,23 +148,23 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
         switch (cmd.type) {
         case gui::parameter_type::MAX_SPEED:
             world.vehicle_params.max_speed = cmd.value;
-            world.vehicle_params.apply_to(world.character);
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         case gui::parameter_type::ACCEL:
             world.vehicle_params.accel = cmd.value;
-            world.vehicle_params.apply_to(world.character);
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         case gui::parameter_type::WEIGHT:
             world.vehicle_params.weight = cmd.value;
-            world.vehicle_params.apply_to(world.character);
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         case gui::parameter_type::TURN_RATE:
             world.vehicle_params.turn_rate = cmd.value;
-            world.vehicle_params.apply_to(world.character);
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         case gui::parameter_type::STEERING_REDUCTION_FACTOR:
             world.vehicle_params.steering_reduction_factor = cmd.value;
-            world.vehicle_params.apply_to(world.character);
+            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
             break;
         }
     }

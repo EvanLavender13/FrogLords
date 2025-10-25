@@ -20,7 +20,7 @@ void orientation_system::update(glm::vec3 velocity, float dt) {
     // Purpose: Prevent jitter/chatter when velocity is near-zero
     // Value: 0.01 m/s (1 cm/s) is well below perceptual threshold
     // Ensures character maintains orientation when effectively stationary
-    if (speed > 0.01f) { // m/s
+    if (speed > min_speed) {
         float target_yaw = glm::atan(velocity.x, velocity.z);
 
         // Handle angle wrapping (shortest path)
