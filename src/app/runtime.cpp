@@ -155,16 +155,16 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
     for (const auto& cmd : commands) {
         switch (cmd.type) {
         case gui::parameter_type::MAX_SPEED:
-            world.character_params.max_speed = cmd.value;
-            world.character_params.apply_to(world.character);
+            world.vehicle_params.max_speed = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::ACCEL:
-            world.character_params.accel = cmd.value;
-            world.character_params.apply_to(world.character);
+            world.vehicle_params.accel = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::WEIGHT:
-            world.character_params.weight = cmd.value;
-            world.character_params.apply_to(world.character);
+            world.vehicle_params.weight = cmd.value;
+            world.vehicle_params.apply_to(world.character);
             break;
         case gui::parameter_type::LANDING_STIFFNESS:
             world.character_visuals.animation.landing_spring.stiffness = cmd.value;
