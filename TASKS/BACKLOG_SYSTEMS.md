@@ -6,44 +6,16 @@
 
 ---
 
-## 🔄 MIGRATION: Character → Vehicle Systems
-
-**Completed:**
-- Vehicle controller operational (`src/vehicle/controller.{h,cpp}`)
-- Speed-dependent steering system (APPROVED)
-- Vehicle tuning system with metadata (`src/vehicle/tuning.{h,cpp}`)
-- Vehicle GUI panel (`src/gui/vehicle_panel.{h,cpp}`)
-- Traction state classification (grip/drift/airborne)
-
-**Remaining:**
-- Physics-based drift system (friction modification)
-- Drift detection via slip angle and lateral G-forces
-- Remove legacy character-specific code
-- Vehicle dynamics visuals (body roll, pitch)
-
----
-
-## Layer 2 - Primitives
-
-**Lateral G-Force Calculator**
-- Centripetal acceleration from velocity and angular velocity
-- Formula: `lateral_g = (speed * angular_velocity) / 9.8`
-- Determines when vehicle exceeds grip threshold
-- Pure measurement of existing physics state
-- Requires: None (pure mathematical primitive)
-
----
-
 ## Movement & Physics
 
 **Layer 4 - Buildable Now:**
 
-**Vehicle Tilt System**
+**Vehicle Tilt System** ← NOW BUILDABLE
 - Vehicle model tilts based on lateral acceleration (visual lean in corners)
 - Forward/backward pitch during acceleration/braking
 - Visual weight transfer without complex physics
 - Applied to model transform only, no physics body modification
-- Requires: Lateral G-Force Calculator
+- Requires: Lateral G-Force Calculator (complete)
 
 **Boost/Nitrous System**
 - Accumulates charge through gameplay (pickups, successful maneuvers)
@@ -60,27 +32,25 @@
 - Smooth transitions between speed ranges
 - Requires: None (enhancement of existing system)
 
-**Layer 4 - Buildable Now (Slip Angle Calculator Complete):**
-
 **Physics-Based Drift System** ← NOW BUILDABLE
 - Brake-to-drift activation (handbrake + steering at speed)
 - State machine: GRIP → DRIFT_INITIATE → DRIFT_MAINTAIN → DRIFT_EXIT
 - Friction modification during drift: rear 30%, front 70% of normal
 - Acceleration boost to maintain speed during slide
 - NO position manipulation - physics integration handles movement
-- Requires: Slip Angle Calculator (complete), Lateral G-Force Calculator
+- Requires: Slip Angle Calculator (complete), Lateral G-Force Calculator (complete)
 
 ---
 
 ## Camera
 
-**Dynamic FOV System**
+**Dynamic FOV System** ← NOW BUILDABLE
 - FOV increases with speed (base 75° → max 110°)
 - Additional g-force multipliers for acceleration
 - Formula: `FOV = base + (speed/maxSpeed) * range + lateral_g * g_multiplier`
 - Most impactful technique for speed sensation
 - Zero physics modification, pure visual enhancement
-- Requires: None (camera parameter modification)
+- Requires: Lateral G-Force Calculator (complete)
 
 **Camera Shake on Boost**
 - Rotation-based shake (less aggressive than translation)

@@ -77,6 +77,11 @@ float controller::calculate_slip_angle() const {
     return math::calculate_slip_angle(horizontal_velocity, forward);
 }
 
+float controller::calculate_lateral_g_force() const {
+    float horizontal_speed = glm::length(math::project_to_horizontal(velocity));
+    return math::calculate_lateral_g_force(horizontal_speed, angular_velocity);
+}
+
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits
@@ -95,6 +100,10 @@ void controller::apply_input(const controller_input_params& input_params,
     float horizontal_speed = glm::length(horizontal_velocity);
     float steering_multiplier = compute_steering_multiplier(horizontal_speed);
 
+    // Store previous heading before integration
+    previous_heading_yaw = heading_yaw;
+
+    // Integrate heading
     heading_yaw += -input_params.turn_input * turn_rate * steering_multiplier * dt;
     heading_yaw = math::wrap_angle_radians(heading_yaw);
 
@@ -102,6 +111,15 @@ void controller::apply_input(const controller_input_params& input_params,
                      "heading_yaw must remain finite after integration");
     FL_POSTCONDITION(heading_yaw >= -glm::pi<float>() && heading_yaw <= glm::pi<float>(),
                      "heading_yaw must be wrapped to [-π, π]");
+
+    // Derive angular velocity from heading change (wrap-safe)
+    // CRITICAL: Must use angle_difference to handle ±π wrap boundaries
+    // Raw subtraction would spike to ±2π when wrapping
+    float heading_delta = math::angle_difference_radians(heading_yaw, previous_heading_yaw);
+    angular_velocity = heading_delta / dt;
+
+    FL_POSTCONDITION(std::isfinite(angular_velocity),
+                     "angular_velocity must be finite");
 
     // Convert 2D input to 3D acceleration (basis-relative)
     // Basis provided by composition layer: camera vectors or heading vectors
