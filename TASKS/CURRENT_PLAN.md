@@ -1,19 +1,17 @@
 # Current Plan
 
-**Status:** ✅ Refinement Complete
-**Last Completed:** 2025-10-24 - Coordinate System Convention Switch
+**Status:** 🔧 Refinement - Vehicle Parameter Consolidation
+**Started:** 2025-10-24
+**Branch:** refine/vehicle-parameter-consolidation
+**Path:** B (standard)
+**Phase:** SELECT → REFINE
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/REFINE/SELECT` - Pick next violation to fix
-- `/SYSTEM/SELECT` - Pick next system to build
-
----
-
-**See:**
-- `BACKLOG_REFINEMENTS.md` - Current violations
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Refinement:** Unify vehicle physics parameters under vehicle::tuning_params
+**Location:** @TASKS/PLANS/REFINE_vehicle_parameter_consolidation.md
+**Principle:** Single Source of Truth, Systems Not Features
+**Approach:** Simplify
+**Next:** REFINE
