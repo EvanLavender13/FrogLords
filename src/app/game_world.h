@@ -5,7 +5,6 @@
 #include "vehicle/controller.h"
 #include "vehicle/tuning.h"
 #include "character/character_reactive_systems.h"
-#include "character/tuning.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
 #include "foundation/collision_primitives.h"
@@ -22,7 +21,6 @@ struct game_world {
     collision_world world_geometry;
     controller character;
     character_reactive_systems character_visuals;
-    character::tuning_params character_params;
     vehicle::tuning_params vehicle_params;
     velocity_trail_state trail_state;
 
