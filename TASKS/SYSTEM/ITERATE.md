@@ -13,7 +13,7 @@ Refine crude but correct implementation into quality code. Simplify architecture
 ## Prerequisites
 
 - Read @TASKS/CURRENT_PLAN.md
-- `PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
+- `TASKS/PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
 
 ---
 

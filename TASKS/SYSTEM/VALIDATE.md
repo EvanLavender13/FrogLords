@@ -13,7 +13,7 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 ## Prerequisites
 
 - Read @TASKS/CURRENT_PLAN.md
-- `PLANS/<name>_ITERATION_<N>.md` has ITERATE/COMPLETE
+- `TASKS/PLANS/<name>_ITERATION_<N>.md` has ITERATE/COMPLETE
 
 ---
 
@@ -40,6 +40,8 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 ### 1. External Review
 
 **Dual independent principle evaluation (Codex + Gemini).**
+
+**Critical:** Plans are tools for thinking, not contracts. Code is truth. Do not flag doc-code divergence—implementation evolves, docs capture decisions at a moment.
 
 Launch both reviews in parallel:
 

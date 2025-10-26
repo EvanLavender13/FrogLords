@@ -12,6 +12,8 @@ The principles are not suggestions—they are law. Every decision, every line of
 
 Questions beat assumptions. When precision matters, interrogate until clarity emerges. Vague requests get clarifying questions, not best guesses.
 
+**Concise commits.** One-line summary of what changed and why. Details live in code and docs.
+
 ## Physics-First Architecture
 
 **Critical:** This is a physics-first application with force → acceleration → velocity → position integration.
