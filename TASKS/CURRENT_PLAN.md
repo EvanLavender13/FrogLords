@@ -1,22 +1,29 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-26 - Handbrake Refactor
+**Status:** 🏗️ System - Angle Arc Primitive
+**Branch:** system/angle-arc-primitive
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
+**System:** Generic angle visualization primitive (Layer 2)
+**Location:** @TASKS/PLANS/angle_arc_primitive_SYSTEM.md
+**Next Task:** GRAYBOX
+
+**Why This Matters:**
+Reusable geometric primitive enabling 4-5 immediate visualizations:
+- Slip angle (velocity vs heading)
+- Steering angle (current vs max)
+- Counter-steering detection
+- Angular velocity cones
+- Future: Front/rear axle slip angles
+
+**Graybox Scope:**
+- `generate_arc()` function in `procedural_mesh.{h,cpp}`
+- Horizontal arcs only (XZ plane)
+- First consumer: slip angle visualization in `debug_generation.cpp`
 
 ---
 
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `DEPENDENCY_STACK.md` - Current capabilities
-- `PLANS/handbrake_refactor_SYSTEM.md` - Last completed system
-
----
-
-**Refactor for clarity. Enable emergence.**
+**Systems, not features. Build once, use everywhere.**
