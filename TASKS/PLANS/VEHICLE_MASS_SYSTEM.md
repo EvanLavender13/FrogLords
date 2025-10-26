@@ -256,3 +256,9 @@ velocity.x += lateral_accel * dt; // Mass affects responsiveness
 - May defer iteration if no architectural improvements needed
 
 <!-- END: GRAYBOX/RESULTS -->
+
+---
+
+## Iterations
+
+- [ITERATION_1.md](VEHICLE_MASS_ITERATION_1.md) - APPROVED

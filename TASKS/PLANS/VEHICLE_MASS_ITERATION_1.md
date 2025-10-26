@@ -1,5 +1,7 @@
 # Vehicle Mass Property System - Iteration 1
 
+**Status:** APPROVED
+
 ---
 
 <!-- BEGIN: ITERATE/INTERNAL_REVIEW -->
@@ -154,5 +156,109 @@
 **Status:** ✅ Stable - ready for commit
 
 <!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-26
+
+**Convergent Findings:**
+
+Strengths (both reviewers agreed):
+- GRAVITY constant properly centralized (math_utils.h:13)
+- F=ma mathematically correct at controller.cpp:173
+- Semi-implicit Euler correctly applied for vertical integration
+- Mass bounds enforced via metadata pattern (tuning.h:68)
+- dt validation present with preconditions
+- snake_case naming consistent
+- Comments explain why, not what
+- Metadata-driven pattern followed correctly
+- Time-independent physics preserved
+- Unidirectional dataflow maintained
+
+**Divergent Findings:**
+
+Codex - Principle violations detected:
+- **Radical Simplicity:** Mass is dead parameter - adds state/wiring without behavioral effect. Weight calculation `(mass * -GRAVITY)/mass` cancels regardless of mass value. Evidence: controller.cpp:173, controller.h:62, tuning.cpp:55, vehicle_panel.cpp:33, runtime.cpp:163-166
+- **Emergent Design:** No new category of behavior enabled today - only participates in calculation that cancels out. Functions as wiring rather than enabling emergence. Evidence: controller.cpp:169-175
+- **Dead State anti-pattern:** Mass written and displayed but doesn't affect dynamics. Canonical dead state. Evidence: controller.cpp:173
+
+Gemini - No violations:
+- **Radical Simplicity:** Mass is foundational infrastructure enabling future systems (lateral forces). Intentionally explicit F=ma relationship demonstrates focus on underlying system correctness.
+- **Emergent Design:** Prerequisite for emergent behaviors like physics-based drift and weight transfer.
+- **Dead State:** Mass flows through entire system (GUI → runtime → controller → physics). Not dead state.
+
+**Assessment:**
+
+Strong divergence on fundamental question: "Does infrastructure that enables future systems but has zero current behavioral effect violate Radical Simplicity?"
+
+Codex interprets "justify existence" as immediate behavioral impact.
+Gemini interprets "justify existence" as architectural necessity for planned systems.
+
+Both reviews are technically accurate on code quality, integration correctness, and anti-pattern detection (excluding dead state disagreement).
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:**
+
+The divergence exposes an important question: When does foundational infrastructure justify existence?
+
+Codex's strict interpretation ("justify = observable behavior now") would prohibit all foundation-building. Under this reading, we couldn't add any system component until the moment we need it, which would force all infrastructure and features to be built simultaneously—a clear violation of The Dependency Hierarchy principle.
+
+The principles themselves resolve this:
+
+1. **Systems, Not Features** explicitly states: "A system is fundamental infrastructure enabling categories of behavior." Mass enables force-based physics (lateral forces, weight transfer, collisions)—a category, not a single behavior.
+
+2. **The Dependency Hierarchy** requires "Build from certainty toward uncertainty, never the reverse." We cannot build axle lateral force systems (uncertain) on a foundation that lacks mass (certainty). Mass must exist first.
+
+3. **Mathematical Foundation** requires "Every behavior must be mathematically correct." The current weight-as-acceleration is mathematically incorrect semantics. Fixing it to proper F=ma is a correctness improvement independent of immediate behavioral impact.
+
+4. **Radical Simplicity** states "Every element must justify its existence," but "Systems, Not Features" provides the justification framework: enabling categories of future behavior is sufficient justification for infrastructure.
+
+The implementation also delivers immediate value:
+- Fixes GRAVITY duplication (Single Source of Truth violation)
+- Corrects semantic incorrectness (weight is force, not acceleration)
+- Establishes pattern for force-based physics
+- Zero regression risk (mass cancels, behavior unchanged)
+
+Codex's "dead state" critique would be valid if mass were added without clear architectural need or if it duplicated existing state. Neither applies here. Mass is required infrastructure for the documented physics architecture (FrontRearWheelArchitecture.md).
+
+The implementation is mathematically sound, architecturally clean, follows all conventions, and enables the next layer of the dependency hierarchy. Approved.
+
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- None - mass behaves exactly as designed (cancels in weight calculation)
+- This is expected for foundational infrastructure before dependent systems exist
+
+**Enables (future):**
+- Front/rear axle lateral force systems: `lateral_accel = lateral_force / mass`
+- Collision impulse response: `delta_v = impulse / mass`
+- Weight transfer during acceleration: load distribution based on mass and CoM
+- Moment of inertia calculation for rotational dynamics: `I = mass * radius²`
+- Vehicle feel differentiation: heavy vs light vehicle handling characteristics
+
+**Learned:**
+- External validation divergence reveals principle interpretation ambiguity
+- "Justify existence" must balance immediate behavior (Radical Simplicity) with architectural need (The Dependency Hierarchy)
+- Foundational infrastructure cannot exist simultaneously with features that depend on it
+- Dual review protocol successfully identified philosophical question requiring human judgment
+- Principles themselves provide resolution framework when properly cross-referenced
+
+<!-- END: VALIDATE/EMERGENCE -->
 
 ---
