@@ -1,6 +1,6 @@
-# STRENGTHEN - Close the System Cycle
+# CLOSE - Archive the System
 
-**Archive the system. Update foundation. Enable next layer.**
+**Update state. Merge work. Close the loop.**
 
 ---
 
@@ -8,7 +8,7 @@
 
 Update backlogs to current state. Archive detailed metrics in plan file. Merge to main.
 
-**Learning captured in VALIDATE/EMERGENCE. This updates tracking.**
+**Backlogs show what's now. Plan files hold what happened.**
 
 ---
 
@@ -105,7 +105,7 @@ Update affected layer - note systems that are now buildable:
 ```bash
 git add TASKS/DEPENDENCY_STACK.md TASKS/BACKLOG_SYSTEMS.md TASKS/CURRENT_PLAN.md TASKS/PLANS/<name>_SYSTEM.md TASKS/PLANS/<name>_ITERATION_*.md
 
-git commit -m "strengthen: complete <name> system
+git commit -m "close: complete <name> system
 
 <One-line description of what this provides>
 
@@ -190,7 +190,7 @@ head -10 TASKS/CURRENT_PLAN.md
 
 Show what's buildable now. Show what's next. Point to plan files for history.
 
-Details live in iteration docs. Backlogs stay lean.
+Details live in `PLANS/<name>_SYSTEM.md` and iteration docs. Backlogs stay lean.
 
 ---
 

@@ -46,9 +46,9 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 Launch both reviews in parallel:
 
 ```bash
-bash scripts/bash/codex.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md [relevant files] [your validation question]"
+bash scripts/bash/codex.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [your validation question]"
 
-bash scripts/bash/gemini.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md [relevant files] [your validation question]"
+bash scripts/bash/gemini.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [your validation question]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in both Bash tool calls.
@@ -226,7 +226,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 ## Next
 
 **If APPROVED:**
-→ STRENGTHEN
+→ CLOSE
 
 **If REVISE:**
 → ITERATE (minor fixes)
