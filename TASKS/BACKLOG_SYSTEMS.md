@@ -184,21 +184,29 @@
 - Requires: Metadata-driven design pattern (exists), test infrastructure
 - Source: Designer parameter interface iteration 3 emergence analysis
 
-**Slip Angle Visualization** ← NOW BUILDABLE
-- Arc on speed ring showing angle between heading and velocity
-- Visualizes difference between where vehicle points vs where it's going
-- Pure measurement of existing physics state
-- Enhances understanding of drift behavior
-- Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
-- Requires: Slip Angle Calculator (complete)
+**Slip Angle Visualization** ✅ COMPLETE (see angle arc primitive system)
+- Arc visualization between heading and velocity
+- Integrated via angle arc primitive in debug_generation.cpp
 
-**Front/Rear Slip Angle Debug Display**
-- Display both front and rear slip angles separately
+**Steering Authority Visualization** ← NOW BUILDABLE (angle arc primitive complete)
+- Arc showing current steering angle vs maximum steering authority
+- Visualizes speed-dependent steering limits
+- Color-coded: green (full authority), yellow (reduced), red (minimal)
+- Requires: Angle Arc Primitive (complete)
+
+**Counter-Steering Detection Visualization** ← NOW BUILDABLE (angle arc primitive complete)
+- Arc showing driver input direction vs required correction
+- Helps learn counter-steering technique during drifts
+- Distinct color from slip angle arc (e.g., cyan vs white)
+- Requires: Angle Arc Primitive (complete)
+
+**Front/Rear Slip Angle Debug Display** ← NOW BUILDABLE (angle arc primitive complete)
+- Display both front and rear slip angles separately using angle arcs
 - Show lateral force magnitude per axle
 - Visualize yaw torque contribution from each axle
 - Color-coded: green (grip), yellow (sliding), red (loss of grip)
 - Helps tune cornering_stiffness and understand drift mechanics
-- Requires: Front Axle System, Rear Axle System
+- Requires: Front Axle System, Rear Axle System, Angle Arc Primitive (complete)
 
 **Vehicle Telemetry System**
 - Record speed, acceleration, steering, drift angle over time
