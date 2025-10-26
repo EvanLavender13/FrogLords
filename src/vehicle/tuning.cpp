@@ -20,12 +20,15 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
     FL_PRECONDITION(steering_reduction_factor >= steering_reduction_factor_meta.min &&
                         steering_reduction_factor <= steering_reduction_factor_meta.max,
                     "steering_reduction_factor must be within metadata range");
+    FL_PRECONDITION(brake_rate >= brake_rate_meta.min && brake_rate <= brake_rate_meta.max,
+                    "brake_rate must be within metadata range");
 
     FL_ASSERT_FINITE_SCALAR(max_speed, "max_speed");
     FL_ASSERT_FINITE_SCALAR(accel, "accel");
     FL_ASSERT_FINITE_SCALAR(weight, "weight");
     FL_ASSERT_FINITE_SCALAR(turn_rate, "turn_rate");
     FL_ASSERT_FINITE_SCALAR(steering_reduction_factor, "steering_reduction_factor");
+    FL_ASSERT_FINITE_SCALAR(brake_rate, "brake_rate");
 
     // Validate visual parameters
     FL_PRECONDITION(lean_multiplier >= lean_multiplier_meta.min &&
@@ -52,6 +55,7 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
     c.weight = weight;
     c.turn_rate = turn_rate;
     c.steering_reduction_factor = steering_reduction_factor;
+    c.friction.handbrake.brake_rate = brake_rate;
 
     // Copy visual system parameters
     visuals.lean_multiplier = lean_multiplier;

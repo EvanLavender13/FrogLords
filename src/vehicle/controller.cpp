@@ -14,24 +14,14 @@ namespace {
 // TUNED: Collision sphere radius (character physical size)
 // World scale: 0.5m radius = 1.0m diameter sphere (human-scale)
 // Defines capsule/sphere collision volume for all character interactions
-// Used in: controller constructor (line 35) to initialize collision_sphere.radius
+// Used in: controller constructor to initialize collision_sphere.radius
 constexpr float BUMPER_RADIUS = 0.50f; // meters
 
 // CALCULATED: Initial spawn height for sphere resting on ground plane
 // Geometric derivation: Sphere resting on Y=0 has center at Y = radius
 // Contact point: center.y - radius = 0 → center.y = radius
-// Used in: controller constructor (line 29) to set initial position.y
+// Used in: controller constructor to set initial position.y
 constexpr float STANDING_HEIGHT = BUMPER_RADIUS; // meters (= 0.5m)
-
-void clamp_horizontal_speed(glm::vec3& velocity, float max_speed) {
-    glm::vec3 horizontal_velocity = math::project_to_horizontal(velocity);
-    float speed = glm::length(horizontal_velocity);
-    if (speed > max_speed) {
-        horizontal_velocity = horizontal_velocity * (max_speed / speed);
-        velocity.x = horizontal_velocity.x;
-        velocity.z = horizontal_velocity.z;
-    }
-}
 
 } // namespace
 
@@ -39,10 +29,6 @@ controller::controller()
     : position(0.0f, STANDING_HEIGHT, 0.0f)
     , velocity(0.0f)
     , acceleration(0.0f) {
-    // Validate threshold ordering (prevents state collapse)
-    FL_PRECONDITION(soft_threshold < medium_threshold,
-                    "soft_threshold must be less than medium_threshold to define distinct states");
-
     // Validate steering_reduction_factor bounds (ensures monotonic steering decrease)
     FL_PRECONDITION(steering_reduction_factor >= 0.0f && steering_reduction_factor <= 1.0f,
                     "steering_reduction_factor must be in [0, 1]");
@@ -130,8 +116,8 @@ void controller::apply_input(const controller_input_params& input_params,
     // Direct acceleration (instant response, no ground/air distinction)
     acceleration = input_direction * accel;
 
-    // Apply composed systems (each modifies physics in semantically clear way)
-    handbrake.apply(input_params.handbrake, *this, dt);
+    // Update composed systems (friction model manages drag coefficient)
+    friction.update(input_params);
 }
 
 void controller::update(const collision_world* world, float dt) {
@@ -183,12 +169,10 @@ void controller::update_physics(float dt) {
     // Apply weight to vertical acceleration (downward force)
     acceleration.y += weight;
 
-    // Calculate drag coefficient from equilibrium constraint
-    // Derivation: At equilibrium dv/dt = 0, so a - k*v_eq = 0
-    //             Therefore: v_eq = a/k
-    //             Want: v_eq = max_speed when a = accel (full input)
-    //             Therefore: k = accel / max_speed
-    float k = accel / max_speed;
+    // Unified drag coefficient from friction model
+    // Composes: base drag (equilibrium) + handbrake drag + future modifiers
+    // Time-independent: single exponential integrator with correct particular solution
+    float k = friction.compute_total_drag(accel, max_speed);
 
     FL_POSTCONDITION(k > 0.0f && std::isfinite(k), "drag coefficient must be positive and finite");
 

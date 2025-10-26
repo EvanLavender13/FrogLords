@@ -12,8 +12,8 @@ Refine crude but correct implementation into quality code. Simplify architecture
 
 ## Prerequisites
 
-- [ ] Graybox functional
-- [ ] `PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
+- Read @TASKS/CURRENT_PLAN.md
+- `PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
 
 ---
 
@@ -22,8 +22,6 @@ Refine crude but correct implementation into quality code. Simplify architecture
 Review @TASKS/PATTERNS.md for known anti-patterns.
 
 Prevention is cheaper than detection.
-
-**Documentation-only changes:** Do not create iterations for doc sync. Edit system doc directly and commit.
 
 ---
 
@@ -115,13 +113,13 @@ Add external review to iteration doc:
 
 ### 4. Define Refinement Scope
 
-Based on internal and external review findings, define actionable refinement goals.
+Based on previous context or internal and external review findings, define actionable refinement goals.
 
 Add to iteration doc:
 
 ```markdown
 <!-- BEGIN: ITERATE/SCOPE -->
-[Actionable refinement goals based on review findings]
+[Actionable refinement goals based on context]
 <!-- END: ITERATE/SCOPE -->
 ```
 

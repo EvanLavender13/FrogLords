@@ -22,6 +22,7 @@ enum class parameter_type {
     WEIGHT,
     TURN_RATE,
     STEERING_REDUCTION_FACTOR,
+    BRAKE_RATE,
     // Visual tilt parameters
     LEAN_MULTIPLIER,
     PITCH_MULTIPLIER,

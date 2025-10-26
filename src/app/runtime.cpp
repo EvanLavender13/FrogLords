@@ -172,6 +172,10 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             world.vehicle_params.steering_reduction_factor = cmd.value;
             world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
+        case gui::parameter_type::BRAKE_RATE:
+            world.vehicle_params.brake_rate = cmd.value;
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
+            break;
         case gui::parameter_type::LEAN_MULTIPLIER:
             world.vehicle_params.lean_multiplier = cmd.value;
             world.vehicle_params.apply_to(world.character, world.vehicle_reactive);

@@ -1,6 +1,7 @@
 #include "app/game_world.h"
 #include "foundation/math_utils.h"
 #include "foundation/debug_assert.h"
+#include "vehicle/controller_input_params.h"
 
 #include "rendering/velocity_trail.h"
 #include "input/input.h"
@@ -34,7 +35,7 @@ void game_world::update(float dt) {
     }
 
     // Poll input and construct controller input params
-    controller::controller_input_params input_params;
+    controller_input_params input_params;
     input_params.move_direction = glm::vec2(0.0f, 0.0f);
     input_params.move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
     input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
