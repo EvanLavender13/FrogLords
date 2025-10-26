@@ -178,15 +178,79 @@ for θ in [0, angle] stepped by (angle / segments):
 
 ---
 
-## Next Step
+<!-- BEGIN: GRAYBOX/PLAN -->
+## Implementation Plan
 
-**GRAYBOX** - Build simplest version:
-1. Add `generate_arc()` to `procedural_mesh.{h,cpp}`
-2. Implement orthonormal frame, angle calculation, vertex generation
-3. Add slip angle arc to `debug_generation.cpp` (first consumer)
-4. Validate: visual inspection, sign/magnitude tests, integration
+**Structure:**
+- `generate_arc()` in `procedural_mesh.{h,cpp}` following existing primitive pattern
+- Signature: `generate_arc(center, start_dir, end_dir, radius, segments=32)`
+- Returns: `wireframe_mesh` with arc vertices and edges
+- Consumer: `generate_character_state_primitives()` in `debug_generation.cpp`
 
-**Success = Reusable primitive enabling multiple visualizations.**
+**Algorithm Steps:**
+1. Validate inputs (unit vectors via assertions, horizontal check)
+2. Handle degenerate cases (parallel vectors → return empty or single radial line)
+3. Compute signed angle via `atan2(dot(cross, UP), dot(start, end))`
+4. Build orthonormal frame: X=start_dir, Z=UP, Y=cross(Z,X) normalized
+5. Generate vertices: `P(θ) = center + radius*(cos(θ)*X + sin(θ)*Y)` for θ in [0, angle]
+6. Connect vertices with edges (sequential pairs)
+
+**Integration:**
+- Slip angle arc visualization positioned at character.position
+- Arc radius matches speed ring radius for visual consistency
+- Arc from heading_yaw direction to velocity direction
+- Color: white (no gradient in graybox, defer styling)
+- Rendered via `mesh_to_debug_lines()` pattern
+
+**Debug Assertions:**
+- Preconditions: start_dir and end_dir are unit length, horizontal (Y≈0)
+- Preconditions: radius > 0, segments >= 3
+- Edge case: parallel vectors (angle ≈ 0 or ≈ π)
+
+**Deferred:**
+- Arc styling (gradient colors, dashed lines)
+- 3D arcs (arbitrary plane normals)
+- Dynamic segment tuning
+- Steering authority cone arcs (requires second consumer)
+- World-space debug text at arc midpoint showing angle in degrees (investigate 3D text rendering capability)
+<!-- END: GRAYBOX/PLAN -->
+
+---
+
+<!-- BEGIN: GRAYBOX/RESULTS -->
+## Graybox Results
+
+**Status:** ✅ WORKS - Ready for ITERATE
+
+**What Works:**
+- `generate_arc()` primitive generates correct arc geometry
+- Slip angle visualization renders at half speed-ring radius (clear visibility)
+- Arc direction matches turn input (left/right)
+- Arc magnitude scales with slip angle
+- Integration with existing debug viz (no flicker, correct depth)
+- Debug assertions validate preconditions (unit vectors, horizontal, positive radius)
+
+**Validation Performed:**
+- Visual inspection: Arc connects yellow heading arrow to green orientation arrow
+- Sign test: Right turn (D) → clockwise arc, Left turn (A) → counter-clockwise arc
+- Magnitude test: Small slip → short arc, large slip (handbrake) → longer arc
+- Integration test: Renders alongside speed ring, heading arrow, orientation arrow, g-force arrow
+
+**Surprises:**
+- Initial placement at full radius overlapped speed ring (resolved: half radius)
+- Arc clarity excellent at 50% speed-ring radius
+
+**Readiness:**
+- Core primitive proven reusable (Layer 2 foundation)
+- First consumer validates pattern works
+- Ready for refinement and additional consumers (steering authority cone, counter-steer detection)
+
+**Refinements for ITERATE:**
+- World-space debug text at arc midpoint showing angle in degrees (requires 3D text rendering investigation)
+- Arc styling (gradient colors based on slip severity, dashed lines)
+- Additional consumers: steering authority cone, counter-steering detection arc
+
+<!-- END: GRAYBOX/RESULTS -->
 
 ---
 

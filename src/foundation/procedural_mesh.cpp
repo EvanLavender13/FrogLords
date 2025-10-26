@@ -1,5 +1,6 @@
 #include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
+#include "foundation/debug_assert.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
 #include <cmath>
@@ -252,6 +253,55 @@ wireframe_mesh generate_circle(const glm::vec3& center, circle_config config) {
     // Connect adjacent vertices
     for (int i = 0; i < config.segments; i++) {
         mesh.edges.push_back(edge(i, (i + 1) % config.segments));
+    }
+
+    return mesh;
+}
+
+wireframe_mesh generate_arc(const glm::vec3& center, const glm::vec3& start_dir,
+                            const glm::vec3& end_dir, float radius, int segments) {
+    wireframe_mesh mesh;
+
+    // Validate preconditions
+    FL_PRECONDITION(std::abs(glm::length(start_dir) - 1.0f) < 0.01f,
+                    "start_dir must be unit length");
+    FL_PRECONDITION(std::abs(glm::length(end_dir) - 1.0f) < 0.01f, "end_dir must be unit length");
+    FL_PRECONDITION(std::abs(start_dir.y) < 0.01f, "start_dir must be horizontal (Y≈0)");
+    FL_PRECONDITION(std::abs(end_dir.y) < 0.01f, "end_dir must be horizontal (Y≈0)");
+    FL_PRECONDITION(radius > 0.0f, "radius must be positive");
+    FL_PRECONDITION(segments >= 3, "segments must be at least 3");
+
+    // Compute signed angle between directions
+    float dot_product = glm::dot(start_dir, end_dir);
+    glm::vec3 cross_product = glm::cross(start_dir, end_dir);
+    float angle = std::atan2(glm::dot(cross_product, math::UP), dot_product);
+
+    // Handle degenerate cases
+    constexpr float ANGLE_EPSILON = 0.001f; // ~0.057 degrees
+    if (std::abs(angle) < ANGLE_EPSILON) {
+        // Parallel vectors: return empty mesh (zero-angle arc is meaningless)
+        return mesh;
+    }
+
+    // Build orthonormal frame
+    // X = start direction (first basis vector)
+    // Z = UP (plane normal for horizontal arcs)
+    // Y = perpendicular in-plane direction
+    glm::vec3 frame_x = start_dir;
+    glm::vec3 frame_y = glm::normalize(glm::cross(math::UP, frame_x));
+
+    // Generate arc vertices
+    int num_vertices = segments + 1; // Include both endpoints
+    for (int i = 0; i < num_vertices; i++) {
+        float t = static_cast<float>(i) / static_cast<float>(segments);
+        float theta = t * angle;
+        glm::vec3 vertex = center + radius * (std::cos(theta) * frame_x + std::sin(theta) * frame_y);
+        mesh.vertices.push_back(vertex);
+    }
+
+    // Connect vertices with edges
+    for (int i = 0; i < segments; i++) {
+        mesh.edges.push_back(edge(i, i + 1));
     }
 
     return mesh;

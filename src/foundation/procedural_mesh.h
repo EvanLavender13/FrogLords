@@ -61,6 +61,16 @@ wireframe_mesh generate_arrow(const glm::vec3& start, const glm::vec3& end, floa
 /// Generate horizontal circle wireframe
 wireframe_mesh generate_circle(const glm::vec3& center, circle_config config = {});
 
+/// Generate horizontal arc wireframe between two directions
+/// Arc sweeps from start_dir to end_dir in the horizontal plane (XZ)
+/// @param center Arc center point (world position)
+/// @param start_dir Starting direction (must be unit vector, horizontal)
+/// @param end_dir Ending direction (must be unit vector, horizontal)
+/// @param radius Arc radius (visualization scale)
+/// @param segments Number of line segments (higher = smoother arc)
+wireframe_mesh generate_arc(const glm::vec3& center, const glm::vec3& start_dir,
+                            const glm::vec3& end_dir, float radius, int segments = 32);
+
 /// Generate helix-style spring between two points (world-space vertices)
 wireframe_mesh generate_spring(const glm::vec3& start, const glm::vec3& end, int coils = 6,
                                float radius = 0.05f);

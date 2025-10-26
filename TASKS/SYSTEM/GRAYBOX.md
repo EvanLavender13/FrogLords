@@ -104,10 +104,7 @@ Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`
 git add .
 git commit -m "graybox: <name> core mechanic
 
-Works: <what>
-Validated: <properties>
-Emergent: <surprises>
-Status: <ready | needs work | defer>
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"

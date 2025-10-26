@@ -46,7 +46,7 @@ ls PLANS/<name>_ITERATION_*.md
 
 **If no iterations exist:**
 
-Create `PLANS/<name>_ITERATION_1.md`.
+Create new empty `PLANS/<name>_ITERATION_1.md`.
 
 **If iterations exist:**
 
@@ -172,6 +172,8 @@ Commit iteration document:
 ```bash
 git add PLANS/<name>_ITERATION_<N>.md
 git commit -m "iterate: <name> iteration <N> complete
+
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com)"
