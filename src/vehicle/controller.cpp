@@ -198,7 +198,10 @@ void controller::update_physics(float dt) {
         horizontal_velocity = horizontal_velocity * decay + (horizontal_accel / k) * (1.0f - decay);
     }
 
-    // Integrate vertical velocity (standard Euler - no drag)
+    // Integrate vertical velocity (semi-implicit Euler - no drag)
+    // Semi-implicit: v += a*dt, then x += v*dt (uses updated velocity)
+    // This is the project standard per TASKS/CONTEXT/PHYSICS_INTEGRATION_PATTERNS.md
+    // Chosen for: stability, simplicity, speed in damped gameplay systems
     velocity.y += acceleration.y * dt;
 
     // Reconstruct full velocity (horizontal + vertical)
