@@ -14,8 +14,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-enum class control_scheme { FREE_STRAFE, CAR_LIKE };
-
 struct game_world {
     camera cam;
     camera_follow cam_follow;
@@ -26,8 +24,6 @@ struct game_world {
     vehicle_reactive_systems vehicle_reactive;
     vehicle::tuning_params vehicle_params;
     velocity_trail_state trail_state;
-
-    control_scheme current_control_scheme = control_scheme::FREE_STRAFE;
 
     debug::debug_primitive_list debug_list;
 

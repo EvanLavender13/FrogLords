@@ -75,6 +75,7 @@ struct controller {
     // Controls rotational speed when using heading-based movement
     // Higher values = faster turning (arcade feel)
     // Integrated in: controller::apply_input() - heading_yaw += -input.x * turn_rate * dt
+    // Convention reminder: positive yaw is CLOCKWISE (toward +X), so right-turn input is negated.
     float turn_rate = 3.0f; // radians/second
 
     // TUNED: Steering reduction factor for speed-dependent steering limits
@@ -87,7 +88,7 @@ struct controller {
     // Car-like control heading (physics state)
     // Updated from turn input (A/D keys), used when composition layer
     // selects heading-based movement basis (instead of camera basis)
-    float heading_yaw = 0.0f; // radians
+    float heading_yaw = 0.0f; // radians (positive = clockwise/right turn)
 
     // Angular velocity (derived per-frame from heading change)
     // DERIVED STATE: Calculated from heading_yaw delta, not accumulated

@@ -70,10 +70,9 @@ float controller::calculate_lateral_g_force() const {
 void controller::apply_input(const controller_input_params& input_params,
                              const camera_input_params& cam_params, float dt) {
     // Integrate heading from turn input with speed-dependent steering limits
-    // Time-independent heading integration: heading_yaw += -turn_input * turn_rate *
-    // steering_multiplier * dt Coordinate system: Y-up right-handed (+X right), positive yaw = CCW
-    // rotation from above Input convention: positive = right turn, negative = left turn Yaw
-    // convention: positive = CCW rotation, so negate input to map right → -yaw (CW)
+    // Time-independent heading integration: heading_yaw += -turn_input * turn_rate * steering_multiplier * dt
+    // Coordinate system: +X right, +Y up, +Z forward; positive yaw rotates CLOCKWISE (toward +X)
+    // Input convention: turn_input > 0 represents a right turn. Negation bridges input → yaw sign.
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt),
                     "dt must be positive and finite for time-independent integration");
     FL_PRECONDITION(std::isfinite(turn_rate), "turn_rate must be finite");

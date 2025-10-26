@@ -276,46 +276,43 @@ void generate_velocity_trail_primitives(debug::debug_primitive_list& list,
     }
 }
 
-void generate_car_control_primitives(debug::debug_primitive_list& list, const controller& character,
-                                     control_scheme scheme) {
-    if (scheme == control_scheme::CAR_LIKE) {
-        // Draw heading yaw arrow (yellow for car control, scales with speed like green arrow)
-        float current_speed = glm::length(math::project_to_horizontal(character.velocity));
-        if (current_speed > 0.05f) {
-            float yaw = character.heading_yaw;
-            glm::vec3 forward = math::yaw_to_forward(yaw);
-            list.arrows.push_back(debug::debug_arrow{
-                .start = character.position,
-                .end = character.position + forward * current_speed,
-                .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
-                .head_size = 0.2f,
-            });
+void generate_car_control_primitives(debug::debug_primitive_list& list, const controller& character) {
+    // Draw heading yaw arrow (yellow for car control, scales with speed like green arrow)
+    float current_speed = glm::length(math::project_to_horizontal(character.velocity));
+    if (current_speed > 0.05f) {
+        float yaw = character.heading_yaw;
+        glm::vec3 forward = math::yaw_to_forward(yaw);
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + forward * current_speed,
+            .color = {1.0f, 1.0f, 0.0f, 1.0f}, // Yellow = car heading
+            .head_size = 0.2f,
+        });
 
-            // VISUAL VALIDATION: Steering authority cone
-            // Shows maximum possible turn angle at current speed
-            // Cone width shrinks at high speeds, making steering reduction obvious
-            float steering_multiplier = character.compute_steering_multiplier(current_speed);
-            float max_turn_angle =
-                character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
+        // VISUAL VALIDATION: Steering authority cone
+        // Shows maximum possible turn angle at current speed
+        // Cone width shrinks at high speeds, making steering reduction obvious
+        float steering_multiplier = character.compute_steering_multiplier(current_speed);
+        float max_turn_angle =
+            character.turn_rate * steering_multiplier * 0.5f; // 0.5s lookahead
 
-            // Left turn limit (CCW from heading)
-            glm::vec3 left_limit = math::yaw_to_forward(yaw - max_turn_angle);
-            list.arrows.push_back(debug::debug_arrow{
-                .start = character.position,
-                .end = character.position + left_limit * current_speed * 0.8f,
-                .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
-                .head_size = 0.15f,
-            });
+        // Left turn limit (CCW from heading)
+        glm::vec3 left_limit = math::yaw_to_forward(yaw - max_turn_angle);
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + left_limit * current_speed * 0.8f,
+            .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
+            .head_size = 0.15f,
+        });
 
-            // Right turn limit (CW from heading)
-            glm::vec3 right_limit = math::yaw_to_forward(yaw + max_turn_angle);
-            list.arrows.push_back(debug::debug_arrow{
-                .start = character.position,
-                .end = character.position + right_limit * current_speed * 0.8f,
-                .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
-                .head_size = 0.15f,
-            });
-        }
+        // Right turn limit (CW from heading)
+        glm::vec3 right_limit = math::yaw_to_forward(yaw + max_turn_angle);
+        list.arrows.push_back(debug::debug_arrow{
+            .start = character.position,
+            .end = character.position + right_limit * current_speed * 0.8f,
+            .color = {1.0f, 0.5f, 0.0f, 0.6f}, // Orange, semi-transparent
+            .head_size = 0.15f,
+        });
     }
 }
 
@@ -328,7 +325,7 @@ void generate_debug_primitives(debug::debug_primitive_list& list, const game_wor
     generate_collision_state_primitives(list, world.character, world.world_geometry);
     generate_character_state_primitives(list, world.character, world.vehicle_reactive);
     generate_vehicle_body_primitives(list, world.character, world.vehicle_reactive);
-    generate_car_control_primitives(list, world.character, world.current_control_scheme);
+    generate_car_control_primitives(list, world.character);
     generate_velocity_trail_primitives(list, world.trail_state);
 }
 

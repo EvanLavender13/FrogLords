@@ -27,34 +27,18 @@ void game_world::init() {
 void game_world::update(float dt) {
     debug_list.clear();
 
-    // Toggle control scheme
-    if (input::is_key_pressed(SAPP_KEYCODE_T)) {
-        current_control_scheme = (current_control_scheme == control_scheme::FREE_STRAFE)
-                                     ? control_scheme::CAR_LIKE
-                                     : control_scheme::FREE_STRAFE;
-    }
-
     // Poll input and construct controller input params
     controller_input_params input_params;
     input_params.move_direction = glm::vec2(0.0f, 0.0f);
     input_params.move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
     input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
 
-    // A/D input serves two purposes:
-    // 1. Turn input (always drives heading integration in controller)
-    // 2. Lateral movement (only in FREE_STRAFE mode)
+    // A/D input for turning (car-like control only)
     float lateral_input = 0.0f;
     lateral_input -= input::is_key_down(SAPP_KEYCODE_A) ? 1.0f : 0.0f;
     lateral_input += input::is_key_down(SAPP_KEYCODE_D) ? 1.0f : 0.0f;
 
-    // Always set turn_input (drives heading physics)
     input_params.turn_input = lateral_input;
-
-    // Mode-dependent: lateral movement only in FREE_STRAFE
-    input_params.move_direction.x =
-        (current_control_scheme == control_scheme::FREE_STRAFE)
-            ? lateral_input // FREE_STRAFE: lateral input creates strafing
-            : 0.0f;         // CAR_LIKE: no lateral movement (turn only)
 
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
@@ -68,23 +52,16 @@ void game_world::update(float dt) {
     FL_POSTCONDITION(input_length == 0.0f || glm::epsilonEqual(input_length, 1.0f, 0.001f),
                      "input direction must be zero or normalized");
 
-    // Construct camera input params (basis selection based on control scheme)
+    // Construct camera input params with heading-relative basis (car-like control)
     controller::camera_input_params cam_params;
-    if (current_control_scheme == control_scheme::FREE_STRAFE) {
-        // Camera-relative basis (existing behavior)
-        cam_params.forward = cam.get_forward_horizontal();
-        cam_params.right = cam.get_right();
-    } else {
-        // Heading-relative basis (car-like control)
-        float yaw = character.heading_yaw;
-        cam_params.forward = math::yaw_to_forward(yaw);
-        cam_params.right = math::yaw_to_right(yaw);
+    float yaw = character.heading_yaw;
+    cam_params.forward = math::yaw_to_forward(yaw);
+    cam_params.right = math::yaw_to_right(yaw);
 
-        // Validate orthonormal basis from heading
-        FL_ASSERT_NORMALIZED(cam_params.forward, "heading-derived forward vector");
-        FL_ASSERT_NORMALIZED(cam_params.right, "heading-derived right vector");
-        FL_ASSERT_ORTHOGONAL(cam_params.forward, cam_params.right, "heading-derived basis vectors");
-    }
+    // Validate orthonormal basis from heading
+    FL_ASSERT_NORMALIZED(cam_params.forward, "heading-derived forward vector");
+    FL_ASSERT_NORMALIZED(cam_params.right, "heading-derived right vector");
+    FL_ASSERT_ORTHOGONAL(cam_params.forward, cam_params.right, "heading-derived basis vectors");
 
     character.apply_input(input_params, cam_params, dt);
 
