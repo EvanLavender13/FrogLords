@@ -102,7 +102,7 @@ void app_runtime::frame() {
     if (ImGui::Begin("Debug Panel", nullptr, flags)) {
         // Vehicle section
         auto vehicle_commands = gui::draw_vehicle_panel(
-            vehicle_panel_state, world.character, world.vehicle_params, world.vehicle_visuals);
+            vehicle_panel_state, world.character, world.vehicle_params, world.vehicle_reactive);
 
         // Apply vehicle parameter commands (unidirectional flow: GUI → commands → game state)
         apply_parameter_commands(vehicle_commands);
@@ -154,39 +154,39 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
         switch (cmd.type) {
         case gui::parameter_type::MAX_SPEED:
             world.vehicle_params.max_speed = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::ACCEL:
             world.vehicle_params.accel = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::WEIGHT:
             world.vehicle_params.weight = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::TURN_RATE:
             world.vehicle_params.turn_rate = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::STEERING_REDUCTION_FACTOR:
             world.vehicle_params.steering_reduction_factor = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::LEAN_MULTIPLIER:
             world.vehicle_params.lean_multiplier = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::PITCH_MULTIPLIER:
             world.vehicle_params.pitch_multiplier = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::TILT_STIFFNESS:
             world.vehicle_params.tilt_stiffness = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::ORIENTATION_STIFFNESS:
             world.vehicle_params.orientation_stiffness = cmd.value;
-            world.vehicle_params.apply_to(world.character, world.vehicle_visuals);
+            world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         }
     }

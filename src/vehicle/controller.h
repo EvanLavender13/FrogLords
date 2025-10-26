@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
 #include "foundation/param_meta.h"
+#include "vehicle/handbrake_system.h"
 
 struct collision_world;
 
@@ -14,6 +15,7 @@ struct controller {
     struct controller_input_params {
         glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
         float turn_input;         // Turn input for heading integration [-1,1]
+        bool handbrake;           // Handbrake input (Space key)
     };
 
     // Collision volumes
@@ -100,6 +102,9 @@ struct controller {
 
     // Previous heading for angular velocity derivation
     float previous_heading_yaw = 0.0f; // radians
+
+    // Composed systems (each modifies physics in semantically clear way)
+    handbrake_system handbrake;
 
     // Speed thresholds for traction classification (m/s)
     float soft_threshold = 3.0f;   // soft < 3 m/s (low speed, high grip)

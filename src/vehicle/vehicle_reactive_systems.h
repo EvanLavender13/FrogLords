@@ -8,14 +8,15 @@
 struct controller;
 
 /**
- * vehicle_visual_systems
+ * vehicle_reactive_systems
  *
- * Visual systems that react to vehicle controller physics state.
- * Data flows unidirectionally: controller → vehicle_visual_systems → rendering
+ * Reactive systems respond to controller physics state (read-only).
+ * Data flows unidirectionally: controller → vehicle_reactive_systems → rendering
  *
- * Composition: physics (controller) drives visual response (vehicle_visual_systems)
+ * Contrast with active systems (handbrake_system) which modify physics.
+ * Composition: physics (controller) drives visual response (vehicle_reactive_systems)
  */
-struct vehicle_visual_systems {
+struct vehicle_reactive_systems {
     // Orientation system - smooth rotation from velocity direction
     orientation_system orientation;
 
@@ -34,7 +35,7 @@ struct vehicle_visual_systems {
     float lean_multiplier = 0.3f;   // radians per g (arcade lean in corners, not physical)
     float pitch_multiplier = 0.05f; // radians per m/s² (arcade pitch during accel, not physical)
 
-    vehicle_visual_systems();
+    vehicle_reactive_systems();
 
     /**
      * Update visual systems from controller physics state

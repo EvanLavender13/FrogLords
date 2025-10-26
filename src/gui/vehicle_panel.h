@@ -6,7 +6,7 @@
 #include <vector>
 
 // Forward declaration
-struct vehicle_visual_systems;
+struct vehicle_reactive_systems;
 
 namespace gui {
 
@@ -17,6 +17,6 @@ struct vehicle_panel_state {
 std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& state,
                                                   const controller& vehicle,
                                                   const vehicle::tuning_params& params,
-                                                  const vehicle_visual_systems& visuals);
+                                                  const vehicle_reactive_systems& visuals);
 
 } // namespace gui

@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/handbrake_input_SYSTEM.md
 **Layer:** 4 (Variation)
 **Complexity:** Medium
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - Input system (Layer 1)

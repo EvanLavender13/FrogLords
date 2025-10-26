@@ -4,7 +4,7 @@
 #include "foundation/param_meta.h"
 
 // Forward declarations
-struct vehicle_visual_systems;
+struct vehicle_reactive_systems;
 
 namespace vehicle {
 
@@ -75,7 +75,7 @@ struct tuning_params {
     static constexpr param_meta orientation_stiffness_meta = {"Orientation Stiffness", "N/m", 5.0f,
                                                               500.0f};
 
-    void apply_to(controller& c, vehicle_visual_systems& visuals) const;
+    void apply_to(controller& c, vehicle_reactive_systems& visuals) const;
 };
 
 } // namespace vehicle

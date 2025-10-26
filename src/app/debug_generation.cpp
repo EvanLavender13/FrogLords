@@ -23,7 +23,7 @@ void mesh_to_debug_lines(debug::debug_primitive_list& list, const foundation::wi
 
 void generate_character_state_primitives(debug::debug_primitive_list& list,
                                          const controller& character,
-                                         const vehicle_visual_systems& visuals) {
+                                         const vehicle_reactive_systems& visuals) {
     // Collision sphere
     list.spheres.push_back(debug::debug_sphere{
         .center = character.collision_sphere.center,
@@ -141,7 +141,7 @@ void generate_character_body_primitives(debug::debug_primitive_list& list,
 
 void generate_vehicle_body_primitives(debug::debug_primitive_list& list,
                                       const controller& character,
-                                      const vehicle_visual_systems& visuals) {
+                                      const vehicle_reactive_systems& visuals) {
 
     // Get the full world transform from the vehicle visual systems, which includes tilt
     glm::mat4 transform = visuals.get_visual_transform(character);
@@ -312,8 +312,8 @@ namespace app {
 void generate_debug_primitives(debug::debug_primitive_list& list, const game_world& world) {
     // This function orchestrates calls to the various generation helpers.
     generate_collision_state_primitives(list, world.character, world.world_geometry);
-    generate_character_state_primitives(list, world.character, world.vehicle_visuals);
-    generate_vehicle_body_primitives(list, world.character, world.vehicle_visuals);
+    generate_character_state_primitives(list, world.character, world.vehicle_reactive);
+    generate_vehicle_body_primitives(list, world.character, world.vehicle_reactive);
     generate_car_control_primitives(list, world.character, world.current_control_scheme);
     generate_velocity_trail_primitives(list, world.trail_state);
 }

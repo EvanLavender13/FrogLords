@@ -11,7 +11,7 @@
 
 void game_world::init() {
     character = controller();
-    vehicle_params.apply_to(character, vehicle_visuals);
+    vehicle_params.apply_to(character, vehicle_reactive);
     cam = camera();
     cam_follow = camera_follow();       // Use default values
     dynamic_fov = dynamic_fov_system(); // Use default values
@@ -59,6 +59,9 @@ void game_world::update(float dt) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
 
+    // Handbrake input (Space key)
+    input_params.handbrake = input::is_key_down(SAPP_KEYCODE_SPACE);
+
     // Validate normalized input direction
     float input_length = glm::length(input_params.move_direction);
     FL_POSTCONDITION(input_length == 0.0f || glm::epsilonEqual(input_length, 1.0f, 0.001f),
@@ -87,7 +90,7 @@ void game_world::update(float dt) {
     character.update(&world_geometry, dt);
 
     // Update reactive visual systems after physics
-    vehicle_visuals.update(character, dt);
+    vehicle_reactive.update(character, dt);
 
     // Update dynamic FOV system after physics
     dynamic_fov.update(character, cam, dt);
@@ -121,7 +124,7 @@ void game_world::update(float dt) {
     glm::vec3 eye_position;
     if (cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION) {
         // Compute forward direction from orientation system
-        float yaw = vehicle_visuals.orientation.get_yaw();
+        float yaw = vehicle_reactive.orientation.get_yaw();
         glm::vec3 forward_dir = math::yaw_to_forward(yaw);
 
         eye_position = camera_follow::compute_locked_eye_position(

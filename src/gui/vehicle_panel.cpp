@@ -1,6 +1,6 @@
 #include "gui/vehicle_panel.h"
 #include "gui/gui.h"
-#include "vehicle/vehicle_visual_systems.h"
+#include "vehicle/vehicle_reactive_systems.h"
 #include "imgui.h"
 #include <glm/common.hpp>
 
@@ -79,7 +79,7 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     return commands;
 }
 
-void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_systems& visuals) {
+void draw_vehicle_state_section(const controller& vehicle, const vehicle_reactive_systems& visuals) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
 
@@ -105,6 +105,10 @@ void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_
     float slip_angle_deg = glm::degrees(vehicle.calculate_slip_angle());
     gui::widget::derived_param(slip_angle_deg, slip_angle_meta, "atan2(v_lat, v_fwd)");
 
+    // Handbrake state
+    ImGui::Separator();
+    ImGui::Text("Handbrake: %s", vehicle.handbrake.is_active() ? "ACTIVE" : "INACTIVE");
+
     ImGui::Separator();
     ImGui::Text("Visual State");
 
@@ -126,7 +130,7 @@ void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_
 std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& state,
                                                   const controller& vehicle,
                                                   const vehicle::tuning_params& params,
-                                                  const vehicle_visual_systems& visuals) {
+                                                  const vehicle_reactive_systems& visuals) {
     std::vector<parameter_command> commands;
 
     if (!state.show)

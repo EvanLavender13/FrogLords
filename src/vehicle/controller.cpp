@@ -129,6 +129,9 @@ void controller::apply_input(const controller_input_params& input_params,
 
     // Direct acceleration (instant response, no ground/air distinction)
     acceleration = input_direction * accel;
+
+    // Apply composed systems (each modifies physics in semantically clear way)
+    handbrake.apply(input_params.handbrake, *this, dt);
 }
 
 void controller::update(const collision_world* world, float dt) {
