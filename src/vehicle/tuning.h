@@ -4,7 +4,7 @@
 #include "foundation/param_meta.h"
 
 // Forward declarations
-struct vehicle_visual_systems;
+struct vehicle_reactive_systems;
 
 namespace vehicle {
 
@@ -39,6 +39,13 @@ struct tuning_params {
     // Used in: apply_to to copy to controller.steering_reduction_factor
     float steering_reduction_factor = 0.7f; // dimensionless [0,1]
 
+    // TUNED: Handbrake drag coefficient (source of truth)
+    // Drag coefficient contribution when handbrake engaged
+    // Added to base drag in friction model for unified exponential integration
+    // Higher values = stronger braking
+    // Used in: apply_to to copy to controller.friction.handbrake.brake_rate
+    float brake_rate = 2.0f; // 1/s (drag coefficient)
+
     // NOTE: Friction removed - drag now derived from accel/max_speed
     // Drag coefficient k = accel / max_speed guarantees equilibrium at max_speed
     // See controller::update for exponential drag model implementation
@@ -65,6 +72,8 @@ struct tuning_params {
     static constexpr param_meta steering_reduction_factor_meta = {"Steering Reduction", "", 0.0f,
                                                                   1.0f};
 
+    static constexpr param_meta brake_rate_meta = {"Brake Rate", "1/s", 0.5f, 10.0f};
+
     static constexpr param_meta lean_multiplier_meta = {"Lean Multiplier", "rad/g", 0.0f, 1.0f};
 
     static constexpr param_meta pitch_multiplier_meta = {"Pitch Multiplier", "rad/(m/s²)", 0.0f,
@@ -75,7 +84,7 @@ struct tuning_params {
     static constexpr param_meta orientation_stiffness_meta = {"Orientation Stiffness", "N/m", 5.0f,
                                                               500.0f};
 
-    void apply_to(controller& c, vehicle_visual_systems& visuals) const;
+    void apply_to(controller& c, vehicle_reactive_systems& visuals) const;
 };
 
 } // namespace vehicle

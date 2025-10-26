@@ -12,10 +12,8 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 
 ## Prerequisites
 
-- [ ] Iteration complete
-- [ ] Foundation contract proven
-- [ ] Playtests stable
-- [ ] `PLANS/<name>_ITERATION_<N>.md` has ITERATE/COMPLETE
+- Read @TASKS/CURRENT_PLAN.md
+- `TASKS/PLANS/<name>_ITERATION_<N>.md` has ITERATE/COMPLETE
 
 ---
 
@@ -43,12 +41,14 @@ Evaluate system against principles. External validation. Approve, revise, or rej
 
 **Dual independent principle evaluation (Codex + Gemini).**
 
+**Critical:** Plans are tools for thinking, not contracts. Code is truth. Do not flag doc-code divergence—implementation evolves, docs capture decisions at a moment.
+
 Launch both reviews in parallel:
 
 ```bash
-bash scripts/bash/codex.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md [relevant files] [your validation question]"
+bash scripts/bash/codex.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [strong validation prompt]"
 
-bash scripts/bash/gemini.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md [relevant files] [your validation question]"
+bash scripts/bash/gemini.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [strong validation prompt]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in both Bash tool calls.
@@ -57,7 +57,7 @@ bash scripts/bash/gemini.sh "TASKS/PLANS/<name>_ITERATION_<N>.md TASKS/PLANS/<na
 
 **Continue conversation if needed:**
 ```bash
-bash scripts/bash/codex.sh --resume "[follow-up question]"
+bash scripts/bash/codex.sh --resume "[follow-up prompt]"
 ```
 
 **After user confirms completion,** retrieve results from both tools and document review in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
@@ -205,7 +205,7 @@ Commit:
 git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
 git commit -m "validate: <name> iteration <N> - <APPROVED|REVISE|REJECT>
 
-<Brief reasoning for decision>
+<Concise decision>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com)"
@@ -226,7 +226,7 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 ## Next
 
 **If APPROVED:**
-→ STRENGTHEN
+→ CLOSE
 
 **If REVISE:**
 → ITERATE (minor fixes)

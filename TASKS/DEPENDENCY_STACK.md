@@ -2,7 +2,7 @@
 
 **What exists. What it provides. What can be built.**
 
-**Last Updated:** 2025-10-25
+**Last Updated:** 2025-10-26
 
 ---
 
@@ -114,7 +114,7 @@ Variations within systems. Different modes, states, or behaviors.
 - **Orientation-Locked Camera** - Camera locks behind vehicle facing direction (`src/camera/camera_follow.{h,cpp}`, `src/gui/camera_panel.{h,cpp}`)
   - Extends: Camera Follow System
   - Enables: Velocity-locked camera, look-ahead camera, dynamic chase modes
-- **Vehicle Tilt System** - Visual weight transfer through spring-damped lean/pitch based on lateral g-force and acceleration (`src/vehicle/vehicle_visual_systems.{h,cpp}`)
+- **Vehicle Tilt System** - Visual weight transfer through spring-damped lean/pitch based on lateral g-force and acceleration (`src/vehicle/vehicle_reactive_systems.{h,cpp}`)
   - Uses: Layer 2 lateral g-force calculator, spring-damper, orientation system
   - Extends: Vehicle Movement System (visual layer)
   - Enables: Enhanced drift visual feedback, suspension animation foundation
@@ -122,6 +122,10 @@ Variations within systems. Different modes, states, or behaviors.
   - Uses: Layer 2 lateral g-force calculator, spring-damper
   - Extends: Rendering Camera (modulates FOV parameter)
   - Enables: Camera shake on boost, dynamic camera positioning, motion blur intensity, perceptual feedback systems
+- **Handbrake Input System** - Binary input (Space key) for drift initiation via brake force opposing velocity (`src/vehicle/handbrake_system.{h,cpp}`)
+  - Uses: Layer 3 vehicle movement system (composed into controller)
+  - Establishes: Active/reactive composition pattern (handbrake modifies physics, reactive systems respond)
+  - Enables: Drift detection primitive, continuous friction scaling, drift speed maintenance, drift visual feedback
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
@@ -129,6 +133,7 @@ Variations within systems. Different modes, states, or behaviors.
 - No direct renderer coupling
 - Vehicle tilt provides: Visual weight transfer pattern for drift system, foundation for per-wheel suspension
 - Dynamic FOV provides: Pattern for speed-reactive camera behaviors, perceptual enhancement foundation
+- Handbrake provides: Drift initiation input, active/reactive composition pattern for vehicle systems
 
 ---
 

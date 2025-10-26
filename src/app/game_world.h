@@ -5,7 +5,7 @@
 #include "camera/dynamic_fov.h"
 #include "vehicle/controller.h"
 #include "vehicle/tuning.h"
-#include "vehicle/vehicle_visual_systems.h"
+#include "vehicle/vehicle_reactive_systems.h"
 #include "character/character_reactive_systems.h"
 #include "rendering/scene.h"
 #include "rendering/velocity_trail.h"
@@ -23,7 +23,7 @@ struct game_world {
     scene scn;
     collision_world world_geometry;
     controller character;
-    vehicle_visual_systems vehicle_visuals;
+    vehicle_reactive_systems vehicle_reactive;
     vehicle::tuning_params vehicle_params;
     velocity_trail_state trail_state;
 

@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "foundation/collision_primitives.h"
 #include "foundation/param_meta.h"
+#include "vehicle/friction_model.h"
 
 struct collision_world;
 
@@ -9,11 +10,6 @@ struct controller {
     struct camera_input_params {
         glm::vec3 forward;
         glm::vec3 right;
-    };
-
-    struct controller_input_params {
-        glm::vec2 move_direction; // Normalized WASD-equivalent [-1,1] per axis
-        float turn_input;         // Turn input for heading integration [-1,1]
     };
 
     // Collision volumes
@@ -33,10 +29,8 @@ struct controller {
 
     struct contact_debug_info {
         bool active = false;
-        bool from_box = false;
         glm::vec3 normal{0.0f};
         float penetration = 0.0f;
-        float vertical_penetration = 0.0f;
     };
 
     contact_debug_info collision_contact_debug;
@@ -101,9 +95,8 @@ struct controller {
     // Previous heading for angular velocity derivation
     float previous_heading_yaw = 0.0f; // radians
 
-    // Speed thresholds for traction classification (m/s)
-    float soft_threshold = 3.0f;   // soft < 3 m/s (low speed, high grip)
-    float medium_threshold = 6.0f; // medium: 3-6 m/s, hard ≥ 6 m/s (high speed)
+    // Composed systems (each modifies physics in semantically clear way)
+    friction_model friction;
 
     controller();
 

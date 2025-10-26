@@ -60,7 +60,9 @@ add_executable(FrogLords
     src/camera/dynamic_fov.cpp
     src/vehicle/controller.cpp
     src/vehicle/tuning.cpp
-    src/vehicle/vehicle_visual_systems.cpp
+    src/vehicle/friction_model.cpp
+    src/vehicle/handbrake_system.cpp
+    src/vehicle/vehicle_reactive_systems.cpp
     src/character/character_reactive_systems.cpp
     src/character/animation.cpp
     src/foundation/easing.cpp

@@ -1,6 +1,7 @@
 #include "app/game_world.h"
 #include "foundation/math_utils.h"
 #include "foundation/debug_assert.h"
+#include "vehicle/controller_input_params.h"
 
 #include "rendering/velocity_trail.h"
 #include "input/input.h"
@@ -11,7 +12,7 @@
 
 void game_world::init() {
     character = controller();
-    vehicle_params.apply_to(character, vehicle_visuals);
+    vehicle_params.apply_to(character, vehicle_reactive);
     cam = camera();
     cam_follow = camera_follow();       // Use default values
     dynamic_fov = dynamic_fov_system(); // Use default values
@@ -34,7 +35,7 @@ void game_world::update(float dt) {
     }
 
     // Poll input and construct controller input params
-    controller::controller_input_params input_params;
+    controller_input_params input_params;
     input_params.move_direction = glm::vec2(0.0f, 0.0f);
     input_params.move_direction.y += input::is_key_down(SAPP_KEYCODE_W) ? 1.0f : 0.0f;
     input_params.move_direction.y -= input::is_key_down(SAPP_KEYCODE_S) ? 1.0f : 0.0f;
@@ -58,6 +59,9 @@ void game_world::update(float dt) {
     if (glm::length(input_params.move_direction) > 0.0f) {
         input_params.move_direction = glm::normalize(input_params.move_direction);
     }
+
+    // Handbrake input (Space key)
+    input_params.handbrake = input::is_key_down(SAPP_KEYCODE_SPACE);
 
     // Validate normalized input direction
     float input_length = glm::length(input_params.move_direction);
@@ -87,7 +91,7 @@ void game_world::update(float dt) {
     character.update(&world_geometry, dt);
 
     // Update reactive visual systems after physics
-    vehicle_visuals.update(character, dt);
+    vehicle_reactive.update(character, dt);
 
     // Update dynamic FOV system after physics
     dynamic_fov.update(character, cam, dt);
@@ -121,7 +125,7 @@ void game_world::update(float dt) {
     glm::vec3 eye_position;
     if (cam_follow.mode == camera_mode::LOCK_TO_ORIENTATION) {
         // Compute forward direction from orientation system
-        float yaw = vehicle_visuals.orientation.get_yaw();
+        float yaw = vehicle_reactive.orientation.get_yaw();
         glm::vec3 forward_dir = math::yaw_to_forward(yaw);
 
         eye_position = camera_follow::compute_locked_eye_position(

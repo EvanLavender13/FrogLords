@@ -1,39 +1,35 @@
-# ITERATE - Harden the Foundation
+# ITERATE - Refine What Works
 
-**Graybox proved it can work. Iteration proves it always works.**
+**Graybox proved it can work. Iteration proves it should exist.**
 
 ---
 
 ## Purpose
 
-Validate mathematical foundations. Handle edge cases. Stabilize through testing.
+Refine crude but correct implementation into quality code. Simplify architecture. Extract patterns. Harden through playtesting. Prepare for external validation.
 
 ---
 
 ## Prerequisites
 
-- [ ] Graybox functional
-- [ ] Debug visualization working
-- [ ] Build successful
-- [ ] `PLANS/<name>_SYSTEM.md` exists
+- Read @TASKS/CURRENT_PLAN.md
+- `TASKS/PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
 
 ---
 
 ## Anti-Patterns
 
-Before implementing, review @TASKS/PATTERNS.md for known code and process anti-patterns.
+Review @TASKS/PATTERNS.md for known anti-patterns.
 
 Prevention is cheaper than detection.
-
-**Documentation-only changes:** Do not create new iterations for documentation synchronization. Edit system doc directly and commit.
 
 ---
 
 ## Context Selection
 
-Review @TASKS/CONTEXT/INDEX.md to identify relevant architectural patterns for this task.
+Review @TASKS/CONTEXT/INDEX.md to identify relevant architectural patterns.
 
-Use tags to find applicable context cards before defining the contract.
+Use tags to find applicable context cards before beginning refinement.
 
 ---
 
@@ -41,205 +37,141 @@ Use tags to find applicable context cards before defining the contract.
 
 ### 1. Create or Resume Iteration Document
 
-**Check `PLANS/<name>_SYSTEM.md` for iteration list:**
+**Check for existing iterations:**
 
-**If no iteration list exists (first iteration):**
-
-Create `PLANS/<name>_ITERATION_1.md`:
-
-```markdown
-# Iteration 1: <name>
-
-**Started:** YYYY-MM-DD
-**Status:** In Progress
-
----
-
-<!-- BEGIN: ITERATE/CONTRACT -->
-## Foundation Contract
-
-Define what must be proven about this system. Choose categories that serve validation.
-
-- [ ] [contract item to validate]
-<!-- END: ITERATE/CONTRACT -->
-
----
-```
-
-Add iteration list to `PLANS/<name>_SYSTEM.md` (after GRAYBOX/RESULTS):
-
-```markdown
----
-
-## Iterations
-
-- [ITERATION_1.md](ITERATION_1.md) - In Progress
-```
-
-**If iteration list exists (resuming from VALIDATE/REVISE):**
-
-Read most recent `PLANS/<name>_ITERATION_<N>.md` to find VALIDATE/DECISION.
-
-Create `PLANS/<name>_ITERATION_<N+1>.md`:
-
-```markdown
-# Iteration <N+1>: <name>
-
-**Started:** YYYY-MM-DD
-**Previous:** [ITERATION_<N>.md](ITERATION_<N>.md)
-**Status:** In Progress
-
----
-
-<!-- BEGIN: ITERATE/CONTEXT -->
-## Context from Previous Iteration
-
-**Decision:** REVISE (from ITERATION_<N>)
-
-**Required changes:**
-- [copy from ITERATION_<N> VALIDATE/DECISION]
-
-**Baseline contract:** See ITERATION_<N>/CONTRACT
-<!-- END: ITERATE/CONTEXT -->
-
----
-```
-
-Update iteration list in `PLANS/<name>_SYSTEM.md`:
-
-```markdown
-## Iterations
-
-- [ITERATION_1.md](ITERATION_1.md) - REVISE
-- [ITERATION_<N+1>.md](ITERATION_<N+1>.md) - In Progress
-```
-
----
-
-### 2. Iteration Cycle
-
-**One contract item at a time. Validate, then commit.**
-
-For each unchecked contract item:
-1. **Implement** the fix (small changes only, maintain debug visualization)
-2. **Build** successfully
-3. **Manual verification** (if changes affect runtime behavior):
-   - List what user must verify
-   - Ask user to run app and verify
-   - Wait for confirmation
-4. **Document** validation in contract
-5. **Commit** on success, revert on failure
-
-If resuming from VALIDATE/REVISE, turn violations into contract items and prioritize them.
-
-When all contract items are checked, proceed to playtest.
-
-**Commit format:**
+Find all iteration documents for this system:
 ```bash
-git commit -m "iterate: <name> - <what>
+ls PLANS/<name>_ITERATION_*.md
+```
 
-Validated: <property>
-Status: <X/Y>
+**If no iterations exist:**
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com>"
+Create `PLANS/<name>_ITERATION_1.md`.
+
+**If iterations exist:**
+
+Find highest iteration number N, read `PLANS/<name>_ITERATION_<N>.md` for VALIDATE/DECISION.
+
+Create `PLANS/<name>_ITERATION_<N+1>.md`.
+
+Add to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/CONTEXT -->
+[Decision from previous iteration, required changes]
+<!-- END: ITERATE/CONTEXT -->
 ```
 
 ---
 
-### 3. Playtest
+### 2. External Review (ITERATION_1 only)
 
-**When assertions stop teaching.**
+Skip if resuming from VALIDATE/REVISE.
 
-**Foundation-first validation:**
-- Most contracts proven via debug assertions (foundation code)
-- Manual testing validates gameplay feel, not math
-- If you're manually checking math, add an assertion instead
+Use Codex to review graybox code:
 
-**Solo playtest workflow:**
+```bash
+bash scripts/bash/codex.sh "TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [your review prompt]"
+```
 
-1. **Build**
-2. **Claude presents checklist** from contract
-3. **Test each item** - report violations or "all pass"
-4. **Violations found?**
-   - Fix → rebuild → retest
-   - Document in playtest section
-5. **All pass?** → Commit
+**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
 
-**Repeat until contract complete.**
+Continue to internal review while external review runs.
 
-**Document in iteration doc** (`PLANS/<name>_ITERATION_<N>.md`):
+---
+
+### 3. Internal Review (ITERATION_1 only)
+
+Skip if resuming from VALIDATE/REVISE.
+
+Review graybox code while external review runs.
+
+Add to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/INTERNAL_REVIEW -->
+[Internal review findings]
+<!-- END: ITERATE/INTERNAL_REVIEW -->
+```
+
+**After completing internal review, WAIT for user confirmation that external review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
+
+Continue conversation with external review if needed:
+```bash
+bash scripts/bash/codex.sh --resume "[follow-up question]"
+```
+
+Add external review to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/EXTERNAL_REVIEW -->
+[External review findings]
+<!-- END: ITERATE/EXTERNAL_REVIEW -->
+```
+
+---
+
+### 4. Define Refinement Scope
+
+Based on previous context or internal and external review findings, define actionable refinement goals.
+
+Add to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/SCOPE -->
+[Actionable refinement goals based on context]
+<!-- END: ITERATE/SCOPE -->
+```
+
+---
+
+### 5. Refine Code
+
+Address findings from reviews and scope. Work incrementally. Build after each change. Commit when complete.
+
+Add to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/REFINEMENT -->
+[What changed in the code]
+<!-- END: ITERATE/REFINEMENT -->
+```
+
+---
+
+### 6. Playtest
+
+Harden through use.
+
+**Playtest workflow:**
+
+1. Build
+2. Claude presents test scenarios
+3. User tests and reports
+4. Violations found? Fix → rebuild → retest
+5. All stable? Commit
+
+Repeat until stable.
+
+Add to iteration doc (multiple playtest sections allowed):
 
 ```markdown
 <!-- BEGIN: ITERATE/PLAYTEST -->
-### Playtest <N>
-
-**Date:** [YYYY-MM-DD]
-**Tester:** [name]
-
-**Violations:**
-- [x] [contract item that failed]
-  - Root cause: [why it failed]
-  - Fix: [what was changed] ✓ FIXED
-
-**Emergent:**
-- [unexpected behaviors observed]
-
-**Fix:**
-- [files changed]
-- Commit: [hash]
-- ✅ VERIFIED: [confirmation]
+[Playtest findings and fixes]
 <!-- END: ITERATE/PLAYTEST -->
 ```
 
-**Stop when no new violations found.**
+Stop when stable through multiple sessions.
 
 ---
 
-### 4. Document
+### 7. Commit
 
-Add to iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+Commit iteration document:
 
-```markdown
-<!-- BEGIN: ITERATE/COMPLETE -->
-## Iteration Complete
-
-**Contract:** ✓ PROVEN
-
-**Properties:** [how validated]
-**Edges:** [what handled]
-**Assertions:** [count added]
-**Playtests:** [count]
-
-**Status:**
-- [x] Contract proven
-- [x] Stable
-- [x] Ready for VALIDATE
-<!-- END: ITERATE/COMPLETE -->
-```
-
----
-
-### 5. Update Status and Commit
-
-Update iteration doc status:
-```markdown
-**Status:** Ready for VALIDATE
-```
-
-Update `PLANS/<name>_SYSTEM.md` iteration list:
-```markdown
-- [ITERATION_<N>.md](ITERATION_<N>.md) - Ready for VALIDATE
-```
-
-Commit:
 ```bash
-git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
+git add PLANS/<name>_ITERATION_<N>.md
 git commit -m "iterate: <name> iteration <N> complete
-
-Contract: proven
-Playtests: <count>
-Assertions: <count>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com)"
@@ -249,24 +181,25 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 
 ## Outputs
 
-- [ ] Contract defined
-- [ ] All properties validated
-- [ ] All edges handled
-- [ ] Assertions added (foundation code)
+- [ ] Internal review completed
+- [ ] External review completed (ITERATION_1 only)
+- [ ] Scope defined
+- [ ] Code refined
 - [ ] Stable through playtests
 - [ ] Committed
+- [ ] Ready for VALIDATE
 
 ---
 
 ## Next
 
-→ VALIDATE (principle scoring in iteration doc)
+→ VALIDATE (external principle review)
 
 **Defer if:**
-- Contract unprovable
-- Math fails
-- Edges unsolvable
+- Refinement reveals fundamental flaws
+- Architecture cannot be salvaged
+- System should not exist
 
 ---
 
-**Test fast. Validate thoroughly.**
+**Crude code validates the idea. Refined code validates the implementation.**

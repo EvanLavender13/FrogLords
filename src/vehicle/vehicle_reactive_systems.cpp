@@ -1,9 +1,9 @@
-#include "vehicle/vehicle_visual_systems.h"
+#include "vehicle/vehicle_reactive_systems.h"
 #include "vehicle/controller.h"
 #include "foundation/math_utils.h"
 #include "foundation/debug_assert.h"
 
-vehicle_visual_systems::vehicle_visual_systems() {
+vehicle_reactive_systems::vehicle_reactive_systems() {
     // Initialize springs with critical damping for smooth, non-overshooting response
     // Default stiffness: 150 N/m (mid-range for tilt response, tunable at runtime)
     constexpr float default_tilt_stiffness = 150.0f;
@@ -15,7 +15,7 @@ vehicle_visual_systems::vehicle_visual_systems() {
     pitch_spring.damping = critical_damping(default_tilt_stiffness);
 }
 
-void vehicle_visual_systems::update(const controller& ctrl, float dt) {
+void vehicle_reactive_systems::update(const controller& ctrl, float dt) {
     FL_PRECONDITION(dt > 0.0f && std::isfinite(dt), "dt must be positive and finite");
     FL_PRECONDITION(lean_multiplier >= 0.0f && lean_multiplier <= 1.0f,
                     "lean_multiplier must be in valid range [0, 1] rad/g");
@@ -68,7 +68,7 @@ void vehicle_visual_systems::update(const controller& ctrl, float dt) {
     FL_POSTCONDITION(std::isfinite(pitch_spring.position), "pitch position must be finite");
 }
 
-glm::mat4 vehicle_visual_systems::get_visual_transform(const controller& ctrl) const {
+glm::mat4 vehicle_reactive_systems::get_visual_transform(const controller& ctrl) const {
     glm::mat4 transform = glm::mat4(1.0f);
 
     // Translate to vehicle position

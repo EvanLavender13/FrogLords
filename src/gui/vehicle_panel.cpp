@@ -1,6 +1,6 @@
 #include "gui/vehicle_panel.h"
 #include "gui/gui.h"
-#include "vehicle/vehicle_visual_systems.h"
+#include "vehicle/vehicle_reactive_systems.h"
 #include "imgui.h"
 #include <glm/common.hpp>
 
@@ -21,6 +21,7 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     float weight = params.weight;
     float turn_rate = params.turn_rate;
     float steering_reduction_factor = params.steering_reduction_factor;
+    float brake_rate = params.brake_rate;
 
     // Metadata-driven tunable parameters
     if (gui::widget::tunable_param(&max_speed, vehicle::tuning_params::max_speed_meta)) {
@@ -38,6 +39,9 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     if (gui::widget::tunable_param(&steering_reduction_factor,
                                    vehicle::tuning_params::steering_reduction_factor_meta)) {
         commands.push_back({parameter_type::STEERING_REDUCTION_FACTOR, steering_reduction_factor});
+    }
+    if (gui::widget::tunable_param(&brake_rate, vehicle::tuning_params::brake_rate_meta)) {
+        commands.push_back({parameter_type::BRAKE_RATE, brake_rate});
     }
 
     ImGui::Separator();
@@ -79,7 +83,7 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     return commands;
 }
 
-void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_systems& visuals) {
+void draw_vehicle_state_section(const controller& vehicle, const vehicle_reactive_systems& visuals) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
 
@@ -105,6 +109,14 @@ void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_
     float slip_angle_deg = glm::degrees(vehicle.calculate_slip_angle());
     gui::widget::derived_param(slip_angle_deg, slip_angle_meta, "atan2(v_lat, v_fwd)");
 
+    // Friction model derived parameters
+    ImGui::Separator();
+    ImGui::Text("Handbrake: %s", vehicle.friction.handbrake.is_active() ? "ACTIVE" : "INACTIVE");
+
+    static constexpr param_meta base_drag_meta = {"Base Drag Rate", "/s", 0.0f, 10.0f};
+    float base_drag = vehicle.friction.get_base_drag_rate(vehicle.accel, vehicle.max_speed);
+    gui::widget::derived_param(base_drag, base_drag_meta, "accel / max_speed");
+
     ImGui::Separator();
     ImGui::Text("Visual State");
 
@@ -126,7 +138,7 @@ void draw_vehicle_state_section(const controller& vehicle, const vehicle_visual_
 std::vector<parameter_command> draw_vehicle_panel(const vehicle_panel_state& state,
                                                   const controller& vehicle,
                                                   const vehicle::tuning_params& params,
-                                                  const vehicle_visual_systems& visuals) {
+                                                  const vehicle_reactive_systems& visuals) {
     std::vector<parameter_command> commands;
 
     if (!state.show)

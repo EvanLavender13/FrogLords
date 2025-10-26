@@ -1,6 +1,6 @@
-# STRENGTHEN - Close the System Cycle
+# CLOSE - Archive the System
 
-**Archive the system. Update foundation. Enable next layer.**
+**Update state. Merge work. Close the loop.**
 
 ---
 
@@ -8,16 +8,14 @@
 
 Update backlogs to current state. Archive detailed metrics in plan file. Merge to main.
 
-**Learning captured in VALIDATE/EMERGENCE. This updates tracking.**
+**Backlogs show what's now. Plan files hold what happened.**
 
 ---
 
 ## Prerequisites
 
-- [ ] System APPROVED in VALIDATE
-- [ ] All tests passing
-- [ ] `TASKS/PLANS/<name>_ITERATION_<N>.md` fully documented
-- [ ] All changes committed to system branch
+- Read @TASKS/CURRENT_PLAN.md
+- `TASKS/PLANS/<name>_ITERATION_<N>.md` APPROVED
 
 ---
 
@@ -104,12 +102,9 @@ Update affected layer - note systems that are now buildable:
 
 ```bash
 git add TASKS/DEPENDENCY_STACK.md TASKS/BACKLOG_SYSTEMS.md TASKS/CURRENT_PLAN.md TASKS/PLANS/<name>_SYSTEM.md TASKS/PLANS/<name>_ITERATION_*.md
+git commit -m "close: complete <name> system
 
-git commit -m "strengthen: complete <name> system
-
-<One-line description of what this provides>
-
-Enables: [systems now buildable]
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -126,8 +121,7 @@ git checkout main
 # Merge with no-fast-forward
 git merge --no-ff system/<name> -m "Merge system/<name>
 
-<One-line description of what this provides>
-Enables: [systems]
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -137,24 +131,6 @@ git branch -d system/<name>
 
 # Verify
 git log --oneline -3
-```
-
----
-
-### 6. Verify System State
-
-```bash
-# Verify main is clean
-git status
-
-# Verify stack updated
-grep "Last Updated" TASKS/DEPENDENCY_STACK.md
-
-# Verify system removed from backlog
-grep -c "<name>" TASKS/BACKLOG_SYSTEMS.md  # Should be 0 or only in "enables" references
-
-# Verify current plan cleared
-head -10 TASKS/CURRENT_PLAN.md
 ```
 
 ---
@@ -190,7 +166,7 @@ head -10 TASKS/CURRENT_PLAN.md
 
 Show what's buildable now. Show what's next. Point to plan files for history.
 
-Details live in iteration docs. Backlogs stay lean.
+Details live in `PLANS/<name>_SYSTEM.md` and iteration docs. Backlogs stay lean.
 
 ---
 
