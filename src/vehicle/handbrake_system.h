@@ -3,11 +3,12 @@
 /**
  * handbrake_system
  *
- * Contributes additional drag coefficient to friction_model when engaged.
- * Composed into friction_model for semantic clarity.
+ * Provides drag coefficient contribution when handbrake engaged.
+ * Owned by controller, queried by friction_model and future rear_axle_system.
  *
- * Physics: Adds brake_rate to total drag coefficient k_total
- *          Used in unified exponential integrator: v *= exp(-k_total*dt)
+ * Physics: Contributes brake_rate to total drag coefficient k_total
+ *          Used in unified exponential integrator:
+ *            v(t+dt) = v(t)*exp(-k*dt) + (a/k)*(1 - exp(-k*dt))
  *          Time-independent: identical behavior at any framerate
  */
 struct handbrake_system {
@@ -15,10 +16,10 @@ struct handbrake_system {
     bool active = false;
 
     // TUNED: Drag coefficient contribution when handbrake engaged
-    // Added to base drag in friction_model::compute_total_drag()
     // Higher values = stronger braking
     // Units: 1/s (inverse time, drag coefficient)
-    float brake_rate = 2.0f;
+    // Default provided by tuning system initialization
+    float brake_rate;
 
     /**
      * Update handbrake state from input
@@ -26,6 +27,14 @@ struct handbrake_system {
      * @param input Handbrake button state (true = engaged)
      */
     void update(bool input);
+
+    /**
+     * Compute drag coefficient contribution for friction model
+     * Encapsulates handbrake logic: returns brake_rate if active, 0 otherwise
+     *
+     * @return Drag coefficient contribution (1/s)
+     */
+    float get_drag_contribution() const { return active ? brake_rate : 0.0f; }
 
     // Query current handbrake state
     bool is_active() const { return active; }

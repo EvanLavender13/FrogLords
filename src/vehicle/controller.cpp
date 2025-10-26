@@ -176,7 +176,7 @@ void controller::update_physics(float dt) {
     // Unified drag coefficient from friction model
     // Composes: base drag (equilibrium) + handbrake drag + future modifiers
     // Time-independent: single exponential integrator with correct particular solution
-    float k = friction.compute_total_drag(accel, max_speed, handbrake.is_active(), handbrake.brake_rate);
+    float k = friction.compute_total_drag(accel, max_speed, handbrake.get_drag_contribution());
 
     FL_POSTCONDITION(k > 0.0f && std::isfinite(k), "drag coefficient must be positive and finite");
 
