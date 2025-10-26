@@ -322,5 +322,6 @@ Validate the implementation plan. Check: 1) Does the composition pattern align w
 ## Iterations
 
 - [ITERATION_1.md](handbrake_input_ITERATION_1.md) - REVISE
+- [ITERATION_2.md](handbrake_input_ITERATION_2.md) - APPROVED
 
 ---
