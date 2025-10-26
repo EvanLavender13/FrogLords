@@ -61,6 +61,7 @@ Mathematical building blocks. Pure functions with no side effects.
 - **Spring-Damper** - 1D time-step integration with critical damping (`src/foundation/spring_damper.{h,cpp}`)
 - **Easing** - Cubic smoothstep, smooth mixes, cubic Hermite (`src/foundation/easing.{h,cpp}`)
 - **Procedural Mesh** - Generates sphere/box/grid/arrow/circle/spring wireframes (`src/foundation/procedural_mesh.{h,cpp}`)
+- **Angle Arc Primitive** - Generates arc between two directions in horizontal plane (`src/foundation/procedural_mesh.{h,cpp}`)
 - **Collision Primitives** - Sphere/AABB types, collision world, surface types (`src/foundation/collision_primitives.h`)
 - **Collision Math** - Sphere-AABB tests, multi-pass resolution, wall-slide projection (`src/foundation/collision.{h,cpp}`)
 - **Car-Like Control Scheme** - Transforms WASD input to vehicle-relative forward/back and turn rate (`src/vehicle/controller.h`, `src/app/game_world.{h,cpp}`)
@@ -74,6 +75,7 @@ Mathematical building blocks. Pure functions with no side effects.
 - Parameter metadata enables: Generic tuning UIs, parameter validation, presets/serialization
 - Slip angle calculator enables: Physics-based drift system, drift detection, tire force modeling, slip angle visualization
 - Lateral g-force calculator enables: Vehicle tilt system, dynamic FOV, drift grip thresholds, physics-based drift system
+- Angle arc primitive enables: Slip angle visualization, steering authority display, counter-steering detection, angular velocity cones, front/rear axle slip angle debug display
 
 ---
 

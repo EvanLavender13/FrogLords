@@ -75,6 +75,20 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         foundation::wireframe_mesh speed_ring =
             foundation::generate_circle(character.position, {current_speed});
         mesh_to_debug_lines(list, speed_ring, color);
+
+        // Slip angle arc - visualize angle between heading and velocity
+        float slip_angle = character.calculate_slip_angle();
+        constexpr float SLIP_ANGLE_THRESHOLD = 0.05f; // ~2.9 degrees
+        if (std::abs(slip_angle) > SLIP_ANGLE_THRESHOLD) {
+            // Use heading_yaw consistently for both gate and arc (matches calculate_slip_angle)
+            glm::vec3 heading_dir = math::yaw_to_forward(character.heading_yaw);
+            glm::vec3 velocity_dir =
+                math::safe_normalize(math::project_to_horizontal(character.velocity), heading_dir);
+
+            foundation::wireframe_mesh slip_arc = foundation::generate_arc(
+                character.position, heading_dir, velocity_dir, current_speed * 0.5f);
+            mesh_to_debug_lines(list, slip_arc, {1.0f, 1.0f, 1.0f, 1.0f}); // White
+        }
     }
 
     // Lateral g-force indicator (centripetal acceleration)

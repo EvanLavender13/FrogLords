@@ -91,24 +91,15 @@ Update `TASKS/CURRENT_PLAN.md`:
 # Current Plan
 
 **Status:** 🏗️ System - <Name>
-**Started:** [Today]
 **Branch:** system/<name>
-**Complexity:** Small | Medium | Large
-**Phase:** SELECT → GRAYBOX
-
 ---
 
 ## Current Work
 
 **System:** <description>
 **Location:** @TASKS/PLANS/<name>_SYSTEM.md
-**Layer:** [N]
-**Complexity:** Small | Medium | Large
-**Next:** GRAYBOX
+**Next Task:** GRAYBOX
 
-**Dependencies:**
-- System A (Layer X)
-- System B (Layer Y)
 ```
 
 **CRITICAL:** `@` reference ensures plan loads automatically via `CLAUDE.md`.

@@ -1,5 +1,6 @@
 #include "foundation/procedural_mesh.h"
 #include "foundation/math_utils.h"
+#include "foundation/debug_assert.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
 #include <cmath>
@@ -253,6 +254,79 @@ wireframe_mesh generate_circle(const glm::vec3& center, circle_config config) {
     for (int i = 0; i < config.segments; i++) {
         mesh.edges.push_back(edge(i, (i + 1) % config.segments));
     }
+
+    return mesh;
+}
+
+wireframe_mesh generate_arc(const glm::vec3& center, const glm::vec3& start_dir,
+                            const glm::vec3& end_dir, float radius, int segments) {
+    wireframe_mesh mesh;
+
+    // Runtime guards for release builds (match generate_circle pattern)
+    if (segments <= 0 || radius <= 0.0f) {
+        return mesh;
+    }
+
+    // Validate preconditions using project assertion macros
+    FL_ASSERT_FINITE(center, "center");
+    FL_ASSERT_FINITE(start_dir, "start_dir");
+    FL_ASSERT_FINITE(end_dir, "end_dir");
+    FL_ASSERT_NORMALIZED(start_dir, "start_dir");
+    FL_ASSERT_NORMALIZED(end_dir, "end_dir");
+    FL_PRECONDITION(glm::epsilonEqual(start_dir.y, 0.0f, FL_EPSILON),
+                    "start_dir must be horizontal (Y≈0)");
+    FL_PRECONDITION(glm::epsilonEqual(end_dir.y, 0.0f, FL_EPSILON),
+                    "end_dir must be horizontal (Y≈0)");
+    FL_ASSERT_POSITIVE(radius, "radius");
+    FL_ASSERT_IN_RANGE(segments, 3, 1024, "segments");
+
+    // Compute signed angle between directions
+    float dot_product = glm::dot(start_dir, end_dir);
+    glm::vec3 cross_product = glm::cross(start_dir, end_dir);
+    float angle = std::atan2(glm::dot(cross_product, math::UP), dot_product);
+
+    // Handle degenerate case: nearly parallel vectors
+    // For opposite vectors (180°), atan2(0, -1) = +π, selecting positive sweep
+    if (std::abs(angle) < FL_EPSILON) {
+        // Parallel vectors: return empty mesh (zero-angle arc is meaningless)
+        return mesh;
+    }
+
+    // Build orthonormal frame for horizontal arc
+    // X = start direction (first basis vector)
+    // Z = UP (plane normal for horizontal arcs)
+    // Y = perpendicular in-plane direction
+    glm::vec3 frame_x = start_dir;
+    glm::vec3 frame_y = glm::normalize(glm::cross(math::UP, frame_x));
+
+    // Validate orthonormal frame construction
+    fl::verify_coordinate_frame(frame_x, frame_y, math::UP);
+
+    // Reserve capacity to avoid reallocation
+    mesh.vertices.reserve(segments + 1);
+    mesh.edges.reserve(segments);
+
+    // Generate arc vertices: P(θ) = center + radius*(cos(θ)*X + sin(θ)*Y)
+    // Parameter t ∈ [0,1] sweeps from start_dir to end_dir
+    int num_vertices = segments + 1; // Include both endpoints
+    for (int i = 0; i < num_vertices; i++) {
+        float t = static_cast<float>(i) / static_cast<float>(segments);
+        float theta = t * angle;
+        glm::vec3 vertex =
+            center + radius * (std::cos(theta) * frame_x + std::sin(theta) * frame_y);
+        mesh.vertices.push_back(vertex);
+    }
+
+    // Connect vertices with edges
+    for (int i = 0; i < segments; i++) {
+        mesh.edges.push_back(edge(i, i + 1));
+    }
+
+    // Validate postconditions
+    FL_POSTCONDITION(mesh.vertices.size() == static_cast<size_t>(segments + 1),
+                     "vertex count must match segments + 1");
+    FL_POSTCONDITION(mesh.edges.size() == static_cast<size_t>(segments),
+                     "edge count must match segments");
 
     return mesh;
 }

@@ -83,7 +83,8 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     return commands;
 }
 
-void draw_vehicle_state_section(const controller& vehicle, const vehicle_reactive_systems& visuals) {
+void draw_vehicle_state_section(const controller& vehicle,
+                                const vehicle_reactive_systems& visuals) {
     if (!ImGui::CollapsingHeader("Vehicle State"))
         return;
 

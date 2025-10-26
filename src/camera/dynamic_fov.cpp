@@ -23,11 +23,13 @@ void dynamic_fov_system::update(const controller& ctrl, camera& cam, float dt) {
     // Precondition: Parameters must be within metadata-defined ranges (single source of truth)
     FL_PRECONDITION(base_fov >= base_fov_meta.min && base_fov <= base_fov_meta.max,
                     "base_fov must be within metadata range");
-    FL_PRECONDITION(max_fov_range >= max_fov_range_meta.min && max_fov_range <= max_fov_range_meta.max,
+    FL_PRECONDITION(max_fov_range >= max_fov_range_meta.min &&
+                        max_fov_range <= max_fov_range_meta.max,
                     "max_fov_range must be within metadata range");
     FL_PRECONDITION(g_multiplier >= g_multiplier_meta.min && g_multiplier <= g_multiplier_meta.max,
                     "g_multiplier must be within metadata range");
-    FL_PRECONDITION(fov_spring.stiffness >= spring_stiffness_meta.min && fov_spring.stiffness <= spring_stiffness_meta.max,
+    FL_PRECONDITION(fov_spring.stiffness >= spring_stiffness_meta.min &&
+                        fov_spring.stiffness <= spring_stiffness_meta.max,
                     "spring stiffness must be within metadata range");
 
     // Update spring damping to maintain critical damping (no overshoot)
