@@ -2,7 +2,7 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-25
+**Last Updated:** 2025-10-26
 
 ---
 
@@ -25,15 +25,7 @@
 - Smooth transitions between speed ranges
 - Requires: None (enhancement of existing system)
 
-**Brake Input Extension** ← NOW BUILDABLE
-- Add brake/handbrake input to controller_input_params
-- Map to Space key or controller trigger
-- Binary input: pressed/not pressed
-- Pass through input system to controller
-- Foundation for drift initiation
-- Requires: None (input system extension)
-
-**Drift Detection Primitive** ← AFTER BRAKE INPUT
+**Drift Detection Primitive** ← NOW BUILDABLE (handbrake input complete)
 - Calculate drift intensity from slip angle (continuous 0-1 value)
 - Threshold detection: 5-8° initiation, maintain up to 23° (0.4 rad)
 - Speed gating: require speed > soft_threshold (3 m/s)
