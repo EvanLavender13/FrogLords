@@ -1,4 +1,6 @@
 #pragma once
+#include "foundation/debug_assert.h"
+#include <cmath>
 
 /**
  * handbrake_system
@@ -34,7 +36,11 @@ struct handbrake_system {
      *
      * @return Drag coefficient contribution (1/s)
      */
-    float get_drag_contribution() const { return active ? brake_rate : 0.0f; }
+    float get_drag_contribution() const {
+        FL_ASSERT_NON_NEGATIVE(brake_rate, "Handbrake brake_rate");
+        FL_ASSERT_FINITE_SCALAR(brake_rate, "Handbrake brake_rate");
+        return active ? brake_rate : 0.0f;
+    }
 
     // Query current handbrake state
     bool is_active() const { return active; }

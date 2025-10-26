@@ -277,13 +277,9 @@ controller {
 
 ---
 
-## Next Steps
+## Iterations
 
-1. ~~Create branch `system/handbrake-refactor`~~ ✅ (Already on branch)
-2. ~~Proceed to GRAYBOX: implement minimal viable refactor~~ ✅
-3. ~~Verify behavior preservation through manual testing~~ ✅
-4. Commit changes
-5. Update CURRENT_PLAN.md: GRAYBOX → ITERATE (or CLOSE if sufficient)
+- [ITERATION_1.md](handbrake_refactor_ITERATION_1.md) - APPROVED
 
 ---
 

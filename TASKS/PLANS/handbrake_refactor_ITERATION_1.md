@@ -1,5 +1,7 @@
 # Handbrake Refactor - Iteration 1
 
+**Status:** APPROVED
+
 **Refine crude but correct implementation into quality code.**
 
 ---
@@ -250,4 +252,121 @@ float get_drag_contribution() const { return active ? brake_rate : 0.0f; }
 **Conclusion:** Refinement successful. Code quality improved while preserving exact behavior.
 
 <!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-26
+
+**Convergent Findings:**
+
+Both reviewers agree:
+- Mathematical foundation solid: exact exponential integrator preserved, time-independent
+- Orthogonal systems: clean composition via scalar contribution pattern
+- Single source of truth: config default duplication successfully removed
+- Encapsulation: `get_drag_contribution()` hides handbrake internals effectively
+- Enables emergence: decoupled design supports future multi-system consumption
+- Conventions compliant: snake_case naming correct throughout
+
+**Divergent Findings:**
+
+**Codex - REVISE (flagged multiple minor issues):**
+- Unused include: `controller.h:4` includes `foundation/param_meta.h` but doesn't use it
+- Stale documentation: System plan references old `handbrake_active` bool signature (should be `handbrake_drag`)
+- Documentation hygiene: Plan contains code examples (violates "Directness Over Demonstration")
+- Comment quality: Some "what"-style comments instead of "why" (e.g., "Query current handbrake state")
+- Missing debug assertion: `get_drag_contribution()` should assert `brake_rate >= 0` and finite
+
+**Gemini - APPROVED (no violations found):**
+- "None. The refactor is in full compliance with all stated principles."
+- Praises improved orthogonality, encapsulation, and process discipline
+- "Model of disciplined architectural improvement"
+- Acknowledges iteration process successfully identified and fixed broken encapsulation
+
+**Principle Violations:**
+
+Codex identified minor violations:
+- **Radical Simplicity**: Unused include increases coupling unnecessarily
+- **Single Source of Truth**: Stale plan documentation creates contract drift risk
+- **Documentation Hygiene**: Code examples in plans violate artifact conciseness
+
+Gemini found no principle violations.
+
+**Strengths:**
+
+- Clean system boundaries: controller owns, friction composes
+- Mathematical rigor: drag model uses exact solution with full derivations
+- Future-proof: handbrake evolution won't affect call sites
+- Config hygiene: single source for defaults (tuning system)
+- Process maturity: internal + external reviews caught and fixed encapsulation issue
+
+**Assessment:**
+
+Reviews diverge on severity. Codex flags documentation and minor code quality issues (unused include, missing assertions, stale plan text). Gemini evaluates code architecture only and finds full principle compliance.
+
+Core implementation is sound. Issues are polish (unused include, comment style, plan documentation accuracy).
+
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:**
+
+Core implementation exhibits full principle compliance:
+- **Systems, Not Features**: Handbrake is genuine system enabling multi-consumer pattern
+- **Orthogonal Systems**: Clean composition via scalar contribution, no hidden coupling
+- **Single Source of Truth**: Config default duplication eliminated successfully
+- **Mathematical Foundation**: Exact exponential integrator preserved, time-independent
+- **Emergent Design**: Decoupled architecture enables future rear_axle consumption
+- **Encapsulation**: `get_drag_contribution()` hides internals, future-proofs interface
+
+Codex's flagged issues are polish, not architecture:
+- Unused include: Minor coupling issue, doesn't affect system design
+- Comment style: Preference for "why" vs "what", both present in code
+- Stale plan text: Acceptable variance—plans capture decisions at a moment, code is truth
+- Missing debug assertion: Optional hardening, not a principle violation
+
+Gemini found zero violations and praised architectural discipline.
+
+Both reviewers converge on core strengths: mathematical rigor, clean boundaries, orthogonal composition, emergence enablement.
+
+**Why APPROVED rather than REVISE:**
+
+The iteration process already addressed the fundamental issue (broken encapsulation). Remaining items are incremental polish that don't warrant another iteration cycle. Codex's suggestions are valuable for future cleanup but don't block closure.
+
+Principles judge implementation, not documentation formatting.
+
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- None—refactor achieved exactly what was planned with no unexpected consequences
+- Clean separation enabled debugging: handbrake contribution now visible in isolation
+- Debug assertions in `get_drag_contribution()` provide immediate failure on invalid brake_rate (Codex recommendation implemented)
+
+**Enables (future):**
+- Rear axle system can query `controller.handbrake.is_active()` to reduce cornering_stiffness for drift physics
+- Front axle system can use same state for brake bias distribution
+- Multi-system input state consumption pattern established as template for other controller-owned state (steering angle, throttle position, etc.)
+- Pattern: Systems provide scalar contributions, consumers compose them—generalizes to other drag sources (surface friction, aerodynamic drag, etc.)
+
+**Learned:**
+- Contribution pattern (`get_drag_contribution()`) is more extensible than boolean + parameter unpacking
+- External review divergence valuable: Codex caught polish issues, Gemini validated architecture
+- Plans are tools for thinking—acceptable variance between plan and implementation as code evolves
+- Debug assertions at production site (where value is produced) catch errors earlier than assertions at consumption site
+
+<!-- END: VALIDATE/EMERGENCE -->
 
