@@ -14,10 +14,8 @@ Update backlogs to current state. Archive detailed metrics in plan file. Prepare
 
 ## Prerequisites
 
-- [ ] Refinement complete
-- [ ] MEASURE complete (metrics in plan file)
-- [ ] `TASKS/PLANS/REFINE_<name>.md` fully documented
-- [ ] All changes committed to refinement branch
+- Read @TASKS/CURRENT_PLAN.md
+- MEASURE complete (metrics in plan file)
 
 ---
 
@@ -34,15 +32,7 @@ Update header:
 
 Remove fixed violation from "Active Violations"
 
-Add new pattern if discovered:
-```markdown
-### Pattern: <Pattern Name>
-- **Detection:** How to spot it
-- **Root cause:** Why it happens
-- **Fix:** How to resolve
-- **Prevention:** How to avoid
-- **Related fixes:** <System> (YYYY-MM-DD)
-```
+Add new pattern if discovered - document how to detect, understand, fix, and prevent it.
 
 Update priority order:
 ```markdown
@@ -89,7 +79,7 @@ git add TASKS/BACKLOG_REFINEMENTS.md TASKS/CURRENT_PLAN.md TASKS/PLANS/REFINE_<n
 
 git commit -m "close: <name> refinement
 
-<One-line description of what was fixed>
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -106,7 +96,7 @@ git checkout main
 # Merge with no-fast-forward
 git merge --no-ff refine/<name> -m "Merge refine/<name>
 
-<One-line description of what was fixed>
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -120,22 +110,7 @@ git log --oneline -3
 
 ---
 
-### 5. Verify System State
-
-```bash
-# Verify main is clean
-git status
-
-# Verify active violations updated
-grep -A10 "Active Violations" TASKS/BACKLOG_REFINEMENTS.md
-
-# Verify current plan cleared
-head -10 TASKS/CURRENT_PLAN.md
-```
-
----
-
-### 6. Check Retrospective Threshold
+### 5. Check Retrospective Threshold
 
 ```bash
 # Count completed plans (REFINE_* and *_SYSTEM only - NOT *_ITERATION_*)

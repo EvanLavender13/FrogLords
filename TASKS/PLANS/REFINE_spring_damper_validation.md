@@ -1,61 +1,13 @@
-# Refinement: Spring Damper Delta Time Validation
+<!-- BEGIN: SELECT/PLAN -->
+**Violation:** `spring_damper::update` (src/foundation/spring_damper.cpp:5) accepts invalid delta_time values without validation, violating Humble Validation principle.
 
-Add precondition assertion to spring_damper::update for delta_time validation.
+Zero dt causes division by zero. Negative dt reverses time. NaN propagates through simulation. Silent failure cascades to vehicle tilt, dynamic FOV, and all future spring-damped systems.
 
----
+**Complexity:** Simple fix - single assertion, isolated to one function. No behavior changes for valid inputs. Zero cascade risk.
 
-<!-- BEGIN: SELECT/SELECTED -->
-## Selected
+**Approach:** Add debug assertion validating delta_time is positive and finite. Spring-damper is battle-tested Layer 2 primitive - validation maintains mathematical correctness guarantee with zero release overhead. Physical time must be positive and finite; assertion catches integration errors at violation point rather than downstream.
+<!-- END: SELECT/PLAN -->
 
-**Date:** 2025-10-26
-**Complexity:** Trivial (1 pt)
-**Path:** A (trivial)
-<!-- END: SELECT/SELECTED -->
-
----
-
-<!-- BEGIN: SELECT/VIOLATION -->
-## Violation
-
-**Location:** `src/foundation/spring_damper.cpp:5`
-**Principle:** Humble Validation
-**Severity:** High
-**Type:** Missing precondition validation
-
-**Current state:**
-```cpp
-float spring_damper::update(float current, float target, float velocity, float delta_time, float& out_velocity)
-{
-    // No validation of delta_time
-    float damping_factor = 2.0f * std::sqrt(spring_constant);
-    // ... uses delta_time directly in integration
-}
-```
-
-**Why violation:**
-- Zero dt causes division by zero or infinite acceleration
-- Negative dt reverses time, creating physically impossible states
-- NaN dt propagates through entire simulation
-- Silent failure compounds into cascading errors
-
-**Impact:**
-- Blocks: Safe simulation at any framerate
-- Cascades to: Vehicle tilt system, dynamic FOV system, any future spring-damped behavior
-<!-- END: SELECT/VIOLATION -->
-
----
-
-<!-- BEGIN: SELECT/FIX -->
-## Fix
-
-**Approach:** Document
-
-**Why keep:**
-Spring-damper is battle-tested Layer 2 primitive used throughout codebase. Adding validation maintains mathematical correctness guarantee.
-
-**Derivation:**
-Physical time delta must be positive and finite. Zero time means no change. Negative time violates causality. Infinite/NaN time has no physical meaning.
-
-**Trade-off:**
-Debug assertion adds zero release overhead while catching integration errors immediately at violation point rather than downstream.
-<!-- END: SELECT/FIX -->
+<!-- BEGIN: REFINE/COMPLETED -->
+Added FL_PRECONDITION assertion to spring_damper::update validating delta_time > 0.0f and std::isfinite(delta_time). All unit tests pass. Manual verification confirms no regressions in vehicle tilt or dynamic FOV behavior. Principle upheld with zero runtime overhead in release builds.
+<!-- END: REFINE/COMPLETED -->

@@ -1,7 +1,11 @@
 #include "foundation/spring_damper.h"
+#include "foundation/debug_assert.h"
 #include <cmath>
 
 void spring_damper::update(spring_step step) {
+    FL_PRECONDITION(step.delta_time > 0.0f && std::isfinite(step.delta_time),
+                    "delta_time must be positive and finite");
+
     // F = -k * (x - target) - c * v
     float spring_force = -stiffness * (position - step.target);
     float damping_force = -damping * velocity;

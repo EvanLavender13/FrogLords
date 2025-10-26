@@ -12,9 +12,8 @@ Measure the specific violation you fixed. Document learning. Update foundation c
 
 ## Prerequisites
 
-- [ ] Refinement complete
-- [ ] Tests passing
-- [ ] Changes committed
+- Read @TASKS/CURRENT_PLAN.md
+- Refinement complete
 
 ---
 
@@ -52,12 +51,7 @@ wc -l <file>
 **Update** `TASKS/PLANS/REFINE_<name>.md`:
 ```markdown
 <!-- BEGIN: MEASURE/METRICS -->
-## Metrics
-
-**Files:**
-- `<file>`: ___ → ___ (-___ lines)
-
-**Total:** -___ lines
+[What changed quantitatively]
 <!-- END: MEASURE/METRICS -->
 ```
 
@@ -69,33 +63,7 @@ wc -l <file>
 
 **You know what you fixed. Count that specific thing.**
 
-**Examples:**
-
-If you **removed magic numbers**, count them:
-```bash
-# Grep for the pattern YOU removed
-git show HEAD~1:<file> | grep -c "<pattern>"  # Before
-grep -c "<pattern>" <file>                     # After
-```
-
-If you **deleted special cases**, count them:
-```bash
-# Count the specific checks YOU removed
-git diff HEAD~1 <file> | grep "^-" | grep -c "<check>"
-```
-
-If you **extracted duplicated logic**, count instances:
-```bash
-# How many times did this pattern appear?
-git show HEAD~1:<file> | grep -c "<duplicated_code>"  # Before
-grep -c "<duplicated_code>" <file>                     # After
-```
-
-**Update plan** (add to MEASURE/METRICS section):
-```markdown
-**Violations removed:**
-- <specific_violation>: ___ → ___ (-___)
-```
+Add specific violation metrics to the MEASURE/METRICS section if quantifiable.
 
 **Don't search for arbitrary patterns. Count what you actually fixed.**
 
@@ -108,19 +76,11 @@ grep -c "<duplicated_code>" <file>                     # After
 **Update plan:**
 ```markdown
 <!-- BEGIN: MEASURE/LEARNING -->
-## Learning
-
-**Root cause:** [Why this violation existed - 1 line]
-
-**Prevention:** [How to avoid creating this again - 1-2 lines]
-
-**Pattern:** [Is this part of a larger problem? - 1 line, optional]
-
-**Remaining work:** [Related violations to fix later - 1 line, optional]
+[Root cause, prevention strategy, and any patterns discovered]
 <!-- END: MEASURE/LEARNING -->
 ```
 
-**CRITICAL: Keep under 10 lines total. Root cause + prevention only. Delete philosophical expansions.**
+**CRITICAL: Keep concise. Focus on actionable learning. Delete philosophical expansions.**
 
 **Learning compounds. Document it concisely.**
 
@@ -128,8 +88,7 @@ grep -c "<duplicated_code>" <file>                     # After
 
 ## Outputs
 
-- [ ] Lines removed counted
-- [ ] Specific violation counted
+- [ ] Changes quantified
 - [ ] Learning documented
 - [ ] `TASKS/PLANS/REFINE_<name>.md` complete
 
