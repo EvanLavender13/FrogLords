@@ -179,6 +179,17 @@ Migrated brake_rate to metadata-driven tuning system:
 
 ---
 
+<!-- BEGIN: ITERATE/COMPLETE -->
+## Iteration Complete
+
+**Status:** REVISE
+**Date:** 2025-10-26
+
+Iteration 1 refinements complete. Validated with REVISE status - time-independence violation requires fix.
+<!-- END: ITERATE/COMPLETE -->
+
+---
+
 <!-- BEGIN: ITERATE/PLAYTEST -->
 ## Playtest
 
@@ -193,5 +204,76 @@ Migrated brake_rate to metadata-driven tuning system:
 **Status:** ✓ Stable through testing
 **Violations found:** None
 <!-- END: ITERATE/PLAYTEST -->
+
+---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini (dual review)
+**Date:** 2025-10-26
+
+**Convergent Findings:**
+- Radical Simplicity upheld: minimal, single-responsibility system
+- Single Source of Truth upheld: brake_rate fully integrated into metadata-driven tuning system
+- Orthogonal Systems upheld: clean composition with controller
+- Dead state cleanup complete: all identified fields/functions removed
+- Configuration verification complete: tuning params, validation, GUI, command handling all correct
+- Horizontal projection and Y-preservation correct
+
+**Divergent Findings:**
+
+**Codex: Mathematical Foundation - Time-Independence Violation (REVISE)**
+- Handbrake applies `v *= exp(-b*dt)` in apply_input(), then update_physics() applies separate exponential integrator with `k = accel/max_speed`
+- Combined map: `v' = v*e^(-(b+k)*dt) + (a/k)*(1 - e^(-k*dt))` differs from exact solution `v' = v*e^(-(b+k)*dt) + (a/(b+k))*(1 - e^(-(b+k)*dt))`
+- These differ for finite dt with nonzero input a → behavior varies with framerate when throttle + handbrake both active
+- Recommends: Unify drag in integrator via `k_total = accel/max_speed + (handbrake_active ? brake_rate : 0)`
+
+**Codex: Additional findings**
+- Plan Section Divergence: Implementation Review (line 274-279) claims game_world ownership vs Results (line 296-312) shows controller ownership
+- Stale documentation: max_speed comment references deleted clamp_horizontal_speed function (controller.h:61)
+
+**Gemini: Mathematical Foundation - Time-Independent (APPROVED)**
+- Validates exponential decay `v *= exp(-brake_rate*dt)` is exact, time-independent solution to `dv/dt = -k*v`
+- No concerns raised about composition with main integrator
+
+**Assessment:**
+
+Critical mathematical divergence requires resolution. Codex identifies a legitimate composition issue: two sequential exponential operations with different drag coefficients. While each operation is individually time-independent, their composition when acceleration is non-zero creates frame-rate dependence in the particular solution term.
+
+However, this is a **minor technical issue** in edge cases (simultaneous throttle + handbrake), not a fundamental architectural flaw. The core approach is sound.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** REVISE
+
+**Reasoning:**
+
+Codex correctly identifies a time-independence violation. Mathematical Foundation principle is absolute: "results must be identical at any framerate."
+
+**The violation:**
+- Handbrake applies `v *= exp(-b*dt)` in apply_input() (controller.cpp:120)
+- update_physics() then applies `v' = v*exp(-k*dt) + (a/k)*(1-exp(-k*dt))` (controller.cpp:195-196)
+- Combined map has wrong particular solution term: uses `a/k` instead of `a/(b+k)`
+- Frame-rate dependent when acceleration and handbrake both active
+
+**Why REVISE, not APPROVED:**
+- This is the same issue raised in graybox review (handbrake_input_SYSTEM.md:40-42)
+- Mathematical Foundation is a Core Truth principle - no exceptions
+- Being correct and establishing the pattern are not mutually exclusive
+- The fix is clear and preserves the composition pattern
+
+**Required changes:**
+
+Unify drag coefficients in the exact integrator:
+1. Change handbrake.apply() to set state only, not mutate velocity
+2. Pass handbrake drag to update_physics() via controller member or query
+3. Use `k_total = accel/max_speed + (handbrake.is_active() ? handbrake.brake_rate : 0.0f)` in exact solution
+4. Apply unified exponential integrator with correct particular solution term
+<!-- END: VALIDATE/DECISION -->
 
 ---
