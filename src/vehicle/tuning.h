@@ -43,7 +43,7 @@ struct tuning_params {
     // Drag coefficient contribution when handbrake engaged
     // Added to base drag in friction model for unified exponential integration
     // Higher values = stronger braking
-    // Used in: apply_to to copy to controller.friction.handbrake.brake_rate
+    // Used in: apply_to to copy to controller.handbrake.brake_rate
     float brake_rate = 2.0f; // 1/s (drag coefficient)
 
     // NOTE: Friction removed - drag now derived from accel/max_speed

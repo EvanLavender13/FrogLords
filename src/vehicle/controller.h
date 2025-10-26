@@ -3,6 +3,8 @@
 #include "foundation/collision_primitives.h"
 #include "foundation/param_meta.h"
 #include "vehicle/friction_model.h"
+#include "vehicle/handbrake_system.h"
+#include "vehicle/controller_input_params.h"
 
 struct collision_world;
 
@@ -97,6 +99,7 @@ struct controller {
 
     // Composed systems (each modifies physics in semantically clear way)
     friction_model friction;
+    handbrake_system handbrake;
 
     controller();
 
