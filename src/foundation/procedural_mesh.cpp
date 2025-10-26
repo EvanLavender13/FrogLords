@@ -312,7 +312,8 @@ wireframe_mesh generate_arc(const glm::vec3& center, const glm::vec3& start_dir,
     for (int i = 0; i < num_vertices; i++) {
         float t = static_cast<float>(i) / static_cast<float>(segments);
         float theta = t * angle;
-        glm::vec3 vertex = center + radius * (std::cos(theta) * frame_x + std::sin(theta) * frame_y);
+        glm::vec3 vertex =
+            center + radius * (std::cos(theta) * frame_x + std::sin(theta) * frame_y);
         mesh.vertices.push_back(vertex);
     }
 
