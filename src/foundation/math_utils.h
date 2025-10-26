@@ -8,6 +8,10 @@
 /// Mathematical utility functions for common vector operations
 namespace math {
 
+/// PHYSICAL: Earth gravity constant (standard acceleration due to gravity)
+/// Used for force calculations (F = m * g) and g-force normalization
+constexpr float GRAVITY = 9.8f; // m/s²
+
 /// PHYSICAL: World up axis in project coordinate system
 /// Convention: Y-up, Z-forward, +X-right (right-handed, standard OpenGL)
 /// Alternative systems: Some engines use Z-up (Unreal, right-handed) or left-handed variants
@@ -140,7 +144,6 @@ inline float calculate_lateral_g_force(float speed, float angular_velocity) {
     float lateral_accel = speed * angular_velocity; // m/s²
 
     // Convert to g-force (dimensionless multiplier of Earth gravity)
-    constexpr float GRAVITY = 9.8f; // m/s²
     return lateral_accel / GRAVITY;
 }
 

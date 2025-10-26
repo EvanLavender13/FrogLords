@@ -166,8 +166,12 @@ void controller::update_physics(float dt) {
     //
     // See PRINCIPLES.md: Time-Independence, Solid Mathematical Foundations
 
-    // Apply weight to vertical acceleration (downward force)
-    acceleration.y += weight;
+    // Apply weight force as acceleration (F=ma: weight_force/mass = acceleration)
+    // Weight force: F = m * g (downward)
+    // Weight acceleration: a = F/m = (m * g)/m = g
+    // Sign: negative because Y-up coordinate system (gravity pulls down)
+    float weight_accel = (mass * -math::GRAVITY) / mass; // Simplifies to -GRAVITY
+    acceleration.y += weight_accel;
 
     // Unified drag coefficient from friction model
     // Composes: base drag (equilibrium) + handbrake drag + future modifiers

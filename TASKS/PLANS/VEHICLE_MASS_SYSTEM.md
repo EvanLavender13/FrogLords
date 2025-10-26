@@ -164,3 +164,95 @@ velocity.x += lateral_accel * dt; // Mass affects responsiveness
 - Tuning parameters follow metadata-driven pattern
 
 <!-- END: SELECT/SELECTED -->
+
+---
+
+<!-- BEGIN: GRAYBOX/PLAN -->
+
+## Implementation Approach
+
+**Scope:** Add mass parameter to vehicle system, replace weight acceleration with F=ma force calculation, establish gravity constant as single source of truth.
+
+**Structure:**
+
+1. **Physics constant (foundation layer):**
+   - Add `GRAVITY = 9.8f` constant to `foundation/math_utils.h` (existing location of gravity reference)
+   - Remove local `constexpr float GRAVITY` from `calculate_lateral_g_force()` function
+
+2. **Tuning parameter (tuning system):**
+   - Add `mass` member to `vehicle::tuning_params` with default `150.0f` kg
+   - Add `mass_meta` with range `[50.0f, 500.0f]` kg
+   - Update `apply_to()` to copy mass to controller
+
+3. **Controller state (physics system):**
+   - Add `mass` member to `controller` (copied from tuning)
+   - Remove `weight` member (replaced by mass + gravity)
+   - Compute weight force in `update_physics()` as `mass * -GRAVITY`
+
+4. **GUI integration (vehicle_panel):**
+   - Add `MASS` to `parameter_type` enum
+   - Add mass slider in `draw_vehicle_tuning_section()`
+   - Add mass command handler in runtime.cpp
+
+**Integration Points:**
+- `foundation/math_utils.h` - Global GRAVITY constant
+- `vehicle/tuning.h` - Mass parameter with metadata
+- `vehicle/controller.h` - Mass state property
+- `vehicle/controller.cpp` - Weight force calculation in update_physics()
+- `gui/parameter_command.h` - MASS parameter type
+- `gui/vehicle_panel.cpp` - Mass GUI slider
+- `app/runtime.cpp` - Mass command handler
+
+**Debug Visualization Strategy:**
+- Display mass in vehicle_panel tuning section (tunable slider)
+- Verify weight calculation unchanged by testing before/after (vehicle should behave identically)
+- No special visualization needed - mass is visible via GUI, behavior validates correctness
+
+**Critical:** Mass cancels in weight-only case (`(mass * -GRAVITY) / mass = -GRAVITY`), so behavior must be identical. Any change in vehicle movement indicates implementation error.
+
+<!-- END: GRAYBOX/PLAN -->
+
+---
+
+<!-- BEGIN: GRAYBOX/RESULTS -->
+
+## Results
+
+**Status:** ✅ Core mechanic validated
+
+**What works:**
+- Mass parameter added to tuning system (150 kg default, 50-500 kg range)
+- GRAVITY constant established in `foundation/math_utils.h` (single source of truth)
+- Weight force calculation replaced with F=ma: `(mass * -GRAVITY) / mass`
+- GUI displays mass slider in vehicle tuning panel
+- Vehicle behavior unchanged (mass cancels correctly in weight-only case)
+- No assertion failures or runtime errors
+
+**Validated properties:**
+- Mathematical correctness: F=ma integration preserves time-independence
+- Behavioral identity: Vehicle movement identical before/after (mass cancels to -9.8 m/s²)
+- Tunability: Mass adjustable 50-500 kg with no effect on current behavior
+- Architecture: Single GRAVITY constant, no duplication
+- GUI integration: Mass parameter follows metadata-driven pattern
+
+**Emergent observations:**
+- Mass slider tunable but currently has no visible effect (expected - mass cancels in weight calculation)
+- Foundation established for lateral force systems (future: `lateral_accel = lateral_force / mass`)
+- Gravity constant now centralized (was duplicated in `calculate_lateral_g_force()`)
+
+**Code locations:**
+- `foundation/math_utils.h:13` - GRAVITY constant
+- `vehicle/tuning.h:26` - Mass parameter
+- `vehicle/controller.h:62` - Mass state
+- `vehicle/controller.cpp:173` - Weight force calculation
+- `gui/vehicle_panel.cpp:33` - Mass GUI slider
+
+**Ready for:** ITERATE
+
+**Considerations for iteration:**
+- Core mechanic mathematically correct and behaviorally validated
+- Mass currently has no visible effect (expected - cancels in weight calculation)
+- Foundation solid for downstream force-based systems
+- May defer iteration if no architectural improvements needed
+
+<!-- END: GRAYBOX/RESULTS -->

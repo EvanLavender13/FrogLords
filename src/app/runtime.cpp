@@ -160,8 +160,8 @@ void app_runtime::apply_parameter_commands(const std::vector<gui::parameter_comm
             world.vehicle_params.accel = cmd.value;
             world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
-        case gui::parameter_type::WEIGHT:
-            world.vehicle_params.weight = cmd.value;
+        case gui::parameter_type::MASS:
+            world.vehicle_params.mass = cmd.value;
             world.vehicle_params.apply_to(world.character, world.vehicle_reactive);
             break;
         case gui::parameter_type::TURN_RATE:

@@ -18,7 +18,7 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     // Local copies for slider interaction (GUI needs mutable values)
     float max_speed = params.max_speed;
     float accel = params.accel;
-    float weight = params.weight;
+    float mass = params.mass;
     float turn_rate = params.turn_rate;
     float steering_reduction_factor = params.steering_reduction_factor;
     float brake_rate = params.brake_rate;
@@ -30,8 +30,8 @@ std::vector<parameter_command> draw_vehicle_tuning_section(const controller& veh
     if (gui::widget::tunable_param(&accel, vehicle::tuning_params::accel_meta)) {
         commands.push_back({parameter_type::ACCEL, accel});
     }
-    if (gui::widget::tunable_param(&weight, vehicle::tuning_params::weight_meta)) {
-        commands.push_back({parameter_type::WEIGHT, weight});
+    if (gui::widget::tunable_param(&mass, vehicle::tuning_params::mass_meta)) {
+        commands.push_back({parameter_type::MASS, mass});
     }
     if (gui::widget::tunable_param(&turn_rate, vehicle::tuning_params::turn_rate_meta)) {
         commands.push_back({parameter_type::TURN_RATE, turn_rate});

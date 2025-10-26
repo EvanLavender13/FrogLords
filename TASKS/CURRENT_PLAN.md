@@ -18,7 +18,7 @@
 
 **Complexity:** Small
 
-**Next:** GRAYBOX
+**Next:** ITERATE
 
 **Dependencies:**
 - ✅ Parameter metadata system (Layer 2)
