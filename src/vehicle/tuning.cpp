@@ -55,7 +55,7 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
     c.mass = mass;
     c.turn_rate = turn_rate;
     c.steering_reduction_factor = steering_reduction_factor;
-    c.friction.handbrake.brake_rate = brake_rate;
+    c.handbrake.brake_rate = brake_rate;
 
     // Copy visual system parameters
     visuals.lean_multiplier = lean_multiplier;

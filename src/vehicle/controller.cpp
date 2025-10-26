@@ -116,8 +116,8 @@ void controller::apply_input(const controller_input_params& input_params,
     // Direct acceleration (instant response, no ground/air distinction)
     acceleration = input_direction * accel;
 
-    // Update composed systems (friction model manages drag coefficient)
-    friction.update(input_params);
+    // Update handbrake state from input
+    handbrake.update(input_params.handbrake);
 }
 
 void controller::update(const collision_world* world, float dt) {
@@ -176,7 +176,7 @@ void controller::update_physics(float dt) {
     // Unified drag coefficient from friction model
     // Composes: base drag (equilibrium) + handbrake drag + future modifiers
     // Time-independent: single exponential integrator with correct particular solution
-    float k = friction.compute_total_drag(accel, max_speed);
+    float k = friction.compute_total_drag(accel, max_speed, handbrake.is_active(), handbrake.brake_rate);
 
     FL_POSTCONDITION(k > 0.0f && std::isfinite(k), "drag coefficient must be positive and finite");
 

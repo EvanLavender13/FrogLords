@@ -4,7 +4,7 @@
 **Started:** 2025-10-26
 **Branch:** system/handbrake-refactor
 **Complexity:** Small
-**Phase:** SELECT → GRAYBOX
+**Phase:** GRAYBOX → ITERATE
 
 ---
 
@@ -14,7 +14,7 @@
 **Location:** @TASKS/PLANS/handbrake_refactor_SYSTEM.md
 **Layer:** 4 (Variation - Refactoring existing system)
 **Complexity:** Small
-**Next:** GRAYBOX
+**Next:** ITERATE (or CLOSE if sufficient)
 
 **Dependencies:**
 - Vehicle Movement System (Layer 3) ✓

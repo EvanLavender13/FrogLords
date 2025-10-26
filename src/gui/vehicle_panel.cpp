@@ -111,7 +111,7 @@ void draw_vehicle_state_section(const controller& vehicle, const vehicle_reactiv
 
     // Friction model derived parameters
     ImGui::Separator();
-    ImGui::Text("Handbrake: %s", vehicle.friction.handbrake.is_active() ? "ACTIVE" : "INACTIVE");
+    ImGui::Text("Handbrake: %s", vehicle.handbrake.is_active() ? "ACTIVE" : "INACTIVE");
 
     static constexpr param_meta base_drag_meta = {"Base Drag Rate", "/s", 0.0f, 10.0f};
     float base_drag = vehicle.friction.get_base_drag_rate(vehicle.accel, vehicle.max_speed);
