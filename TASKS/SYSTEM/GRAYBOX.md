@@ -6,9 +6,11 @@
 
 ## Purpose
 
-Build the core mechanic in the simplest possible form. No art, no polish, no extras. Just the mathematical truth of the system, made visible.
+Build the core mechanic in the simplest possible form. Prove it works mathematically. Make state visible through debug visualization.
 
-**If it doesn't work in graybox, it won't work polished. Save months by discovering this in hours.**
+**Crude but correct. Architecture refinement happens in ITERATE.**
+
+If it doesn't work in graybox, it won't work polished. Save months by discovering this in hours.
 
 ---
 
@@ -78,58 +80,16 @@ Identify which existing functions modified and where new code added.
 
 ---
 
-### 2.5. Validate Plan
-
-**Get a second opinion before implementing:**
-
-Use Codex to validate the implementation plan against principles.
-
-```bash
-bash scripts/bash/codex.sh "Read [TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md relevant files] [your validation question]"
-```
-
-**IMPORTANT:** Use `run_in_background: true` in Bash tool call.
-
-**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
-
-**Evaluate feedback:**
-- Concerns raised? Revise plan
-- Alternative suggested? Consider it
-- Need clarification? Continue with `bash scripts/bash/codex.sh --resume "[follow-up question]"`
-- Validation confirms? Proceed
-
-**Document the review** in `PLANS/<name>_SYSTEM.md`:
-
-```markdown
-<!-- BEGIN: GRAYBOX/REVIEW -->
-## Implementation Review
-
-**Tool:** Codex CLI
-**Date:** YYYY-MM-DD
-
-**Question asked:**
-[What you asked for validation]
-
-**Feedback received:**
-- [Key points from the review]
-- [Concerns or recommendations]
-
-**Impact on implementation:**
-- [How feedback changed your approach]
-- [What you kept vs modified]
-<!-- END: GRAYBOX/REVIEW -->
-```
-
----
-
 ### 3. Implement Core and Debug Visualization
 
-**Prove correctness. Make it visible. Keep it minimal.**
+**Prove correctness. Make it visible. Don't overthink architecture.**
 
-- Implement primitive/system code
+- Implement primitive/system code (simplest approach that works)
 - Add debug visualization (make state visible)
 - Add debug assertions for preconditions/postconditions
 - Build successfully
+
+**Architecture will be refined in ITERATE. Focus on functional correctness.**
 
 ---
 
@@ -169,19 +129,19 @@ In `PLANS/<name>_SYSTEM.md` — add:
 - [x] Core functional
 - [x] Build successful
 - [x] Debug viz working
-- [ ] Ready for iteration
+- [x] Ready for ITERATE
 
 **Works:**
--
+- [what functions correctly]
 
 **Doesn't:**
--
+- [known issues or limitations]
 
 **Surprises:**
--
+- [unexpected behaviors]
 
 **Next:**
-- ITERATE phase
+- ITERATE (code refinement and playtesting)
 <!-- END: GRAYBOX/RESULTS -->
 ```
 
