@@ -55,11 +55,11 @@ struct controller {
     // Used in: clamp_horizontal_speed, update_reactive_systems
     float max_speed = 8.0f; // m/s
 
-    // PHYSICAL: Vehicle weight force (downward)
-    // Acts as constant downward force keeping vehicle on track
-    // Sign convention: Negative because Y-up coordinate system (weight pulls down)
-    // Used in: velocity integration for vertical physics
-    float weight = -9.8f; // m/s² (acceleration, will convert to force with mass later)
+    // TUNED: Vehicle mass (copied from tuning system)
+    // Foundation for F=ma force calculations
+    // Real-world context: 150 kg ≈ 330 lbs (lightweight vehicle/go-kart)
+    // Used in: update_physics for weight force calculation (F = m * g)
+    float mass = 150.0f; // kg
 
     // TUNED: Maximum walkable slope angle threshold (SINGLE SOURCE OF TRUTH)
     // Surfaces steeper than this are walls, not ground

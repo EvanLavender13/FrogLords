@@ -19,11 +19,11 @@ struct tuning_params {
     // Used in: apply_to to copy to controller.accel
     float accel = 5.0f; // m/s²
 
-    // TUNED: Vehicle weight force (source of truth)
-    // Acts as constant downward force keeping vehicle on track
-    // Sign convention: Negative because Y-up coordinate system (weight pulls down)
-    // Used in: apply_to to copy to controller.weight
-    float weight = -9.8f; // m/s² (acceleration, will convert to force with mass later)
+    // TUNED: Vehicle mass (source of truth for force-based physics)
+    // Foundation for F=ma calculations in future lateral force systems
+    // Real-world context: 150 kg ≈ 330 lbs (lightweight vehicle/go-kart)
+    // Used in: apply_to to copy to controller.mass
+    float mass = 150.0f; // kg
 
     // TUNED: Turn rate for car-like control heading (source of truth)
     // Controls rotational speed when using heading-based movement
@@ -65,7 +65,7 @@ struct tuning_params {
 
     static constexpr param_meta accel_meta = {"Acceleration", "m/s²", 1.0f, 50.0f};
 
-    static constexpr param_meta weight_meta = {"Weight", "m/s²", -20.0f, -5.0f};
+    static constexpr param_meta mass_meta = {"Mass", "kg", 50.0f, 500.0f};
 
     static constexpr param_meta turn_rate_meta = {"Turn Rate", "rad/s", 1.0f, 10.0f};
 

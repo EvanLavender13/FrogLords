@@ -166,8 +166,12 @@ void controller::update_physics(float dt) {
     //
     // See PRINCIPLES.md: Time-Independence, Solid Mathematical Foundations
 
-    // Apply weight to vertical acceleration (downward force)
-    acceleration.y += weight;
+    // Apply weight force as acceleration (F=ma: weight_force/mass = acceleration)
+    // Weight force: F = m * g (downward)
+    // Weight acceleration: a = F/m = (m * g)/m = g
+    // Sign: negative because Y-up coordinate system (gravity pulls down)
+    float weight_accel = (mass * -math::GRAVITY) / mass; // Simplifies to -GRAVITY
+    acceleration.y += weight_accel;
 
     // Unified drag coefficient from friction model
     // Composes: base drag (equilibrium) + handbrake drag + future modifiers
@@ -194,7 +198,10 @@ void controller::update_physics(float dt) {
         horizontal_velocity = horizontal_velocity * decay + (horizontal_accel / k) * (1.0f - decay);
     }
 
-    // Integrate vertical velocity (standard Euler - no drag)
+    // Integrate vertical velocity (semi-implicit Euler - no drag)
+    // Semi-implicit: v += a*dt, then x += v*dt (uses updated velocity)
+    // This is the project standard per TASKS/CONTEXT/PHYSICS_INTEGRATION_PATTERNS.md
+    // Chosen for: stability, simplicity, speed in damped gameplay systems
     velocity.y += acceleration.y * dt;
 
     // Reconstruct full velocity (horizontal + vertical)

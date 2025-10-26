@@ -2,21 +2,13 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-01-26
+**Last Updated:** 2025-10-26
 
 ---
 
 ## Movement & Physics
 
 **Layer 4 - Front/Rear Wheel Physics (Physics-Driven Drift):**
-
-**Vehicle Mass Property**
-- Add mass parameter to controller
-- Units: kg (kilograms)
-- Used for F=ma in lateral force application
-- Affects rotational inertia (moment = mass * radius²)
-- Verifiable: Add to vehicle_panel GUI, observe lateral response changes
-- Requires: None
 
 **Handbrake System Refactor**
 - Move handbrake from friction_model composition to controller-level state
@@ -26,21 +18,21 @@
 - Verifiable: Handbrake behavior unchanged after refactor
 - Requires: None
 
-**Front Axle System**
+**Front Axle System** ← NOW BUILDABLE (vehicle mass property complete)
 - Calculate front slip angle from velocity + steering angle
 - Compute lateral tire force: `cornering_stiffness * slip_angle * normal_load`
 - Tunable: cornering_stiffness, axle_distance
 - Returns force magnitude for physics integration
 - Verifiable: GUI display of front slip angle and lateral force
-- Requires: Vehicle Mass Property (for normal load calculation)
+- Requires: Vehicle Mass Property (complete)
 
-**Rear Axle System**
+**Rear Axle System** ← NOW BUILDABLE (vehicle mass property complete)
 - Calculate rear slip angle from velocity (no steering term)
 - Compute lateral tire force with handbrake grip reduction
 - Handbrake multiplier: reduces effective cornering_stiffness
 - Tunable: cornering_stiffness, handbrake_grip_multiplier, axle_distance
 - Verifiable: GUI display of rear slip angle, force drops when handbrake engaged
-- Requires: Vehicle Mass Property, Handbrake System Refactor
+- Requires: Vehicle Mass Property (complete), Handbrake System Refactor
 
 **Heading Integrator System**
 - Compose front/rear axle systems

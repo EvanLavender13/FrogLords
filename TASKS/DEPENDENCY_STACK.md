@@ -126,6 +126,10 @@ Variations within systems. Different modes, states, or behaviors.
   - Uses: Layer 3 vehicle movement system (composed into controller)
   - Establishes: Active/reactive composition pattern (handbrake modifies physics, reactive systems respond)
   - Enables: Drift detection primitive, continuous friction scaling, drift speed maintenance, drift visual feedback
+- **Vehicle Mass Property** - Mass parameter for F=ma force-based physics, replaces weight acceleration with proper force calculation (`src/vehicle/tuning.{h,cpp}`, `src/vehicle/controller.{h,cpp}`)
+  - Uses: Layer 2 parameter metadata, global GRAVITY constant (`src/foundation/math_utils.h`)
+  - Extends: Layer 3 vehicle movement system (adds mass state property)
+  - Enables: Lateral force application (F/m = a), moment of inertia calculation, normal load distribution for tire forces
 
 **Dependencies to build something new here:**
 - Target parent system in Layer 3
@@ -134,6 +138,7 @@ Variations within systems. Different modes, states, or behaviors.
 - Vehicle tilt provides: Visual weight transfer pattern for drift system, foundation for per-wheel suspension
 - Dynamic FOV provides: Pattern for speed-reactive camera behaviors, perceptual enhancement foundation
 - Handbrake provides: Drift initiation input, active/reactive composition pattern for vehicle systems
+- Vehicle mass provides: Foundation for force-based lateral physics, enables front/rear axle tire force systems, moment of inertia for yaw dynamics
 
 ---
 

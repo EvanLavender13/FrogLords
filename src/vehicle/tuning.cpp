@@ -13,8 +13,8 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
                     "max_speed must be within metadata range");
     FL_PRECONDITION(accel >= accel_meta.min && accel <= accel_meta.max,
                     "accel must be within metadata range");
-    FL_PRECONDITION(weight >= weight_meta.min && weight <= weight_meta.max,
-                    "weight must be within metadata range");
+    FL_PRECONDITION(mass >= mass_meta.min && mass <= mass_meta.max,
+                    "mass must be within metadata range");
     FL_PRECONDITION(turn_rate >= turn_rate_meta.min && turn_rate <= turn_rate_meta.max,
                     "turn_rate must be within metadata range");
     FL_PRECONDITION(steering_reduction_factor >= steering_reduction_factor_meta.min &&
@@ -25,7 +25,7 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
 
     FL_ASSERT_FINITE_SCALAR(max_speed, "max_speed");
     FL_ASSERT_FINITE_SCALAR(accel, "accel");
-    FL_ASSERT_FINITE_SCALAR(weight, "weight");
+    FL_ASSERT_FINITE_SCALAR(mass, "mass");
     FL_ASSERT_FINITE_SCALAR(turn_rate, "turn_rate");
     FL_ASSERT_FINITE_SCALAR(steering_reduction_factor, "steering_reduction_factor");
     FL_ASSERT_FINITE_SCALAR(brake_rate, "brake_rate");
@@ -52,7 +52,7 @@ void tuning_params::apply_to(controller& c, vehicle_reactive_systems& visuals) c
     // Copy controller parameters directly (no derivation)
     c.max_speed = max_speed;
     c.accel = accel;
-    c.weight = weight;
+    c.mass = mass;
     c.turn_rate = turn_rate;
     c.steering_reduction_factor = steering_reduction_factor;
     c.friction.handbrake.brake_rate = brake_rate;

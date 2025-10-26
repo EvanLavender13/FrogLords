@@ -19,7 +19,7 @@ namespace gui {
 enum class parameter_type {
     MAX_SPEED,
     ACCEL,
-    WEIGHT,
+    MASS,
     TURN_RATE,
     STEERING_REDUCTION_FACTOR,
     BRAKE_RATE,
