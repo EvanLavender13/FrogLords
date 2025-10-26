@@ -1,19 +1,27 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-25 - Dynamic FOV
+**Status:** 🏗️ System - Handbrake Input & Active/Reactive Architecture
+**Started:** 2025-10-25
+**Branch:** system/handbrake-active-reactive
+**Complexity:** Medium
+**Phase:** SELECT → GRAYBOX
 
 ---
 
-## Ready for Next Task
+## Current Work
 
-**Choose next action:**
-- `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
+**System:** Handbrake input for drift initiation + establishes active/reactive composition pattern
+**Location:** @TASKS/PLANS/handbrake_input_SYSTEM.md
+**Layer:** 4 (Variation)
+**Complexity:** Medium
+**Next:** GRAYBOX
 
----
+**Dependencies:**
+- Input system (Layer 1)
+- Controller input params (Layer 3)
+- Vehicle movement system (Layer 3)
 
-**See:**
-- `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
-- `DEPENDENCY_STACK.md` - Current capabilities
+**Architectural impact:**
+- Creates vehicle_active_systems (modifies physics)
+- Renames vehicle_visual_systems → vehicle_reactive_systems (responds to physics)
+- Establishes composition pattern for controller
