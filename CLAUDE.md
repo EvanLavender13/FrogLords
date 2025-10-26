@@ -54,6 +54,13 @@ The current refinement or system build in progress:
 
 Maps context cards to task types. Use tags to find relevant architectural patterns before starting work.
 
+### High-Value Injected Context
+
+@TASKS/CONTEXT/ROTATION_CONVENTIONS.md
+@TASKS/CONTEXT/REFERENCE_FRAMES.md
+
+Critical patterns that prevent recurring confusion. Review before any rotation or transform work.
+
 ## Analysis and Validation
 
 Verification is cheap. Mistakes compound. Use these tools liberally.

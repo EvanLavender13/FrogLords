@@ -13,6 +13,8 @@ Cards
 - `TASKS/CONTEXT/PRIMITIVES_GUIDE.md` — Primitives return data; systems decide; dependency flows up. Tags: primitives, systems, architecture, physics
 - `TASKS/CONTEXT/PHYSICS_INTEGRATION_PATTERNS.md` — Integrate only when necessary; semi‑implicit default; dt scaling; bounded drift. Tags: foundation, physics, math, simulation
 - `TASKS/CONTEXT/PHYSICS_FIRST_TUNING.md` — Expose real physical parameters; use standard formulas; tune feel from physics. Tags: systems, variation, physics, tuning
+- `TASKS/CONTEXT/REFERENCE_FRAMES.md` — Local vs world space; transform composition order; rotation axes after transforms. Tags: math, architecture, rendering
+- `TASKS/CONTEXT/ROTATION_CONVENTIONS.md` — Heading-relative vs world-absolute; input negation bridge; angular velocity signs. Tags: physics, math, terminology
 - `TASKS/CONTEXT/STATIC_ANALYSIS.md` — Verify semantics first; suppress false positives with explanation; verify consumers exist. Tags: hygiene, tools, validation
 - `TASKS/CONTEXT/UNIDIRECTIONAL_FLOW.md` — One source; one direction; delete sync cycles; expose views. Tags: systems, architecture, dataflow
 - `TASKS/CONTEXT/VEHICLE_DYNAMICS_TERMINOLOGY.md` — Steering vs slide direction; slip angle signs; drift/slide/slip distinctions. Tags: physics, vehicle, terminology
