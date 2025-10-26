@@ -54,6 +54,8 @@ Define the minimal scope that proves the core works.
 
 **Before writing code, map the structure.**
 
+Study existing patterns in similar systems first. Identify reusable patterns before inventing new ones.
+
 Update `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
