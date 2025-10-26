@@ -80,7 +80,8 @@ void generate_character_state_primitives(debug::debug_primitive_list& list,
         float slip_angle = character.calculate_slip_angle();
         constexpr float SLIP_ANGLE_THRESHOLD = 0.05f; // ~2.9 degrees
         if (std::abs(slip_angle) > SLIP_ANGLE_THRESHOLD) {
-            glm::vec3 heading_dir = math::yaw_to_forward(visuals.orientation.get_yaw());
+            // Use heading_yaw consistently for both gate and arc (matches calculate_slip_angle)
+            glm::vec3 heading_dir = math::yaw_to_forward(character.heading_yaw);
             glm::vec3 velocity_dir =
                 math::safe_normalize(math::project_to_horizontal(character.velocity), heading_dir);
 
