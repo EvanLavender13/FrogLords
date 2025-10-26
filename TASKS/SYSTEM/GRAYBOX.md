@@ -16,10 +16,8 @@ If it doesn't work in graybox, it won't work polished. Save months by discoverin
 
 ## Prerequisites
 
+- Read @TASKS/CURRENT_PLAN.md
 - `PLANS/<name>_SYSTEM.md` exists with core identified
-- Branch `system/<name>` active
-- Dependencies exist (check DEPENDENCY_STACK.md)
-- Mathematical approach clear
 
 ---
 
@@ -33,26 +31,7 @@ Prevention is cheaper than detection.
 
 ## Process
 
-### 1. Define Scope
-
-Update `PLANS/<name>_SYSTEM.md` — add:
-
-```markdown
-<!-- BEGIN: GRAYBOX/SCOPE -->
-## Graybox
-
-Define the minimal scope that proves the core works.
-
-**What will be built:**
-[Describe the core mechanic and how it will be validated]
-
-**Complexity:** Small | Medium | Large
-<!-- END: GRAYBOX/SCOPE -->
-```
-
----
-
-### 2. Plan Implementation
+### 1. Plan Implementation
 
 **Before writing code, map the structure.**
 
@@ -61,26 +40,14 @@ Study existing patterns in similar systems first. Identify reusable patterns bef
 Update `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
-<!-- BEGIN: GRAYBOX/IMPLEMENTATION_PLAN -->
-## Implementation Plan
-
-**Files to modify:**
-List each file path and what changes.
-
-**Call structure:**
-Describe function call chain.
-
-**Debug data flow:**
-Describe how computed values reach visualization.
-
-**Integration points:**
-Identify which existing functions modified and where new code added.
-<!-- END: GRAYBOX/IMPLEMENTATION_PLAN -->
+<!-- BEGIN: GRAYBOX/PLAN -->
+[Implementation approach: scope, structure, integration points, debug visualization strategy]
+<!-- END: GRAYBOX/PLAN -->
 ```
 
 ---
 
-### 3. Implement Core and Debug Visualization
+### 2. Implement Core and Debug Visualization
 
 **Prove correctness. Make it visible. Don't overthink architecture.**
 
@@ -93,7 +60,7 @@ Identify which existing functions modified and where new code added.
 
 ---
 
-### 4. Provide Testing Instructions
+### 3. Provide Testing Instructions
 
 **DO NOT run the application. Provide instructions and wait for user to test.**
 
@@ -107,41 +74,23 @@ Wait for user to report results.
 
 ---
 
-### 5. Iterate Based on Feedback
+### 4. Iterate Based on Feedback
 
 User reports: works, broken, or surprises.
 
-**If broken:** Fix, rebuild, provide new instructions, repeat step 4.
+**If broken:** Fix, rebuild, provide new instructions, repeat step 3.
 
 **If works:** Proceed to document results.
 
 ---
 
-### 6. Document Results
+### 5. Document Results
 
 In `PLANS/<name>_SYSTEM.md` — add:
 
 ```markdown
 <!-- BEGIN: GRAYBOX/RESULTS -->
-## Results
-
-**Status:**
-- [x] Core functional
-- [x] Build successful
-- [x] Debug viz working
-- [x] Ready for ITERATE
-
-**Works:**
-- [what functions correctly]
-
-**Doesn't:**
-- [known issues or limitations]
-
-**Surprises:**
-- [unexpected behaviors]
-
-**Next:**
-- ITERATE (code refinement and playtesting)
+[What works, what doesn't, surprises, and readiness for next phase]
 <!-- END: GRAYBOX/RESULTS -->
 ```
 
@@ -149,7 +98,7 @@ Update `CURRENT_PLAN.md` phase: `GRAYBOX → ITERATE`
 
 ---
 
-### 7. Commit
+### 6. Commit
 
 ```bash
 git add .
@@ -168,9 +117,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Outputs
 
-- [ ] Implementation plan documented
-- [ ] Core implemented (primitives)
-- [ ] Debug viz functional
+- [ ] Implementation planned
+- [ ] Core implemented
+- [ ] Debug visualization functional
 - [ ] Build successful
 - [ ] Results documented
 - [ ] Committed

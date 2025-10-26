@@ -2,13 +2,83 @@
 
 **Systems to build.**
 
-**Last Updated:** 2025-10-26
+**Last Updated:** 2025-01-26
 
 ---
 
 ## Movement & Physics
 
-**Layer 4 - Buildable Now:**
+**Layer 4 - Front/Rear Wheel Physics (Physics-Driven Drift):**
+
+**Vehicle Mass Property**
+- Add mass parameter to controller
+- Units: kg (kilograms)
+- Used for F=ma in lateral force application
+- Affects rotational inertia (moment = mass * radius²)
+- Verifiable: Add to vehicle_panel GUI, observe lateral response changes
+- Requires: None
+
+**Handbrake System Refactor**
+- Move handbrake from friction_model composition to controller-level state
+- Pure input state holder (no physics logic)
+- Interface: `update(bool)`, `is_active()`
+- Systems query handbrake state rather than own it
+- Verifiable: Handbrake behavior unchanged after refactor
+- Requires: None
+
+**Front Axle System**
+- Calculate front slip angle from velocity + steering angle
+- Compute lateral tire force: `cornering_stiffness * slip_angle * normal_load`
+- Tunable: cornering_stiffness, axle_distance
+- Returns force magnitude for physics integration
+- Verifiable: GUI display of front slip angle and lateral force
+- Requires: Vehicle Mass Property (for normal load calculation)
+
+**Rear Axle System**
+- Calculate rear slip angle from velocity (no steering term)
+- Compute lateral tire force with handbrake grip reduction
+- Handbrake multiplier: reduces effective cornering_stiffness
+- Tunable: cornering_stiffness, handbrake_grip_multiplier, axle_distance
+- Verifiable: GUI display of rear slip angle, force drops when handbrake engaged
+- Requires: Vehicle Mass Property, Handbrake System Refactor
+
+**Heading Integrator System**
+- Compose front/rear axle systems
+- Compute yaw torque from tire force imbalance: `F_front * d_front - F_rear * d_rear`
+- Integrate: torque → angular_accel → angular_velocity → heading_yaw
+- Replace direct heading control with physics-driven rotation
+- Tunable: moment_of_inertia, angular_drag
+- Verifiable: Vehicle rotates from tire forces, handbrake induces oversteer
+- Requires: Front Axle System, Rear Axle System
+
+**Friction Model Refactor**
+- Rename `compute_total_drag` → `compute_longitudinal_drag`
+- Apply only to forward velocity component (not total horizontal)
+- Remove handbrake ownership (accept as parameter)
+- Add optional lateral drag coefficient (air resistance on side)
+- Verifiable: Forward/backward motion unchanged, lateral motion independent
+- Requires: Heading Integrator System (for coordinate transform)
+
+**Local Coordinate Physics Integration**
+- Transform velocity to vehicle-local frame (forward/lateral components)
+- Apply longitudinal drag to forward velocity (friction_model)
+- Apply lateral tire forces to lateral velocity (heading_integrator axles)
+- Integrate yaw dynamics (heading_integrator)
+- Transform back to world space
+- Verifiable: Drift emerges naturally from handbrake, counter-steering required
+- Requires: Friction Model Refactor, Heading Integrator System
+
+**Weight Transfer System** (Optional Enhancement)
+- Shift normal load between front/rear during accel/brake
+- Formula: `load_transfer = (accel / wheelbase) * mass * height_COM`
+- Affects tire force limits dynamically
+- Enhances realism: power-on oversteer, brake-induced understeer
+- Verifiable: Front dives under braking, rear squats under acceleration
+- Requires: Local Coordinate Physics Integration
+
+---
+
+**Layer 4 - Arcade Enhancements (Independent of Drift Physics):**
 
 **Boost/Nitrous System**
 - Accumulates charge through gameplay (pickups, successful maneuvers)
@@ -16,63 +86,8 @@
 - Acceleration multiplier: `acceleration *= boost_multiplier` (1.5x-2.5x)
 - Works entirely through existing physics pipeline
 - Visual effects and FOV boost during activation
+- Verifiable: Speed exceeds normal max_speed, decays naturally
 - Requires: None (modifies existing acceleration)
-
-**Enhanced Speed-Dependent Steering**
-- Improve existing steering reduction formula
-- Add exponential curves for more natural feel
-- Separate low-speed and high-speed response profiles
-- Smooth transitions between speed ranges
-- Requires: None (enhancement of existing system)
-
-**Drift Detection Primitive** ← NOW BUILDABLE (handbrake input complete)
-- Calculate drift intensity from slip angle (continuous 0-1 value)
-- Threshold detection: 5-8° initiation, maintain up to 23° (0.4 rad)
-- Speed gating: require speed > soft_threshold (3 m/s)
-- Brake boost: multiply intensity when brake held
-- Pure calculation, no state modification
-- Returns: drift_intensity float for other systems to consume
-- Requires: Slip Angle Calculator (complete), Brake Input Extension
-
-**Continuous Friction Scaling** ← AFTER DRIFT DETECTION
-- Smoothly interpolate friction based on drift_intensity
-- No discrete states, continuous modification
-- Formula: `friction = lerp(1.0, drift_friction, drift_intensity)`
-- Rear wheels: 0.3x at full drift, Front wheels: 0.7x at full drift
-- Applied in physics update, affects acceleration calculation
-- Requires: Drift Detection Primitive
-
-**Drift Speed Maintenance** ← AFTER FRICTION SCALING
-- Boost acceleration during drift to maintain forward momentum
-- Scale factor: `accel_multiplier = 1.0 + (drift_intensity * 0.5)`
-- Works through exponential drag model (k = accel/max_speed)
-- Physics solver naturally maintains equilibrium speed
-- No velocity hacks, pure force modification
-- Requires: Continuous Friction Scaling
-
-**Drift Visual Feedback** ← AFTER FRICTION SCALING
-- Enhance existing vehicle_visual_systems for drift
-- Additional lean during drift (beyond g-force lean)
-- Counter-steer visualization (wheels point opposite to drift)
-- Integrates with existing spring-damped tilt system
-- Pure visual, no physics modification
-- Requires: Continuous Friction Scaling
-
-**Centripetal Drift Assist** (Optional Enhancement)
-- Apply subtle outward force during high-speed turns
-- Magnitude: function of angular_velocity and speed
-- Enhances arcade feel without breaking physics
-- Formula: `outward_force = -lateral_dir * (angular_vel * speed * assist_factor)`
-- Requires: Drift Speed Maintenance
-
-**Drift Tuning Parameters**
-- Expose all drift thresholds and multipliers via metadata
-- Slip angle thresholds (initiation/maintain angles)
-- Friction reduction factors (rear/front separately)
-- Speed maintenance multiplier
-- Brake boost factor
-- Integrates with existing vehicle_panel GUI
-- Requires: Any drift system to tune
 
 ---
 
@@ -136,20 +151,20 @@
 - Requires: Post-processing pipeline
 
 **Particle Trail System**
-- Tire smoke during drifts (triggered by drift state)
+- Tire smoke during drifts (triggered by rear slip angle threshold)
 - Dust clouds on dirt surfaces
 - Sparks from wall collisions
-- Speed-based intensity scaling
+- Intensity scales with slip angle magnitude
 - Spawn near camera for maximum speed perception
-- Requires: Particle system foundation
+- Requires: Particle system foundation, Rear Axle System (for slip angle)
 
 **Skid Marks**
 - Persistent tire marks during slides
-- Triggered by slip angle exceeding threshold
+- Triggered by slip angle exceeding threshold (use axle slip angles)
 - Fade over time or distance limit
 - Different patterns for brake vs drift
 - Surface-dependent (black on asphalt, grooves on dirt)
-- Requires: Deferred decal system or mesh generation
+- Requires: Deferred decal system or mesh generation, Front/Rear Axle Systems
 
 **Motion Blur** (Optional)
 - Radial blur specifically for boost moments
@@ -184,6 +199,14 @@
 - Enhances understanding of drift behavior
 - Complements: Existing debug visualization (speed ring, orientation/velocity arrows)
 - Requires: Slip Angle Calculator (complete)
+
+**Front/Rear Slip Angle Debug Display**
+- Display both front and rear slip angles separately
+- Show lateral force magnitude per axle
+- Visualize yaw torque contribution from each axle
+- Color-coded: green (grip), yellow (sliding), red (loss of grip)
+- Helps tune cornering_stiffness and understand drift mechanics
+- Requires: Front Axle System, Rear Axle System
 
 **Vehicle Telemetry System**
 - Record speed, acceleration, steering, drift angle over time
