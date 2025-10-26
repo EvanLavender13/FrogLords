@@ -13,8 +13,6 @@ Refine crude but correct implementation into quality code. Simplify architecture
 ## Prerequisites
 
 - [ ] Graybox functional
-- [ ] Debug visualization working
-- [ ] Build successful
 - [ ] `PLANS/<name>_SYSTEM.md` exists with GRAYBOX/RESULTS
 
 ---
@@ -41,298 +39,141 @@ Use tags to find applicable context cards before beginning refinement.
 
 ### 1. Create or Resume Iteration Document
 
-**Check `PLANS/<name>_SYSTEM.md` for iteration list:**
+**Check for existing iterations:**
 
-**If no iteration list exists (first iteration):**
-
-Create `PLANS/<name>_ITERATION_1.md`:
-
-```markdown
-# Iteration 1: <name>
-
-**Started:** YYYY-MM-DD
-**Status:** In Progress
-
----
-
-<!-- BEGIN: ITERATE/SCOPE -->
-## Refinement Scope
-
-What must improve from GRAYBOX:
-
-- [ ] Code quality (simplification, dead code removal, clarity)
-- [ ] Architecture (pattern extraction, principle alignment)
-- [ ] Stability (playtest hardening, edge case handling)
-- [ ] Performance (obvious waste elimination)
-<!-- END: ITERATE/SCOPE -->
-
----
+Find all iteration documents for this system:
+```bash
+ls PLANS/<name>_ITERATION_*.md
 ```
 
-Add iteration list to `PLANS/<name>_SYSTEM.md` (after GRAYBOX/RESULTS):
+**If no iterations exist:**
+
+Create `PLANS/<name>_ITERATION_1.md`.
+
+**If iterations exist:**
+
+Find highest iteration number N, read `PLANS/<name>_ITERATION_<N>.md` for VALIDATE/DECISION.
+
+Create `PLANS/<name>_ITERATION_<N+1>.md`.
+
+Add to iteration doc:
 
 ```markdown
----
-
-## Iterations
-
-- [ITERATION_1.md](ITERATION_1.md) - In Progress
-```
-
-**If iteration list exists (resuming from VALIDATE/REVISE):**
-
-Read most recent `PLANS/<name>_ITERATION_<N>.md` to find VALIDATE/DECISION.
-
-Create `PLANS/<name>_ITERATION_<N+1>.md`:
-
-```markdown
-# Iteration <N+1>: <name>
-
-**Started:** YYYY-MM-DD
-**Previous:** [ITERATION_<N>.md](ITERATION_<N>.md)
-**Status:** In Progress
-
----
-
 <!-- BEGIN: ITERATE/CONTEXT -->
-## Context from Previous Iteration
-
-**Decision:** REVISE (from ITERATION_<N>)
-
-**Required changes:**
-- [copy from ITERATION_<N> VALIDATE/DECISION]
+[Decision from previous iteration, required changes]
 <!-- END: ITERATE/CONTEXT -->
-
----
-```
-
-Update iteration list in `PLANS/<name>_SYSTEM.md`:
-
-```markdown
-## Iterations
-
-- [ITERATION_1.md](ITERATION_1.md) - REVISE
-- [ITERATION_<N+1>.md](ITERATION_<N+1>.md) - In Progress
 ```
 
 ---
 
 ### 2. External Review (ITERATION_1 only)
 
-**Get a second opinion on the crude implementation before refining.**
+Skip if resuming from VALIDATE/REVISE.
 
-**Skip this step if resuming from VALIDATE/REVISE** - use findings from VALIDATE/DECISION instead.
-
-**For ITERATION_1 only:**
-
-Use Codex to review actual code:
+Use Codex to review graybox code:
 
 ```bash
-bash scripts/bash/codex.sh "TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [your review question]"
+bash scripts/bash/codex.sh "TASKS/PLANS/<name>_SYSTEM.md PRINCIPLES.md CONVENTIONS.md TASKS/PATTERNS.md TASKS/CONTEXT/INDEX.md [relevant files] [your review prompt]"
 ```
 
 **IMPORTANT:** Use `run_in_background: true` in Bash tool call.
 
-**WAIT for user confirmation that review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
+Continue to internal review while external review runs.
 
-**Continue conversation if needed:**
+---
+
+### 3. Internal Review (ITERATION_1 only)
+
+Skip if resuming from VALIDATE/REVISE.
+
+Review graybox code while external review runs.
+
+Add to iteration doc:
+
+```markdown
+<!-- BEGIN: ITERATE/INTERNAL_REVIEW -->
+[Internal review findings]
+<!-- END: ITERATE/INTERNAL_REVIEW -->
+```
+
+**After completing internal review, WAIT for user confirmation that external review is complete.** This takes several minutes. Do NOT monitor output. User will confirm when finished.
+
+Continue conversation with external review if needed:
 ```bash
 bash scripts/bash/codex.sh --resume "[follow-up question]"
 ```
 
-Document in iteration doc (`PLANS/<name>_ITERATION_1.md`):
+Add external review to iteration doc:
 
 ```markdown
 <!-- BEGIN: ITERATE/EXTERNAL_REVIEW -->
-## External Review (Codex)
-
-**Date:** YYYY-MM-DD
-
-**Question asked:**
-[What you asked for review]
-
-**Findings:**
-- [Key findings from Codex]
-
-**Priority issues:**
-- [What must be addressed in refinement]
+[External review findings]
 <!-- END: ITERATE/EXTERNAL_REVIEW -->
 ```
 
 ---
 
-### 3. Internal Review
+### 4. Define Refinement Scope
 
-**Evaluate against context patterns.**
+Based on internal and external review findings, define actionable refinement goals.
 
-Review @TASKS/CONTEXT/INDEX.md for relevant cards based on:
-- Codex feedback (ITERATION_1)
-- VALIDATE/DECISION findings (ITERATION_N from REVISE)
-
-Document in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+Add to iteration doc:
 
 ```markdown
-<!-- BEGIN: ITERATE/INTERNAL_REVIEW -->
-## Internal Review
-
-**Context cards reviewed:**
-- [list relevant cards from CONTEXT/INDEX.md]
-
-**Patterns identified:**
-- [good patterns to preserve]
-
-**Anti-patterns detected:**
-- [violations found, specific to context cards]
-
-**Simplification opportunities:**
-- [what can be removed or simplified]
-<!-- END: ITERATE/INTERNAL_REVIEW -->
+<!-- BEGIN: ITERATE/SCOPE -->
+[Actionable refinement goals based on review findings]
+<!-- END: ITERATE/SCOPE -->
 ```
 
 ---
 
-### 4. Refine Code
+### 5. Refine Code
 
-**Address findings from internal review.**
+Address findings from reviews and scope. Work incrementally. Build after each change. Commit when complete.
 
-Work incrementally:
-1. **Simplify** - Remove unnecessary complexity
-2. **Extract** - Identify and extract reusable patterns
-3. **Align** - Fix principle violations
-4. **Optimize** - Remove obvious waste
-
-**Build after each change.**
-
-**Commit when complete:**
-```bash
-git commit -m "iterate: <name> - <what changed>
-
-Simplified: <what>
-Extracted: <patterns>
-Aligned: <principles>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
-
-Document changes in iteration doc:
+Add to iteration doc:
 
 ```markdown
 <!-- BEGIN: ITERATE/REFINEMENT -->
-## Code Refinement
-
-**Simplifications:**
-- [what was removed or simplified]
-
-**Extractions:**
-- [patterns extracted]
-- [new primitives/utilities created]
-
-**Alignments:**
-- [principle violations fixed]
-
-**Performance:**
-- [waste eliminated]
-
-**Commit:** [hash]
+[What changed in the code]
 <!-- END: ITERATE/REFINEMENT -->
 ```
 
 ---
 
-### 5. Playtest
+### 6. Playtest
 
-**Harden through use.**
+Harden through use.
 
 **Playtest workflow:**
 
-1. **Build**
-2. **Claude presents test scenarios** covering:
-   - Core functionality
-   - Edge cases
-   - Stress conditions
-   - Feel/tuning
-3. **User tests and reports**:
-   - Violations
-   - Unexpected behaviors
-   - Feel issues
-4. **Violations found?**
-   - Fix → rebuild → retest
-   - Document in playtest section
-5. **All stable?** → Commit
+1. Build
+2. Claude presents test scenarios
+3. User tests and reports
+4. Violations found? Fix → rebuild → retest
+5. All stable? Commit
 
-**Repeat until stable.**
+Repeat until stable.
 
-Document in iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+Add to iteration doc (multiple playtest sections allowed):
 
 ```markdown
 <!-- BEGIN: ITERATE/PLAYTEST -->
-### Playtest <N>
-
-**Date:** YYYY-MM-DD
-**Tester:** [name]
-
-**Violations:**
-- [x] [issue description]
-  - Root cause: [why]
-  - Fix: [what changed] ✓ FIXED
-
-**Emergent:**
-- [unexpected behaviors]
-
-**Feel:**
-- [tuning adjustments made]
-
-**Commit:** [hash]
+[Playtest findings and fixes]
 <!-- END: ITERATE/PLAYTEST -->
 ```
 
-**Stop when stable through multiple sessions.**
+Stop when stable through multiple sessions.
 
 ---
 
-### 6. Document Completion
+### 7. Commit
 
-Add to iteration doc (`PLANS/<name>_ITERATION_<N>.md`):
+Commit iteration document:
 
-```markdown
-<!-- BEGIN: ITERATE/COMPLETE -->
-## Iteration Complete
-
-**Refinements:** [summary]
-**Playtests:** [count]
-**Stability:** ✓ PROVEN
-
-**Ready for VALIDATE:**
-- [x] Code quality improved
-- [x] Architecture reviewed
-- [x] Stable through playtesting
-- [x] Performance acceptable
-<!-- END: ITERATE/COMPLETE -->
-```
-
----
-
-### 7. Update Status and Commit
-
-Update iteration doc status:
-```markdown
-**Status:** Ready for VALIDATE
-```
-
-Update `PLANS/<name>_SYSTEM.md` iteration list:
-```markdown
-- [ITERATION_<N>.md](ITERATION_<N>.md) - Ready for VALIDATE
-```
-
-Commit:
 ```bash
-git add PLANS/<name>_ITERATION_<N>.md PLANS/<name>_SYSTEM.md
+git add PLANS/<name>_ITERATION_<N>.md
 git commit -m "iterate: <name> iteration <N> complete
-
-Refinements: <summary>
-Playtests: <count>
-Status: ready for validation
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com)"
@@ -343,6 +184,8 @@ Co-Authored-By: Claude <noreply@anthropic.com)"
 ## Outputs
 
 - [ ] Internal review completed
+- [ ] External review completed (ITERATION_1 only)
+- [ ] Scope defined
 - [ ] Code refined
 - [ ] Stable through playtests
 - [ ] Committed
