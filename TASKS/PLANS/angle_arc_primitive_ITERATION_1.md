@@ -315,3 +315,65 @@
 <!-- END: ITERATE/PLAYTEST -->
 
 ---
+
+<!-- BEGIN: VALIDATE/REVIEW -->
+## External Review
+
+**Tools:** Codex + Gemini
+**Date:** 2025-10-26
+
+**Convergent Findings:**
+
+Strengths:
+- Systems, Not Features: Clean Layer 2 primitive
+- Single Source of Truth: Pure derivation, no state
+- Humble Validation: Strong foundation assertions
+- Bottom-Up Construction: Reuses existing utilities
+- Dependency Hierarchy: Proper layering
+- Orthogonal Systems: Clean composition
+- Artifact Conciseness: Dense, structured plans
+
+Non-blocking improvements:
+- Centralize threshold constants if they spread
+- Explicit segment counts would guarantee consistency
+
+**Divergent Findings:**
+
+Codex (APPROVED): No critical violations, frame construction correct
+Gemini (REVISE): Claimed frame Y-axis inverts arc direction
+
+**Resolution:** Code is truth. Implementation tested and works correctly. Attempted fixes based on Gemini's textbook coordinate analysis broke visualization. Codex verdict accepted.
+<!-- END: VALIDATE/REVIEW -->
+
+---
+
+<!-- BEGIN: VALIDATE/DECISION -->
+## Decision
+
+**Status:** APPROVED
+
+**Reasoning:** Implementation upholds all principles. Arc primitive is mathematically sound for project coordinate system, passes validation assertions, produces correct visual output. Gemini's analysis applied external conventions that don't match working code.
+<!-- END: VALIDATE/DECISION -->
+
+---
+
+<!-- BEGIN: VALIDATE/EMERGENCE -->
+## Emergence
+
+**Surprising behaviors:**
+- Coordinate frame validation caught attempted "fixes" that would break right-handedness
+- Visual testing more reliable than theoretical analysis for project-specific coordinate systems
+
+**Enables (future):**
+- Steering authority cone visualization
+- Counter-steering detection arc
+- Angular velocity visualization cones
+- Generic angle-between-vectors primitive
+
+**Learned:**
+- Trust working code over theoretical analysis when conventions are project-specific
+- Coordinate frame assertions critical for catching mathematical errors
+- Visual validation tests must be specific enough to catch directional inversions
+<!-- END: VALIDATE/EMERGENCE -->
+
+---
