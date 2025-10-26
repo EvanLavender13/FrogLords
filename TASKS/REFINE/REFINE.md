@@ -12,10 +12,7 @@ Execute planned refinement—remove violation, restore principle, reduce complex
 
 ## Prerequisites
 
-- [ ] `TASKS/PLANS/REFINE_<name>.md` exists
-- [ ] Complexity classified (Trivial or Standard)
-- [ ] Branch `refine/<name>` active
-- [ ] All tests passing
+- Read @TASKS/CURRENT_PLAN.md
 
 ---
 
@@ -27,11 +24,9 @@ Prevention is cheaper than detection.
 
 ---
 
-## Path A - Trivial
+## Simple Fixes
 
-**Extremely simple deletions:** Skip formal plan if documentation would substantially exceed code change. Fix, commit with learning note in commit message, skip MEASURE. Use judgment.
-
-**Target: Plan <100 lines.** For naming changes, deletions, and audits, apply "Radical Simplicity" to documentation itself. Delete repetition, state facts once, stop when done.
+For immediate, obvious fixes where documentation would substantially exceed the work itself, execute directly with minimal ceremony. Apply "Radical Simplicity" to the process itself.
 
 ### 1. Execute
 
@@ -63,12 +58,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 <!-- BEGIN: REFINE/COMPLETED -->
-## Completed
-
-**Change:** [deleted/simplified/documented what]
-**Files Modified:** [list files and line changes]
-**Tests:** All passing | Updated: [list]
-**Result:** ✓ Violation removed
+[What was changed and result]
 <!-- END: REFINE/COMPLETED -->
 ```
 
@@ -78,8 +68,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 git add .
 git commit -m "refine: <name> - <what was removed/simplified>
 
-Restored: <principle>
-Tests: All passing
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -89,7 +78,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-## Path B - Standard
+## Standard Refinements
 
 ### 1. Plan Steps
 
@@ -97,17 +86,7 @@ In `TASKS/PLANS/REFINE_<name>.md`:
 
 ```markdown
 <!-- BEGIN: REFINE/PLAN -->
-## Refinement Plan
-
-### Step 1: [Name]
-**Changes:** `<file>:<line>` - [from] → [to]
-**Tests:** [which update]
-**Validation:** Tests pass, no regressions
-
-[Repeat for each step]
-
-## Rollback
-`git reset --hard HEAD` or [specific revert steps]
+[Execution plan with steps]
 <!-- END: REFINE/PLAN -->
 ```
 
@@ -141,24 +120,7 @@ In `TASKS/PLANS/REFINE_<name>.md`, add:
 
 ```markdown
 <!-- BEGIN: REFINE/REVIEW -->
-## Second Opinion Review
-
-**Tool:** [Codex CLI | Gemini CLI | other]
-**Date:** YYYY-MM-DD
-
-**Question asked:**
-[What you asked for validation]
-
-**Concerns evaluated:**
-- [List key concerns you wanted validated]
-
-**Feedback received:**
-- [Key points from the review]
-- [Recommendations or warnings]
-
-**Impact on implementation:**
-- [How feedback changed your approach]
-- [What you kept vs modified]
+[Second opinion review findings and impact on approach]
 <!-- END: REFINE/REVIEW -->
 ```
 
@@ -179,8 +141,7 @@ E. Commit:
 git add .
 git commit -m "refine: <name> step N - <what changed>
 
-<specific change>
-Tests: Passing
+[concise description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"

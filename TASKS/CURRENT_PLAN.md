@@ -1,19 +1,19 @@
 # Current Plan
 
-**Status:** ✅ System Complete
-**Last Completed:** 2025-10-26 - Handbrake Input & Active/Reactive Architecture
+**Status:** ✅ Refinement Complete
+**Last Completed:** 2025-10-26 - Spring Damper Validation
 
 ---
 
 ## Ready for Next Task
 
 **Choose next action:**
+- `/REFINE/SELECT` - Pick next violation to fix
 - `/SYSTEM/SELECT` - Pick next system to build
-- `/REFINE/SELECT` - Pick violation to fix
 
 ---
 
 **See:**
+- `BACKLOG_REFINEMENTS.md` - Current violations
 - `BACKLOG_SYSTEMS.md` - Systems to build
-- `BACKLOG_REFINEMENTS.md` - Violations backlog
 - `DEPENDENCY_STACK.md` - Current capabilities
